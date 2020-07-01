@@ -1,0 +1,161 @@
+20.7.18
+	* 1er juillet 2020
+	+ Inclusion de tous les sources de ZipLib dans le projet (aucun intérêt à gérer une librairie supplémentaire)
+	+ Modifications sources pour compilation MS Visual Studio
+		+ ziplib::sub_streambuf.h/li-71	 : /*std::*/min à la place de std::min (appel de la macro "c")
+		+ ZipLib/extlibs/bzip2/compress.c => bzip2-compress.c (pb de linker car 2 fichiers compress.c)
+		+ /etxlibs/lzma/CpuArch.c : 
+			+ li-7 : #include <VersionHelpers.h>
+			+ li-155 : return IsWindowsXPOrGreater();
+
+20.6.17
+	* 30 juin 2020
+	+ Version non-régressive Win32 et en chemin vers Linux
+	+ Corrections mineures
+	+ Portabilité LINUX
+		+ zip : utilisation et intégration au projet  de la librairie ZipLib (à la place de win32::ZipUtils)
+			+ Modification de l'algorithme pour le rendre portable (win32/linux) et réversible (ZipLib / ZipUtils)
+			+ Tests de non-regression Win32 OK
+		+ fileSystem
+			+ Début de la réecriture "portable"
+			+ Intégration de la librairie std::filesystem quand c'est possible
+			+ Corrections Win32
+
+20.6.16
+	* 25 juin 2020
+	+ Version intermédaire (en attendant l'intégration Linux)
+	+ Gestion des valeurs vides (ie. ne donnant pas lieu à une insertion dans le fichier) : <Vide Valeur="xxx"/>
+	+ Corrections pour Linux
+		+ Compliation sous Windows (non regression)
+		- Plus d'appel des API windows
+		+ Utilisation des classes de l'application ou des fonctions CPP
+		- Corrections ldap.h/winldap.h => LDAPServer.h
+
+20.6.15
+	* 18 juin 2020
+	+ 1er Version complète Win32
+	+ Code théroriquement portable
+	+ Corrections mineures
+		+ Correction des fichiers de configuration : Type="xyz" => OS="xyz"
+		+ Détermination du nom du dossier de travail si non précisé
+		+ Lancement des applications externes (vérification ,attente et messages d'erreur)
+	+ Modification des logs
+	+ Ajout de la classe stringTokenizer qui permet le remplacement des tokens dans <Alias> et les <Action>
+
+20.6.14
+	* 08 juin 2020
+	+ Correction de bugs mineurs
+	+ Généralisation des <Alias> à tous les noms de fichiers dépendants de l'OS
+
+20.6.13
+	* 03 juin 2020
+	+ Mise en place d'"actions" qui seront appelées et executées une fois le fichier généré et avant la prise en compte par les <destination>
+		+ attribut "destination" : permet de renommer / déplmacer ou exporter un fichier avec changement de nom
+		+ type : post-gen
+			=> Possibilité de générer au format XSLX en appelant le convertisseur de LibreOffice une fois un fichier ODS généré
+	+ Ajout de la section <Alias> dans le fichier de configuration pour les applications en ligne de commandes
+	+ Comptatibilité XLSX
+		+ Nom des onglets peut être limité en longueur (<Format><TailleOnglet>)
+		+ Génération via <Action> 
+	+ Transfert par SCP en ligne de commande
+		+ type ="SCP" 
+		+ Linux : scp	- scp fileSrc  [user@dest:]fileDest
+		+ Windows : winscp - winscp.com /command "open sftp://user:password@example.com/" "put examplefile.txt /home/user/" "exit"
+
+20.5.12
+	* 29 mai 2020 / Version intermédiaire
+	+ Contournment du bug de la fonction ldap_search_ext_s qui ne fonctionne pas avec un scope = LDAP_SCOPE_BASE
+	+ Remplacement des types "enum" par "enum class" pour borner les valeurs
+	+ Corrections mineures
+	
+20.4.11
+	* 24 avril 2020
+	+ Retrait de la date et de l'heure des commentaires dans les fichiers LDIF => modifie le hash !!!
+	+ Correction du bug de regression sur les fichiers ODS (absence d'arborescence)
+	+ L'attribut qui determine le "Manager" est un paramètre du fichier de conf (par défaut) et propre à chaque fichier de commande
+		- S'il n'est pas précisé dans le fichier de configuration ni celui de commande l'application s'arrête
+		+ s'il est précisé au niveau du fichier de commande la valeur remplacera celle par défaut
+	+ Bug lors de l'obtention de la liste des managers d'un agent
+	+ Corrections mineuers
+	+ Modification des messages d'erreurs et des logs
+
+20.4.10
+	* 21 avril 2020
+	+ Première version "complète" pour la génération des fichiers LDIF
+	+ LDIF : Possibilité d'ajouter des attributs à chaque objet avec le noeud <LDIF><Add>
+	+ LDIF : Correction du nom des attributs
+	+ LDIF : Possibilité de fusionner des attributs (<LDIF><Fusion>)
+	+ Correction de bugs
+		- Les chaines issues des fichiers XML sont déja en UTF8
+		- bugs de regression pour les formats avec organigramme : ODS et JS
+		- pb lors de la compilation 'release'
+		- Le mois dans les fichiers de logs est base 0 !
+	+ Modification de certains logs (plus précis dorénanvant)
+
+20.4.9
+	* 16 avril 2020
+	+ LDIF : modification du contenu des fichiers générés
+	+ LDIFFFile.cpp : correction du bug lors de la génération au format base64 mono-ligne 
+
+20.4.8
+	* 8 avril 2020
+	+ Ajout de la classe abstraite orgChartFile : génération des organigrammes
+	+ Corrections de bugs mineurs
+
+20.4.7
+	* 7 avril 2020
+	+ Correction de bugs (regression ?)
+		- JSFile ne génère plus le fichier de sortie !
+	+ Corrections de LDIFFile => grands ralentissements supprimés
+
+20.4.6
+	* 5 avril 2020
+	- Version lente ?
+	+ Nombreuses corrections
+		+ commandFile.cpp / .h
+		+ XMLConsts.h
+		+ JSFiles.cpp / .h
+		+ bool outFile::getOwnParameters()
+	+ Modifications des logs - ldapBrowser.cpp
+	+ Prise en compte du type "LDIF"
+		+ // "LDAP"
+		+ pas de génération d'organgiramme
+	+ Première version complète de la classe LDIFFile
+
+20.3.5
+	* 29 mars 2020
+	+ Version intermédiaire
+
+20.3.4
+	* 28 mars 2020
+	+ Version intermédiaire
+	+ Protocoles XML en version 2.1
+		+ Sources::LDAP : Serveur(s) LDAP
+		+ Sources::Photos : Serveur(s) HTTP pour les photos des agents
+	+ Ventilation des méthodes entre XMLParser et confFile
+
+20.3.3
+	* 25 mars 2020
+	+ Version intermédiaire
+	+ Protocoles XML en version 2.1
+	+ Modifications de la classe XMLPaser
+		+ ajout de la classe XMLNode
+		+ méthode findNextNode
+	+ Premiers tests pour la gestion des "environnements"
+	+ HMTLFile devient JSFile
+	+ Qques corrections ...
+
+20.3.2
+	* 18 mars 2020
+	+ Version 100% fonctionelle à périmètre constant
+	+ Utilisation des API Windows pour la conversion des chaines de caractères (UTF8 <-> ISOxxx)
+	+ Compilation possible Release / Debug Win32
+	+ Split de directoryAttr.h
+		+ ./ldapAttributes.h : contient les définitions des attributs spécifiques au schéma de l'Allier
+		- /Common/directory/directroyAttr.h : restent les définitions communes et génériques
+	- Retrait du format Yealink
+
+20.3.1
+	* 11 mars 2020
+	+ Première version fonctionnelle pour l'Allier
+	+ Qques corrections ...

@@ -1,0 +1,241 @@
+# depslib dependency file v1.0
+1593003768 source:/home/jhb/Nextcloud/dev/cpp/Common/charUtils.cpp
+	<charUtils.h>
+
+1593004901 /home/jhb/Nextcloud/dev/cpp/Common/charUtils.h
+	<sstream>
+	<iomanip>
+	<deque>
+	<string>
+	<commonTypes.h>
+
+1593005459 /home/jhb/Nextcloud/dev/cpp/Common/commonTypes.h
+	<windows.h>
+	<tchar.h>
+	<string.h>
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<string.h>
+
+1592486648 source:/home/jhb/Nextcloud/dev/cpp/Common/logFile.cpp
+	"logFile.h"
+	<stdio.h>
+	<stdarg.h>
+	<assert.h>
+	<time.h>
+	<cstring>
+	<sys/stat.h>
+	<sys/types.h>
+
+1592826204 /home/jhb/Nextcloud/dev/cpp/Common/logFile.h
+	<commonTypes.h>
+	<charUtils.h>
+	<stdio.h>
+	<unistd.h>
+	<syslog.h>
+
+1592489688 source:/home/jhb/Nextcloud/dev/cpp/Common/cmdLineAnalyzer.cpp
+	"cmdLineAnalyzer.h"
+
+1593003806 /home/jhb/Nextcloud/dev/cpp/Common/cmdLineAnalyzer.h
+	<commonTypes.h>
+	<string>
+	<deque>
+	<charUtils.h>
+	<stdlib.h>
+	<cstring>
+
+1593004901 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/agentTree.cpp
+	"agentTree.h"
+	"regExpr.h"
+	<ldap.h>
+
+1593004692 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/agentTree.h
+	"sharedConsts.h"
+
+1593005545 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/sharedConsts.h
+	<iostream>
+	<string>
+	<sstream>
+	<fstream>
+	<vector>
+	<deque>
+	<list>
+	<time.h>
+	<direct.h>
+	<FTPClient.h>
+	<sys/stat.h>
+	<sys/types.h>
+	<logFile.h>
+	<commonTypes.h>
+	"XMLConsts.h"
+	"LDAPServer.h"
+	"sharedTypes.h"
+
+1593004901 /home/jhb/Nextcloud/dev/cpp/Common/FTPClient.h
+	"commonTypes.h"
+	<string>
+	<wininet.h>
+
+1592918285 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/XMLConsts.h
+
+1593005054 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/LDAPServer.h
+	<winldap.h>
+	<Winber.h>
+	<ldap.h>
+	"ldapAttributes.h"
+
+1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/ldapAttributes.h
+	<./directory/directoryAttr.h>
+
+1586158947 /home/jhb/Nextcloud/dev/cpp/Common/directory/directoryAttr.h
+
+1593005570 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/sharedTypes.h
+	<charUtils.h>
+	<exception>
+
+1592490404 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/regExpr.h
+	"sharedConsts.h"
+	"columnList.h"
+
+1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/columnList.h
+	"sharedConsts.h"
+	"ldapAttributes.h"
+
+1592816244 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/columnList.cpp
+	"columnList.h"
+
+1593004760 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/CSVFile.cpp
+	"CSVFile.h"
+	<fstream>
+
+1593004756 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/CSVFile.h
+	"textFile.h"
+
+1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/textFile.h
+	"outputFile.h"
+	<fstream>
+
+1593010242 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/outputFile.h
+	"sharedConsts.h"
+	"confFile.h"
+	"agentTree.h"
+	<sstream>
+	<iostream>
+
+1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/confFile.h
+	"sharedConsts.h"
+	"sharedTypes.h"
+	"XMLParser.h"
+	"commandFile.h"
+
+1593004467 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/XMLParser.h
+	<./xml/pugixml.hpp>
+	<./xml/pugixml.cpp>
+	<charUtils.h>
+	"regExpr.h"
+
+1555498672 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.hpp
+	"pugiconfig.hpp"
+	<stddef.h>
+	<exception>
+	<iterator>
+	<iosfwd>
+	<string>
+
+1555498672 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugiconfig.hpp
+
+1555498672 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.cpp
+	"pugixml.hpp"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<assert.h>
+	<wchar.h>
+	<math.h>
+	<float.h>
+	<setjmp.h>
+	<istream>
+	<ostream>
+	<string>
+	<new>
+	<stdint.h>
+
+1593004137 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/commandFile.h
+	"sharedConsts.h"
+	"sharedTypes.h"
+	"columnList.h"
+	"XMLParser.h"
+
+1592465197 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/destinationList.cpp
+	"destinationList.h"
+
+1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/destinationList.h
+	"sharedConsts.h"
+
+1593004901 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/JScriptFile.cpp
+	"JScriptFile.h"
+	<iomanip>
+
+1593004890 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/JScriptFile.h
+	"textFile.h"
+	"JScriptConsts.h"
+
+1593010133 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/JScriptConsts.h
+
+1592826742 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/LDIFFile.cpp
+	"LDIFFile.h"
+	<iomanip>
+
+1592826717 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/LDIFFile.h
+	"textFile.h"
+
+1592917722 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/LDAPServer.cpp
+	<string>
+	<list>
+	<commonTypes.h>
+	"LDAPServer.h"
+
+1593004901 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/ldap2File.cpp
+	"sharedConsts.h"
+	"ldapBrowser.h"
+	<fileSystem.h>
+	<dirent.h>
+	<ctime>
+
+1593004901 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/ldapBrowser.h
+	"sharedConsts.h"
+	"confFile.h"
+	"agentTree.h"
+	"outputFile.h"
+	"servicesList.h"
+	"treeStructure.h"
+	"destinationList.h"
+
+1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/servicesList.h
+	"sharedConsts.h"
+	"treeStructure.h"
+
+1593006180 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/treeStructure.h
+	"sharedConsts.h"
+
+1593079199 /home/jhb/Nextcloud/dev/cpp/Common/fileSystem.h
+	"commonTypes.h"
+	<shlobj.h>
+	<string>
+	<deque>
+	<list>
+
+1593079548 source:/home/jhb/Nextcloud/dev/cpp/Common/fileSystem.cpp
+	"fileSystem.h"
+	<charUtils.h>
+	<strsafe.h>
+	<unistd.h>
+	<fstream>
+	<experimental/filesystem>
+
+1593079588 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/commandFile.cpp
+	"commandFile.h"
+	<fileSystem.h>
+

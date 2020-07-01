@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ldap2File-linux" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/ldap2File-linux" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/ldap2File-linux" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../../Common" />
+		</Compiler>
+		<Unit filename="../../Common/charUtils.cpp" />
+		<Unit filename="../../Common/charUtils.h" />
+		<Unit filename="../../Common/cmdLineAnalyzer.cpp" />
+		<Unit filename="../../Common/cmdLineAnalyzer.h" />
+		<Unit filename="../../Common/fileSystem.cpp" />
+		<Unit filename="../../Common/fileSystem.h" />
+		<Unit filename="../../Common/logFile.cpp" />
+		<Unit filename="../../Common/logFile.h" />
+		<Unit filename="../ldap2File/CSVFile.cpp" />
+		<Unit filename="../ldap2File/CSVFile.h" />
+		<Unit filename="../ldap2File/JScriptConsts.h" />
+		<Unit filename="../ldap2File/JScriptFile.cpp" />
+		<Unit filename="../ldap2File/JScriptFile.h" />
+		<Unit filename="../ldap2File/LDAPServer.cpp" />
+		<Unit filename="../ldap2File/LDAPServer.h" />
+		<Unit filename="../ldap2File/LDIFFile.cpp" />
+		<Unit filename="../ldap2File/LDIFFile.h" />
+		<Unit filename="../ldap2File/ODSConsts.h" />
+		<Unit filename="../ldap2File/ODSFile.cpp" />
+		<Unit filename="../ldap2File/ODSFile.h" />
+		<Unit filename="../ldap2File/XMLConsts.h" />
+		<Unit filename="../ldap2File/XMLFile.cpp" />
+		<Unit filename="../ldap2File/XMLFile.h" />
+		<Unit filename="../ldap2File/XMLParser.cpp" />
+		<Unit filename="../ldap2File/XMLParser.h" />
+		<Unit filename="../ldap2File/agentTree.cpp" />
+		<Unit filename="../ldap2File/agentTree.h" />
+		<Unit filename="../ldap2File/columnList.cpp" />
+		<Unit filename="../ldap2File/columnList.h" />
+		<Unit filename="../ldap2File/commandFile.cpp" />
+		<Unit filename="../ldap2File/commandFile.h" />
+		<Unit filename="../ldap2File/confFile.cpp" />
+		<Unit filename="../ldap2File/confFile.h" />
+		<Unit filename="../ldap2File/currentVersion.txt" />
+		<Unit filename="../ldap2File/destinationList.cpp" />
+		<Unit filename="../ldap2File/destinationList.h" />
+		<Unit filename="../ldap2File/ldap2File.cpp" />
+		<Unit filename="../ldap2File/ldapAttributes.h" />
+		<Unit filename="../ldap2File/ldapBrowser.cpp" />
+		<Unit filename="../ldap2File/ldapBrowser.h" />
+		<Unit filename="../ldap2File/outputFile.cpp" />
+		<Unit filename="../ldap2File/outputFile.h" />
+		<Unit filename="../ldap2File/regExpr.cpp" />
+		<Unit filename="../ldap2File/regExpr.h" />
+		<Unit filename="../ldap2File/servicesList.cpp" />
+		<Unit filename="../ldap2File/servicesList.h" />
+		<Unit filename="../ldap2File/sharedConsts.h" />
+		<Unit filename="../ldap2File/sharedTypes.h" />
+		<Unit filename="../ldap2File/textFile.cpp" />
+		<Unit filename="../ldap2File/textFile.h" />
+		<Unit filename="../ldap2File/treeStructure.cpp" />
+		<Unit filename="../ldap2File/treeStructure.h" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

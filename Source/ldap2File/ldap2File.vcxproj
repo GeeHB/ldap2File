@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C8621A31-E33D-4A73-8565-4B21AF12060B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ldap2File</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\Nextcloud\dev\cpp\Common;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Nextcloud\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
+    <OutDir>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Debug\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\Nextcloud\dev\cpp\Common;$(IncludePath)</IncludePath>
+    <SourcePath>C:\Users\henry-barnaudiere.j\Nextcloud\dev\Common;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>D:\Nextcloud\dev\cpp\Common;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Nextcloud\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
+    <OutDir>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Release\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\henry-barnaudiere.j\Nextcloud\dev\Common;$(IncludePath)</IncludePath>
+    <SourcePath>C:\Users\henry-barnaudiere.j\Nextcloud\dev\Common;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;_GEN_DOC_;_UNICODE_LOGS;_CRT_SECURE_NO_WARNINGS;__WINDOWS_API__</PreprocessorDefinitions>
+      <ForcedIncludeFiles>winsock2.h</ForcedIncludeFiles>
+      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Wldap32.lib;%(AdditionalDependencies);wininet.lib;libcurl.lib;wsock32.lib</AdditionalDependencies>
+      <OutputFile>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Debug\ldap2File.exe</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_WINSOCK_DEPRECATED_NO_WARNINGS;_GEN_DOC_;_UNICODE_LOGS;_CRT_SECURE_NO_WARNINGS;__WINDOWS_API__</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>__WINDOWS_API__;_WINSOCK_DEPRECATED_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;_GEN_DOC_;_UNICODE_LOGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <ForcedIncludeFiles>winsock2.h</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Wldap32.lib;%(AdditionalDependencies);wininet.lib ;libcurl.lib;wsock32.lib</AdditionalDependencies>
+      <OutputFile>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Release\ldap2File.exe</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Common\charUtils.cpp" />
+    <ClCompile Include="..\..\..\Common\fileSystem.cpp" />
+    <ClCompile Include="..\..\..\Common\FTPClient.cpp" />
+    <ClCompile Include="..\..\..\Common\FTP\BlockingSocket.cpp" />
+    <ClCompile Include="..\..\..\Common\FTP\FTPDataTypes.cpp" />
+    <ClCompile Include="..\..\..\Common\FTP\FTPFileStatus.cpp" />
+    <ClCompile Include="..\..\..\Common\FTP\FTPListParse.cpp" />
+    <ClCompile Include="..\..\..\Common\FTP\nsFTPClient.cpp" />
+    <ClCompile Include="..\..\..\Common\logFile.cpp" />
+    <ClCompile Include="..\..\..\Common\SMTP\cSMTPClient.cpp" />
+    <ClCompile Include="..\ZipLib\detail\EndOfCentralDirectoryBlock.cpp" />
+    <ClCompile Include="..\ZipLib\detail\ZipCentralDirectoryFileHeader.cpp" />
+    <ClCompile Include="..\ZipLib\detail\ZipGenericExtraField.cpp" />
+    <ClCompile Include="..\ZipLib\detail\ZipLocalFileHeader.cpp" />
+    <ClCompile Include="..\ZipLib\extlibs\bzip2\blocksort.c" />
+    <ClCompile Include="..\ZipLib\extlibs\bzip2\bzerror.c" />
+    <ClCompile Include="..\ZipLib\extlibs\bzip2\bzip2-compress.c" />
+    <ClCompile Include="..\ZipLib\extlibs\bzip2\bzlib.c" />
+    <ClCompile Include="..\ZipLib\extlibs\bzip2\crctable.c" />
+    <ClCompile Include="..\ZipLib\extlibs\bzip2\decompress.c" />
+    <ClCompile Include="..\ZipLib\extlibs\bzip2\huffman.c" />
+    <ClCompile Include="..\ZipLib\extlibs\bzip2\randtable.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\7zAlloc.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\7zBuf.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\7zBuf2.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\7zCrc.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\7zCrcOpt.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\7zDec.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\7zFile.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\7zIn.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\7zStream.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Alloc.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Bcj2.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Bra.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Bra86.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\BraIA64.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\CpuArch.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Delta.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\LzFind.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\LzFindMt.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Lzma2Dec.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Lzma2Enc.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Lzma86Dec.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Lzma86Enc.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\LzmaDec.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\LzmaEnc.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\LzmaLib.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\MtCoder.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Ppmd7.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Ppmd7Dec.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Ppmd7Enc.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Sha256.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Threads.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\Xz.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\XzCrc64.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\XzDec.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\XzEnc.c" />
+    <ClCompile Include="..\ZipLib\extlibs\lzma\XzIn.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\adler32.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\compress.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\crc32.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\deflate.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\infback.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\inffast.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\inflate.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\inftrees.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\trees.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\uncompr.c" />
+    <ClCompile Include="..\ZipLib\extlibs\zlib\zutil.c" />
+    <ClCompile Include="..\ZipLib\ZipArchive.cpp" />
+    <ClCompile Include="..\ZipLib\ZipArchiveEntry.cpp" />
+    <ClCompile Include="..\ZipLib\ZipFile.cpp" />
+    <ClCompile Include="agentTree.cpp" />
+    <ClCompile Include="columnList.cpp" />
+    <ClCompile Include="commandFile.cpp" />
+    <ClCompile Include="confFile.cpp" />
+    <ClCompile Include="CSVFile.cpp" />
+    <ClCompile Include="destinationList.cpp" />
+    <ClCompile Include="JScriptFile.cpp" />
+    <ClCompile Include="ldap2File.cpp" />
+    <ClCompile Include="ldapBrowser.cpp" />
+    <ClCompile Include="LDAPServer.cpp" />
+    <ClCompile Include="LDIFFile.cpp" />
+    <ClCompile Include="ODSFile.cpp" />
+    <ClCompile Include="outputFile.cpp" />
+    <ClCompile Include="regExpr.cpp" />
+    <ClCompile Include="servicesList.cpp" />
+    <ClCompile Include="textFile.cpp" />
+    <ClCompile Include="treeStructure.cpp" />
+    <ClCompile Include="XMLFile.cpp" />
+    <ClCompile Include="XMLParser.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Common\charUtils.h" />
+    <ClInclude Include="..\..\..\Common\fileSystem.h" />
+    <ClInclude Include="..\..\..\Common\FTPClient.h" />
+    <ClInclude Include="..\..\..\Common\FTP\nsFTPClient.h" />
+    <ClInclude Include="..\..\..\Common\logFile.h" />
+    <ClInclude Include="..\..\..\Common\SMTP\cSMTPClient.h" />
+    <ClInclude Include="..\ZipLib\ZipArchive.h" />
+    <ClInclude Include="..\ZipLib\ZipArchiveEntry.h" />
+    <ClInclude Include="..\ZipLib\ZipFile.h" />
+    <ClInclude Include="agentTree.h" />
+    <ClInclude Include="columnList.h" />
+    <ClInclude Include="commandFile.h" />
+    <ClInclude Include="confFile.h" />
+    <ClInclude Include="CSVFile.h" />
+    <ClInclude Include="destinationList.h" />
+    <ClInclude Include="JScriptConsts.h" />
+    <ClInclude Include="JScriptFile.h" />
+    <ClInclude Include="ldapAttributes.h" />
+    <ClInclude Include="ldapBrowser.h" />
+    <ClInclude Include="LDAPServer.h" />
+    <ClInclude Include="LDIFFile.h" />
+    <ClInclude Include="ODSConsts.h" />
+    <ClInclude Include="ODSFile.h" />
+    <ClInclude Include="outputFile.h" />
+    <ClInclude Include="regExpr.h" />
+    <ClInclude Include="servicesList.h" />
+    <ClInclude Include="sharedConsts.h" />
+    <ClInclude Include="sharedTypes.h" />
+    <ClInclude Include="textFile.h" />
+    <ClInclude Include="treeStructure.h" />
+    <ClInclude Include="XMLConsts.h" />
+    <ClInclude Include="XMLFile.h" />
+    <ClInclude Include="XMLParser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="currentVersion.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

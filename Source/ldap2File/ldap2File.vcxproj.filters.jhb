@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers Txt">
+      <UniqueIdentifier>{098b9ce0-b68f-424f-993e-235ee4ce6948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Common">
+      <UniqueIdentifier>{cf4516fd-216d-416c-b9b4-06132b8d59dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Common">
+      <UniqueIdentifier>{3d673195-912e-45d9-a0cb-946ece996c0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\ZipFile">
+      <UniqueIdentifier>{0a006497-79f9-4d0b-a030-dc3efa0ab334}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\ZipFile">
+      <UniqueIdentifier>{94f581af-2fe9-4dbd-a3d0-1e6785430a6f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="columnList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ldap2File.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ldapBrowser.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="outputFile.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="textFile.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CSVFile.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="servicesList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="agentTree.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ODSFile.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLFile.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="treeStructure.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="regExpr.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="destinationList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="confFile.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="commandFile.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="JScriptFile.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLParser.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="LDIFFile.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="LDAPServer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\charUtils.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\fileSystem.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\SMTP\cSMTPClient.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\FTP\BlockingSocket.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\FTPClient.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\FTP\FTPDataTypes.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\FTP\FTPFileStatus.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\FTP\FTPListParse.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\FTP\nsFTPClient.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\logFile.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="columnList.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ldapBrowser.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="outputFile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="sharedConsts.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="textFile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CSVFile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="servicesList.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="agentTree.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ODSConsts.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLFile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="sharedTypes.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ODSFile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="treeStructure.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLParser.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="regExpr.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="destinationList.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="confFile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="commandFile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLConsts.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ldapAttributes.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="JScriptConsts.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="JScriptFile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="LDIFFile.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="LDAPServer.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\charUtils.h">
+      <Filter>Fichiers d%27en-tête\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\SMTP\cSMTPClient.h">
+      <Filter>Fichiers d%27en-tête\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\fileSystem.h">
+      <Filter>Fichiers d%27en-tête\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\FTPClient.h">
+      <Filter>Fichiers d%27en-tête\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\FTP\nsFTPClient.h">
+      <Filter>Fichiers d%27en-tête\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\logFile.h">
+      <Filter>Fichiers d%27en-tête\Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="currentVersion.txt">
+      <Filter>Fichiers Txt</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
