@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.18"
+#define APP_RELEASE				"20.7.19"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Département de l'Allier - DSUN")
@@ -94,7 +94,6 @@ using namespace std;
 #ifdef WIN32
 #include <time.h>
 #include <direct.h>
-#include <FTPClient.h>
 #else
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -312,7 +311,7 @@ enum class FILE_TYPE { FILE_UNKNOWN_TYPE = 0, FILE_TXT = 0, FILE_CSV, FILE_XLS, 
 
 // Types de destinations
 //
-enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS_WINDOWS = 1, DEST_FS_MACOS = 2, DES_FS_LINUX = 2, DEST_EMAIL, DEST_FTP, DEST_SCP };
+enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS_WINDOWS = 1, DEST_FS_MACOS = 2, DEST_FS_LINUX = 2, DEST_EMAIL, DEST_FTP, DEST_SCP };
 
 // Retours
 enum class RET_TYPE {RET_OK = 0,RET_INVALID_PARAMETERS,RET_BLOCKING_ERROR,RET_UNBLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE };

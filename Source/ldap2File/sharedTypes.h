@@ -19,7 +19,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -119,7 +119,7 @@ typedef struct tagIMGSERVER
 		fName += (sShort.size()?sShort:nophoto_);
 		return fName;
 	}
-	string URL(string& shortName)
+	string URL(const string& shortName)
 	{ return URL(shortName.c_str()); }
 
 	// Nom "court" (ie. nettoyage si il y a un chemin)
@@ -136,7 +136,7 @@ typedef struct tagIMGSERVER
 		}
 		return sShort;
 	}
-	string shortFileName(string& fileName)
+	string shortFileName(const string& fileName)
 	{ return shortFileName(fileName.c_str()); }
 
 	string		host_;			// Serveur

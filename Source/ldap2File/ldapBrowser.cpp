@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -36,14 +36,9 @@
 
 #include <fileSystem.h>
 
-#include <./SMTP/cSMTPClient.h>
-#include <./FTP/nsFTPClient.h>
-
-#ifdef WIN32
-#include "FTPClient.h"
-#else
-#include <time.h>
-#endif // WIN32
+// Outils CURL
+#include <FTPClient.h>
+#include <SMTPClient.h>
 
 // Construction
 //
@@ -835,7 +830,7 @@ RET_TYPE ldapBrowser::_createFile()
 				// Envoi par mail
 				case DEST_TYPE::DEST_EMAIL:{
 					pMail = (mailDestination*)dest;
-					jhbSMTP::message mail(pMail->smtpFrom(), "", pMail->smtpObject(), pMail->smtpObject());
+					jhbCURLTools::SMTPClient mail(pMail->smtpFrom(), "", pMail->smtpObject(), pMail->smtpObject());
 
 					// Ajout du fichier
 					mail.addAttachment(file_->fileName());
@@ -952,8 +947,9 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	deque<string> otherDNs;
 
 	// Nombre d'agents
-	ULONG totalAgent(0);
-	ULONG agentCount(0);
+	ULONG totalAgents(0);
+	ULONG agentsFound(0);
+	ULONG agentsAdded(0);
 
 	string currentFilter;
 #ifdef CUT_LDAP_REQUEST
@@ -1059,7 +1055,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		// ... et lorsque le scope LDAP_SCOPE_BASE fonctionne
 		retCode = ldapServer_.searchExtS((char*)(searchDN ? searchDN : ldapServer_.baseDN()), treeSearch ? LDAP_SCOPE_SUBTREE : LDAP_SCOPE_BASE, (char*)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
 #endif // _JHB_OWN_LDAP_SCOPE_BASE_
-		agentCount = ldapServer_.countEntries(searchResult);
+		agentsFound = ldapServer_.countEntries(searchResult);
 
 		// Des résultats ?
 		//
@@ -1118,7 +1114,8 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 			// Lecture ligne par ligne
 			//
-			for (ULONG index(0); index < agentCount; index++){
+			agentsAdded = 0; // Personne n'a été ajouté pour l'instant !
+			for (ULONG index(0); index < agentsFound; index++){
 				// Initialisation des données sur l'utilisateur
 				prenom = nom = email = dn = manager = matricule = primaryGroup = "";
 				uid = agents_?agents_->size():0;	// Par défaut l'ID de l'agent (si pas précisé) est l'indice dans le tableau ...
@@ -1154,6 +1151,9 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 					if (validUser) {
 #endif // _JHB_OWN_LDAP_SCOPE_BASE_
+						
+						/*
+						
 						// Tous les containers de l'agent
 						firstContainer = services_->userContainers(dn);
 
@@ -1219,6 +1219,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 								}
 							}
 						}
+						*/
 
 						// Parcours par attribut
 						//
@@ -1381,6 +1382,9 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 						// Ajout de l'agent dans la structure arborescente
 						if (agents_) {
 							if (NULL != (agent = agents_->add(uid, dn, prenom, nom, email, allierStatus, manager, matricule))) {
+								
+								agentsAdded++;		// Un de plus
+								
 								// Un remplaçant ?
 								if (replacement) {
 									agent->setReplacedBy(replacement);
@@ -1423,8 +1427,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 #endif // _JHB_OWN_LDAP_SCOPE_BASE_
 			} // for index
 
-
-			totalAgent += agentCount;
+			totalAgents += agentsAdded;
 
 #ifdef CUT_LDAP_REQUEST
 			// Lettre suivante
@@ -1451,7 +1454,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 			pBer = NULL;
 		}
 
-		if (searchResult && agentCount){
+		if (searchResult && agentsFound){
 			//ldap_msgfree(searchResult);
 			searchResult = NULL;
 		}
@@ -1467,7 +1470,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 #endif // CUT_LDAP_REQUEST
 
 	// retourne le nombre d'agents effectivement ajoutés
-	return totalAgent;
+	return totalAgents;
 }
 
 // Obtention de la liste des services et directions
@@ -1888,65 +1891,41 @@ const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
 	string destName("");
 	ftpDest->ftpDestinationFile(destName, file_->fileName(false));
 
-#ifdef WIN32
-	FTPClient ftpClient;
+	// Construction sans gestion des logs ...
+	//
+	jhbCURLTools::FTPClient ftpClient;
+	
+	try {
+		// Connexion
+		ftpClient.InitSession(ftpDest->ftpServer(), ftpDest->ftpPort(), ftpDest->ftpUser(), ftpDest->ftpPwd());
 
-	if (!ftpClient.connect(ftpDest->ftpServer(), ftpDest->ftpUser(), ftpDest->ftpPwd(), ftpDest->ftpPort())){
-		logs_->add(logFile::ERR, "Impossible de se connecter au serveur FTP '%s' - IP : %s", ftpDest->name(), ftpDest->ftpServer());
-		return false;
-	}
-
-	// Transfert du fichier
-	logs_->add(logFile::DBG, "Transfert du fichier '%s' par FTP vers '%s'", file_->fileName(false), ftpDest->name());
-
-	if (!ftpClient.sendFile(file_->fileName(false), destName.c_str())){
-		logs_->add(logFile::ERR, "Impossible de transférer le fichier '%s' par FTP. Erreur : %s", file_->fileName(false), ftpClient.getLasErrorMessage());
-		return false;
-	}
-
-	// Ok
-	logs_->add(logFile::LOG, "'%s' transféré avec succès par FTP sur '%s'", file_->fileName(false), ftpDest->name());
-	return true;
-#else
-
-	nsFTP::CFTPClient ftpClient;
-	nsFTP::CLogonInfo logonInfo(ftpDest->ftpServer(), ftpDest->ftpPort(), ftpDest->ftpUser(), ftpDest->ftpPwd());
-
-
-	// Connexion au serveur
-	if (!ftpClient.Login(logonInfo)){
-		logs_->add(logFile::ERR, "Impossible de se connecter au serveur FTP '%s'", ftpDest->ftpServer());
-		return false;
-	}
-	else{
-		// Transfert du fichier
-		//
-
-		// Suppression du fichier
-		int ret = ftpClient.Delete(destName);
-		if (0 == ret){
-			logs_->add(logFile::DBG, "Supression de l'ancien fichier '%s'", file_->fileName(false));
-		}
-		else{
-			logs_->add(logFile::DBG, "Le fichier '%s' n'existe pas sur le serveur", file_->fileName(false));
+		// Suppression du fichier (si il existe déja)
+		jhbCURLTools::FTPClient::FTPFILEINFO fi;
+		if (ftpClient.Info(destName, fi)){
+			ftpClient.RemoveFile(destName);
+			logs_->add(logFile::DBG, "\t - Suppression sur le serveur de l'ancien fichier '%s'", destName.c_str());
 		}
 
 		// Transfert du fichier
-		//nsFTP::COutputStream outputStream("\r\n"), ""));
-		if (ftpClient.UploadFile(file_->fileName(), destName, false/*, (const nsFTP::CRepresentation&)outputStream*/)){
-			logs_->add(logFile::LOG, "Transfert du fichier par FTP vers '%s'", ftpDest->ftpServer());
-		}
-		else{
-			/*string output(outputStream.GetBuffer());
-			logs_->add(logFile::ERR, "Impossible de transférer le fichier '%s' par FTP. Errreur : %s"), file_->fileName(false), output.c_str());*/
-			logs_->add(logFile::ERR, "Impossible de transférer le fichier '%s' par FTP", file_->fileName(false));
-			return false;
-		}
+		logs_->add(logFile::DBG, "\t - Transfert du fichier '%s' par FTP vers '%s'", file_->fileName(false), ftpDest->name());
+
+		ftpClient.UploadFile(file_->fileName(true), destName);
+		
+		// Fermeture de la connexion
+		ftpClient.CleanupSession();
+	}
+	catch (jhbCURLTools::CURLException& e) {
+		logs_->add(logFile::ERR, e.what());
+		return false;
+	}
+	catch (...) {
+		// Erreur inconnue
+		logs_->add(logFile::ERR, "Transfert FTP - Erreur inconnue");
+		return false;
 	}
 
 	// Transféré avec succès
 	return true;
-#endif // WIN32
 }
 
 // Transfert par SCP
@@ -2088,7 +2067,7 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 	} // for
 }
 
-// Execution d'une application
+// Exécution d'une application
 bool ldapBrowser::_exec(const string& application, const string& parameters, string& errorMessage)
 {
 	bool valid(false);

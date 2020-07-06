@@ -20,7 +20,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@
 //
 // Implémentation de la classe
 //
-	
+
 
 // Construction
 //
@@ -52,9 +52,9 @@ XMLParser::XMLParser(logFile* logs)
 	defType_ = DEST_TYPE::DEST_FS_MACOS;
 #else
 	expectedOS_ = OS_LINUX;
-	defType_ = DEST_TYPE_::DEST_FS_LINUX;
+	defType_ = DEST_TYPE::DEST_FS_LINUX;
 #endif // __APPLE__
-#endif // WIN32 
+#endif // WIN32
 }
 
 // Utilitaires
@@ -66,7 +66,7 @@ DEST_TYPE XMLParser::string2FolderType(const char* str)
 		upper = charUtils::strupr(str);
 
 		if (0 == charUtils::stricmp(TYPE_DEST_FS_LINUX, upper.c_str())){
-			return DEST_TYPE::DES_FS_LINUX;
+			return DEST_TYPE::DEST_FS_LINUX;
 		}
 		else{
 			if (0 == charUtils::stricmp(TYPE_DEST_FS_MACOS, upper.c_str())){

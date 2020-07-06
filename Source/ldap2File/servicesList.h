@@ -20,7 +20,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -29,6 +29,9 @@
 
 #include "sharedConsts.h"
 #include "treeStructure.h"
+
+#include "JScriptConsts.h"
+#include "ldapAttributes.h"
 
 //
 // Définition de la classe
@@ -70,11 +73,13 @@ public:
 
 		// Couleur
 		const char* color();
-		void setColor(const char* color);
+		void setColor(const char* color)
+		{ color_ = (IS_EMPTY(color) ? JS_DEF_BK_COLOR : color); }
 
 		// Site
 		const char* site();
-		void setSite(const char* site);
+		void setSite(const char* site)
+		{ site_ = (IS_EMPTY(site) ? "" : site); }
 
 		// Parent
 		servicesList::LDAPService* parent()

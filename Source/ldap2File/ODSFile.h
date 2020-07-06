@@ -9,7 +9,7 @@
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
-//--	
+//--
 //--			Définition de la classe ODSFile
 //--			Génération d'un fichier au format Open Documents
 //--
@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -45,9 +45,9 @@
 	#include <crtdbg.h>
 	#endif
 
-	#include <./zip/ziplib/source/ZipLib/ZipFile.h>
-	#include "./zip/ziplib/source/ZipLib/streams/memstream.h"
-	#include "./zip/ziplib/source/ZipLib/methods/Bzip2Method.h"
+	#include "../ZipLib/ZipFile.h"
+	#include "../ZipLib/streams/memstream.h"
+	#include "../ZipLib//methods/Bzip2Method.h"
 	#include <fstream>
 #endif // #ifndef __USE_ZIP_UTILS_LIB__
 
@@ -89,7 +89,7 @@ public:
 	// Création des entêtes et des onglets
 	virtual bool addSheet(string& sheetName, bool withHeader, bool firstSheet = false);
 	virtual void setSheetName(string& sheetName)
-	{ 
+	{
 		if (-1 != fileInfos_->sheetNameLen_ && sheetName.size() > (size_t)fileInfos_->sheetNameLen_) {
 			_setSheetName(charUtils::shorten(sheetName, (size_t)fileInfos_->sheetNameLen_).c_str());
 		}
@@ -104,16 +104,16 @@ public:
 		newFile = false;
 		return (orgChartFile*)this;
 	}
-	
+
 	//
 	// Organigramme
 	//
 
-	// L'organigramme est enregistré dans un onglet sans entete 
+	// L'organigramme est enregistré dans un onglet sans entete
 	// et dont les colonnes ne sont par retaillées
 	virtual bool createOrgSheet(const string& sheetName)
 	{ return createOrgSheet(sheetName.c_str()); }
-	virtual bool createOrgSheet(const char* sheetName){ 
+	virtual bool createOrgSheet(const char* sheetName){
 		string validName(sheetName);
 		encoder_.toUTF8(validName, false);
 		return _createSheet(validName.c_str(), false, false);
@@ -122,7 +122,7 @@ public:
 	// Fermeture du fichier
 	virtual void closeOrgChartFile()
 	{}
-	
+
 	// Méthodes privées
 	//
 private:
@@ -180,7 +180,7 @@ private:
 		{
 			tagZIPELEMENT()
 			{ init(); }
-			void init(){ 
+			void init(){
 				index_ = -1;
 				shortName_ = "";
 				folder_ = false;
@@ -212,7 +212,7 @@ private:
 		// Ajouts
 		bool addFile(const string& srcFile, const string& destName);
 		bool addFile(const char* srcFile, const char* destName);
-		
+
 #ifndef __USE_ZIP_UTILS_LIB__
 		bool addFolder(const char* folderName);
 #endif // __USE_ZIP_UTILS_LIB__

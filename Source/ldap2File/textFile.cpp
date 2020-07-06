@@ -1,25 +1,25 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: textFile.cpp
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
-//--	
+//--
 //--	PROJET	: ldap2File
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	DESCRIPTIONS:
-//--	
+//--
 //--			Implémentation de la classe textFile
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	MODIFICATIONS:
 //--	-------------
 //--
 //--	18/01/2016 - JHB - Création - Version 1.2
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ textFile::textFile(const LPOPFI fileInfos, columnList* columns, confFile* parame
 {
 	// La ligne est vide
 	currentLine_ = "";
-	
+
 	// Caracteres de control par defaut
 #ifdef WIN32
 	EOL(szEOL);
@@ -110,7 +110,8 @@ bool textFile::add(deque<string>& values)
 	}
 
 	// Cancaténation des valeurs
-	string total = _cat(values, string(STR_VALUE_SEP));
+	string value(STR_VALUE_SEP);
+	string total = _cat(values, value);
 
 	// ajout "simple"
 	return add(total);
@@ -126,7 +127,7 @@ void textFile::shift(int offset, treeCursor& ascendants)
 
 	if (offset){
 		string val(" ", 4);
-		
+
 		// Mes ancètres
 		for (int index=0; index<(offset-1); index++){
 			add(ascendants[index]->last()?flatLines_[LINK_NO_ANCESTER]:flatLines_[LINK_ANCESTER]);
@@ -151,12 +152,12 @@ bool textFile::close()
 
 	// Ajout ligne à ligne
 	for (deque<string>::iterator it = lines_.begin(); it != lines_.end(); it++){
-		file_ << (*it) << eol_; 
+		file_ << (*it) << eol_;
 	}
 
 	// La dernière ?
 	if (currentLine_.size() && !clearLine_){
-		file_ << currentLine_ << eol_; 
+		file_ << currentLine_ << eol_;
 	}
 
 	if (file_.fail()){
@@ -219,5 +220,5 @@ bool textFile::_open()
 	// Ouvert
 	return true;
 }
-	
+
 // EOF

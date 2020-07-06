@@ -9,7 +9,7 @@
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTIONS:
-//--	
+//--
 //--			Implémentation de la classe regExpr
 //--			Gestion des expressions régulières
 //--
@@ -20,7 +20,7 @@
 //--
 //--	05/02/2016 - JHB - Création
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -155,7 +155,7 @@ bool regExpr::add(regExpr* pExprSrc, bool copy)
 
 	bool ret(false);
 	regExpr* pExpr(NULL);
-	
+
 	// Doit-on copier ?
 	if (copy){
 		pExpr = new regExpr(pExprSrc);	// On effectue une copie carbone
@@ -169,7 +169,7 @@ bool regExpr::add(regExpr* pExprSrc, bool copy)
 		EXPRGATTR* other(NULL);
 		for (size_t index(0); index < pExpr->size(); index++){
 			//expressions_.push_back((*pExpr)[index]);
-			
+
 			other = (*pExpr)[index];
 			if (!other->otherExpr_){
 				// Attribut = valeur
@@ -258,7 +258,7 @@ regExpr* regExpr::find(const char* name)
 			}
 		}
 	}
-	
+
 	// Non trouvé
 	return NULL;
 }
@@ -272,7 +272,7 @@ regExpr* regExpr::findByName(const char* name)
 		if (name_ == name){
 			return this;
 		}
-		
+
 		// Une de mes sous-expressions ?
 		//
 		EXPRGATTR* attr(NULL);
@@ -297,7 +297,7 @@ bool regExpr::remove(const char* name, bool freeMemory)
 	if (!IS_EMPTY(name)){
 		EXPRGATTR* attr(NULL);
 		for (deque<EXPRGATTR*>::iterator it = expressions_.begin(); it != expressions_.end(); it++){
-			if (NULL != (attr = (*it)) && 
+			if (NULL != (attr = (*it)) &&
 				attr->otherExpr_ &&
 				attr->otherExpr_->name() == name){
 				// Trouvé
@@ -345,8 +345,8 @@ const char* regExpr::_expression(bool addOperator)
 
 	if (expressions_.size()){
 		//bool addParenthesis(expressions_.size() > 1);
-		bool addParenthesis(true);
-		
+		//bool addParenthesis(true);
+
 		// Attributs / Valeurs
 		EXPRGATTR* nuple(NULL);
 		for (deque<EXPRGATTR*>::iterator i = expressions_.begin(); i != expressions_.end(); i++){
@@ -389,7 +389,7 @@ string regExpr::_addParenthesis(string& op, string& output)
 		noutput = O_PARENTHESIS;
 		noutput += op;
 		noutput += output;
-		noutput += C_PARENTHESIS;	
+		noutput += C_PARENTHESIS;
 	}
 	return noutput;
 }

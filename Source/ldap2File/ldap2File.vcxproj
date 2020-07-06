@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Nextcloud\dev\cpp\Common;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Nextcloud\dev\cpp\Common\jhbCURLTools;D:\Nextcloud\dev\cpp\Common;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Nextcloud\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
     <OutDir>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Debug\</OutDir>
   </PropertyGroup>
@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Nextcloud\dev\cpp\Common;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Nextcloud\dev\cpp\Common;D:\Nextcloud\dev\cpp\Common\zip;D:\Nextcloud\dev\cpp\Common\jhbCURLTools;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Nextcloud\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
     <OutDir>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Release\</OutDir>
   </PropertyGroup>
@@ -100,6 +100,8 @@
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;_GEN_DOC_;_UNICODE_LOGS;_CRT_SECURE_NO_WARNINGS;__WINDOWS_API__</PreprocessorDefinitions>
       <ForcedIncludeFiles>winsock2.h</ForcedIncludeFiles>
       <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,6 +133,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>__WINDOWS_API__;_WINSOCK_DEPRECATED_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;_GEN_DOC_;_UNICODE_LOGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ForcedIncludeFiles>winsock2.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,14 +165,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\Common\charUtils.cpp" />
     <ClCompile Include="..\..\..\Common\fileSystem.cpp" />
-    <ClCompile Include="..\..\..\Common\FTPClient.cpp" />
-    <ClCompile Include="..\..\..\Common\FTP\BlockingSocket.cpp" />
-    <ClCompile Include="..\..\..\Common\FTP\FTPDataTypes.cpp" />
-    <ClCompile Include="..\..\..\Common\FTP\FTPFileStatus.cpp" />
-    <ClCompile Include="..\..\..\Common\FTP\FTPListParse.cpp" />
-    <ClCompile Include="..\..\..\Common\FTP\nsFTPClient.cpp" />
+    <ClCompile Include="..\..\..\Common\jhbCURLTools\FTPClient.cpp" />
+    <ClCompile Include="..\..\..\Common\jhbCURLTools\SMTPClient.cpp" />
     <ClCompile Include="..\..\..\Common\logFile.cpp" />
-    <ClCompile Include="..\..\..\Common\SMTP\cSMTPClient.cpp" />
     <ClCompile Include="..\ZipLib\detail\EndOfCentralDirectoryBlock.cpp" />
     <ClCompile Include="..\ZipLib\detail\ZipCentralDirectoryFileHeader.cpp" />
     <ClCompile Include="..\ZipLib\detail\ZipGenericExtraField.cpp" />
@@ -254,8 +253,9 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\Common\charUtils.h" />
     <ClInclude Include="..\..\..\Common\fileSystem.h" />
-    <ClInclude Include="..\..\..\Common\FTPClient.h" />
-    <ClInclude Include="..\..\..\Common\FTP\nsFTPClient.h" />
+    <ClInclude Include="..\..\..\Common\jhbCURLTools\CURLTools.h" />
+    <ClInclude Include="..\..\..\Common\jhbCURLTools\FTPClient.h" />
+    <ClInclude Include="..\..\..\Common\jhbCURLTools\SMTPClient.h" />
     <ClInclude Include="..\..\..\Common\logFile.h" />
     <ClInclude Include="..\..\..\Common\SMTP\cSMTPClient.h" />
     <ClInclude Include="..\ZipLib\ZipArchive.h" />

@@ -4,7 +4,7 @@
     <LocalDebuggerCommandArguments>-base:d:\ldapTools "D:\ldapTools\CD03\xlsx\DSUN - Services - XLSX.xml"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerWorkingDirectory>d:\ldapTools</LocalDebuggerWorkingDirectory>
-    <LocalDebuggerCommand>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Release\ldap2File.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Debug\ldap2File.exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>

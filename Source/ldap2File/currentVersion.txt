@@ -1,3 +1,15 @@
+20.7.19
+	* 6 juillet 2020
+	+ Corrections
+		- Erreur sur le nombre d'agents effectivement ajoutés au fichier
+		- Plus besoin d'analyser la "structure" => tous les éléments sont dans la fiche agent
+	+ FTP : Remplacement de ns::FTPClient par jhbCURLTools::FTPClient
+	+ Nouvel espace de nom jhbCURLTools : jhbCURLTools::SMTPClient & jhbCURLTools::FTPClient & CURLException & CURLHandle
+
+### TODO ###
+	? besoin de serviceList ?
+	? gestion de la "structure"
+
 20.7.18
 	* 1er juillet 2020
 	+ Inclusion de tous les sources de ZipLib dans le projet (aucun intérêt à gérer une librairie supplémentaire)

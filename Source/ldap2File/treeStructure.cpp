@@ -1,30 +1,30 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: treeStructure.cpp
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
-//--	
+//--
 //--	PROJET	: ldap2File
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	DESCRIPTION:
-//--	
+//--
 //--			Implementation de la classe treeStructure
 //--			pour la modélisation de l'arborescence LDAP
-//--			
+//--
 //--			Cette classe fonctionne comme une liste d'éléments de structure
 //--			ainsi que tel un tableau associatif entre ces éléments
 //--			et les colonnes du tableur en cours de génération
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	MODIFICATIONS:
 //--	-------------
 //--
 //--	14/02/2065 - JHB - Création
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ bool treeStructure::add(string& type, string& name, size_t depth)
 		logs_->add(logFile::ERR, "Il existe déjà un élément de structure de type '%s'", type.c_str());
 		return false;
 	}
-	
+
 	// Les comparaisons se feront en majuscules et sans accents
 	string cName = charUtils::upString(name, true);
 
@@ -93,7 +93,7 @@ bool treeStructure::add(string& type, string& name, size_t depth)
 		logs_->add(logFile::ERR, "Impossible d'allouer de la mémoire pour l'élément de struture '%s'", type.c_str());
 		return false;
 	}
-	
+
 	// Ajout à la liste mémoire
 	if (_add(element))
 	{
@@ -160,7 +160,7 @@ void treeStructure::setAt(string& colName, size_t colIndex)
 		depth = element->depth_;
 		me = element;
 		cols_++;
-	
+
 		// Les autres "éléments" de profondeur identique sont aussi associés ...
 		if (me && depth != SIZE_MAX)
 		{
@@ -333,7 +333,7 @@ LPTREEELEMENT treeStructure::_findElementByCol(size_t colIndex)
 	// Pas la peine de chercher
 	if (SIZE_MAX == colIndex || !cols_)
 	{
-		return false;
+		return NULL;
 	}
 
 	// Y a t'il un élément associé à cette colonne

@@ -28,6 +28,12 @@
     <Filter Include="Fichiers d%27en-tête\ZipFile">
       <UniqueIdentifier>{94f581af-2fe9-4dbd-a3d0-1e6785430a6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Common\CURLTools">
+      <UniqueIdentifier>{69450b02-4b50-4c32-bf45-a58c115596f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Common\CURLTools">
+      <UniqueIdentifier>{6ff4b8e3-5bd9-49e3-8bca-f828aa2578c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="columnList.cpp">
@@ -91,27 +97,6 @@
       <Filter>Fichiers sources\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\fileSystem.cpp">
-      <Filter>Fichiers sources\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\SMTP\cSMTPClient.cpp">
-      <Filter>Fichiers sources\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\FTP\BlockingSocket.cpp">
-      <Filter>Fichiers sources\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\FTPClient.cpp">
-      <Filter>Fichiers sources\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\FTP\FTPDataTypes.cpp">
-      <Filter>Fichiers sources\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\FTP\FTPFileStatus.cpp">
-      <Filter>Fichiers sources\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\FTP\FTPListParse.cpp">
-      <Filter>Fichiers sources\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\FTP\nsFTPClient.cpp">
       <Filter>Fichiers sources\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\logFile.cpp">
@@ -303,6 +288,12 @@
     <ClCompile Include="..\ZipLib\extlibs\bzip2\bzip2-compress.c">
       <Filter>Fichiers sources\ZipFile</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\jhbCURLTools\FTPClient.cpp">
+      <Filter>Fichiers sources\Common\CURLTools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\jhbCURLTools\SMTPClient.cpp">
+      <Filter>Fichiers sources\Common\CURLTools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="columnList.h">
@@ -386,12 +377,6 @@
     <ClInclude Include="..\..\..\Common\fileSystem.h">
       <Filter>Fichiers d%27en-tête\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\FTPClient.h">
-      <Filter>Fichiers d%27en-tête\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\FTP\nsFTPClient.h">
-      <Filter>Fichiers d%27en-tête\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Common\logFile.h">
       <Filter>Fichiers d%27en-tête\Common</Filter>
     </ClInclude>
@@ -403,6 +388,15 @@
     </ClInclude>
     <ClInclude Include="..\ZipLib\ZipFile.h">
       <Filter>Fichiers d%27en-tête\ZipFile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\jhbCURLTools\FTPClient.h">
+      <Filter>Fichiers d%27en-tête\Common\CURLTools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\jhbCURLTools\CURLTools.h">
+      <Filter>Fichiers d%27en-tête\Common\CURLTools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\jhbCURLTools\SMTPClient.h">
+      <Filter>Fichiers d%27en-tête\Common\CURLTools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

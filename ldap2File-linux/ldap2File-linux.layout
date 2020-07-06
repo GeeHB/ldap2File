@@ -2,149 +2,19 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="../ldap2File/LDAPServer.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../Common/fileSystem.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="773" topLine="24" />
+			<Cursor1 position="6623" topLine="241" />
 		</Cursor>
 	</File>
-	<File name="../ldap2File/destinationList.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/ODSConsts.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="211" topLine="0" />
+			<Cursor1 position="2592" topLine="91" />
 		</Cursor>
 	</File>
-	<File name="../../Common/logFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/XMLParser.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2555" topLine="115" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/XMLFile.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2826" topLine="94" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/XMLParser.h" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1610" topLine="63" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/LDIFFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6574" topLine="228" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/CSVFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="175" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/LDAPServer.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="197" topLine="35" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/agentTree.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="755" topLine="19" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/ldap2File.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="5533" topLine="128" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/ODSFile.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1596" topLine="54" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/confFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3430" topLine="123" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/columnList.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6629" topLine="202" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/JScriptFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2967" topLine="91" />
-		</Cursor>
-	</File>
-	<File name="../../Common/cmdLineAnalyzer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2168" topLine="84" />
-		</Cursor>
-	</File>
-	<File name="../../Common/charUtils.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6836" topLine="228" />
-		</Cursor>
-	</File>
-	<File name="../../Common/logFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4164" topLine="149" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/servicesList.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3760" topLine="132" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/JScriptFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="11146" topLine="468" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/commandFile.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="779" topLine="13" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/confFile.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="801" topLine="14" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/ldapBrowser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3031" topLine="103" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/sharedTypes.h" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="18712" topLine="829" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/JScriptConsts.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1641" topLine="45" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/XMLConsts.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/LDIFFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6892" topLine="229" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/columnList.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="9613" topLine="386" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/ODSFile.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="895" topLine="20" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/treeStructure.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1724" topLine="60" />
+			<Cursor1 position="1483" topLine="61" />
 		</Cursor>
 	</File>
 	<File name="../../Common/cmdLineAnalyzer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -152,49 +22,99 @@
 			<Cursor1 position="3484" topLine="105" />
 		</Cursor>
 	</File>
-	<File name="../../Common/fileSystem.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/ODSFile.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4285" topLine="179" />
+			<Cursor1 position="11156" topLine="481" />
 		</Cursor>
 	</File>
-	<File name="../ldap2File/commandFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../Common/charUtils.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3822" topLine="163" />
+			<Cursor1 position="6873" topLine="234" />
 		</Cursor>
 	</File>
-	<File name="../ldap2File/sharedConsts.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/columnList.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2758" topLine="112" />
+			<Cursor1 position="175" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../ldap2File/agentTree.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../Common/logFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="14846" topLine="601" />
+			<Cursor1 position="4164" topLine="149" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/textFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1611" topLine="60" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/LDAPServer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="212" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/treeStructure.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8163" topLine="337" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/XMLConsts.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1222" topLine="36" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/regExpr.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7758" topLine="343" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/XMLParser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="205" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/ldapBrowser.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4672" topLine="213" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/sharedConsts.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="931" topLine="27" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/outputFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2012" topLine="76" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/sharedTypes.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5316" topLine="214" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/servicesList.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7556" topLine="323" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/ODSFile.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1816" topLine="71" />
 		</Cursor>
 	</File>
 	<File name="../../Common/charUtils.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="15521" topLine="678" />
+			<Cursor1 position="198" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../ldap2File/outputFile.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/servicesList.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2895" topLine="121" />
+			<Cursor1 position="4041" topLine="147" />
 		</Cursor>
 	</File>
-	<File name="../../Common/fileSystem.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/XMLFile.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="6623" topLine="241" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/ldapBrowser.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1597" topLine="50" />
-		</Cursor>
-	</File>
-	<File name="../ldap2File/outputFile.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2074" topLine="76" />
+			<Cursor1 position="3380" topLine="130" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

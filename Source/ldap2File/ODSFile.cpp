@@ -9,7 +9,7 @@
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
-//--	
+//--
 //--			Implémentation de la classe ODSFile
 //--			Génération d'un fichier au format Open Documents
 //--
@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	01/07/2020 - JHB - Version 20.7.18
+//--	06/07/2020 - JHB - Version 20.7.19
 //--
 //---------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ bool ODSFile::zipFile::open(const char* fileName)
 		// Une erreur ...
 		zFile = NULL;
 	}
-	
+
 	if (NULL == zFile){
 		file_ = false;
 		return false;
@@ -128,7 +128,7 @@ bool ODSFile::zipFile::create(const char* fileName)
 //
 void ODSFile::zipFile::close()
 {
-	if (NULL != file_) {
+	if (file_) {
 #ifdef __USE_ZIP_UTILS_LIB__
 		// Fermeture du fichier
 		CloseZip(file_);
@@ -156,11 +156,11 @@ int ODSFile::zipFile::findFile(const char* fileName)
 	int index(-1);
 	ZIPENTRY ze;
 	ZRESULT res = FindZipItem(file_, fileName, false, &index, &ze);
-	return (ZR_OK == res ? index : -1); 
+	return (ZR_OK == res ? index : -1);
 #else
 
 	//ZipArchiveEntry::Ptr pentry = file_->GetEntry(fileName);
-	
+
 	// Retourne 1 si trouvé, -1 sinon (pas d'accès à l'index)
 	//return ((pentry && !pentry->IsDirectory())?1:-1);
 	string sFile(fileName);
@@ -320,7 +320,7 @@ bool ODSFile::zipFile::removeFile(const string& entryName)
 	}
 
 	//file_->RemoveEntry(entryName);
-	
+
 	// Existe t'il encore ?
 	return (-1 == findFile(entryName.c_str()));
 }
@@ -341,7 +341,7 @@ bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile
 		// Une erreur lors de l'extraction
 		return false;
 	}
-	
+
 	// Le fichier existe t'il ?
 	fileSystem fs;
 	return fs.exists(destFile.c_str(), true);
@@ -357,17 +357,8 @@ bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile
 
 // Construction
 //
-#ifdef WIN32
 ODSFile::ODSFile(const LPOPFI fileInfos, columnList* columns, confFile* parameters)
-#ifdef _WIN32
 	:XMLFile(fileInfos, columns, parameters, true)
-#else
-	: XMLFile(fileInfos, logFile, columns, parameters)
-#endif // _WIN32
-#else
-ODSFile::ODSFile(string& fileName, columnList* columns, params* parameters)
-XMLFile(fileInfos, columns, parameters)
-#endif
 {
 	// Initialisation des donnees membres
 	defaultContentFileName(contentFile_, false);
@@ -475,7 +466,7 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 		cellStyleName = CELL_TYPE_HEADER;
 	}
 	else{
-		
+
 		if (columns_->orgModeOn()){
 			cellStyleName = CELL_TYPE_LINE;
 		}
@@ -490,8 +481,7 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 	//
 	columnList::LPCOLINFOS col(NULL);
 	LPXMLCELL pCell(NULL);
-	string fullLink("");
-	TCHAR szValue[1024];
+	string fullLink(""), sValue("");
 	size_t colMax = columns_->size();
 	IMGSERVER photoServer;
 	configurationFile_->imagesServer(photoServer);
@@ -529,11 +519,11 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 					if (!header && col->hyperLink()){
 						// Un lien hyper texte
 						val = val.append_child(ODS_CELL_TEXT_LINK_NODE);
-						
+
 						// lien vers ...
 						if (col->imageLink()){
 							// Une image
-							fullLink = photoServer.URL(photoServer.shortFileName(pCell->_value));
+							fullLink = photoServer.URL(photoServer.shortFileName(pCell->_value.c_str()));
 						}
 						else{
 							fullLink = (col->emailLink() ? "mailto:" : "http://");
@@ -553,10 +543,10 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 						nextValid++;
 					}
 
-					// J'en ai plusieurs 
+					// J'en ai plusieurs
 					if (nextValid > (1 + colIndex)){
-						_itoa_s(nextValid - colIndex, szValue, 10);
-						cell.append_attribute(ODS_CELL_REPEATED_ATTR) = szValue;;
+                        sValue = charUtils::itoa(nextValid - colIndex);
+						cell.append_attribute(ODS_CELL_REPEATED_ATTR) = sValue.c_str();
 					}
 
 					// Ai je atteint la fin du tableau ?
@@ -616,7 +606,7 @@ bool ODSFile::_initContentFile()
 
 	// Extraction du fichier "contenu" modèle
 	//
-	
+
 	// son index
 	string shortName;
 	defaultContentFileName(shortName);
@@ -640,7 +630,7 @@ bool ODSFile::_initContentFile()
 		return false;
 	}
 #else
-	if (NULL == templateZip_.findFile(shortName)) {
+	if (-1 == templateZip_.findFile(shortName)) {
 		if (logs_) {
 			logs_->add(logFile::ERR, "Impossible de trouver le fichier '%s' dans le modèle '%s'", shortName.c_str(), templateFile_.c_str());
 		}
@@ -657,7 +647,7 @@ bool ODSFile::_initContentFile()
 		}
 	}
 #endif // __USE_ZIP_UTILS_LIB__
-	
+
 	// Extrait avec succès
 #endif // _GEN_DOC_
 	return true;
@@ -737,8 +727,12 @@ bool ODSFile::_openContentFile()
 		if (col->visible()){
 			style = stylesRoot_.append_child(ODS_STYLE_NODE);
 
-			// nom de la colonne
+			// Nom de la colonne
+#ifdef WIN32
 			sprintf_s(value, 19, STYLE_NAME_COL_VAL, colIndex + 1);
+#else
+            sprintf(value, STYLE_NAME_COL_VAL, (int)(colIndex + 1));
+#endif // WIN32
 			style.append_attribute(ODS_STYLE_NAME_ATTR) = value;
 
 			// c'est une colonne ...
@@ -794,7 +788,7 @@ bool ODSFile::_endContentFile()
 #endif
 
 	//
-	//	Algo 1 
+	//	Algo 1
 	//
 	// Il faut remplacer le fichier de contenu par celui
 	// que nous venons de creer
@@ -810,7 +804,7 @@ bool ODSFile::_endContentFile()
 	int index(0);
 	bool cont = true;
 	ODSFile::zipFile::ZIPELEMENT ze;
-	while (cont){	
+	while (cont){
 		if (index == contentIndex_){
 			// Ajout du fichier généré
 			destZip_.addFile(contentFile_.c_str(), shortName.c_str());
@@ -836,7 +830,7 @@ bool ODSFile::_endContentFile()
 							// => on le supprime
 							DeleteFile(tempFile);
 						}
-							
+
 						// Je le (re)cree
 						hFile = CreateFile(tempFile, FILE_ALL_ACCESS, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 						if (INVALID_HANDLE_VALUE == hFile){
@@ -865,18 +859,18 @@ bool ODSFile::_endContentFile()
 				}
 			}
 		}
-		
+
 		// fichier suivant
 		index++;
 	}
 #else
-	//  
+	//
 	// Algo 2
 	//
 	// Cette fois nous allons agir en 3 étapes :
 	//	1 - Copie du fichier de référence dans le fichier destination
 	//	2 - Retrait du fichier de contenu (du fichier destination)
-	//  3 - Insertion du "nouveau" fichier de contenu 
+	//  3 - Insertion du "nouveau" fichier de contenu
 	//
 	//	Plus simple et plus portable ...
 	//
@@ -889,7 +883,7 @@ bool ODSFile::_endContentFile()
 		}
 	}
 	else {
-		
+
 		// Ouverture du zip
 		if (false == (destZip_.open(newName))) {
 			// Suppression du fichier
@@ -951,10 +945,10 @@ bool ODSFile::addSheet(string& sheetName, bool withHeader, bool firstSheet)
 	else{
 		validName = sheetName;
 	}
-	
+
 	encoder_.toUTF8(validName, false);
 	return _createSheet(validName.c_str(), withHeader);
-	
+
 	//return _createSheet(sheetName.c_str(), withHeader);
 }
 
@@ -988,8 +982,12 @@ bool ODSFile::_createSheet(const char* name, bool withHeader, bool sizeColumns)
 			if (col->visible()){
 				node = sheetRoot_.append_child(ODS_SHEET_COL_NODE);
 
-				// nom de la colonne
+				// Nom de la colonne
+#ifdef WIN32
 				sprintf_s(value, 19, COL_STYLE_BASE_VAL, colIndex + 1);
+#else
+				sprintf(value, COL_STYLE_BASE_VAL, (int)(colIndex + 1));
+#endif // WIN32
 				node.append_attribute(ODS_COL_STYLE_ATTR) = value;
 
 				node.append_attribute(ODS_COL_CELL_ATTR) = CELL_TYPE_HEADER;
