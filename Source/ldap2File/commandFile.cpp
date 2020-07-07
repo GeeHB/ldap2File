@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -572,7 +572,18 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 	// Rupture ?
 	child = node.child(XML_RESEARCH_TAB_NODE);
 	if (0 == strcmp(child.name(), XML_RESEARCH_TAB_NODE)){
-		search.setTabType(child.first_child().value());
+		sValue = child.first_child().value();
+		if (sValue.length()) {
+			search.setTabType(sValue.c_str());
+		}
+		else {
+			// Pas de "type" pour l'onglet" => un seul onglet
+			// peut-être at'il un nom particulier ?
+			sValue = child.attribute(TAB_NAME_ATTR).value();
+			if (sValue.length()) {
+				search.setTabName(sValue.c_str());
+			}
+		}
 	}
 
 	// Les expressions régulières
@@ -750,11 +761,11 @@ bool commandFile::orgChart(ORGCHART& oChart)
 
 	// La valeur par défaut ?
 	if (DEF_ORGTAB_NODE_FORMAT == oChart.nodeFormat_){
-		oChart.nodeFormat_ = NODE_NAME_TOKEN;
+		oChart.nodeFormat_ = TOKEN_NODE_NAME;
 		oChart.nodeFormat_ += " ( ";
-		oChart.nodeFormat_ += NODE_CHILDS_TOKEN;
+		oChart.nodeFormat_ += TOKEN_NODE_CHILDS;
 		oChart.nodeFormat_ += " / ";
-		oChart.nodeFormat_ += NODE_DESC_TOKEN;
+		oChart.nodeFormat_ += TOKEN_NODE_DESC;
 		oChart.nodeFormat_ += " )";
 	}
 

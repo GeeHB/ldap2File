@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ public:
 	public:
 		// Construction
 		criterium()
-		:container_{ "" }, tabType_{ "" }, sorted_{ false }, regExpr_{ NULL }
+		:container_{ "" }, tabType_{ "" }, tabName_{ "DEF_TAB_NAME" }, sorted_{ false }, regExpr_{ NULL }
 		{}
 
 		// Destruction
@@ -57,6 +57,7 @@ public:
 		void init(){
 			container_ = "";
 			tabType_ = "";
+			tabName_ = DEF_TAB_NAME;
 			sorted_ = false;
 			dispose();
 		}
@@ -80,6 +81,10 @@ public:
 		{ tabType_ = tabType; }
 		string tabType()
 		{ return tabType_; }
+		void setTabName(const char* tabName)
+		{ tabName_ = tabName; }
+		string tabName()
+		{ return tabName_; }
 		void setSorted(bool sorted)
 		{ sorted_ = sorted; }
 		bool sorted()
@@ -92,6 +97,7 @@ public:
 	protected:
 		string		container_;
 		string		tabType_;
+		string		tabName_;
 		bool		sorted_;
 		regExpr*	regExpr_;
 	};

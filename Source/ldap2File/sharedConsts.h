@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.19"
+#define APP_RELEASE				"20.7.20"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Département de l'Allier - DSUN")
@@ -159,32 +159,43 @@ using namespace std;
 // Onglets
 //
 
-#define DEF_TAB_SHORTNAME	"Agents"
-#define DEF_TAB_NAME		"Agents le %02d-%02d-%04d"
+#define DEF_TAB_SHORTNAME	"Annuaire"
+#define DEF_TAB_NAME		"Annuaire le %dd%-%mm%-%yyyy%"
 #define DEF_ORGTAB_NAME		"Organigramme"
 
 // Format des noeuds dans l'organigramme hiérarchique
 //
 #define DEF_ORGTAB_NODE_FORMAT	"oui"		// ...
 
-// Mots clés reconnus
-#define NODE_NAME_TOKEN			"%nom%"
-#define NODE_MAIL_TOKEN			"%email%"
-#define NODE_CHILDS_TOKEN		"%fils%"
-#define NODE_DESC_TOKEN			"%descendants%"
-#define NODE_CHILDS_PLUS_TOKEN	"%fils+descendants%"
-//#define NODE_VACANT_TOKEN		"%nom% (%fils%)"
-#define NODE_VACANT_TOKEN		"%nom%"
-
+//
 // Eléments pouvant être remplacés
 //
-#define TOKEN_TEMP_FILENAME		"%TEMP-NAME%"
-#define TOKEN_DEST_SHORTNAME	"%DEST-NAME%"
-#define TOKEN_DEST_FOLDER		"%DEST-FOLDER%"
-#define TOKEN_SRC_FILENAME		"%SRC-NAME%"
-#define TOKEN_USER_NAME			"%USER-NAME%"
-#define TOKEN_USER_PWD			"%USER-PASSWORD%"
-#define TOKEN_SERVER_NAME		"%SERVER-NAME%"
+
+// Alias et les liognes de commandes
+#define TOKEN_TEMP_FILENAME			"%TEMP-NAME%"
+#define TOKEN_DEST_SHORTNAME		"%DEST-NAME%"
+#define TOKEN_DEST_FOLDER			"%DEST-FOLDER%"
+#define TOKEN_SRC_FILENAME			"%SRC-NAME%"
+#define TOKEN_USER_NAME				"%USER-NAME%"
+#define TOKEN_USER_PWD				"%USER-PASSWORD%"
+#define TOKEN_SERVER_NAME			"%SERVER-NAME%"
+
+// Nom des fichiers et des onglets
+#define TOKEN_CONTAINER_FULLNAME	"%CONTAINER-FULL-NAME%"
+#define TOKEN_CONTAINER_SHORTNAME	"%CONTAINER-SHORT-NAME%"
+#define TOKEN_DATE_DAY2				"%dd%"
+#define TOKEN_DATE_MONTH2			"%mm%"
+#define TOKEN_DATE_YEAR4			"%yyyy%"
+
+// Organigramme => affiche des noeuds
+#define TOKEN_NODE_NAME				"%nom%"
+#define TOKEN_NODE_MAIL				"%email%"
+#define TOKEN_NODE_CHILDS			"%fils%"
+#define TOKEN_NODE_DESC				"%descendants%"
+#define TOKEN_NODE_CHILDS_PLUS		"%fils+descendants%"
+//#define TOKEN_NODE_VACANT			"%nom% (%fils%)"
+#define TOKEN_NODE_VACANT			"%nom%"
+
 
 //
 // XML

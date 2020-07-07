@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	// Colonne par défaut !
 	managersCol_ = managersCol;
 	managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
-	logs_->add(logFile::LOG, "Par défaut, les encadrants sont ('%s', '%s')", managersCol.c_str(), managersAttr_.c_str());
+	logs_->add(logFile::LOG, "Par défaut, les encadrants sont définis par ('%s', '%s')", managersCol.c_str(), managersAttr_.c_str());
 
 	// Serveurs destination
 	//
@@ -492,68 +492,8 @@ RET_TYPE ldapBrowser::_createFile()
 		logs_->add(logFile::LOG, "Les encadrants sont modélisés par ('%s', '%s')" , managersCol_.c_str(), managersAttr_.c_str());
 	}
 
-	// Création du générateur de fichier de sortie
-	//
-	switch (opfi.format_){
-	// Les fichiers plats
-	case FILE_TYPE::FILE_TXT:
-	case FILE_TYPE::FILE_CSV:{
-		file_ = (outputFile*)new CSVFile(&opfi, &cols_, configurationFile_);
-		break;
-	}
-
-	// Les fichiers ODS
-	case FILE_TYPE::FILE_ODS:{
-		file_ = (outputFile*)new ODSFile(&opfi, &cols_, configurationFile_);
-		break;
-	}
-
-	// Les fichiers HTML ou JS
-	case FILE_TYPE::FILE_JS:{
-		file_ = (outputFile*)new JScriptFile(&opfi, &cols_, configurationFile_);
-		break;
-	}
-
-	// Un fichier LDIF
-	case FILE_TYPE::FILE_LDIF:{
-		file_ = (outputFile*)new LDIFFile(&opfi, &cols_, configurationFile_);
-		break;
-	}
-
-	// Les autres ...
-	default:{
-		if (opfi.formatName_.length()) {
-			logs_->add(logFile::ERR, "Le type \"%s\" ne correspond à aucun type de fichier pris en charge", opfi.formatName_.c_str());
-		}
-		else {
-			logs_->add(logFile::ERR, "Le type %d ne correspond à aucun type de fichier pris en charge", opfi.format_);
-		}
-
-		return RET_TYPE::RET_INVALID_PARAMETERS;
-	}
-	}
-
-	if (NULL == file_){
-		logs_->add(logFile::ERR, "Impossible de créer le générateur de fichier");
-		return RET_TYPE::RET_BLOCKING_ERROR;
-	}
-
-	logs_->add(logFile::LOG, "Demande de création d'un fichier au format '%s' : '%s'", file_->fileExtension(), file_->fileName());
-
-	// Lecture des paramètres spécifiques au format du fichier destination
-	if (false == file_->getOwnParameters()) {
-		logs_->add(logFile::ERR, "Erreur dans les paramètres étendus du fichier XML");
-		return RET_TYPE::RET_INVALID_PARAMETERS;
-	}
-
 	// Liste des colonnes demandées
 	logs_->add(logFile::LOG, "%d colonnes à créer", cols_.size());
-
-	// Initialisation du fichier (création des entetes)
-	if (!file_->create()){
-		logs_->add(logFile::ERR, "Erreur lors de l'initialisation du fichier de sortie");
-		return RET_TYPE::RET_BLOCKING_ERROR;
-	}
 
 	// Attributs recherchés
 	//
@@ -607,7 +547,72 @@ RET_TYPE ldapBrowser::_createFile()
 		depth = (((containerDepth < requestDepth) && search.container().size())? requestDepth - containerDepth : DEPTH_NONE);
 	}
 
-	// Le nom du fichier doit-il être déduit de l 'annuaire ?
+	// Nom court du fichier de sortie
+	//string ShortName(outputFile::tokenize(opfi.name_.c_str(), pService->realName(), pService->shortName()));
+	opfi.name_ = outputFile::tokenize(opfi.name_.c_str(), pService->realName(), pService->shortName());
+
+	// Création du générateur de fichier de sortie
+	//
+	switch (opfi.format_) {
+		// Les fichiers plats
+		case FILE_TYPE::FILE_TXT:
+		case FILE_TYPE::FILE_CSV: {
+			file_ = (outputFile*)new CSVFile(&opfi, &cols_, configurationFile_);
+			break;
+		}
+
+		// Les fichiers ODS
+		case FILE_TYPE::FILE_ODS: {
+			file_ = (outputFile*)new ODSFile(&opfi, &cols_, configurationFile_);
+			break;
+		}
+
+		// Les fichiers HTML ou JS
+		case FILE_TYPE::FILE_JS: {
+			file_ = (outputFile*)new JScriptFile(&opfi, &cols_, configurationFile_);
+			break;
+		}
+
+		// Un fichier LDIF
+		case FILE_TYPE::FILE_LDIF: {
+			file_ = (outputFile*)new LDIFFile(&opfi, &cols_, configurationFile_);
+			break;
+		}
+
+		// Les autres ...
+		default: {
+			if (opfi.formatName_.length()) {
+				logs_->add(logFile::ERR, "Le type \"%s\" ne correspond à aucun type de fichier pris en charge", opfi.formatName_.c_str());
+			}
+			else {
+				logs_->add(logFile::ERR, "Le type %d ne correspond à aucun type de fichier pris en charge", opfi.format_);
+			}
+
+			return RET_TYPE::RET_INVALID_PARAMETERS;
+		}
+	}
+
+	if (NULL == file_) {
+		logs_->add(logFile::ERR, "Impossible de créer le générateur de fichier");
+		return RET_TYPE::RET_BLOCKING_ERROR;
+	}
+
+	logs_->add(logFile::LOG, "Demande de création d'un fichier au format '%s' : '%s'", file_->fileExtension(), file_->fileName());
+
+	// Lecture des paramètres spécifiques au format du fichier destination
+	if (false == file_->getOwnParameters()) {
+		logs_->add(logFile::ERR, "Erreur dans les paramètres étendus du fichier XML");
+		return RET_TYPE::RET_INVALID_PARAMETERS;
+	}
+
+	// Initialisation du fichier (création des entetes)
+	if (!file_->create()) {
+		logs_->add(logFile::ERR, "Erreur lors de l'initialisation du fichier de sortie");
+		return RET_TYPE::RET_BLOCKING_ERROR;
+	}
+
+	/*
+	// Le nom du fichier doit-il être déduit de l'annuaire ?
 	if (XML_USE_LDAP_NAME == opfi.name_){
 		string newName("");
 
@@ -622,6 +627,7 @@ RET_TYPE ldapBrowser::_createFile()
 		file_->rename(newName.size()?newName: XML_DEF_OUTPUT_FILENAME);
 		logs_->add(logFile::LOG, "Nom du fichier de sortie : %s", file_->fileName(false));
 	}
+	*/
 
 	// Classement des résultâts
 	//
@@ -726,35 +732,12 @@ RET_TYPE ldapBrowser::_createFile()
 		}
 	}
 	else{
-		char tabName[100];
-		time_t rawTime;
-		struct tm tInfo;
-		time(&rawTime);
-		bool done(false);
-
-#ifdef WIN32
-        // la version MS inverse les paramètres !!!!
-		if (!localtime_s(&tInfo, &rawTime)) {
-			done = true;
-		}
-#else
-		if (!localtime_r(&rawTime, &tInfo)) {
-			done = true;
-		}
-#endif // WIN32
-
-		if (done){
-			sprintf(tabName, DEF_TAB_NAME, tInfo.tm_mday, tInfo.tm_mon, 1900 + tInfo.tm_year);
-		}
-		else{
-			strcpy(tabName, DEF_TAB_SHORTNAME);
-		}
-
+		string tabName(file_->tokenize(search.tabName().c_str(), pService ? pService->realName() : "",  pService ? pService->shortName() : "", DEF_TAB_SHORTNAME));
 		file_->setSheetName(tabName);
 
-		// Juste une requête avec l'onglet renommé au jour
+		// Juste une requête avec l'onglet renommé à la demande
 		agentsCount = _simpleLDAPRequest(pAttributes, search, baseContainer.size() ? baseContainer.c_str() : ldapServer_.usersDN(), true, /*search.sorted ? srvControls : NULL*/srvControls, sortControl);
-		logs_->add(logFile::DBG, "Ajout de l'onglet '%s' avec %d agent(s)", tabName, agentsCount);
+		logs_->add(logFile::DBG, "Ajout de l'onglet '%s' avec %d agent(s)", tabName.c_str(), agentsCount);
 	}
 
 	logs_->add(logFile::LOG, "%d agent(s) ajouté(s) dans le fichier", agentsCount);
@@ -802,7 +785,7 @@ RET_TYPE ldapBrowser::_createFile()
 					logs_->add(logFile::ERR, "La destination '%s' n'est pas définie", destination->name());
 				}
 				else{
-					logs_->add(logFile::LOG, "Utilisation de la destination '%s'", destination->name());
+					logs_->add(logFile::DBG, "Utilisation de la destination '%s'", destination->name());
 				}
 			}
 			else{
@@ -1894,17 +1877,21 @@ const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
 	// Construction sans gestion des logs ...
 	//
 	jhbCURLTools::FTPClient ftpClient;
-	
+		
 	try {
 		// Connexion
 		ftpClient.InitSession(ftpDest->ftpServer(), ftpDest->ftpPort(), ftpDest->ftpUser(), ftpDest->ftpPwd());
 
 		// Suppression du fichier (si il existe déja)
+		//	JHB : La méthode Info génère un affichage sur la console !!!
+		//	et si le compte ftp dispose des droits de suppression, le remplacement sera effectué si nécessaire
+		/*
 		jhbCURLTools::FTPClient::FTPFILEINFO fi;
 		if (ftpClient.Info(destName, fi)){
 			ftpClient.RemoveFile(destName);
 			logs_->add(logFile::DBG, "\t - Suppression sur le serveur de l'ancien fichier '%s'", destName.c_str());
 		}
+		*/
 
 		// Transfert du fichier
 		logs_->add(logFile::DBG, "\t - Transfert du fichier '%s' par FTP vers '%s'", file_->fileName(false), ftpDest->name());
@@ -1925,6 +1912,7 @@ const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
 	}
 
 	// Transféré avec succès
+	logs_->add(logFile::LOG, "Transfert FTP '%s' effectué avec succès", ftpDest->name());
 	return true;
 }
 
@@ -2027,7 +2015,7 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 	for (size_t index = 0; index < opfi.actions_.size(); index++) {
 		if (NULL != (action = opfi.actions_[index])) {
 			if (fileActions::ACTION_TYPE::ACTION_POST_GEN == action->type()) {
-
+				logs_->add(logFile::LOG, "Action postgen '%s'", action->name());
 #ifdef _DEBUG
 				logs_->add(logFile::LOG, "\t- Application : %s", action->application());
 				logs_->add(logFile::LOG, "\t- Paramètres : %s", action->parameters());
@@ -2038,7 +2026,7 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 #endif // _DEBUG
 
 				if (true == (launched = _exec(action->application(), action->parameters(), errorMessage))) {
-					logs_->add(logFile::LOG, "Action postgen '%s' - Terminée avec succès", action->name());
+					logs_->add(logFile::LOG, "\t- Terminée avec succès");
 
 					// Y a t'il eu génération d'un fichier ?
 					output = action->outputFilename();

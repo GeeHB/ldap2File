@@ -18,7 +18,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -478,7 +478,7 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 		_add(line, JS_LABEL_PARENT_UID, replace->id());
 
 		// Je garde trace du remplacement ...
-		_add(line, JS_LABEL_REPLACE, replace->display(NODE_NAME_TOKEN).c_str());
+		_add(line, JS_LABEL_REPLACE, replace->display(TOKEN_NODE_NAME).c_str());
 
 		// Ajout à la liste mémoire
 		replacements_.push_back(new AGENTLINK(agent->id(), replace->id()));

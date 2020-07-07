@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -266,7 +266,7 @@
 #define XML_FORMAT_TEMPLATE_ATTR		"Modele"
 
 #define XML_FORMAT_NAME_NODE			XML_NAME
-#define XML_USE_LDAP_NAME				"%ldapName%"
+//#define XML_USE_LDAP_NAME				"%ldapName%"
 #define XML_DEF_OUTPUT_FILENAME			"output.xml"
 
 // Longueur du nom d'un onglet
@@ -304,6 +304,7 @@
 #define XML_RESEARCH_NODE				"Recherche"
 #define XML_RESEARCH_CRITERIUM_NODE		"Critere"
 #define XML_RESEARCH_TAB_NODE			XML_TAB
+#define TAB_NAME_ATTR					XML_NAME		// Pour spécifier le nom d'un onglet
 
 //
 // Expressions régulières

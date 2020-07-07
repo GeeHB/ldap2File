@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -944,6 +944,12 @@ bool ODSFile::addSheet(string& sheetName, bool withHeader, bool firstSheet)
 	}
 	else{
 		validName = sheetName;
+	}
+
+	// Un caractère à remplacer ?
+	size_t pos(0);
+	while (validName.npos != (pos = validName.find("/"))) {
+		validName.replace(pos, 1, "-");
 	}
 
 	encoder_.toUTF8(validName, false);

@@ -20,7 +20,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -280,7 +280,7 @@ string agentTree::_getAscendantsString(const char* dnAgent, bool withMe, string*
 			fullString += " ";
 		}
 
-		fullString += agent->display(NODE_NAME_TOKEN);
+		fullString += agent->display(TOKEN_NODE_NAME);
 
 		if (!recurseManagers_ && managerID){
 			// On demande le matricule de l'agent
@@ -582,12 +582,12 @@ void agentInfos::setParent(agentInfos* pAgent)
 string agentInfos::display(string& format)
 {
 	if (autoAdded_){
-		string nFormat(NODE_NAME_TOKEN);
+		string nFormat(TOKEN_NODE_NAME);
 		return _display(nFormat);
 	}
 
 	if (isVacant()){
-		string nFormat(NODE_VACANT_TOKEN);
+		string nFormat(TOKEN_NODE_VACANT);
 		return _display(nFormat);
 	}
 
@@ -605,30 +605,30 @@ string agentInfos::_display(string& format)
 
 	// L'adresse mail
 	//
-	if (full.npos != (pos = full.find(NODE_MAIL_TOKEN))){
+	if (full.npos != (pos = full.find(TOKEN_NODE_MAIL))){
 		inter = (email_.size()? email_ : "");
-		full.replace(pos, strlen(NODE_MAIL_TOKEN), inter);
+		full.replace(pos, strlen(TOKEN_NODE_MAIL), inter);
 	}
 
 	// Mes fils (descendants directs)
 	//
-	if (full.npos != (pos = full.find(NODE_CHILDS_TOKEN))){
+	if (full.npos != (pos = full.find(TOKEN_NODE_CHILDS))){
 		size_t myChilds(childs());
 		inter = "";
 		if (myChilds){
 			char bidon[10];
 			//_itoa_s(myChilds, bidon, 9, 10);
 			inter = charUtils::itoa(myChilds, bidon, 10);
-			full.replace(pos, strlen(NODE_CHILDS_TOKEN), inter);
+			full.replace(pos, strlen(TOKEN_NODE_CHILDS), inter);
 		}
 		else{
-			full = NODE_NAME_TOKEN;
+			full = TOKEN_NODE_NAME;
 		}
 	}
 
 	// Prénom + Nom
 	//
-	if (full.npos != (pos = full.find(NODE_NAME_TOKEN))){
+	if (full.npos != (pos = full.find(TOKEN_NODE_NAME))){
 		if (isVacant()){
 			inter = STR_VACANT_POST;
 		}
@@ -636,12 +636,12 @@ string agentInfos::_display(string& format)
 			inter = prenom_ + " " + nom_;
 		}
 
-		full.replace(pos, strlen(NODE_NAME_TOKEN), inter);
+		full.replace(pos, strlen(TOKEN_NODE_NAME), inter);
 	}
 
 	// Tous mes descendants (directs et indirects)
 	//
-	if (full.npos != (pos = full.find(NODE_DESC_TOKEN))){
+	if (full.npos != (pos = full.find(TOKEN_NODE_DESC))){
 		inter = "";
 		size_t myChilds(descendants());
 
@@ -651,12 +651,12 @@ string agentInfos::_display(string& format)
 			inter = charUtils::itoa(myChilds, 10);
 		}
 
-		full.replace(pos, strlen(NODE_DESC_TOKEN), inter);
+		full.replace(pos, strlen(TOKEN_NODE_DESC), inter);
 	}
 
 	// le nombre de descendants directs et indirects
 	//
-	if (full.npos != (pos = full.find(NODE_CHILDS_PLUS_TOKEN))){
+	if (full.npos != (pos = full.find(TOKEN_NODE_CHILDS_PLUS))){
 		inter = "";
 		size_t myChilds(childs());
 		if (myChilds){
@@ -678,7 +678,7 @@ string agentInfos::_display(string& format)
 			inter += " ) ";
 		}
 
-		full.replace(pos, strlen(NODE_CHILDS_PLUS_TOKEN), inter);
+		full.replace(pos, strlen(TOKEN_NODE_CHILDS_PLUS), inter);
 	}
 
 	return full;

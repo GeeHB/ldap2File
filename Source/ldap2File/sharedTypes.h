@@ -19,7 +19,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -293,8 +293,9 @@ public:
 		size_t tSize;
 		if (source.size() && (tSize = token.size())) {
 			size_t from(0);
+			// Tant que le token est trouvé ...
 			while (source.npos != (from = source.find(token, from))) {
-				source.replace(from, tSize, value);
+				source.replace(from, tSize, value);		// ... il est remplacé par sa valeur (ou rien)
 				from++;
 			}
 		}
@@ -305,6 +306,10 @@ public:
 	void addToken(const char* token, const char* value) {
 		string sToken(token), sValue(value);
 		addToken(sToken, sValue);
+	}
+	void addToken(const char* token, int value, int digits = 0) {
+		string sToken(token);
+		addToken(sToken, charUtils::itoa(value, 10, digits));
 	}
 	void addToken(string& token, string& value) {
 		// Le nom ne peut pas être vide ...

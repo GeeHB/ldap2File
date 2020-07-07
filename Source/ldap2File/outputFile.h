@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
@@ -190,7 +190,7 @@ public:
 	void rename(const string& sName){
 		fileInfos_->name_ = sName;
 
-		// Generation du nom de fichier long
+		// Génération du nom de fichier long
 		fileName_ = _createFileName(fileInfos_->name_, true);
 
 		// ... puis court
@@ -225,6 +225,9 @@ public:
 		newFile = false;
 		return NULL;
 	}
+
+	// Tokenisation d'une chaine
+	static string tokenize(const char* source, const char* fullName, const char* shortName, const char* def = NULL);
 
 	// Création des entetes et des onglets
 	virtual void setSheetName(string& sheetName)

@@ -20,14 +20,14 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	06/07/2020 - JHB - Version 20.7.19
+//--	07/07/2020 - JHB - Version 20.7.20
 //--
 //---------------------------------------------------------------------------
 
 #include "outputFile.h"
 
 #ifndef WIN32
-#include <time.h>
+//#include <time.h>
 #else
 #include <fileSystem.h>
 #endif // WIN32
@@ -53,7 +53,7 @@ outputFile::outputFile(const LPOPFI fileInfos, columnList* columns, confFile* co
 
 	setAttributeNames();
 
-	// Generation du nom du fichier avec suppression du precedent
+	// Génération du nom du fichier avec suppression du précédent
 	_setFileType(fileInfos_->format_, true);
 }
 
@@ -86,7 +86,7 @@ void outputFile::_setFileType(FILE_TYPE fileType, bool newFile)
 {
 	fileInfos_->format_ = fileType;
 
-	// Generation du nom de fichier
+	// Génération du nom de fichier
 	fileName_ = _createFileName(fileInfos_->name_, newFile);
 }
 
@@ -127,7 +127,7 @@ const char* outputFile::fileExtension()
 	return "";
 }
 
-// Generation du nom du fichier de sortie
+// Génération du nom du fichier de sortie
 //
 string outputFile::_createFileName(string& shortName, bool newFile)
 {
@@ -136,10 +136,10 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 	}
 
 	// Formatage du nom du fichier
-	string file;
+	string file(shortName);
+	/*
 	char fileName[MAX_PATH + 1];
-	size_t pos(0);
-
+	
 
 	// Ajout de la date (si demandée)
 	//
@@ -200,6 +200,7 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 	else{
 		file = shortName;
 	}
+	*/
 
 	/*_shortFileName = */
 	shortName = file;		// Mise à jour du nom court
@@ -210,7 +211,7 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 	//
 	string folder("");
 	fileSystem fs;
-
+	size_t pos(0);
 	if (baseName.npos != (pos =  baseName.rfind(FILENAME_SEP))){
 		folder = baseName.substr(0, pos);
 	}
@@ -275,6 +276,67 @@ void outputFile::shift(int offset, treeCursor& ascendants)
 	}
 }
 */
+
+// Tokenisation d'une chaine
+string outputFile::tokenize(const char* source, const char* fullName, const char* shortName, const char* def)
+{
+	if (IS_EMPTY(source)) {
+		throw LDAPException("[outputFile::tokenize] Paramètres invalides");
+	}
+	
+	// quelque chose à faire ?
+	if (NULL == strstr(source, "%")) {
+		return source;
+	}
+	
+	string value(source);
+	
+	// Tokens reconnus
+	//
+	stringTokenizer st;
+	
+	// Nom court
+	if (!IS_EMPTY(shortName)) {
+		st.addToken(TOKEN_CONTAINER_SHORTNAME, shortName);
+	}
+
+	// Nom complet
+	if (!IS_EMPTY(fullName)) {
+		st.addToken(TOKEN_CONTAINER_FULLNAME, fullName);
+	}
+
+	// éléments de date
+	time_t rawTime;
+	struct tm tInfo;
+	time(&rawTime);
+	bool done(false);
+
+#ifdef WIN32
+	// la version MS inverse les paramètres !!!!
+	if (!localtime_s(&tInfo, &rawTime)) {
+		done = true;
+	}
+#else
+	if (!localtime_r(&rawTime, &tInfo)) {
+		done = true;
+	}
+#endif // WIN32
+
+	if (done) {		// La conversion de la date est valide !!!
+		st.addToken(TOKEN_DATE_DAY2, tInfo.tm_mday, 2);
+		st.addToken(TOKEN_DATE_MONTH2, 1 + tInfo.tm_mon, 2);		// Ajouter 1
+		st.addToken(TOKEN_DATE_YEAR4, 1900 + tInfo.tm_year, 4);		// Ajouter 1900
+
+		// Remplacement(s)
+		st.replace(value);
+	}
+	else {
+		value = (IS_EMPTY(def)?source:def);	// rien ...
+	}
+	
+	return value;
+}
+
 //----------------------------------------------------------------------
 //--
 //-- treeCursor
