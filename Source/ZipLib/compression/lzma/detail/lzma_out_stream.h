@@ -39,7 +39,7 @@ namespace detail
       void set_stream(stream_t& stream) { _stream = &stream; }
 
     private:
-      stream_t* _stream;
-      size_t _bytesWritten;
+        size_t _bytesWritten;
+        stream_t* _stream;
   };
 }

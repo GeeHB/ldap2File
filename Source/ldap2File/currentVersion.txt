@@ -1,3 +1,18 @@
+20.7.21
+	* 10 juillet 2020
+	+ maj pugiXML : version 1.10
+	+ Corrections mineures
+	+ Ajout de la récupération des titres (intitulés des postes) des agents
+		+ classes titles / title
+		+ spécifiaque à l'allier : #define __LDAP_USE_ALLIER_TITLES_h__ (sharedConsts.h)
+		+ La liste des intitulés n'est chargée que si la colonne est demandée !
+
+### TODO ###
+	+ Génération d'exceptions par SMTPClient
+	+ Vérification & réecriture SMTPClient
+	+ Retrait du code lza si inutile ? (ne compile pas sous linux)
+		+ => ne conserver que le code utilisé pour ODS
+
 20.7.20
 	* 7 juillet 2020
 	+ Corrections mineures
@@ -9,10 +24,6 @@
 	+ Possbilité de définir le nom du fichier avec des tokens
 	+ Possiblité de définir le nom des onglet (si un seul en plus de l'organigramme)
 		+ conf::<Fichier><Critere><Onglet Name="..."/>
-
-### TODO ###
-	+ Exceptions pour SMTPClient
-	+ Vérification & réecriture SMTPClient
 
 20.7.19
 	* 6 juillet 2020

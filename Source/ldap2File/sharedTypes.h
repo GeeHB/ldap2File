@@ -19,7 +19,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	07/07/2020 - JHB - Version 20.7.20
+//--	10/07/2020 - JHB - Version 20.7.21
 //--
 //---------------------------------------------------------------------------
 
@@ -309,7 +309,8 @@ public:
 	}
 	void addToken(const char* token, int value, int digits = 0) {
 		string sToken(token);
-		addToken(sToken, charUtils::itoa(value, 10, digits));
+		string sNum(charUtils::itoa(value, 10, digits));
+		addToken(sToken, sNum);
 	}
 	void addToken(string& token, string& value) {
 		// Le nom ne peut pas être vide ...
@@ -1074,7 +1075,7 @@ class LDAPAttributes
 {
 public:
 	LDAPAttributes(){
-		buffer_ = NULL;
+		buffer_ = nullptr;
 		clean_ = false;
 	}
 	virtual ~LDAPAttributes()

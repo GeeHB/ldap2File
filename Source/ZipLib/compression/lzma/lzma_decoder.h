@@ -110,8 +110,9 @@ class basic_lzma_decoder
 
       ELzmaFinishMode finishMode = LZMA_FINISH_ANY;
       ELzmaStatus status;
-      SRes res;
-      res = LzmaDec_DecodeToBuf(
+      /*SRes res;
+      res = */
+      LzmaDec_DecodeToBuf(
         &_handle,
         reinterpret_cast<Byte*>(_outputBuffer),
         &_outProcessed,
@@ -129,7 +130,7 @@ class basic_lzma_decoder
 
       // if (res != SZ_OK)
       //   return _lzmaInProcessed;
-      // 
+      //
       // if (_lzmaInProcessed == 0 && _lzmaOutProcessed == 0)
       // {
       //   if (status != LZMA_STATUS_FINISHED_WITH_MARK)

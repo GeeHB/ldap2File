@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/07/2020 - JHB - Version 20.7.20
+//--	10/07/2020 - JHB - Version 20.7.21
 //--
 //---------------------------------------------------------------------------
 
@@ -58,6 +58,10 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	firstTime_ = true;
 	cmdLineFile_ = NULL;
 	managersCol_ = managersAttr_ = "";
+
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+	titles_ = NULL;
+#endif // __LDAP_USE_ALLIER_TITLES_h__
 
 	// Environnement de travail
 	std::string env = configurationFile_->environment();
@@ -189,6 +193,13 @@ ldapBrowser::~ldapBrowser()
 		services_ = NULL;
 	}
 
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+	if (titles_) {
+		delete titles_;
+		titles_ = NULL;
+	}
+#endif // __LDAP_USE_ALLIER_TITLES_h__
+
 	if (struct_){
 		delete struct_;
 		struct_ = NULL;
@@ -259,6 +270,9 @@ RET_TYPE ldapBrowser::browse()
 	// Lecture des colonnes
 	//
 	columnList::COLINFOS column;
+#ifdef _DEBUG
+	int count(0);
+#endif // _DEBUG
 	while (cmdFile->nextColumn(column)){
 		// Ajout à ma liste
 		if (!cols_.append(column)){
@@ -270,6 +284,10 @@ RET_TYPE ldapBrowser::browse()
 			// Association à la structure
 			struct_->setAt(column.ldapAttr_, cols_.size() - 1);
 		}
+
+#ifdef _DEBUG
+		count++;
+#endif // _DEBUG
 	}
 
 	// Pas de colonne(s) => pas de fichier généré
@@ -772,8 +790,7 @@ RET_TYPE ldapBrowser::_createFile()
 		//
 		fileDestination* dest(NULL), *destination(NULL);
 		mailDestination* pMail(NULL);
-		FTPDestination* pFTP(NULL);
-		string fullName;
+		string fullName("");
 		for (deque<fileDestination*>::iterator it = opfi.dests_.begin(); it != opfi.dests_.end(); it++){
 			destination = (*it);
 
@@ -906,10 +923,40 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	LPAGENTINFOS replacement(NULL);
 
 	// Service et direction
+	/*
 	size_t colService = cols_.getColumnByType(COL_SERVICE);
 	size_t colDirection = cols_.getColumnByType(COL_DIRECTION);
 	size_t colDGA= cols_.getColumnByType(COL_DGA);
 	size_t colDG = cols_.getColumnByType(COL_DG);
+	*/
+
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+	// L'intitulé du poste
+	size_t colPoste = cols_.getColumnByType(COL_ID_POSTE);
+	if (colPoste != cols_.npos) {
+		// on demandes intitulés => on s'assure que la liste est chargée
+		if (NULL == titles_) {
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+			if (NULL == (titles_ = new titles(logs_))) {
+				logs_->add(logFile::ERR, "Impossible de créer la liste des postes => pas d'intitulés");
+				colPoste = cols_.npos;
+			}
+			else {
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+				// Récupération des intitulés de poste
+				if (!_getTitles()) {
+					logs_->add(logFile::ERR, "Erreur de la récupération des intitulés de poste");
+				}
+				else {
+					logs_->add(logFile::LOG, "%d intitulés de poste récupérés", titles_->size());
+				}
+#endif // __LDAP_USE_ALLIER_TITLES_h__
+
+			}
+#endif // __LDAP_USE_ALLIER_TITLES_h__
+		}
+	}
+#endif // __LDAP_USE_ALLIER_TITLES_h__
 
 	string strManagers("");
 	size_t realColIndex(SIZE_MAX);
@@ -942,19 +989,6 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	logs_->add(logFile::DBG, "La requète LDAP sera scindée");
 	regExpr* fullReg(NULL);
 
-	/*
-	if (false ==
-		(useRegExpr =
-			((NULL == pRegExpr->find(STR_ATTR_UID)) && (NULL == pRegExpr->find(STR_ATTR_NOM)))
-		))
-	*/
-	/*
-	if (false == ((NULL == pRegExpr->find(STR_ATTR_UID)) && (NULL == pRegExpr->find(STR_ATTR_NOM))))
-	{
-		logs_->add(logFile::DBG, "L'expression régulière comporte déja un critère sur '%s'. Combinaison avec l'opérateur |", STR_ATTR_UID);
-		fullReg = new regExpr(REG_EXPR_OPERATOR_OR);
-	}
-	else*/
 	{
 #ifdef _DEBUG
 		string out = sCriterium.regExpression()->expression();
@@ -1019,10 +1053,6 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 		// Execution de la requete
 		//
-#ifdef _DEBUG
-		int i(5);
-		i++;
-#endif // #ifdef _DEBUG
 
 		//
 		// La fonction ldap_search_ext_s ne fonctionne pas avec scode = LDAP_SCOPE_BASE !!!
@@ -1134,9 +1164,9 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 					if (validUser) {
 #endif // _JHB_OWN_LDAP_SCOPE_BASE_
-						
+
 						/*
-						
+
 						// Tous les containers de l'agent
 						firstContainer = services_->userContainers(dn);
 
@@ -1289,6 +1319,16 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 																	if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_MATRICULE)) {
 																		matricule = u8Value;
 																	}
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+																	else {
+																		if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_ID_POSTE)
+																			&& titles_) {
+																			// Recherche du nom de l'intitulé
+																			titles::LPAGENTTITLE ptitle = titles_->find(u8Value);
+																			u8Value = (ptitle ? ptitle->label() : "");
+																		}
+																	}
+#endif // __LDAP_USE_ALLIER_TITLES_h__
 																}
 															}
 														}
@@ -1365,9 +1405,9 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 						// Ajout de l'agent dans la structure arborescente
 						if (agents_) {
 							if (NULL != (agent = agents_->add(uid, dn, prenom, nom, email, allierStatus, manager, matricule))) {
-								
+
 								agentsAdded++;		// Un de plus
-								
+
 								// Un remplaçant ?
 								if (replacement) {
 									agent->setReplacedBy(replacement);
@@ -1593,6 +1633,159 @@ bool ldapBrowser::_getServices()
 	return true;
 }
 
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+
+// Liste des intitulés de postes
+//
+bool ldapBrowser::_getTitles()
+{
+	// Connecté ?
+	if (!ldapServer_.connected()) {
+		return false;
+	}
+
+	LDAPMessage* searchResult(NULL);
+	ULONG retCode(0);
+	string currentFilter("");
+
+	LDAPAttributes myAttributes;
+	myAttributes += STR_ATTR_ALLIER_ID_POSTE;
+	myAttributes += STR_ATTR_ALLIER_LIBELLE_POSTE;
+	myAttributes += STR_ATTR_ALLIER_RESP_STRUCT;
+	myAttributes += STR_ATTR_DESCRIPTION;
+
+	bool todo(true);
+	int searchID(0);
+	LDAPMessage* pEntry(NULL);
+	BerElement* pBer(NULL);
+	PCHAR pAttribute(NULL);
+	PCHAR* pValue(NULL);
+	
+	string id(""), label(""), description("");
+	int responsable(0);
+	ULONG titleCount(0);
+
+	std::string u8Value;
+
+	while (todo) {
+
+		// Génération de la requête
+		regExpr expression(REG_EXPR_OPERATOR_AND);
+		expression.add(STR_ATTR_OBJECT_CLASS, LDAP_CLASS_ALLIER_POSTE);
+
+		// Ajout de la nouvelle recherche sur la base de l'identifiant (par paqauet de 100)
+		string wild("");
+		if (searchID) {
+			wild = charUtils::itoa(searchID);
+		}
+		wild += "*";
+			
+		string value("*");						// La longueur de la chaine n'est pas fixe !!!
+		value.append(9 - wild.length(), '0');	// nbre de 0
+		value += wild;
+		
+		// Ajout à l'expression générale
+		expression.add(STR_ATTR_ALLIER_ID_POSTE, value.c_str());
+
+		//sCriterium.regExpression()->add(pRegExpr);
+		currentFilter = expression.expression();
+		
+		// Exécution de la requete
+		//
+		retCode = ldapServer_.searchS((char*)ldapServer_.baseDN(), LDAP_SCOPE_SUBTREE, (PSTR)currentFilter.c_str(), (char**)(const char**)myAttributes, 0, &searchResult);
+
+		// Je n'ai plus besoin de la liste ...
+		if (LDAP_SUCCESS != retCode) {
+			// Erreur lors de la recherche
+			if (searchResult) {
+				ldapServer_.msgFree(searchResult);
+			}
+
+			logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des libéllés de postes", retCode, ldapServer_.err2string(retCode).c_str());
+			return false;
+		}
+
+		titleCount = ldapServer_.countEntries(searchResult);
+
+		//
+		// Transfert des données dans la liste
+		//
+		for (ULONG index(0); index < titleCount; index++) {
+			// Première valeur ?
+			pEntry = (!index ? ldapServer_.firstEntry(searchResult) : ldapServer_.nextEntry(pEntry));
+			pAttribute = ldapServer_.firstAttribute(pEntry, &pBer);
+
+			id = "";
+			label = "";
+			description = "";
+			responsable = 0;
+
+			// Recherche des valeurs
+			//
+			while (pAttribute) {
+				// Valeur de l'attribut
+				if (NULL != (pValue = ldapServer_.getValues(pEntry, pAttribute))) {
+#ifdef UTF8_ENCODE_INPUTS
+					u8Value = encoder_.toUTF8(*pValue);
+#else
+					u8Value = (*pValue);
+#endif // UTF8_ENCODE_INPUTS
+					ldapServer_.valueFree(pValue);
+
+					if (!encoder_.stricmp(pAttribute, STR_ATTR_DESCRIPTION)) {
+						description = u8Value;
+					}
+					else {
+						if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_ID_POSTE)) {
+							id = u8Value;
+						}
+						else {
+							if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_LIBELLE_POSTE)) {
+								label = u8Value;
+							}
+							else {
+								if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_RESP_STRUCT)) {
+									responsable = atoi(u8Value.c_str());
+								}
+							}
+						}
+					}
+				}
+
+				// Prochain attribut
+				pAttribute = ldapServer_.nextAttribute(pEntry, pBer);
+			} // While
+
+			// Création du "titre"
+			if (label.size()) {
+				titles_->add(id, label, responsable, description);
+			}
+		} // for index
+
+		// On avance
+		searchID++;
+		//expression.remove(REG_EXPR_LDAP);
+
+		// Tant que l'on a trouve des comptes on recherche
+		//todo = (titleCount > 0 );
+		todo = (searchID < 200);
+
+		// Libérations
+		//
+		if (pBer)
+		{
+			ber_free(pBer, 0);
+		}
+
+		//ldapServer_.msgFree(searchResult);
+	}
+
+	return true;
+}
+#endif // __LDAP_USE_ALLIER_TITLES_h__
+
+// Liste des groupes auxquels apprtient un utilisateur
+//
 bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 {
 	// Vérification des paramètres
@@ -1877,7 +2070,7 @@ const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
 	// Construction sans gestion des logs ...
 	//
 	jhbCURLTools::FTPClient ftpClient;
-		
+
 	try {
 		// Connexion
 		ftpClient.InitSession(ftpDest->ftpServer(), ftpDest->ftpPort(), ftpDest->ftpUser(), ftpDest->ftpPwd());
@@ -1897,7 +2090,7 @@ const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
 		logs_->add(logFile::DBG, "\t - Transfert du fichier '%s' par FTP vers '%s'", file_->fileName(false), ftpDest->name());
 
 		ftpClient.UploadFile(file_->fileName(true), destName);
-		
+
 		// Fermeture de la connexion
 		ftpClient.CleanupSession();
 	}

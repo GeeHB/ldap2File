@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/07/2020 - JHB - Version 20.7.20
+//--	10/07/2020 - JHB - Version 20.7.21
 //--
 //---------------------------------------------------------------------------
 
@@ -201,7 +201,7 @@ public:
 	bool reservedColName(string& colName)
 	{ return reservedColName(colName.c_str()); }
 
-	// Erreur
+	// Erreur => index invalide
 	size_t npos;
 
 	// Recherches et acces
@@ -257,7 +257,7 @@ protected:
 	//
 protected :
 	deque<LPCOLINFOS>		attributes_;	// Schéma - Liste des attributs LDAP reconnus
-	deque<LPCOLINFOS>		columns_;		// Ma liste de colonnes
+	deque<LPCOLINFOS>		columns_;		// Ma liste de colonnes (pour le fichier de sortie)
 
 	string					lastError_;		// !!!
 

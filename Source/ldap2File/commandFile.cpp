@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	07/07/2020 - JHB - Version 20.7.20
+//--	10/07/2020 - JHB - Version 20.7.21
 //--
 //---------------------------------------------------------------------------
 
@@ -124,7 +124,7 @@ bool commandFile::_load()
 		const char* includedName = node.first_child().value();
 		if (!IS_EMPTY(includedName)){
 			if (logs_){
-				logs_->add(logFile::LOG, "Fichier de configuration '%s' <= '%sorg' à inclure", fileName(), includedName);
+				logs_->add(logFile::LOG, "Fichier de configuration '%s' <= '%s' à inclure", fileName(), includedName);
 			}
 
 			// Si aucun chemin est précisé, le fichier est dans le dossier des templates

@@ -32,8 +32,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-DLINUX" />
 			<Add directory="../../Common" />
 			<Add directory="../Source" />
+			<Add directory="../../Common/jhbCURLTools" />
 		</Compiler>
 		<Unit filename="../../Common/charUtils.cpp" />
 		<Unit filename="../../Common/charUtils.h" />

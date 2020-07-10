@@ -19,7 +19,7 @@
 //--
 //--	12/03/2020 - JHB - Version 20.3.2 - Création
 //--	
-//--	07/07/2020 - JHB - Version 20.7.20
+//--	10/07/2020 - JHB - Version 20.7.21
 //--
 //---------------------------------------------------------------------------
 
@@ -40,6 +40,7 @@
 
 #define LDAP_CLASS_ALLIER_USER				"allierUser"
 
+
 // Le N+1
 //
 #define STR_ATTR_ALLIER_MANAGER				"allierResponsable"
@@ -59,11 +60,6 @@
 //
 #define STR_ATTR_ALLIER_MATRICULE			"allierMatricule"
 #define W_ATTR_ALLIER_MATRICULE				L"allierMatricule"
-
-// Poste de l'agent
-//
-#define STR_ATTR_ALLIER_POSTE				"allierPoste"
-#define W_ATTR_ALLIER_POSTE					L"allierPoste"
 
 // Autre(s) DN de l'agent
 //
@@ -158,6 +154,22 @@
 //
 #define STR_ATTR_ALLIER_OLDER_GUID			"allierUOlderID"
 #define W_ATTR_ALLIER_OLDER_GUID			L"allierOlderUID"
+
+//
+// Poste
+//
+
+#define LDAP_CLASS_ALLIER_POSTE				"allierPoste"
+
+#define STR_ATTR_ALLIER_ID_POSTE			"allierIDPoste"
+#define W_ATTR_ALLIER_ID_POSTE				L"allierIDPoste"
+
+#define STR_ATTR_ALLIER_LIBELLE_POSTE		"allierLibellePoste"
+#define W_ATTR_ALLIER_LIBELLE_POSTE			L"allierLibellePoste"
+
+#define STR_ATTR_ALLIER_RESP_STRUCT			"allierResponsableStruct"
+#define W_ATTR_ALLIER_RESP_STRUCT			L"allierResponsableStruct"
+
 
 #endif	// #ifndef __ALLIER_LDAP_ATTRIBUTES_h__
 

@@ -294,6 +294,9 @@
     <ClCompile Include="..\..\..\Common\jhbCURLTools\SMTPClient.cpp">
       <Filter>Fichiers sources\Common\CURLTools</Filter>
     </ClCompile>
+    <ClCompile Include="titles.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="columnList.h">
@@ -397,6 +400,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Common\jhbCURLTools\SMTPClient.h">
       <Filter>Fichiers d%27en-tête\Common\CURLTools</Filter>
+    </ClInclude>
+    <ClInclude Include="titles.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

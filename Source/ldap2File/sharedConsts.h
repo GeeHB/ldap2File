@@ -19,12 +19,15 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/07/2020 - JHB - Version 20.7.20
+//--	10/07/2020 - JHB - Version 20.7.21
 //--
 //---------------------------------------------------------------------------
 
 #ifndef _LDAP_2_FILE_SHARED_CONSTS_h__
 #define _LDAP_2_FILE_SHARED_CONSTS_h__
+
+// Gestions spécifiques à l'Allier
+#define __LDAP_USE_ALLIER_TITLES_h__
 
 // Gestion du scope LDAP_SCOPE_BASE lorsqu'il ne fonctionne pas
 #ifdef WIN32
@@ -49,10 +52,10 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.20"
+#define APP_RELEASE				"20.7.21"
 
 // Copyright
-#define APP_COPYRIGHT			_T("Département de l'Allier - DSUN")
+#define APP_COPYRIGHT			_T("Conseil Départemental de l'Allier - DSUN")
 
 // Ligne de commandes
 //
@@ -293,7 +296,9 @@ using namespace std;
 #define COL_DIRECTION				"DIRECTION"
 #define COL_DGA						"DGA"
 #define COL_DG						"DG"
+
 #define COL_MANAGERS				"MANAGERS"				// Tous les responsables
+#define COL_ID_POSTE				"ALLIER-ID-POSTE"
 
 #define COL_MANAGER					"MANAGER"				// Juste le N+1
 #define COL_MANAGER_ALLIER			"ALLIER-RESPONSABLE"	// Juste le N+1 (dans l'Allier ?)

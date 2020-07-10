@@ -5,7 +5,7 @@ namespace detail {
 
 bool ZipGenericExtraField::Deserialize(std::istream& stream, std::istream::pos_type extraFieldEnd)
 {
-  if ((extraFieldEnd - stream.tellg()) < HEADER_SIZE)
+  if ((extraFieldEnd - stream.tellg()) < (long int)HEADER_SIZE)
   {
     return false;
   }

@@ -10,6 +10,11 @@
 extern "C" {
 #endif
 
+#ifndef WIN32
+typedef void* HANDLE;
+#define LPVOID void*
+#endif // WIN32
+
 WRes HandlePtr_Close(HANDLE *h);
 WRes Handle_WaitObject(HANDLE h);
 

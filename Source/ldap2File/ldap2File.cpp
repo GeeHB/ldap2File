@@ -35,7 +35,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/07/2020 - JHB - Version 20.7.20
+//--	10/07/2020 - JHB - Version 20.7.21
 //--
 //---------------------------------------------------------------------------
 
@@ -85,6 +85,7 @@ int main(int argc, const char * argv[]){
 	}
 
 	cout << binName << " - Version " << APP_RELEASE << endl;
+	cout << "Copyright " << APP_COPYRIGHT << endl;
 
 	logFile logs;
 	confFile configurationFile(&logs);
@@ -145,6 +146,7 @@ int main(int argc, const char * argv[]){
 
 		logs.add(logFile::LOG, _T("========================================================================="));
 		logs.add(logFile::LOG, _T("==== %s - version %s - %s"), APP_SHORT_NAME, APP_RELEASE, APP_DESC);
+		logs.add(logFile::LOG, _T("==== Copyright %s"), APP_COPYRIGHT);
 		logs.add(logFile::LOG, _T("Lancement de l'application"));
 		logs.add(logFile::DBG, _T("Logs en mode DEBUG"));
 
@@ -173,12 +175,12 @@ int main(int argc, const char * argv[]){
 		string remoteFolder("");
 
 		//
-		// Les fichiers à analyser sont soit en ligne de commande soit contenus dans un dossier
+		// Les fichiers à analyser sont soit passés en ligne de commande soit contenus dans un dossier
 		//
 
 		// Récupération de tous les noms de fichier en ligne de commande
 		//
-		for (int index=1 ; index < argc; index++){
+		for (int index=1; index < argc; index++){
 			
 #ifdef WIN32
 			if (argv[index] == strstr(argv[index], CMD_NO_VERBOSE)){

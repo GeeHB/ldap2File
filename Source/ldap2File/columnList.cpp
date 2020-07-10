@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/07/2020 - JHB - Version 20.7.20
+//--	10/07/2020 - JHB - Version 20.7.21
 //--
 //---------------------------------------------------------------------------
 
@@ -158,7 +158,7 @@ bool columnList::append(const COLINFOS& column)
 		if (npos != getColumnByType(column.ldapAttr_.c_str())){
 			// dans le cas de colonnes exclusives (manager-managers ou encadrant-encadrants)
 			// la premiere colonne prend la place !
-			lastError_ = "La colonnes a déjà été ajoutée";
+			lastError_ = "Une colonne pour cet attribut LDAP a déjà été ajoutée";
 			return false;
 		}
 
@@ -173,10 +173,9 @@ bool columnList::append(const COLINFOS& column)
 	// Dans tous les cas le "nom" de la colonne doit-être unique (pour éviter les confusions)
 	//
 	if (npos != getColumnByName(column.name_.c_str())){
-		lastError_ = "La colonne existe déjà";
+		lastError_ = "Une colonne avec ce nom existe déjà";
 		return false;
 	}
-
 
 	// Création de l'objet
 	LPCOLINFOS col = new COLINFOS(column);
@@ -222,7 +221,7 @@ void columnList::remove(size_t index)
 		return;
 	}
 
-	// Recuperation du pointeur
+	// Récupération du pointeur
 	deque<LPCOLINFOS>::iterator it = columns_.begin();
 	it+=index;
 

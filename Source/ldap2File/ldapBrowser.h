@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/07/2020 - JHB - Version 20.7.20
+//--	10/07/2020 - JHB - Version 20.7.21
 //--
 //---------------------------------------------------------------------------
 
@@ -35,6 +35,10 @@
 #include "servicesList.h"
 #include "treeStructure.h"
 #include "destinationList.h"
+
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#include "titles.h"
+#endif // __LDAP_USE_ALLIER_TITLES_h__
 
 //
 // Définition de la classe
@@ -66,6 +70,9 @@ protected:
 
 	// Requetes LDAP
 	bool _getServices();
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+	bool _getTitles();
+#endif // __LDAP_USE_ALLIER_TITLES_h__
 	size_t _simpleLDAPRequest(PCHAR* attributes, commandFile::criterium& sCriterium, const char* searchDN, bool treeSearch, PLDAPControl* serverControls = NULL, PLDAPControl sortControl = NULL);
 	bool _getUserGroups(string& userDN, size_t colID, const char* gID);
 
@@ -113,6 +120,10 @@ protected:
 	logFile*				logs_;
 
 	servicesList*			services_;			// Services dans l'annuaire
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+	titles*					titles_;			// Liste des intitulés de postes
+#endif // __LDAP_USE_ALLIER_TITLES_h__
+
 	columnList				cols_;				// Mes colonnes
 	string					managersCol_;		// Nom de la colonne utilisée pour les managers
 	string					managersAttr_;		// Attribut associé
