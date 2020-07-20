@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	10/07/2020 - JHB - Version 20.7.21
+//-- 20/07/2020 - JHB - Version 20.7.22
 //--
 //---------------------------------------------------------------------------
 
@@ -408,6 +408,12 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 					value = destinationServer_.node()->attribute(XML_DESTINATION_SMTP_PORT_ATTR).value();
 					if (value.size()) {
 						mail->port_ = atoi(value.c_str());
+					}
+
+					// TLS ?
+					value = destinationServer_.node()->attribute(XML_DESTINATION_SMTTP_TLS_ATTR).value();
+					if (XML_YES == value) {
+						mail->useTLS_ = true;
 					}
 				}
 

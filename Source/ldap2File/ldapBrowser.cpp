@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	10/07/2020 - JHB - Version 20.7.21
+//-- 20/07/2020 - JHB - Version 20.7.22
 //--
 //---------------------------------------------------------------------------
 
@@ -566,8 +566,9 @@ RET_TYPE ldapBrowser::_createFile()
 	}
 
 	// Nom court du fichier de sortie
-	//string ShortName(outputFile::tokenize(opfi.name_.c_str(), pService->realName(), pService->shortName()));
-	opfi.name_ = outputFile::tokenize(opfi.name_.c_str(), pService->realName(), pService->shortName());
+	if (pService) {
+			opfi.name_ = outputFile::tokenize(opfi.name_.c_str(), pService->realName(), pService->shortName());
+	}
 
 	// Création du générateur de fichier de sortie
 	//
@@ -829,23 +830,8 @@ RET_TYPE ldapBrowser::_createFile()
 
 				// Envoi par mail
 				case DEST_TYPE::DEST_EMAIL:{
-					pMail = (mailDestination*)dest;
-					jhbCURLTools::SMTPClient mail(pMail->smtpFrom(), "", pMail->smtpObject(), pMail->smtpObject());
-
-					// Ajout du fichier
-					mail.addAttachment(file_->fileName());
-
-					// Le destinataire
-					mail.addRecipient(dest->folder());
-
-					// Envoi
-					CURLcode ret(CURLE_OK);
-					if (CURLE_OK != (ret = mail.send(pMail->smtpServer(), pMail->smtpPort(), pMail->smtpUser(), pMail->smtpPwd(), strlen(pMail->smtpUser()) > 0))){
+					if (!_SMTPTransfer((mailDestination*)dest)) {
 						atLeastOneError = true;
-						logs_->add(logFile::ERR, "Impossible d'envoyer le mail à '%s'. Erreur : %d", dest->folder(), ret);
-					}
-					else{
-						logs_->add(logFile::LOG, "Envoi du fichier par mail à '%s'", dest->folder());
 					}
 					break;
 				}
@@ -886,7 +872,7 @@ RET_TYPE ldapBrowser::_createFile()
 	}
 
 	// Ok
-	return (atLeastOneError? RET_TYPE::RET_UNBLOCKING_ERROR: RET_TYPE::RET_OK);
+	return (atLeastOneError? RET_TYPE::RET_NON_BLOCKING_ERROR : RET_TYPE::RET_OK);
 }
 
 // Execution d'une requete
@@ -2056,6 +2042,29 @@ void ldapBrowser::_addOrgLeaf(orgChartFile* orgFile, orgChartFile::treeCursor& a
 	}
 }
 
+// Envoi du fichier en PJ d'un mail
+//
+const bool ldapBrowser::_SMTPTransfer(mailDestination* mailDest)
+{
+	jhbCURLTools::SMTPClient mail(mailDest->smtpFrom(), "", mailDest->smtpObject(), mailDest->smtpObject());
+
+	// Ajout du fichier
+	mail.addAttachment(file_->fileName());
+
+	// Le destinataire
+	mail.addRecipient(mailDest->folder());
+
+	// Envoi
+	CURLcode ret(CURLE_OK);
+	if (CURLE_OK != (ret = mail.send(mailDest->smtpServer(), mailDest->smtpPort(), mailDest->smtpUser(), mailDest->smtpPwd(), mailDest->useTLS()))) {
+		logs_->add(logFile::ERR, "Impossible d'envoyer le mail à '%s'. Erreur : %d", mailDest->folder(), ret);
+		return false;
+	}
+	
+	logs_->add(logFile::LOG, "Envoi du fichier par mail à '%s'", mailDest->folder());
+	return true;
+}
+
 // Transfert du fichier par FTP
 //
 const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
@@ -2213,14 +2222,12 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 				logs_->add(logFile::LOG, "\t- Application : %s", action->application());
 				logs_->add(logFile::LOG, "\t- Paramètres : %s", action->parameters());
 #else
-				logs_->add(logFile::DBG, "Action postgen - %s", action->name());
 				logs_->add(logFile::DBG, "\t- Application : %s", action->application());
 				logs_->add(logFile::DBG, "\t- Paramètres : %s", action->parameters());
 #endif // _DEBUG
 
 				if (true == (launched = _exec(action->application(), action->parameters(), errorMessage))) {
-					logs_->add(logFile::LOG, "\t- Terminée avec succès");
-
+					
 					// Y a t'il eu génération d'un fichier ?
 					output = action->outputFilename();
 					if (0 != output.size()) {
@@ -2234,8 +2241,16 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 							//
 							file_->setFileName(output);				// dans le "fichier" le nom complet
 							opfi.name_ = fileSystem::split(output);	// le nom court
+
+#ifdef _DEBUG
+							logs_->add(logFile::LOG, "\t- Renomage du fichier de sortie en : %s", output.c_str());
+#else
+							logs_->add(logFile::DBG, "\t- Renomage du fichier de sortie en : %s", output.c_str());
+#endif // _DEBUG
 						}
 					}
+
+					logs_->add(logFile::LOG, "\t- Terminée avec succès");
 				}
 				else {
 					logs_->add(logFile::ERR, "Action postgen' %s' - %s", action->name(), errorMessage.c_str());

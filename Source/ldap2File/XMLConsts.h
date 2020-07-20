@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	10/07/2020 - JHB - Version 20.7.21
+//-- 20/07/2020 - JHB - Version 20.7.22
 //--
 //---------------------------------------------------------------------------
 
@@ -230,6 +230,7 @@
 #define XML_DESTINATION_SMTP_USER_ATTR		XML_USER
 #define XML_DESTINATION_SMTP_PWD_ATTR		XML_PWD
 #define XML_DESTINATION_SMTP_PORT_ATTR		XML_PORT
+#define XML_DESTINATION_SMTTP_TLS_ATTR		"TLS"
 
 //---------------------------------------------------------------------------
 //--	

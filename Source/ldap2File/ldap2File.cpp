@@ -35,7 +35,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	10/07/2020 - JHB - Version 20.7.21
+//-- 20/07/2020 - JHB - Version 20.7.22
 //--
 //---------------------------------------------------------------------------
 
@@ -262,8 +262,9 @@ int main(int argc, const char * argv[]){
 						cout << " - [erreur - paramètres invalides]";
 						break;
 
-					case RET_TYPE::RET_UNBLOCKING_ERROR:
+					case RET_TYPE::RET_NON_BLOCKING_ERROR:
 						cout << " - [erreur(s) non bloquante(s)]";
+						filesGenerated++;	// L'erreur n'a pas empêchée la génération du fichier
 						break;
 
 					case RET_TYPE::RET_LDAP_ERROR:

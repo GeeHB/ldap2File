@@ -19,7 +19,8 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	10/07/2020 - JHB - Version 20.7.21
+//-- 20/07/2020 - JHB - Version 20.7.22
+//-- 20/07/2020 - JHB - Version 20.7.22
 //--
 //---------------------------------------------------------------------------
 
@@ -52,7 +53,7 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.21"
+#define APP_RELEASE				"20.7.22"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil Départemental de l'Allier - DSUN")
@@ -330,7 +331,7 @@ enum class FILE_TYPE { FILE_UNKNOWN_TYPE = 0, FILE_TXT = 0, FILE_CSV, FILE_XLS, 
 enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS_WINDOWS = 1, DEST_FS_MACOS = 2, DEST_FS_LINUX = 2, DEST_EMAIL, DEST_FTP, DEST_SCP };
 
 // Retours
-enum class RET_TYPE {RET_OK = 0,RET_INVALID_PARAMETERS,RET_BLOCKING_ERROR,RET_UNBLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE };
+enum class RET_TYPE {RET_OK = 0,RET_INVALID_PARAMETERS,RET_BLOCKING_ERROR,RET_NON_BLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE };
 
 //
 // Structures et objets pour l'échange de données

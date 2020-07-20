@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	10/07/2020 - JHB - Version 20.7.21
+//-- 20/07/2020 - JHB - Version 20.7.22
 //--
 //---------------------------------------------------------------------------
 
@@ -454,6 +454,12 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 								value = snode.attribute(XML_DESTINATION_SMTP_PORT_ATTR).value();
 								if (value.size()) {
 									mail->port_ = atoi(value.c_str());
+								}
+
+								// TLS ?
+								value = snode.attribute(XML_DESTINATION_SMTTP_TLS_ATTR).value();
+								if (XML_YES == value) {
+									mail->useTLS_ = true;
 								}
 							}
 

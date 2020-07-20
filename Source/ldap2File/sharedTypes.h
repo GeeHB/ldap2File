@@ -19,7 +19,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	10/07/2020 - JHB - Version 20.7.21
+//-- 20/07/2020 - JHB - Version 20.7.22
 //--
 //---------------------------------------------------------------------------
 
@@ -808,6 +808,7 @@ public:
 		type_ = DEST_TYPE::DEST_EMAIL;
 		object_ = from_ = "";
 		port_ = DEF_IPPORT_SMTP;
+		useTLS_ = false;
 	}
 
 	// Accès
@@ -823,10 +824,13 @@ public:
 	{ return pwd(); }
 	unsigned int smtpPort()
 	{ return port();}
+	bool useTLS()
+	{ return ((pwd_.length()>0)?useTLS_:false);}
 
 public:
 	string		object_;
 	string		from_;
+	bool		useTLS_;
 };
 
 // Une destination de type FTP

@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	10/07/2020 - JHB - Version 20.7.21
+//-- 20/07/2020 - JHB - Version 20.7.22
 //--
 //---------------------------------------------------------------------------
 
@@ -278,6 +278,7 @@ void outputFile::shift(int offset, treeCursor& ascendants)
 */
 
 // Tokenisation d'une chaine
+//
 string outputFile::tokenize(const char* source, const char* fullName, const char* shortName, const char* def)
 {
 	if (IS_EMPTY(source)) {

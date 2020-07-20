@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	10/07/2020 - JHB - Version 20.7.21
+//-- 20/07/2020 - JHB - Version 20.7.22
 //--
 //---------------------------------------------------------------------------
 
@@ -93,6 +93,9 @@ protected:
 	// Gestion des actions
 	void _handlePostGenActions(OPFI& opfi);
 
+	// Envoi du fichier en PJ d'un mail
+	const bool _SMTPTransfer(mailDestination* mailDest);
+	
 	// Transfert par FTP
 	const bool _FTPTransfer(FTPDestination* ftpDest);
 
