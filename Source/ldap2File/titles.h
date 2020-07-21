@@ -31,100 +31,111 @@
 #ifndef __LDAP_2_FILE_TITLES_LIST_h__
 #define __LDAP_2_FILE_TITLES_LIST_h__
 
-//
-// Définition de la classe
-//
-class titles
-{
-	// Méthodes publiques
-public:
+namespace JHB_ldapTools {
 
-	// Un intitulé de poste
 	//
-	class title
+	// Définition de la classe
+	//
+	class titles
 	{
+		// Méthodes publiques
 	public:
-		// Construction
-		title()
-		: id_{""}, label_{ "" }, manager_{false}, description_{""}
-		{}
-		title(const string& id, const string& label, int responsable, const string& description) {
-			id_ = id;
-			label_ = label;
-			manager_ = (1 == responsable);
-			description_ = description;
-		}
-	
-		// Destruction
-		virtual ~title()
-		{}
 
-		// Accès
+		// Un intitulé de poste
 		//
+		class title
+		{
+		public:
+			// Construction
+			title()
+				: id_{ "" }, label_{ "" }, manager_{ false }, description_{ "" }
+			{}
+			title(const string& id, const string& label, int responsable, const string& description) {
+				id_ = id;
+				label_ = label;
+				manager_ = (1 == responsable);
+				description_ = description;
+			}
 
-		// Identifiant
-		const char* id()
-		{ return id_.c_str(); }
+			// Destruction
+			virtual ~title()
+			{}
 
-		// Libellé
-		const char* label()
-		{ return label_.c_str(); }
-		
-		// Manager ?
-		bool isManager()
-		{ return manager_; }
-		
-		// Description
-		const char* description()
-		{ return description_.c_str(); }
+			// Accès
+			//
 
+			// Identifiant
+			const char* id()
+			{
+				return id_.c_str();
+			}
+
+			// Libellé
+			const char* label()
+			{
+				return label_.c_str();
+			}
+
+			// Manager ?
+			bool isManager()
+			{
+				return manager_;
+			}
+
+			// Description
+			const char* description()
+			{
+				return description_.c_str();
+			}
+
+		protected:
+			// Données membres
+			//
+			string			id_;			// ID (n'estpas forcément numérique)
+			string			label_;
+			bool			manager_;		// Est-ce un manager ?
+			string			description_;	// description
+		};
+
+		typedef title* LPAGENTTITLE;
+
+		// Construction et destruction
+		//
+		titles(logFile* logs)
+		{ logs_ = logs; }
+		virtual ~titles();
+
+		// Nombre d'elements
+		size_t size()
+		{ return titles_.size(); }
+
+		// Ajout d'un "titre"
+		bool add(const string& id, const string& label, int responsable, const string& description);
+
+		// Recherche d'un service par son identifiant
+		LPAGENTTITLE find(const char* id) {
+			if (IS_EMPTY(id)) {
+				return NULL;
+			}
+			string value(id);
+			return find(value);
+		}
+		LPAGENTTITLE find(const string& id);
+
+		// Methodes privées
 	protected:
-		// Données membres
+
+
+		// Données membres privées
 		//
-		string			id_;			// ID (n'estpas forcément numérique)
-		string			label_;
-		bool			manager_;		// Est-ce un manager ?
-		string			description_;	// description
+	protected:
+
+		logFile* logs_;
+
+		// Liste
+		deque<LPAGENTTITLE>		titles_;
 	};
-	
-	typedef title* LPAGENTTITLE;
-
-	// Construction et destruction
-	//
-	titles(logFile* logs)
-	{ logs_ = logs; }
-	virtual ~titles();
-
-	// Nombre d'elements
-	size_t size()
-	{ return titles_.size(); }
-
-	// Ajout d'un "titre"
-	bool add(const string& id, const string& label, int responsable, const string& description);
-
-	// Recherche d'un service par son identifiant
-	LPAGENTTITLE find(const char* id) {
-		if (IS_EMPTY(id)) {
-			return NULL;
-		}
-		string value(id);
-		return find(value);
-	}
-	LPAGENTTITLE find(const string& id);
-
-	// Methodes privées
-protected:
-
-
-	// Données membres privées
-	//
-protected:
-
-	logFile*				logs_;
-	
-	// Liste
-	deque<LPAGENTTITLE>		titles_;
-};
+};	// namespace JHB_ldapTools {
 
 #endif // __LDAP_2_FILE_TITLES_LIST_h__
 

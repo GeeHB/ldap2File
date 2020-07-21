@@ -31,6 +31,9 @@
 #define PUGIXML_HEADER_ONLY
 #include <./xml/pugixml.cpp>
 
+#include "folders.h"
+using namespace JHB_ldapTools;
+
 #include <charUtils.h>
 #include "regExpr.h"
 
@@ -114,13 +117,13 @@ public:
 
 	// Construction
 	//
-	XMLParser(const char* fileName, logFile* logs)
-		:XMLParser(logs){
+	XMLParser(const char* fileName, folders* pFolders, logFile* logs)
+		:XMLParser(pFolders, logs){
 		// Copie du nom du fichier
 		setFileName(fileName);
 	}
 
-	XMLParser(logFile* logs);
+	XMLParser(folders* pFolders, logFile* logs);
 
 	// Destruction
 	//
@@ -205,9 +208,10 @@ protected:
 	string				expectedOS_;		// Type de système de fichier "local"
 	DEST_TYPE			defType_;
 
-	// Application
+	// Dossiers de l'application
+	folders*			 folders_;	
 	string				appFolder_;
-
+	
 	// Logs
 	logFile*			logs_;
 };

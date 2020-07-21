@@ -297,6 +297,9 @@
     <ClCompile Include="titles.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="folders.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="columnList.h">
@@ -402,6 +405,9 @@
       <Filter>Fichiers d%27en-tête\Common\CURLTools</Filter>
     </ClInclude>
     <ClInclude Include="titles.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="folders.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

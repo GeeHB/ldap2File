@@ -29,8 +29,8 @@
 
 // Construction
 //
-commandFile::commandFile(const char* cmdFile, logFile* log, bool isIncluded, const char* templateFolder)
-	: XMLParser(cmdFile, log)
+commandFile::commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded, const char* templateFolder)
+	: XMLParser(cmdFile, pFolders, log)
 {
 	// Intialisation des données membres
 	includedFile_ = NULL;
@@ -133,14 +133,14 @@ bool commandFile::_load()
 			if (sCmdFile.npos == sCmdFile.find(sp)){
 				string folder(applicationFolder());
 				folder += sp;
-				folder += FOLDER_TEMPLATES;
+				folder += STR_FOLDER_TEMPLATES;
 				folder += sp;
 				folder += sCmdFile;
 				sCmdFile = folder;
 			}
 
 			// Création du gestionnaire fichier
-			if (NULL == (includedFile_ = new commandFile(sCmdFile.c_str(), logs_, true))){
+			if (NULL == (includedFile_ = new commandFile(sCmdFile.c_str(), folders_, logs_, true))){
 				if (logs_){
 					logs_->add(logFile::ERR, "Impossible d'allouer de la mémoire pour le fichier à inclure");
 				}
@@ -509,7 +509,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 		// Pas de dossier => dossier courant
 		fileSystem::currentFolder(folder);
 		folder += FILENAME_SEP;
-		folder += FOLDER_OUTPUTS;
+		folder += STR_FOLDER_OUTPUTS;
 
 		pDestination = new fileDestination(folder);
 		if (!pDestination){

@@ -36,79 +36,83 @@
 //--
 //---------------------------------------------------------------------------
 
-//
-// Classe titles
-//
+namespace JHB_ldapTools {
 
-// Destruction
-//
-titles::~titles()
-{
-	// Libération des services
-	for (deque<LPAGENTTITLE>::iterator it = titles_.begin(); it != titles_.end(); it++){
-		if ((*it)){
-			delete (*it);
-		}
-	}
-	titles_.clear();
-}
-
-// Ajout d'un titre
-//
-bool titles::add(const string& id, const string& label, int responsable, const string& description)
-{
-	// Paramètres valides ?
 	//
-	if (!id.length() || 
-		!label.length()){
-		return false;
+	// Classe titles
+	//
+
+	// Destruction
+	//
+	titles::~titles()
+	{
+		// Libération des services
+		for (deque<LPAGENTTITLE>::iterator it = titles_.begin(); it != titles_.end(); it++) {
+			if ((*it)) {
+				delete (*it);
+			}
+		}
+		titles_.clear();
 	}
 
-	// Le titre doit être unique (par son ID)
-	LPAGENTTITLE pTitle(NULL);
-	if (NULL != (pTitle = find(id))){
-		if (logs_){
-			logs_->add(logFile::DBG, "Erreur - Le titre id:%s est déja défini pour '%s'", id.c_str(), pTitle->label());
+	// Ajout d'un titre
+	//
+	bool titles::add(const string& id, const string& label, int responsable, const string& description)
+	{
+		// Paramètres valides ?
+		//
+		if (!id.length() ||
+			!label.length()) {
+			return false;
 		}
 
-		return false;
-	}
+		// Le titre doit être unique (par son ID)
+		LPAGENTTITLE pTitle(NULL);
+		if (NULL != (pTitle = find(id))) {
+			if (logs_) {
+				logs_->add(logFile::DBG, "Erreur - Le titre id:%s est déja défini pour '%s'", id.c_str(), pTitle->label());
+			}
 
-	// Création du nouveau titre
-	pTitle = new title(id, label, responsable, description);
-	if (NULL == pTitle){
-		if (logs_){
-			logs_->add(logFile::ERR, "Impossible d'allouer d'ajouter le titre id:'%s' à la liste mémoire", id.c_str());
+			return false;
 		}
 
-		return false;
-	}
+		// Création du nouveau titre
+		pTitle = new title(id, label, responsable, description);
+		if (NULL == pTitle) {
+			if (logs_) {
+				logs_->add(logFile::ERR, "Impossible d'allouer d'ajouter le titre id:'%s' à la liste mémoire", id.c_str());
+			}
 
-	// Ajout
-	titles_.push_back(pTitle);
-	if (logs_){
-		logs_->add(logFile::DBG, "Ajout du titre id:%s  - '%s'", pTitle->id(), pTitle->label());
-	}
-
-
-	// Ok
-	return true;
-}
-
-// Recherche d'un titre
-//
-titles::LPAGENTTITLE titles::find(const string& id)
-{
-	for (deque<LPAGENTTITLE>::iterator it = titles_.begin(); it != titles_.end(); it++) {
-		if ((*it) && id == (*it)->id()) {
-			// trouvé
-			return (*it);
+			return false;
 		}
+
+		// Ajout
+		titles_.push_back(pTitle);
+		if (logs_) {
+			logs_->add(logFile::DBG, "Ajout du titre id:%s  - '%s'", pTitle->id(), pTitle->label());
+		}
+
+
+		// Ok
+		return true;
 	}
-	
-	// Non trouvé
-	return NULL;
-}
+
+	// Recherche d'un titre
+	//
+	titles::LPAGENTTITLE titles::find(const string& id)
+	{
+		for (deque<LPAGENTTITLE>::iterator it = titles_.begin(); it != titles_.end(); it++) {
+			if ((*it) && id == (*it)->id()) {
+				// trouvé
+				return (*it);
+			}
+		}
+
+		// Non trouvé
+		return NULL;
+	}
+
+}; // namespace JHB_ldapTools
 
 #endif // __LDAP_USE_ALLIER_TITLES_h__
 

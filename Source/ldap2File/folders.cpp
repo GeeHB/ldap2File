@@ -1,0 +1,191 @@
+//---------------------------------------------------------------------------
+//--	
+//--	FICHIER	: folders.cpp
+//--	
+//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	
+//--	PROJET	: ldap2File
+//--	
+//---------------------------------------------------------------------------
+//--	
+//--	DESCRIPTIONS:
+//--	
+//--			Implémentation des classes folders et folders::folder
+//--			Dossiers de l'application
+//--	
+//---------------------------------------------------------------------------
+//--	
+//--	MODIFICATIONS:
+//--	-------------
+//--
+//--	21/07/2020 - JHB - Création
+//--
+//-- 20/07/2020 - JHB - Version 20.7.22
+//--
+//---------------------------------------------------------------------------
+
+#include "folders.h"
+#include <fileSystem.h>
+
+//---------------------------------------------------------------------------
+//--
+//-- Implementation des classes
+//--
+//---------------------------------------------------------------------------
+
+namespace JHB_ldapTools {
+
+	//---------------------------------------------------------------------------
+	//--
+	//-- classe folders::folder - Un dossier de l'application
+	//--
+	//---------------------------------------------------------------------------
+	
+	// Création du dossier (s'il n'existe pas)
+	bool folders::folder::_create()
+	{
+		fileSystem fs;
+		if (!fs.existFolder(path_)) {
+			// Création du dossier
+			return fs.createFolder(path_, false);
+		}
+		
+		// Ok (le dossier existe déja)
+		return true;
+	}
+
+	
+	//---------------------------------------------------------------------------
+	//--
+	//-- classe folders - Liste des dossiers de l'application
+	//--
+	//---------------------------------------------------------------------------
+
+	// Destruction
+	//
+	folders::~folders()
+	{
+		for (list<folders::folder*>::iterator i = folders_.begin(); i != folders_.end(); i++) {
+			if (*i) {
+				delete (*i);
+			}
+		}
+
+		folders_.clear();
+	}
+	
+	// Ajout d'un dossier
+	//
+	bool folders::add(FOLDER_TYPE type, string& path)
+	{
+		// Dans tous les cas !
+		if (path.empty()) {
+			return false;
+		}
+
+		// Est ce un dossier complet ou le nom d'un sous dossier ?
+		bool sub(path.npos == path.find(FILENAME_SEP));
+
+		// Le dossier de l'application ne peut pas être un sous-dossier
+		if (folders::FOLDER_TYPE::FOLDER_APP == type && sub) {
+			return false;
+		}
+
+		string realPath(path);
+		if (sub) {
+			// C'est un sous-dossier => recherche du container (l'application)
+			folders::folder* pApp(find(folders::FOLDER_TYPE::FOLDER_APP));
+			if (NULL == pApp) {
+				// On ne peut rien faire !!!
+				return false;
+			}
+
+			// Mise à jour du chemin
+			realPath = pApp->path();
+			realPath += FILENAME_SEP;
+			realPath += path;
+		}
+
+		// Y a t'il déja un dossier de ce type ?
+		folders::folder* previous(find(type));
+		if (NULL != previous) {
+			// C'est une mise à jour ...
+			previous->setPath(realPath);
+			previous->setSubFolder(sub);
+
+			if (type == folders::FOLDER_TYPE::FOLDER_APP) {
+
+				string path("");
+				
+				// Changement ded dossier de l'application => mise à jour des sous-dossiers relatifs
+				for (list<folders::folder*>::iterator i = folders_.begin(); i != folders_.end(); i++) {
+					if (*i && (*i) != previous && (*i)->isSubFolder()) {
+						// C'est un sous-dossier
+						path = (*i)->path();
+						size_t pos(path.find(FILENAME_SEP));
+						if (path.npos != pos) {
+							// Le nom du sous-dossier 
+							path = realPath;
+							path += path.substr(pos);
+
+							// Mise à jour
+							(*i)->setPath(path);
+						}
+					}
+				}
+			}
+		}
+		else {
+			// Création
+			folders::folder* pFolder = new folders::folder(type, realPath, sub);
+			if (NULL == pFolder) {
+				return false;
+			}
+
+			// Ajout à la liste
+			folders_.push_back(pFolder);
+		}
+
+
+		// Ok
+		return true;
+	}
+
+	// Recherche d'un dossier par son type
+	//
+	folders::folder* folders::find(FOLDER_TYPE type)
+	{
+		for (list<folders::folder*>::iterator i = folders_.begin(); i != folders_.end(); i++) {
+			if (*i && (*i)->type() == type) {
+				// Trouvé
+				return (*i);
+			}
+		}
+
+		// Non trouvé
+		return false;
+	}
+
+	// ... par son index
+	//
+	folders::folder* folders::operator[] (size_t index)
+	{
+		// Index invalide
+		if (index >= folders_.size()) {
+			return NULL;
+		}
+
+		// On pointe surle premier élément
+		list<folders::folder*>::iterator it = folders_.begin();
+		
+		if (index) {
+			// on avance jusqu'à l'index demandé
+			advance(it, index);
+		}
+		
+		return (*it);
+	}
+
+}; // JHB_ldapTools
+
+// EOF

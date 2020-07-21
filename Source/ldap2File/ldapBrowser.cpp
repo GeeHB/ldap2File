@@ -923,7 +923,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		// on demandes intitulés => on s'assure que la liste est chargée
 		if (NULL == titles_) {
 #ifdef __LDAP_USE_ALLIER_TITLES_h__
-			if (NULL == (titles_ = new titles(logs_))) {
+			if (NULL == (titles_ = new JHB_ldapTools::titles(logs_))) {
 				logs_->add(logFile::ERR, "Impossible de créer la liste des postes => pas d'intitulés");
 				colPoste = cols_.npos;
 			}
@@ -1310,7 +1310,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 																		if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_ID_POSTE)
 																			&& titles_) {
 																			// Recherche du nom de l'intitulé
-																			titles::LPAGENTTITLE ptitle = titles_->find(u8Value);
+																			JHB_ldapTools::titles::LPAGENTTITLE ptitle = titles_->find(u8Value);
 																			u8Value = (ptitle ? ptitle->label() : "");
 																		}
 																	}

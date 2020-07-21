@@ -43,8 +43,8 @@ public:
 	
 	// Constructions et destruction
 	//
-	confFile(logFile* log = NULL);
-	confFile(const char* confFile, logFile* log = NULL);
+	confFile(folders* pFolders, logFile* log = NULL);
+	confFile(const char* confFile, folders* pFolders, logFile* log = NULL);
 	virtual ~confFile();
 
 	// Ouverture d'un fichier
@@ -88,6 +88,8 @@ public:
 	bool openCommandFile(const char* cmdFile);
 	commandFile* cmdFile()
 	{ return commandFile_; }
+
+	// 
 
 	// Méthodes privées
 	//

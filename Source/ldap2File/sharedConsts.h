@@ -53,7 +53,7 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.22"
+#define APP_RELEASE				"20.7.23"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil Départemental de l'Allier - DSUN")
@@ -117,8 +117,11 @@ using namespace std;
 
 // Protocoles
 //
+
+// Web
 #define IPPROTO_HTTP	"http"
 #define IPPROTO_HTTPS	"https"
+
 
 // Ports pour les protocoles
 //
@@ -275,10 +278,10 @@ using namespace std;
 #else
 #define FOLDER_APP_DEFAULT			"~/ldapTools"
 #endif // #ifdef WIN32
-#define FOLDER_TEMPLATES			"modeles"				// Modeles de documents
-#define FOLDER_TEMP					"temp"					// Fichiers temporaires
-#define FOLDER_LOGS					"logs"
-#define FOLDER_OUTPUTS				"output files"			// Fichiers generes
+#define STR_FOLDER_TEMPLATES		"modeles"				// Modèles de documents
+#define STR_FOLDER_TEMP				"temp"					// Fichiers temporaires
+#define STR_FOLDER_LOGS				"logs"
+#define STR_FOLDER_OUTPUTS			"output files"			// Fichiers générés
 
 //
 // Structure

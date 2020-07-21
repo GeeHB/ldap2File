@@ -42,6 +42,9 @@
 #include "sharedConsts.h"
 #include "ldapBrowser.h"
 
+#include "folders.h"
+using namespace JHB_ldapTools;
+
 #include <fileSystem.h>
 
 #ifndef _WIN32
@@ -87,11 +90,12 @@ int main(int argc, const char * argv[]){
 	cout << binName << " - Version " << APP_RELEASE << endl;
 	cout << "Copyright " << APP_COPYRIGHT << endl;
 
+	folders myFolders;		// Liste des dossiers utilisés par l'application	
 	logFile logs;
-	confFile configurationFile(&logs);
+	confFile configurationFile(&myFolders, &logs);
 
 	try{
-		// Dossier de l'application
+		// Dossier "de base" de l'application
 		//
 		string folder;
 
@@ -115,14 +119,16 @@ int main(int argc, const char * argv[]){
 //#endif // _DEBUG
 		}
 
+		// Ajout du dossier de l'application ...
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_APP, folder);
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_LOGS, STR_FOLDER_LOGS);				// sous dossier des logs
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_TEMPLATES, STR_FOLDER_TEMPLATES);	// sous dossier des modèles
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_TEMP, STR_FOLDER_TEMP);				// fichiers temporaires
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_OUTPUTS, STR_FOLDER_OUTPUTS);		// pour les fichiers générés
+
 		string file(folder);
 		file += FILENAME_SEP;
 		file += XML_CONF_FILE;
-
-		// Logs par défaut ...
-#ifdef WIN32
-		logs.init("C:\\ldapTools\\logs", TRACE_LOGMODE_LIB__DEBUG);
-#endif // WIN32
 
 		// Ouverture du fichier de configuration
 		//
@@ -130,13 +136,40 @@ int main(int argc, const char * argv[]){
 			return 1;
 		}
 
+		// Un dossier pour l'application ?
+		string appFolder = configurationFile.applicationFolder();
+		if (appFolder.size()) {
+			// Mise à jour du (ou des) répertoires et sous-répertoires
+			myFolders.add(folders::FOLDER_TYPE::FOLDER_APP, appFolder);
+		}
+
+		// Informations sur les logs ...
 		LOGINFOS lInfos;
 		configurationFile.logInfos(lInfos);
+
+		if (lInfos.folder_.size()) {
+			// Mise à jour de dossier de logs
+			myFolders.add(folders::FOLDER_TYPE::FOLDER_LOGS, lInfos.folder_);
+		}
+
+		// Le dossier des logs doit exister
+		folders::folder* logFolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS);
+		if (NULL == logFolder) {
+			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée");
+		}
+
+		cout << "Dossiers de l'application : " << endl;
+		cout << "\t - Racine : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path() << endl;
+		cout << "\t - Logs : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS)->path() << endl;
+		cout << "\t - Templates : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path() << endl;
+		cout << "\t - temps : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path() << endl;
+
+		return TRUE;
 
 		// Initialisation du fichier de logs
 		//
 #ifdef WIN32
-		logs.init(lInfos.folder_.c_str(), (lInfos.mode_ == LOGS_MODE_DEBUG) ? TRACE_LOGMODE_LIB__DEBUG : TRACE_LOGMODE_LIB__LOG);
+		logs.init(logFolder->path(), (lInfos.mode_ == LOGS_MODE_DEBUG) ? TRACE_LOGMODE_LIB__DEBUG : TRACE_LOGMODE_LIB__LOG);
 		if (lInfos.fileName_.size()){
 			logs.setFileName(lInfos.fileName_.c_str());
 		}
@@ -144,17 +177,20 @@ int main(int argc, const char * argv[]){
 
 		logs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
 
-		logs.add(logFile::LOG, _T("========================================================================="));
-		logs.add(logFile::LOG, _T("==== %s - version %s - %s"), APP_SHORT_NAME, APP_RELEASE, APP_DESC);
-		logs.add(logFile::LOG, _T("==== Copyright %s"), APP_COPYRIGHT);
-		logs.add(logFile::LOG, _T("Lancement de l'application"));
-		logs.add(logFile::DBG, _T("Logs en mode DEBUG"));
+		logs.add(logFile::LOG, "=========================================================================");
+		logs.add(logFile::LOG, "==== %s - version %s - %s", APP_SHORT_NAME, APP_RELEASE, APP_DESC);
+		logs.add(logFile::LOG, "==== Copyright %s", APP_COPYRIGHT);
+		logs.add(logFile::LOG, "Lancement de l'application");
+		logs.add(logFile::DBG, "Logs en mode DEBUG");
 
 		if (LOGS_DAYS_INFINITE != lInfos.duration_){
-			logs.add(logFile::DBG, _T("Conservation des logs %d jours"), lInfos.duration_);
+			logs.add(logFile::DBG, "Conservation des logs %d jours", lInfos.duration_);
 		}
 
-		logs.add(logFile::LOG, _T("Fichier de configuration : '%s'"), file.c_str());
+		logs.add(logFile::LOG, "Fichier de configuration : '%s'", file.c_str());
+		logs.add(logFile::LOG, "Dossiers de l'application : ");
+		logs.add(logFile::LOG, "\t - Racine : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
+		logs.add(logFile::LOG, "\t - Templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
 	}
 	catch (LDAPException& e){
 		logs.add(logFile::ERR, "Erreur : %s", e.what());
@@ -344,9 +380,9 @@ int main(int argc, const char * argv[]){
 #endif // _WIN32
 
 	// Fin
-	logs.add(logFile::LOG, _T("%d / %d fichier(s) crée(s)"), filesGenerated, files.size());
-	logs.add(logFile::LOG, _T("Fermeture de l'application"));
-	logs.add(logFile::LOG, _T("========================================================================="));
+	logs.add(logFile::LOG, "%d / %d fichier(s) crée(s)", filesGenerated, files.size());
+	logs.add(logFile::LOG, "Fermeture de l'application");
+	logs.add(logFile::LOG, "=========================================================================");
 
 	return retCode;
 }

@@ -402,7 +402,7 @@ void ODSFile::defaultContentFileName(string& out, bool shortName)
 	char sp(FILENAME_SEP);
 	string dest(configurationFile_->applicationFolder());
 	dest += sp;
-	dest += FOLDER_TEMP;
+	dest += STR_FOLDER_TEMP;
 
 	// Le dossier temporaire doit exister
 #ifdef _WIN32
@@ -440,7 +440,7 @@ void ODSFile::templateFileName(string& out, const char* name, bool shortName)
 	char sp(FILENAME_SEP);
 	string dest(configurationFile_->applicationFolder());
 	dest += sp;
-	dest += FOLDER_TEMPLATES;
+	dest += STR_FOLDER_TEMPLATES;
 	dest += sp;
 	dest += (IS_EMPTY(name)? ODS_TEMPLATE_FILENAME :name);
 	out = dest;

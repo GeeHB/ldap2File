@@ -236,6 +236,7 @@
     <ClCompile Include="confFile.cpp" />
     <ClCompile Include="CSVFile.cpp" />
     <ClCompile Include="destinationList.cpp" />
+    <ClCompile Include="folders.cpp" />
     <ClCompile Include="JScriptFile.cpp" />
     <ClCompile Include="ldap2File.cpp" />
     <ClCompile Include="ldapBrowser.cpp" />
@@ -268,6 +269,7 @@
     <ClInclude Include="confFile.h" />
     <ClInclude Include="CSVFile.h" />
     <ClInclude Include="destinationList.h" />
+    <ClInclude Include="folders.h" />
     <ClInclude Include="JScriptConsts.h" />
     <ClInclude Include="JScriptFile.h" />
     <ClInclude Include="ldapAttributes.h" />

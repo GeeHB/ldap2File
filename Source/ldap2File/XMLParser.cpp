@@ -33,13 +33,14 @@
 
 // Construction
 //
-XMLParser::XMLParser(logFile* logs)
+XMLParser::XMLParser(folders* pFolders, logFile* logs)
 {
 	// Initialisation des paramètres
+	folders_ = pFolders;
+	logs_ = logs;
 	fileName_ = "";
 	appFolder_ = "";
-	logs_ = logs;
-
+	
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 
 	// Type de système de fichier "local"

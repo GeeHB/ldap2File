@@ -218,7 +218,7 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 	else{
 		folder = configurationFile_->applicationFolder();
 		folder += FILENAME_SEP;
-		folder += FOLDER_TEMP;
+		folder += STR_FOLDER_TEMP;
 	}
 
 	// Le dossier doit-exister

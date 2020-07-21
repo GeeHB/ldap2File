@@ -29,8 +29,8 @@
 
 // Constructions
 //
-confFile::confFile(const char* confFile, logFile* log)
-	:XMLParser(confFile, log)
+confFile::confFile(const char* confFile, folders* pFolders, logFile* log)
+	:XMLParser(confFile, pFolders, log)
 {
 	// Intialisation des données membres
 	_init();
@@ -39,8 +39,8 @@ confFile::confFile(const char* confFile, logFile* log)
 	_open();
 }
 
-confFile::confFile(logFile* log)
-	:XMLParser(log)
+confFile::confFile(folders* pFolders, logFile* log)
+	:XMLParser(pFolders, log)
 {
 	// Intialisation des données membres
 	_init();
@@ -80,7 +80,7 @@ bool confFile::openCommandFile(const char* cmdFile)
 	}
 
 	// Ouverture du fichier
-	if (!(commandFile_ = new commandFile(cmdFile, logs_, false, applicationFolder().c_str()))){
+	if (!(commandFile_ = new commandFile(cmdFile, folders_, logs_, false, applicationFolder().c_str()))){
 		// Pb d'allocation
 		return false;
 	}
@@ -111,20 +111,12 @@ bool confFile::logInfos(LOGINFOS& dst)
 
 			// Dossier suivant
 			if (!found){
-				subNode = subNode.next_sibling(XML_CONF_FOLDER_NODE);
+				subNode = subNode.next_sibling(XML_CONF_LOGS_FOLDER_NODE);
 			}
 		}
 
 		// Trouvé ?
-		if (IS_EMPTY(subNode.name())){
-			// Par défaut dans le dossier de l'application
-#ifdef _DEBUG
-			dst.folder_ = FOLDER_APP_DEFAULT;
-#else
-			fs.currentFolder(dst.folder_);
-#endif // _DEBUG
-		}
-		else{
+		if (!IS_EMPTY(subNode.name())){
 			dst.folder_ = subNode.first_child().value();
 		}
 
@@ -174,7 +166,7 @@ bool confFile::ldapServer(LDAPServer& dst)
 	// Adresse du serveur
 	dst.setHost(firstNode.attribute(XML_CONF_LDAP_HOST_ATTR).value());
 
-	// Port d'ecoute
+	// Port d'écoute
 	string attrValue(firstNode.attribute(XML_CONF_LDAP_PORT_ATTR).value());
 	if (attrValue.size()){
 		__int16 value = atoi(attrValue.c_str());
@@ -680,13 +672,7 @@ bool confFile::_load()
 	}
 
 	// Trouvé ?
-	if (IS_EMPTY(childNode.name())) {
-		// Pas de dossier => dossier courant
-		string folder;
-		fileSystem::currentFolder(folder);
-		setApplicationFolder(folder.c_str());
-	}
-	else {
+	if (!IS_EMPTY(childNode.name())) {
 		appFolder_ = childNode.first_child().value();
 	}
 

@@ -1,10 +1,11 @@
-20.7.22
-	* 20 juillet 2020
-	+ Corrections mineures
-		+ ajout d'exceptions
-		+ corrections des logs
-		+ erreurs smtp::tls (convention d'appel + paramètre XML)
-		? pas de tests possible pourles transferts par smt
+20.7.23
+	* 
+	+ Corrections mineures	
+		+ bug des logs.de F.Gay
+	+ Nouvelle gestion des dossiers de l'application => création de la classe folders
+	* Ajout de l'espace de nom JHB_ldapTools
+		- titles & titles::title (titre / intitulés des postes)
+		- folders a folders::folder (modélisation des dossiers de l'application)
 
 ### TODO ###
 	+ Génération d'exceptions par SMTPClient
@@ -12,6 +13,13 @@
 	+ Retrait du code lza si inutile ? (ne compile pas sous linux)
 		+ => ne conserver que le code utilisé pour ODS
 
+20.7.22
+	* 20 juillet 2020
+	+ Corrections mineures
+		+ ajout d'exceptions
+		+ corrections des logs
+		+ erreurs smtp::tls (convention d'appel + paramètre XML)
+		? pas de tests possible pourles transferts par smt
 20.7.21
 	* 10 juillet 2020
 	+ maj pugiXML : version 1.10

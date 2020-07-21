@@ -39,7 +39,7 @@ typedef struct tagLOGINFOS
 	void init(){
 		fileName_ = "";		// ie nom du jour
 		mode_ = LOGS_MODE_NORMAL;
-		folder_ = "";		// Dans le dossier d'installation
+		folder_ = "";		// Dans le dossier par défaut (sous-dossier du dossier d'installation)
 		duration_ = LOGS_DAYS_INFINITE;
 	}
 
