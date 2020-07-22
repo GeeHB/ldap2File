@@ -21,7 +21,7 @@
 //--	05/04/2020 - JHB - Version 20.4.6
 //--						+ Création
 //--
-//-- 20/07/2020 - JHB - Version 20.7.22
+//--	22/07/2020 - JHB - Version 20.7.25
 //--
 //---------------------------------------------------------------------------
 
@@ -193,9 +193,9 @@ bool LDIFFile::getOwnParameters()
 
 	if (logs_) {
 		logs_->add(logFile::LOG, "LDIF - OU : \'%s\' - %d attribut(s) obligatoire(s)", usersOU_.c_str(), mandatories_.size());
-		logs_->add(logFile::LOG, "LDIF - %d attribut(s) ajouté(s)", add2All_.size());
-		logs_->add(logFile::LOG, "LDIF - %d exclusion(s)", exclusions_.size());
-		logs_->add(logFile::LOG, "LDIF - %d fusion(s)", attributesToSave_.size());
+		logs_->add(logFile::LOG, "\t- %d attribut(s) ajouté(s)", add2All_.size());
+		logs_->add(logFile::LOG, "\t- %d exclusion(s)", exclusions_.size());
+		logs_->add(logFile::LOG, "\t%d fusion(s)", attributesToSave_.size());
 	}
 
 	// Terminé

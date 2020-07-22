@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//-- 20/07/2020 - JHB - Version 20.7.22
+//-- 22/07/2020 - JHB - Version 20.7.25
 //--
 //---------------------------------------------------------------------------
 
@@ -236,7 +236,7 @@ string outputFile::tokenize(const char* source, const char* fullName, const char
 		throw LDAPException("[outputFile::tokenize] Paramètres invalides");
 	}
 	
-	// quelque chose à faire ?
+	// Quelque chose à faire ?
 	if (NULL == strstr(source, "%")) {
 		return source;
 	}

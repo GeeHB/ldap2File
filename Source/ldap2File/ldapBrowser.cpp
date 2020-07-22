@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//-- 20/07/2020 - JHB - Version 20.7.22
+//--	22/07/2020 - JHB - Version 20.7.25
 //--
 //---------------------------------------------------------------------------
 
@@ -568,6 +568,9 @@ RET_TYPE ldapBrowser::_createFile()
 	// Nom court du fichier de sortie
 	if (pService) {
 			opfi.name_ = outputFile::tokenize(opfi.name_.c_str(), pService->realName(), pService->shortName());
+	}
+	else {
+		opfi.name_ = outputFile::tokenize(opfi.name_.c_str(), NULL, NULL);
 	}
 
 	// Création du générateur de fichier de sortie

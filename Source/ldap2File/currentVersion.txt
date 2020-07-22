@@ -1,9 +1,10 @@
-20.7.24
-	* 
+20.7.25
+	* 22 juillet 2020
 	+ Corrections mineures	
-		+ bug des logs.de F.Gay
-		+ logs
-		+ génération d'exception pour éviter les cas improbables
+		+ bug des logs. identifé par F.Gay
+		+ regression : tokenisation du nom de fichier de sortie
+	+ logs
+	+ génération d'exception pour éviter les cas improbables
 	+ Nouvelle gestion des dossiers de l'application => création de la classe folders
 	* Ajout de l'espace de nom JHB_ldapTools
 		- titles & titles::title (titres / intitulés des postes)

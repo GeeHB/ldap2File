@@ -10,7 +10,7 @@
 //--
 //--	DESCRIPTIONS:
 //--
-//--		Définitions communes
+//--		Définitions communes - Constantes et includes
 //--
 //---------------------------------------------------------------------------
 //--
@@ -19,8 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//-- 20/07/2020 - JHB - Version 20.7.22
-//-- 20/07/2020 - JHB - Version 20.7.22
+//--	22/07/2020 - JHB - Version 20.7.25
 //--
 //---------------------------------------------------------------------------
 
@@ -53,7 +52,7 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.24"
+#define APP_RELEASE				"20.7.25"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
