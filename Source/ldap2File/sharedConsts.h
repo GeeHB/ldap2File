@@ -53,10 +53,10 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.23"
+#define APP_RELEASE				"20.7.24"
 
 // Copyright
-#define APP_COPYRIGHT			_T("Conseil Départemental de l'Allier - DSUN")
+#define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
 
 // Ligne de commandes
 //
@@ -94,6 +94,12 @@
 #include <deque>
 #include <list>
 using namespace std;
+
+// Gestion des dossiers de l'application
+//
+#include "folders.h"
+using namespace JHB_ldapTools;
+
 
 #ifdef WIN32
 #include <time.h>
@@ -172,7 +178,7 @@ using namespace std;
 
 // Format des noeuds dans l'organigramme hiérarchique
 //
-#define DEF_ORGTAB_NODE_FORMAT	"oui"		// ...
+#define DEF_ORGTAB_NODE_FORMAT		"oui"		// ...
 
 //
 // Eléments pouvant être remplacés

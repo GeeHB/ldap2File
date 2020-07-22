@@ -80,7 +80,7 @@ bool confFile::openCommandFile(const char* cmdFile)
 	}
 
 	// Ouverture du fichier
-	if (!(commandFile_ = new commandFile(cmdFile, folders_, logs_, false, applicationFolder().c_str()))){
+	if (!(commandFile_ = new commandFile(cmdFile, folders_, logs_, false))){
 		// Pb d'allocation
 		return false;
 	}
@@ -671,9 +671,10 @@ bool confFile::_load()
 		}
 	}
 
-	// Trouvé ?
+	// Trouvée ?
 	if (!IS_EMPTY(childNode.name())) {
-		appFolder_ = childNode.first_child().value();
+		//appFolder_ = childNode.first_child().value();
+		folders_->add(folders::FOLDER_TYPE::FOLDER_APP, childNode.first_child().value());
 	}
 
 	// Environnement
@@ -693,8 +694,6 @@ bool confFile::_load()
 	fileRead_ = true;
 	return true;
 }
-
-
 
 // Recherche d'un noeud (fils ou frère) par son nom en fonction de l'environnement
 //

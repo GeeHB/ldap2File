@@ -400,6 +400,7 @@ void ODSFile::defaultContentFileName(string& out, bool shortName)
 	}
 
 	char sp(FILENAME_SEP);
+	/*
 	string dest(configurationFile_->applicationFolder());
 	dest += sp;
 	dest += STR_FOLDER_TEMP;
@@ -423,7 +424,10 @@ void ODSFile::defaultContentFileName(string& out, bool shortName)
 
 	// on le conserve pour un usage futur
 	tempFolder_ = dest;
+	*/
 
+	// Récupération du dossier "temp"
+	string dest = folders_->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path();
 	dest += sp;
 	dest += ODS_CONTENT_FILENAME;
 	out = dest;
@@ -438,9 +442,11 @@ void ODSFile::templateFileName(string& out, const char* name, bool shortName)
 
 	// Chemin complet vers le fichier
 	char sp(FILENAME_SEP);
-	string dest(configurationFile_->applicationFolder());
+	string dest(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
+	/*
 	dest += sp;
 	dest += STR_FOLDER_TEMPLATES;
+	*/
 	dest += sp;
 	dest += (IS_EMPTY(name)? ODS_TEMPLATE_FILENAME :name);
 	out = dest;

@@ -2243,9 +2243,9 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 							opfi.name_ = fileSystem::split(output);	// le nom court
 
 #ifdef _DEBUG
-							logs_->add(logFile::LOG, "\t- Renomage du fichier de sortie en : %s", output.c_str());
+							logs_->add(logFile::LOG, "\t- Renomamge du fichier de sortie en : %s", output.c_str());
 #else
-							logs_->add(logFile::DBG, "\t- Renomage du fichier de sortie en : %s", output.c_str());
+							logs_->add(logFile::DBG, "\t- Renommage du fichier de sortie en : %s", output.c_str());
 #endif // _DEBUG
 						}
 					}

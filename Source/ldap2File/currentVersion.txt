@@ -1,10 +1,12 @@
-20.7.23
+20.7.24
 	* 
 	+ Corrections mineures	
 		+ bug des logs.de F.Gay
+		+ logs
+		+ génération d'exception pour éviter les cas improbables
 	+ Nouvelle gestion des dossiers de l'application => création de la classe folders
 	* Ajout de l'espace de nom JHB_ldapTools
-		- titles & titles::title (titre / intitulés des postes)
+		- titles & titles::title (titres / intitulés des postes)
 		- folders a folders::folder (modélisation des dossiers de l'application)
 
 ### TODO ###
@@ -19,7 +21,7 @@
 		+ ajout d'exceptions
 		+ corrections des logs
 		+ erreurs smtp::tls (convention d'appel + paramètre XML)
-		? pas de tests possible pourles transferts par smt
+		? pas de tests possible pour les transferts par smtp en interne au CD03
 20.7.21
 	* 10 juillet 2020
 	+ maj pugiXML : version 1.10
@@ -189,7 +191,7 @@
 	* 25 mars 2020
 	+ Version intermédiaire
 	+ Protocoles XML en version 2.1
-	+ Modifications de la classe XMLPaser
+	+ Modifications de la classe XMLParser
 		+ ajout de la classe XMLNode
 		+ méthode findNextNode
 	+ Premiers tests pour la gestion des "environnements"

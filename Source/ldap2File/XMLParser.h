@@ -31,9 +31,6 @@
 #define PUGIXML_HEADER_ONLY
 #include <./xml/pugixml.cpp>
 
-#include "folders.h"
-using namespace JHB_ldapTools;
-
 #include <charUtils.h>
 #include "regExpr.h"
 
@@ -143,11 +140,13 @@ public:
 	const char* fileName()
 	{ return fileName_.c_str();}
 
-	// Dossier de l'application
-	void setApplicationFolder(const char* appFolder)
-	{ appFolder_ = (IS_EMPTY(appFolder)?"":appFolder); }
+	// Dossiers de l'application
+	folders* getFolders()
+	{ return folders_; }
+	/*
 	string applicationFolder()
 	{ return appFolder_; }
+	*/
 
 	// Logs
 	logFile* getLogs()
@@ -209,8 +208,7 @@ protected:
 	DEST_TYPE			defType_;
 
 	// Dossiers de l'application
-	folders*			 folders_;	
-	string				appFolder_;
+	folders*			folders_;	
 	
 	// Logs
 	logFile*			logs_;

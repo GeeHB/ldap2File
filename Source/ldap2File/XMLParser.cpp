@@ -39,7 +39,6 @@ XMLParser::XMLParser(folders* pFolders, logFile* logs)
 	folders_ = pFolders;
 	logs_ = logs;
 	fileName_ = "";
-	appFolder_ = "";
 	
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 

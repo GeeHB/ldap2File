@@ -108,7 +108,7 @@ public:
 
 	// Construction et destruction
 	//
-	commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded = false, const char* templateFolder = NULL);
+	commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded = false);
 	virtual ~commandFile();
 
 	bool isValid()

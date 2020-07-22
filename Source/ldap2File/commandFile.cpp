@@ -29,13 +29,12 @@
 
 // Construction
 //
-commandFile::commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded, const char* templateFolder)
+commandFile::commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded)
 	: XMLParser(cmdFile, pFolders, log)
 {
 	// Intialisation des données membres
 	includedFile_ = NULL;
 	isIncluded_ = isIncluded;
-	setApplicationFolder(templateFolder);
 
 	columnHandler_ = DATA_HANDLER::NONE;
 	currentColIndex_ = 0;
@@ -131,9 +130,13 @@ bool commandFile::_load()
 			string sCmdFile(includedName);
 			char sp(FILENAME_SEP);
 			if (sCmdFile.npos == sCmdFile.find(sp)){
+				/*
 				string folder(applicationFolder());
 				folder += sp;
 				folder += STR_FOLDER_TEMPLATES;
+				*/
+
+				string folder(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
 				folder += sp;
 				folder += sCmdFile;
 				sCmdFile = folder;

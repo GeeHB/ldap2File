@@ -42,9 +42,6 @@
 #include "sharedConsts.h"
 #include "ldapBrowser.h"
 
-#include "folders.h"
-using namespace JHB_ldapTools;
-
 #include <fileSystem.h>
 
 #ifndef _WIN32
@@ -136,12 +133,14 @@ int main(int argc, const char * argv[]){
 			return 1;
 		}
 
+		/*
 		// Un dossier pour l'application ?
 		string appFolder = configurationFile.applicationFolder();
 		if (appFolder.size()) {
 			// Mise à jour du (ou des) répertoires et sous-répertoires
 			myFolders.add(folders::FOLDER_TYPE::FOLDER_APP, appFolder);
 		}
+		*/
 
 		// Informations sur les logs ...
 		LOGINFOS lInfos;
@@ -159,12 +158,10 @@ int main(int argc, const char * argv[]){
 		}
 
 		cout << "Dossiers de l'application : " << endl;
-		cout << "\t - Racine : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path() << endl;
-		cout << "\t - Logs : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS)->path() << endl;
-		cout << "\t - Templates : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path() << endl;
+		cout << "\t - app : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path() << endl;
+		cout << "\t - logs : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS)->path() << endl;
+		cout << "\t - templates : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path() << endl;
 		cout << "\t - temps : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path() << endl;
-
-		return TRUE;
 
 		// Initialisation du fichier de logs
 		//
@@ -189,8 +186,9 @@ int main(int argc, const char * argv[]){
 
 		logs.add(logFile::LOG, "Fichier de configuration : '%s'", file.c_str());
 		logs.add(logFile::LOG, "Dossiers de l'application : ");
-		logs.add(logFile::LOG, "\t - Racine : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
-		logs.add(logFile::LOG, "\t - Templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
+		logs.add(logFile::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
+		logs.add(logFile::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
+		logs.add(logFile::LOG, "\t- temps : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
 	}
 	catch (LDAPException& e){
 		logs.add(logFile::ERR, "Erreur : %s", e.what());

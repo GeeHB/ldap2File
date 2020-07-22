@@ -343,7 +343,7 @@ private:
 	// Donnees membres privees
 	//
 protected:
-
+	folders*		folders_;			// Dossiers de l'application
 	logFile*		logs_;				// Fichier de logs
 
 	confFile*		configurationFile_;

@@ -24,7 +24,6 @@
 //--
 //---------------------------------------------------------------------------
 
-
 #ifndef __LDAP_2_FILE_FOLDERS_LIST_h__
 #define __LDAP_2_FILE_FOLDERS_LIST_h__
 
@@ -37,7 +36,7 @@ using namespace std;
 namespace JHB_ldapTools {
 
 	//
-	// Définition de la classe
+	// Liste des dossiers
 	//
 	class folders
 	{
@@ -69,10 +68,7 @@ namespace JHB_ldapTools {
 			{ return type_; }
 
 			
-			void setPath(const string& path){
-				path_ = path;
-				_create();
-			}
+			bool setPath(const string& path);
 			const char* path()
 			{ return path_.c_str();}
 
@@ -131,7 +127,7 @@ namespace JHB_ldapTools {
 		// Liste des dossiers
 		list<folders::folder*>		folders_;
 	};
-};	// namespace JHB_ldapTools {
+};	//  JHB_ldapTools
 
 
 #endif __LDAP_2_FILE_FOLDERS_LIST_h__

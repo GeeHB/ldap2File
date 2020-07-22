@@ -44,8 +44,20 @@ outputFile::outputFile(const LPOPFI fileInfos, columnList* columns, confFile* co
 {
 	fileInfos_ = fileInfos;
 	configurationFile_ = configurationFile;
-	logs_ = configurationFile ? configurationFile->getLogs():NULL;
+	
+	// Le fichier de configuration existe ainsi que les pointeurs associés !!!
+	//
+	if (NULL == configurationFile) {
+		throw LDAPException("outputFile::outputFile - Pas de fichier de configuration");
+	}
 
+	folders_ = configurationFile->getFolders();
+	logs_ = configurationFile->getLogs();
+
+	if (NULL == folders_ || NULL == logs_) {
+		throw LDAPException("outputFile::outputFile - Erreur dans les paramètres");
+	}
+	
 	columns_ = columns;
 	fileName_ = "";
 	//_shortFileName = "";
@@ -137,81 +149,19 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 
 	// Formatage du nom du fichier
 	string file(shortName);
-	/*
-	char fileName[MAX_PATH + 1];
 	
-
-	// Ajout de la date (si demandée)
-	//
-	size_t pos4, pos2;
-
-	// Ajout de l'année ?
-	if (shortName.npos == (pos4 = shortName.find("%04"))){
-		pos4 = shortName.find("%4");
-	}
-
-	// Ajout du jour ?
-	if (shortName.npos == (pos2 = shortName.find("%02"))){
-		pos2 = shortName.find("%2");
-	}
-
-	if (pos2 != shortName.npos || pos4 != shortName.npos){
-		EMPTY(fileName);
-		int year(0), month(0), day(0);
-		bool done(false);
-		time_t rawTime;
-		struct tm timeInfo;
-		time(&rawTime);
-
-#ifdef WIN32
-		if (!localtime_s(&timeInfo, &rawTime)) {
-			done = true;
-		}
-#else
-		if (!localtime_r(&rawTime, &timeInfo)) {
-			done = true;
-		}
-#endif // WIN32
-		if (done){
-
-			// Conversion de la date du jour
-			year = 1900 + timeInfo.tm_year;
-			month = 1 + timeInfo.tm_mon;
-			day = timeInfo.tm_mday;
-
-			if (pos4 > pos2){
-				// Jour-Mois-Année
-				//sprintf(fileName, shortName.c_str(), timeinfo.tm_mday, 1 + timeinfo.tm_mon, 1900 + timeinfo.tm_year);
-				sprintf(fileName, shortName.c_str(), day, month, year);
-			}
-			else{
-				// aaaa/mm/jj
-				//sprintf(fileName, shortName.c_str(), 1900 + timeinfo.tm_year, 1 + timeinfo.tm_mon, timeinfo.tm_mday);
-				sprintf(fileName, shortName.c_str(), year, month, day);
-			}
-		}
-		else{
-			// Impossible de formater la date ...
-			strcpy(fileName, shortName.c_str());
-		}
-
-		file = fileName;
-	}
-	else{
-		file = shortName;
-	}
-	*/
-
-	/*_shortFileName = */
-	shortName = file;		// Mise à jour du nom court
+	// Mise à jour du nom court
+	shortName = file;
 
 	string baseName(file);
 
 	// Le fichier est crée dans le dossier temporaire
 	//
-	string folder("");
-	fileSystem fs;
+	string tempFolder(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
 	size_t pos(0);
+
+	/*
+	fileSystem fs;
 	if (baseName.npos != (pos =  baseName.rfind(FILENAME_SEP))){
 		folder = baseName.substr(0, pos);
 	}
@@ -231,9 +181,10 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 		mkdir(folder.c_str(), 0777);
 	}
 #endif // WIN32
+	*/
 
-	folder += FILENAME_SEP;
-	baseName.insert(0, folder.c_str());
+	tempFolder += FILENAME_SEP;
+	baseName.insert(0, tempFolder.c_str());
 
 	// L'extension est-elle correcte ?
 	string expected = ".";

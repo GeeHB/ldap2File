@@ -41,6 +41,22 @@ namespace JHB_ldapTools {
 	//--
 	//---------------------------------------------------------------------------
 	
+	// Modification du chemin d'un dossier
+	//
+	bool folders::folder::setPath(const string& path)
+	{
+		// Un changement ?
+		if (path == path_) {
+			return false;
+		}
+		
+		// Mise à jour du chemin
+		path_ = path;
+	
+		// On s'assure que le dossier physique existe
+		return _create();
+	}
+	
 	// Création du dossier (s'il n'existe pas)
 	bool folders::folder::_create()
 	{
@@ -110,30 +126,29 @@ namespace JHB_ldapTools {
 		folders::folder* previous(find(type));
 		if (NULL != previous) {
 			// C'est une mise à jour ...
-			previous->setPath(realPath);
 			previous->setSubFolder(sub);
+			if (previous->setPath(realPath)) {
+				// Changement de dossier de l'application => mise à jour des sous-dossiers relatifs
+				if (type == folders::FOLDER_TYPE::FOLDER_APP) {
+					string path(""), newPath("");
+					for (list<folders::folder*>::iterator i = folders_.begin(); i != folders_.end(); i++) {
+						if (*i && (*i) != previous && (*i)->isSubFolder()) {
+							// C'est un sous-dossier
+							path = (*i)->path();
+							size_t pos(path.rfind(FILENAME_SEP));
+							if (path.npos != pos) {
+								// Le nom du sous-dossier 
+								newPath = realPath;
+								newPath += path.substr(pos);
 
-			if (type == folders::FOLDER_TYPE::FOLDER_APP) {
-
-				string path("");
-				
-				// Changement ded dossier de l'application => mise à jour des sous-dossiers relatifs
-				for (list<folders::folder*>::iterator i = folders_.begin(); i != folders_.end(); i++) {
-					if (*i && (*i) != previous && (*i)->isSubFolder()) {
-						// C'est un sous-dossier
-						path = (*i)->path();
-						size_t pos(path.find(FILENAME_SEP));
-						if (path.npos != pos) {
-							// Le nom du sous-dossier 
-							path = realPath;
-							path += path.substr(pos);
-
-							// Mise à jour
-							(*i)->setPath(path);
+								// Mise à jour
+								(*i)->setPath(newPath);
+							}
 						}
 					}
 				}
 			}
+
 		}
 		else {
 			// Création
