@@ -25,7 +25,7 @@
 //---------------------------------------------------------------------------
 
 #include "folders.h"
-#include <fileSystem.h>
+#include "sFileSystem.h"
 
 //---------------------------------------------------------------------------
 //--
@@ -33,7 +33,7 @@
 //--
 //---------------------------------------------------------------------------
 
-namespace JHB_ldapTools {
+namespace jhbLDAPTools {
 
 	//---------------------------------------------------------------------------
 	//--
@@ -60,10 +60,9 @@ namespace JHB_ldapTools {
 	// Création du dossier (s'il n'existe pas)
 	bool folders::folder::_create()
 	{
-		fileSystem fs;
-		if (!fs.existFolder(path_)) {
+		if (!sFileSystem::exists(path_)) {
 			// Création du dossier
-			return fs.createFolder(path_, false);
+			return sFileSystem::create_directory(path_);
 		}
 		
 		// Ok (le dossier existe déja)
@@ -178,7 +177,7 @@ namespace JHB_ldapTools {
 		}
 
 		// Non trouvé
-		return false;
+		return NULL;
 	}
 
 	// ... par son index
@@ -201,6 +200,6 @@ namespace JHB_ldapTools {
 		return (*it);
 	}
 
-}; // JHB_ldapTools
+}; // jhbLDAPTools
 
 // EOF

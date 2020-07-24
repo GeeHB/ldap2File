@@ -124,7 +124,7 @@ protected:
 
 	servicesList*			services_;			// Services dans l'annuaire
 #ifdef __LDAP_USE_ALLIER_TITLES_h__
-	JHB_ldapTools::titles*	titles_;			// Liste des intitulés de postes
+	jhbLDAPTools::titles*	titles_;			// Liste des intitulés de postes
 #endif // __LDAP_USE_ALLIER_TITLES_h__
 
 	columnList				cols_;				// Mes colonnes

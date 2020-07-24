@@ -1,3 +1,19 @@
+20.7.26
+	* 
+	+ Corrections mineures
+		- bug de regression : fichiers XLS gnérés dans le dossier de l'application
+	* L'espace de nom JHB_ldapTools devient jhbLDAPTools (plus cohérent avec les autres dénominations)
+	+ Création d'espace de nom sFileSystem (simple FileSystem)
+		+ remplacement de l'objet fileSystem non-portable sous linux ...
+		+ interface // std::filesystem (les noms des fonctions sont identiques)
+		+ portable !
+
+### TODO ###
+	+ Génération d'exceptions par SMTPClient
+	+ Vérification & réecriture SMTPClient
+	+ Retrait du code lza si inutile ? (ne compile pas sous linux)
+		+ => ne conserver que le code utilisé pour ODS
+
 20.7.25
 	* 22 juillet 2020
 	+ Corrections mineures	
@@ -9,12 +25,6 @@
 	* Ajout de l'espace de nom JHB_ldapTools
 		- titles & titles::title (titres / intitulés des postes)
 		- folders a folders::folder (modélisation des dossiers de l'application)
-
-### TODO ###
-	+ Génération d'exceptions par SMTPClient
-	+ Vérification & réecriture SMTPClient
-	+ Retrait du code lza si inutile ? (ne compile pas sous linux)
-		+ => ne conserver que le code utilisé pour ODS
 
 20.7.22
 	* 20 juillet 2020

@@ -96,9 +96,6 @@
     <ClCompile Include="..\..\..\Common\charUtils.cpp">
       <Filter>Fichiers sources\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\fileSystem.cpp">
-      <Filter>Fichiers sources\Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\logFile.cpp">
       <Filter>Fichiers sources\Common</Filter>
     </ClCompile>
@@ -300,6 +297,9 @@
     <ClCompile Include="folders.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="sFileSystem.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="columnList.h">
@@ -380,9 +380,6 @@
     <ClInclude Include="..\..\..\Common\SMTP\cSMTPClient.h">
       <Filter>Fichiers d%27en-tête\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\fileSystem.h">
-      <Filter>Fichiers d%27en-tête\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Common\logFile.h">
       <Filter>Fichiers d%27en-tête\Common</Filter>
     </ClInclude>
@@ -408,6 +405,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="folders.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="sFileSystem.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

@@ -31,7 +31,7 @@
 #ifndef __LDAP_2_FILE_TITLES_LIST_h__
 #define __LDAP_2_FILE_TITLES_LIST_h__
 
-namespace JHB_ldapTools {
+namespace jhbLDAPTools {
 
 	//
 	// Définition de la classe
@@ -135,7 +135,7 @@ namespace JHB_ldapTools {
 		// Liste
 		deque<LPAGENTTITLE>		titles_;
 	};
-};	// namespace JHB_ldapTools {
+};	// jhbLDAPTools
 
 #endif // __LDAP_2_FILE_TITLES_LIST_h__
 

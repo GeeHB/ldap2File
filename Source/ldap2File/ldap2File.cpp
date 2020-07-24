@@ -42,8 +42,6 @@
 #include "sharedConsts.h"
 #include "ldapBrowser.h"
 
-#include <fileSystem.h>
-
 #ifndef _WIN32
 #include <dirent.h>		// Gestion des repertoires
 #include <ctime>
@@ -157,6 +155,8 @@ int main(int argc, const char * argv[]){
 			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée");
 		}
 
+		cout << "Binaire : " << argv[0] << endl;
+
 		cout << "Dossiers de l'application : " << endl;
 		cout << "\t - app : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path() << endl;
 		cout << "\t - logs : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS)->path() << endl;
@@ -184,6 +184,7 @@ int main(int argc, const char * argv[]){
 			logs.add(logFile::DBG, "Conservation des logs %d jours", lInfos.duration_);
 		}
 
+		logs.add(logFile::LOG, "Binaire : %s", argv[0]);
 		logs.add(logFile::LOG, "Fichier de configuration : '%s'", file.c_str());
 		logs.add(logFile::LOG, "Dossiers de l'application : ");
 		logs.add(logFile::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());

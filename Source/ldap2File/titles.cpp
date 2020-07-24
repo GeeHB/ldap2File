@@ -36,7 +36,7 @@
 //--
 //---------------------------------------------------------------------------
 
-namespace JHB_ldapTools {
+namespace jhbLDAPTools {
 
 	//
 	// Classe titles
@@ -112,7 +112,7 @@ namespace JHB_ldapTools {
 		return NULL;
 	}
 
-}; // namespace JHB_ldapTools
+}; // jhbLDAPTools
 
 #endif // __LDAP_USE_ALLIER_TITLES_h__
 

@@ -25,12 +25,8 @@
 //---------------------------------------------------------------------------
 
 #include "outputFile.h"
+#include "sFileSystem.h"
 
-#ifndef WIN32
-//#include <time.h>
-#else
-#include <fileSystem.h>
-#endif // WIN32
 
 //----------------------------------------------------------------------
 //--
@@ -88,7 +84,7 @@ outputFile::~outputFile()
 	// Suppression du fichier
 	if (fileName_.size()){
 		logs_->add(logFile::DBG, "Suppression du fichier temporaire : '%s'", fileName_.c_str());
-		fileSystem::deleteSingleFile(fileName_);
+		sFileSystem::remove(fileName_);
 	}
 }
 

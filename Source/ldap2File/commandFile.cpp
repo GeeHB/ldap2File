@@ -25,7 +25,7 @@
 //---------------------------------------------------------------------------
 
 #include "commandFile.h"
-#include <fileSystem.h>
+#include "sFileSystem.h"
 
 // Construction
 //
@@ -474,15 +474,14 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 								// Est ce un chemin complet ?
 								if (folder.npos == folder.find(FILENAME_SEP)) {
 									// Non => chemin relatif au dossier courant
-									fileSystem::currentFolder(folder);
+									folder = sFileSystem::current_path();
 									folder += FILENAME_SEP;
 									folder += snode.first_child().value();
 								}
 
 								// Qque soit de le cas, le dossier doit exister
-								fileSystem fs;
-								if (!fs.changeFolder(folder)) {
-									fs.createFolder(folder);
+								if (!sFileSystem::exists(folder)) {
+									sFileSystem::create_directory(folder);
 								}
 
 								if (NULL != (pDestination = new fileDestination(folder))) {
@@ -510,7 +509,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 	//
 	if (!fileInfos.dests_.size()){
 		// Pas de dossier => dossier courant
-		fileSystem::currentFolder(folder);
+		folder = sFileSystem::current_path();
 		folder += FILENAME_SEP;
 		folder += STR_FOLDER_OUTPUTS;
 

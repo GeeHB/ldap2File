@@ -25,7 +25,7 @@
 //---------------------------------------------------------------------------
 
 #include "confFile.h"
-#include <fileSystem.h>
+#include "sFileSystem.h"
 
 // Constructions
 //
@@ -104,7 +104,6 @@ bool confFile::logInfos(LOGINFOS& dst)
 
 		// Recherche de la "bonne valeur" pour le dossier
 		bool found(false);
-		fileSystem fs;
 		pugi::xml_node subNode = node.child(XML_CONF_LOGS_FOLDER_NODE);
 		while (!IS_EMPTY(subNode.name()) && !found){
 			found = (expectedOS_ == subNode.attribute(XML_CONF_FOLDER_OS_ATTR).value());
@@ -121,8 +120,8 @@ bool confFile::logInfos(LOGINFOS& dst)
 		}
 
 		// Le dossier doit exister !
-		if (!fs.existFolder(dst.folder_)){
-			if (!fs.createFolder(dst.folder_)){
+		if (!sFileSystem::exists(dst.folder_)){
+			if (!sFileSystem::create_directory(dst.folder_)){
 				// Problématique ...
 				return false;
 			}
@@ -417,15 +416,14 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 					// Est ce un chemin complet ?
 					if (folder.npos == folder.find(FILENAME_SEP)) {
 						// Non => chemin relatif au dossier courant
-						fileSystem::currentFolder(folder);
+						folder = sFileSystem::current_path();
 						folder += FILENAME_SEP;
 						folder += destinationServer_.node()->first_child().value();
 					}
 
 					// QQue soit de le cas, le dossier doit exister
-					fileSystem fs;
-					if (!fs.changeFolder(folder)) {
-						fs.createFolder(folder);
+					if (!sFileSystem::exists(folder)) {
+						sFileSystem::create_directory(folder);
 					}
 
 					if (NULL != (pDestination = new fileDestination(name, folder))) {

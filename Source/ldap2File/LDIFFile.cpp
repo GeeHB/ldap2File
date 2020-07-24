@@ -195,7 +195,7 @@ bool LDIFFile::getOwnParameters()
 		logs_->add(logFile::LOG, "LDIF - OU : \'%s\' - %d attribut(s) obligatoire(s)", usersOU_.c_str(), mandatories_.size());
 		logs_->add(logFile::LOG, "\t- %d attribut(s) ajouté(s)", add2All_.size());
 		logs_->add(logFile::LOG, "\t- %d exclusion(s)", exclusions_.size());
-		logs_->add(logFile::LOG, "\t%d fusion(s)", attributesToSave_.size());
+		logs_->add(logFile::LOG, "\t- %d fusion(s)", attributesToSave_.size());
 	}
 
 	// Terminé

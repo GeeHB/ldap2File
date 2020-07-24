@@ -33,7 +33,7 @@
 #include <list>
 using namespace std;
 
-namespace JHB_ldapTools {
+namespace jhbLDAPTools {
 
 	//
 	// Liste des dossiers
@@ -127,7 +127,7 @@ namespace JHB_ldapTools {
 		// Liste des dossiers
 		list<folders::folder*>		folders_;
 	};
-};	//  JHB_ldapTools
+};	//  jhbLDAPTools
 
 
 #endif __LDAP_2_FILE_FOLDERS_LIST_h__

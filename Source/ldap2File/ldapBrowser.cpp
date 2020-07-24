@@ -34,7 +34,7 @@
 //#include "YealinkFile.h"
 #include "LDIFFile.h"
 
-#include <fileSystem.h>
+#include "sFileSystem.h"
 
 // Outils CURL
 #include <FTPClient.h>
@@ -821,7 +821,7 @@ RET_TYPE ldapBrowser::_createFile()
 					fullName = dest->folder();
 					fullName += FILENAME_SEP;
 					fullName += opfi.name_;
-					if (!fileSystem::copySingleFile(file_->fileName(), fullName.c_str())){
+					if (!sFileSystem::copy_file(file_->fileName(), fullName.c_str())){
 						atLeastOneError = true;
 						logs_->add(logFile::ERR, "Impossible de créer le fichier '%s'", fullName.c_str());
 					}
@@ -926,7 +926,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		// on demandes intitulés => on s'assure que la liste est chargée
 		if (NULL == titles_) {
 #ifdef __LDAP_USE_ALLIER_TITLES_h__
-			if (NULL == (titles_ = new JHB_ldapTools::titles(logs_))) {
+			if (NULL == (titles_ = new jhbLDAPTools::titles(logs_))) {
 				logs_->add(logFile::ERR, "Impossible de créer la liste des postes => pas d'intitulés");
 				colPoste = cols_.npos;
 			}
@@ -1313,7 +1313,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 																		if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_ID_POSTE)
 																			&& titles_) {
 																			// Recherche du nom de l'intitulé
-																			JHB_ldapTools::titles::LPAGENTTITLE ptitle = titles_->find(u8Value);
+																			jhbLDAPTools::titles::LPAGENTTITLE ptitle = titles_->find(u8Value);
 																			u8Value = (ptitle ? ptitle->label() : "");
 																		}
 																	}
@@ -2229,21 +2229,26 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 				logs_->add(logFile::DBG, "\t- Paramètres : %s", action->parameters());
 #endif // _DEBUG
 
+				// On se positionne dans le dossier temporaire (là ou se trouve le fichier source)
+				sFileSystem::current_path(configurationFile_->getFolders()->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
+
+				// Exécution ...
 				if (true == (launched = _exec(action->application(), action->parameters(), errorMessage))) {
 					
+					bool done(true);
+
 					// Y a t'il eu génération d'un fichier ?
 					output = action->outputFilename();
 					if (0 != output.size()) {
-						fileSystem fs;
-						if (fs.exists(output)) {
+						if (sFileSystem::exists(output)) {
 
 							// Suppression de la "source"
-							fs.deleteSingleFile(srcFile);
+							sFileSystem::remove(srcFile);
 
 							// On remplace le nom du fichier "source" par celui généré
 							//
 							file_->setFileName(output);				// dans le "fichier" le nom complet
-							opfi.name_ = fileSystem::split(output);	// le nom court
+							opfi.name_ = sFileSystem::split(output);	// le nom court
 
 #ifdef _DEBUG
 							logs_->add(logFile::LOG, "\t- Renomamge du fichier de sortie en : %s", output.c_str());
@@ -2251,9 +2256,15 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 							logs_->add(logFile::DBG, "\t- Renommage du fichier de sortie en : %s", output.c_str());
 #endif // _DEBUG
 						}
+						else {
+							done = false;
+							logs_->add(logFile::ERR, "\t- Le fichier %s est introuvable", output.c_str());
+						}
 					}
 
-					logs_->add(logFile::LOG, "\t- Terminée avec succès");
+					if (done) {
+						logs_->add(logFile::LOG, "\t- Terminée avec succès");
+					}
 				}
 				else {
 					logs_->add(logFile::ERR, "Action postgen' %s' - %s", action->name(), errorMessage.c_str());
@@ -2279,7 +2290,7 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 	// C'est parti ...
 	errorMessage = "";
 	string app(application);
-	fileSystem::cleanName(app);
+	charUtils::cleanName(app);
 
 #ifdef WIN32
 	STARTUPINFO startupInfo = { sizeof(startupInfo) };	//startupInfo.cb = sizeof(startupInfo);

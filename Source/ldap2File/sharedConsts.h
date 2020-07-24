@@ -52,7 +52,7 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.25"
+#define APP_RELEASE				"20.7.26"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -97,8 +97,7 @@ using namespace std;
 // Gestion des dossiers de l'application
 //
 #include "folders.h"
-using namespace JHB_ldapTools;
-
+using namespace jhbLDAPTools;
 
 #ifdef WIN32
 #include <time.h>

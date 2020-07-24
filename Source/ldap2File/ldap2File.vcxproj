@@ -164,7 +164,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Common\charUtils.cpp" />
-    <ClCompile Include="..\..\..\Common\fileSystem.cpp" />
     <ClCompile Include="..\..\..\Common\jhbCURLTools\FTPClient.cpp" />
     <ClCompile Include="..\..\..\Common\jhbCURLTools\SMTPClient.cpp" />
     <ClCompile Include="..\..\..\Common\logFile.cpp" />
@@ -246,6 +245,7 @@
     <ClCompile Include="outputFile.cpp" />
     <ClCompile Include="regExpr.cpp" />
     <ClCompile Include="servicesList.cpp" />
+    <ClCompile Include="sFileSystem.cpp" />
     <ClCompile Include="textFile.cpp" />
     <ClCompile Include="titles.cpp" />
     <ClCompile Include="treeStructure.cpp" />
@@ -254,7 +254,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Common\charUtils.h" />
-    <ClInclude Include="..\..\..\Common\fileSystem.h" />
     <ClInclude Include="..\..\..\Common\jhbCURLTools\CURLTools.h" />
     <ClInclude Include="..\..\..\Common\jhbCURLTools\FTPClient.h" />
     <ClInclude Include="..\..\..\Common\jhbCURLTools\SMTPClient.h" />
@@ -281,6 +280,7 @@
     <ClInclude Include="outputFile.h" />
     <ClInclude Include="regExpr.h" />
     <ClInclude Include="servicesList.h" />
+    <ClInclude Include="sFileSystem.h" />
     <ClInclude Include="sharedConsts.h" />
     <ClInclude Include="sharedTypes.h" />
     <ClInclude Include="textFile.h" />

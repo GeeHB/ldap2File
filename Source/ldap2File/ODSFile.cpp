@@ -27,7 +27,7 @@
 #include "ODSFile.h"
 #include "ODSConsts.h"
 
-#include <fileSystem.h>
+#include "sFileSystem.h"
 
 //----------------------------------------------------------------------
 //--
@@ -343,8 +343,12 @@ bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile
 	}
 
 	// Le fichier existe t'il ?
-	fileSystem fs;
-	return fs.exists(destFile.c_str(), true);
+	if (sFileSystem::exists(destFile)) {
+		// Le fichier doit être non vide
+		return sFileSystem::file_size(destFile) > 0;
+	}
+
+	return false;
 }
 
 #endif // #ifndef __USE_ZIP_UTILS_LIB__
@@ -883,7 +887,7 @@ bool ODSFile::_endContentFile()
 
 	// 1 - Copie du fichier de référence
 	string newName(fileName());
-	if (false == fileSystem::copySingleFile(templateFile_, newName)) {
+	if (false == sFileSystem::copy_file(templateFile_, newName)) {
 		if (logs_) {
 			logs_->add(logFile::ERR, "Pas de génération du fichier ODS : Impossible de copier le fichier %s", templateFile_.c_str());
 		}
@@ -893,7 +897,7 @@ bool ODSFile::_endContentFile()
 		// Ouverture du zip
 		if (false == (destZip_.open(newName))) {
 			// Suppression du fichier
-			fileSystem::deleteSingleFile(newName);
+			sFileSystem::remove(newName);
 
 			if (logs_) {
 				logs_->add(logFile::ERR, "Impossible d'ouvrir la copie du fichier modèle %s", newName.c_str());
@@ -925,7 +929,7 @@ bool ODSFile::_endContentFile()
 
 	// Je n'ai plus besoin du fichier de contenu
 #ifndef _DEBUG
-	fileSystem::deleteSingleFile(contentFile_);
+	sFileSystem::remove(contentFile_);
 #endif // _DEBUG
 
 	// Ok
