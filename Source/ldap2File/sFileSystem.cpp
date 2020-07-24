@@ -75,11 +75,18 @@ namespace sFileSystem {
 			return false;
 		}
 
+		try {
+
 #ifdef _WIN32
-		return (0 != CopyFile(from.c_str(), to.c_str(), FALSE));
+			return (0 != CopyFile(from.c_str(), to.c_str(), FALSE));
 #else
-		return fs::copy(from, to);
+			return fs::copy(from, to);
 #endif // WIN32
+		}
+		catch (...) {
+			// Une erreur
+			return false;
+		}
 	}
 
 	// Suprression
@@ -89,16 +96,19 @@ namespace sFileSystem {
 		if (0 == path.length()) {
 			return false;
 		}
-#ifdef _WIN32
+
 		try {
+#ifdef _WIN32
+
 			return (TRUE == DeleteFile(path.c_str()));
+#else
+			return fs::remove(path);
+#endif // WIN32
 		}
 		catch (...) {
+			// Une erreur
 			return false;
 		}
-#else
-		return fs::remove(path);
-#endif // WIN32
 	}
 
 	// Taille
@@ -136,18 +146,21 @@ namespace sFileSystem {
 		if (0 == path.length()) {
 			return false;
 		}
-#ifdef _WIN32
+
 		try {
+#ifdef _WIN32
+		
 			return (0 != CreateDirectoryA(path.c_str(), NULL));
+#else
+			return fs::create_directory(path);
+#endif // WIN32
 		}
 		catch (...) {
-			// Une autre erreur
+			// Une erreur
 			return false;
 		}
-#else
-		return fs::create_directory(path);
-#endif // WIN32
 	}
+
 
 	// Dossier courant
 	//
@@ -155,34 +168,40 @@ namespace sFileSystem {
 	// Lecture
 	std::string current_path()
 	{
+		try{
 #ifdef _WIN32
-		LPWSTR* szArglist;
-		int nArgs;
-		std::string folder("");
+			LPWSTR* szArglist;
+			int nArgs;
+			std::string folder("");
 
-		// Ligne de commande
-		szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-		if (NULL == szArglist) {
-			// ???
-			folder = "";
-		}
-		else {
-			// Conversion en 8bits
-			char destBuffer[MAX_PATH + 1];
-			WideCharToMultiByte(CP_ACP, 0, szArglist[0], -1, destBuffer, MAX_PATH, NULL, NULL);
+			// Ligne de commande
+			szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+			if (NULL == szArglist) {
+				// ???
+				folder = "";
+			}
+			else {
+				// Conversion en 8bits
+				char destBuffer[MAX_PATH + 1];
+				WideCharToMultiByte(CP_ACP, 0, szArglist[0], -1, destBuffer, MAX_PATH, NULL, NULL);
 
-			folder = destBuffer;		// Le nom du binaire
-			size_t pos(folder.rfind(FILENAME_SEP));
-			folder.resize(pos);
+				folder = destBuffer;		// Le nom du binaire
+				size_t pos(folder.rfind(FILENAME_SEP));
+				folder.resize(pos);
 
-			// Libérations ...
-			LocalFree(szArglist);
-		}
+				// Libérations ...
+				LocalFree(szArglist);
+			}
 
-		return folder;
+			return folder;
 #else
-		return fs::current_path();
+			return fs::current_path();
 #endif // WIN32
+		}
+		catch (...) {
+			// Une erreur
+			return "";
+		}
 	}
 
 	// Changement
@@ -191,25 +210,37 @@ namespace sFileSystem {
 		if (0 == path.length()) {
 			return;
 		}
+
+		try {
 #ifdef _WIN32
-		SetCurrentDirectory(path.c_str());
+			SetCurrentDirectory(path.c_str());
 #else
-		fs::current_path(path);
+			fs::current_path(path);
 #endif // _WIN32
+		}
+		catch (...) {
+			// Une erreur
+		}
 	}
 
 	// Extraction du nom de fichier (ou d'un sous-dossier)
 	//
 	std::string split(const std::string path)
 	{
+		if (0 == path.length()) {
+			return "";
+		}
+		
 		std::string inter = charUtils::cleanName(path);
 		size_t pos = inter.rfind(FILENAME_SEP);
 		return ((inter.npos == pos) ? inter : inter.substr(pos + 1));
 	}
 
-
 	bool split(const std::string& path, std::list<std::string>& out)
 	{
+		// La liste est vide
+		out.clear();
+		
 		if (path.length() > 0) {
 			std::string fName = charUtils::cleanName(path);
 			if (fName.length()) {
