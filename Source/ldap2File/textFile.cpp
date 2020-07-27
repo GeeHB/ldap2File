@@ -19,7 +19,7 @@
 //--
 //--	18/01/2016 - JHB - Création - Version 1.2
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -52,13 +52,13 @@ textFile::textFile(const LPOPFI fileInfos, columnList* columns, confFile* parame
 	currentLine_ = "";
 
 	// Caracteres de control par defaut
-#ifdef WIN32
+#ifdef W_IN32
 	EOL(szEOL);
 	//setSeparators(STR_FR_SEP, szEOL);
 	setSeparators(STR_FR_SEP, NULL);
 #else
 	setSeparators(STR_FR_SEP, NULL);
-#endif // WIN32
+#endif // _WIN32
 }
 
 // Séparateurs et formats d'écriture

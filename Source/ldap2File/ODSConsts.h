@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -34,10 +34,10 @@
 #define ODS_TEMPLATE_FILENAME		"modele.ods"
 
 #ifdef _DEBUG
-#ifdef WIN32
+#ifdef _WIN32
 #define ODS_CONTENT_FILE			"C:\\ldap2File\\output files\\content.xml"
 #else
-#endif // WIN32
+#endif // _WIN32
 #else
 #define ODS_CONTENT_FILE			"C:\\ldap2File\\output files\\content.xml"
 #endif // _DEBUG

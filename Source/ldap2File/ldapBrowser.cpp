@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -663,7 +663,7 @@ RET_TYPE ldapBrowser::_createFile()
 
 		// Tri selon deux critères
 		//
-#ifdef WIN32
+#ifdef _WIN32
 		sortName.sk_attrtype = STR_ATTR_NOM;		// Par nom
 		sortName.sk_matchruleoid = "1.2.826.0.1.3344810.2.3";
 		sortName.sk_reverseorder = FALSE;
@@ -682,7 +682,7 @@ RET_TYPE ldapBrowser::_createFile()
 		sortFirstName.attributeType = (char*)prenom.c_str();		// Puis par prénom
 		sortFirstName.orderingRule = (char*)ruleN.c_str();
 		sortFirstName.reverseOrder = 0;
-#endif // WIN32
+#endif // _WIN32
 
 		sortKey[0] = &sortName;
 		sortKey[2] = &sortFirstName;
@@ -2292,7 +2292,7 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 	string app(application);
 	charUtils::cleanName(app);
 
-#ifdef WIN32
+#ifdef _WIN32
 	STARTUPINFO startupInfo = { sizeof(startupInfo) };	//startupInfo.cb = sizeof(startupInfo);
 	PROCESS_INFORMATION pi;
 
@@ -2324,7 +2324,7 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 		errorMessage = "Erreur n° ";
 		errorMessage += charUtils::itoa(GetLastError());
 	}
-#endif // WIN32
+#endif // _WIN32
 
 	// Ok ?
 	return valid;

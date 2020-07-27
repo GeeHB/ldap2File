@@ -35,7 +35,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -56,9 +56,9 @@ int _getTickCount();
 // Point d'entrée du programme
 //
 int main(int argc, const char * argv[]){
-#ifdef WIN32
+#ifdef _WIN32
 	bool verbose(true);
-#endif // WIN32
+#endif // _WIN32
 
 	// Vérification de la ligne de commandes
 	//
@@ -165,12 +165,12 @@ int main(int argc, const char * argv[]){
 
 		// Initialisation du fichier de logs
 		//
-#ifdef WIN32
+#ifdef _WIN32
 		logs.init(logFolder->path(), (lInfos.mode_ == LOGS_MODE_DEBUG) ? TRACE_LOGMODE_LIB__DEBUG : TRACE_LOGMODE_LIB__LOG);
 		if (lInfos.fileName_.size()){
 			logs.setFileName(lInfos.fileName_.c_str());
 		}
-#endif // WIN32
+#endif // _WIN32
 
 		logs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
 
@@ -217,13 +217,13 @@ int main(int argc, const char * argv[]){
 		//
 		for (int index=1; index < argc; index++){
 			
-#ifdef WIN32
+#ifdef _WIN32
 			if (argv[index] == strstr(argv[index], CMD_NO_VERBOSE)){
 				// Pas d'affichages
 				verbose = false;
 			}
 			else{
-#endif // WIN32
+#endif // _WIN32
 				if (argv[index] == strstr(argv[index], CMD_REMOVE_FILE)){
 					// Suppression du ou des fichier(s)
 					removeFile = true;
@@ -250,9 +250,9 @@ int main(int argc, const char * argv[]){
 					}
 				}
 			}
-#ifdef WIN32
+#ifdef _WIN32
 		}
-#endif // WIN32
+#endif // _WIN32
 
 		// Analyse d'un dossier
 		if (remoteFolder.size()){
@@ -339,11 +339,11 @@ int main(int argc, const char * argv[]){
 
 				int duration = _getTickCount() - currentLaunchTime;	// Durée des traitements précédents
 				duration = (duration > freq ? freq : freq - duration);
-#ifdef WIN32
+#ifdef _WIN32
 				Sleep(duration);
 #else
 				sleep(duration);
-#endif //#ifdef WIN32
+#endif //#ifdef _WIN32
 
 				// Analyse du dossier ?
 				if (remoteFolder.size()){

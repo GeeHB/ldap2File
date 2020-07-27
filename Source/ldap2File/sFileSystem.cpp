@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ namespace fs = std::experimental::filesystem;
 
 namespace sFileSystem {
 
-	// Test l'existance (fichier ou dossier)
+	// Test de l'existance (fichier ou dossier)
 	//
 	bool exists(const std::string& path)
 	{
@@ -57,7 +57,12 @@ namespace sFileSystem {
 		}
 
 #ifdef _WIN32
-		return (INVALID_FILE_ATTRIBUTES != GetFileAttributes(path.c_str()));
+		try {
+			return (INVALID_FILE_ATTRIBUTES != GetFileAttributes(path.c_str()));
+		}
+		catch (...) {
+			return false;
+		}
 #else
 		return fs::exists(path);
 #endif // WIN32

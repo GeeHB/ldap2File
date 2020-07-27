@@ -1,18 +1,20 @@
-20.7.27
-	* 
+20.7.28
+	* 27 juillet 2020
 	+ Corrections mineures
-		- bug de regression : fichiers XLS gnérés dans le dossier de l'application
+		- bug de regression : fichiers XLS générés dans le dossier de l'application
 	* L'espace de nom JHB_ldapTools devient jhbLDAPTools (plus cohérent avec les autres dénominations)
 	+ Création d'espace de nom sFileSystem (simple FileSystem)
 		+ remplacement de l'objet fileSystem non-portable sous linux ...
 		+ interface // std::filesystem (les noms des fonctions sont identiques)
 		+ portable !
+	+ Fichiers ODS => format zip
+		+ reprise de la classe ODSFile::zipFile
+		+ Windows : utilisation des sources de la librairies zipFile (ZitUtils fonctionne aussi en WIN32)
+		+ Linux : utilisation de tar/unzip en ligne de commande - #define USE_CMD_LINE_ZIP
 
 ### TODO ###
 	+ Génération d'exceptions par SMTPClient
 	+ Vérification & réecriture SMTPClient
-	+ Retrait du code lza si inutile ? (ne compile pas sous linux)
-		+ => ne conserver que le code utilisé pour ODS
 
 20.7.25
 	* 22 juillet 2020

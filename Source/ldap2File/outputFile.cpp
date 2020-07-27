@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//-- 22/07/2020 - JHB - Version 20.7.25
+//-- 27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 	}
 
 	// Le dossier doit-exister
-#ifdef WIN32
+#ifdef _WIN32
 	if (!fs.changeFolder(folder)){
 		fs.createFolder(folder, false);
 	}
@@ -176,7 +176,7 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 	if (!chdir(folder.c_str())){
 		mkdir(folder.c_str(), 0777);
 	}
-#endif // WIN32
+#endif // _WIN32
 	*/
 
 	tempFolder += FILENAME_SEP;
@@ -259,7 +259,7 @@ string outputFile::tokenize(const char* source, const char* fullName, const char
 	time(&rawTime);
 	bool done(false);
 
-#ifdef WIN32
+#ifdef _WIN32
 	// la version MS inverse les paramètres !!!!
 	if (!localtime_s(&tInfo, &rawTime)) {
 		done = true;
@@ -268,7 +268,7 @@ string outputFile::tokenize(const char* source, const char* fullName, const char
 	if (!localtime_r(&rawTime, &tInfo)) {
 		done = true;
 	}
-#endif // WIN32
+#endif // _WIN32
 
 	if (done) {		// La conversion de la date est valide !!!
 		st.addToken(TOKEN_DATE_DAY2, tInfo.tm_mday, 2);

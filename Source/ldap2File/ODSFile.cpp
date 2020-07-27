@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -63,63 +63,61 @@ bool ODSFile::zipFile::open(const char* fileName)
 		return false;
 	}
 #else
+	#ifdef USE_CMD_LINE_ZIP
 
-	// On n'utilise plius l'objet ZipArchive qui ne fonctionne pas en modification
-	// En remplacement, on utilise les api ZipFile::
-	// auquel cas, file_ n'est plus un pointeur mais un booléen qui indique si le fichier est une archive zip valide ou non
+		// Si le dossier existe on le supprime
+		std::string cmd("");
+		if (sFileSystem::exists(zipTemp_)){
+			cmd = "rm -rf ";
+			cmd += zipTemp_;
+			std::system(cmd.c_str());
+		}
 
-	string sFile(fileName);
-	//if (NULL == (file_ = ZipFile::Open(sFile))) {
-	ZipArchive::Ptr zFile(NULL);
-	try {
-		zFile = ZipFile::Open(sFile);
-	}
-	catch (...) {
-		// Une erreur ...
-		zFile = NULL;
-	}
+		// Le fichier doit exister
+		if (false == sFileSystem::exists(fileName)){
+			return false;
+		}
 
-	if (NULL == zFile){
-		file_ = false;
-		return false;
-	}
+		// On tente de décompresser le fichier
+		cmd = UNZIP_STR;
+		cmd += " ";
+		cmd += zipTemp_;
+		cmd += " ";
+		cmd += fileName;
+		std::system(cmd.c_str());
 
-	// Ok
-	file_ = true;
+		// La decompression a t'elle eu lieu ?
+		if (false == sFileSystem::exists(zipTemp_)) {
+			return false;
+		}
+	#else
+
+		// On n'utilise plius l'objet ZipArchive qui ne fonctionne pas en modification
+		// En remplacement, on utilise les api ZipFile::
+		// auquel cas, file_ n'est plus un pointeur mais un booléen qui indique si le fichier est une archive zip valide ou non
+
+		string sFile(fileName);
+		//if (NULL == (file_ = ZipFile::Open(sFile))) {
+		ZipArchive::Ptr zFile(NULL);
+		try {
+			zFile = ZipFile::Open(sFile);
+		}
+		catch (...) {
+			// Une erreur ...
+			zFile = NULL;
+		}
+
+		if (NULL == zFile){
+			file_ = false;
+			return false;
+		}
+
+		// Ok
+		file_ = true;
+	#endif // USE_CMD_LINE_ZIP
 #endif // __USE_ZIP_UTILS_LIB__
 
-	// Fichier ouvert
-	zipPath_ = fileName;
-	return true;
-}
-
-// Creation d'un fichier
-//
-bool ODSFile::zipFile::create(const char* fileName)
-{
-	if (IS_EMPTY(fileName)){
-		return false;
-	}
-
-	// Déja un fichier ouvert ?
-	if (file_) {
-		close();
-	}
-
-	zipPath_ = "";
-
-#ifdef __USE_ZIP_UTILS_LIB__
-	// Tentative de creation
-	if (NULL == (file_ = CreateZip(fileName, NULL))){
-		return false;
-	}
-#else
-	if (!open(fileName)) {
-		return false;
-	}
-#endif // __USE_ZIP_UTILS_LIB__
-
-	// Fichier crée
+	// Fichier "ouvert"
 	zipPath_ = fileName;
 	return true;
 }
@@ -133,7 +131,24 @@ void ODSFile::zipFile::close()
 		// Fermeture du fichier
 		CloseZip(file_);
 #else
+	#ifdef USE_CMD_LINE_ZIP	
+		// Quelque chose à compresser ?
+		if (false == sFileSystem::exists(zipTemp_)) {
+			return;
+		}
+		
+		// Compression du dossier
+		//
+		std::string cmd(ZIP_STR);
+		cmd += " ";
+		cmd += zipPath_;
+		cmd += " ";
+		cmd += zipTemp_;
+		
+		std::system(cmd.c_str());
+	#else
 		// Pas de méthode close
+	#endif  // #USE_CMD_LINE_ZIP
 #endif // __USE_ZIP_UTILS_LIB__
 	}
 
@@ -158,13 +173,19 @@ int ODSFile::zipFile::findFile(const char* fileName)
 	ZRESULT res = FindZipItem(file_, fileName, false, &index, &ze);
 	return (ZR_OK == res ? index : -1);
 #else
+	#ifdef USE_CMD_LINE_ZIP	
+		// Le fichier doit exister dans le dossier (pâs besoin d'aller dans les sous-dossiers)
+		string path(_tempPath(fileName));
+		return (sFileSystem::exists(path)?1:-1);
+	#else
 
-	//ZipArchiveEntry::Ptr pentry = file_->GetEntry(fileName);
+		//ZipArchiveEntry::Ptr pentry = file_->GetEntry(fileName);
 
-	// Retourne 1 si trouvé, -1 sinon (pas d'accès à l'index)
-	//return ((pentry && !pentry->IsDirectory())?1:-1);
-	string sFile(fileName);
-	return (ZipFile::IsInArchive(zipPath_, sFile) ? 1 : -1);
+		// Retourne 1 si trouvé, -1 sinon (pas d'accès à l'index)
+		//return ((pentry && !pentry->IsDirectory())?1:-1);
+		string sFile(fileName);
+		return (ZipFile::IsInArchive(zipPath_, sFile) ? 1 : -1);
+	#endif // #ifdef USE_CMD_LINE_ZIP	
 #endif	//  __USE_ZIP_UTILS_LIB__
 }
 
@@ -195,7 +216,8 @@ bool ODSFile::zipFile::extractFile(const char* fileName, const char* destFile)
 }
 
 #ifdef __USE_ZIP_UTILS_LIB__
-// à partir de son index dans l'archive
+// // à partir de son index dans l'archive
+//
 bool ODSFile::zipFile::extractFile(int index, const char* destFile, const LPZIPELEMENT ze)
 {
 	// Vérification des paramètres
@@ -244,6 +266,41 @@ bool ODSFile::zipFile::extractFile(int index, const char* destFile, const LPZIPE
 	// Pas d'erreur (fichier vide, fichier "normal" ou dossier)
 	return true;
 }
+#else
+// ... à partir de son nom
+//
+bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile)
+{
+	if (0 == zipPath_.length() || 0 == srcName.length() || 0 == destFile.length()
+		&& (-1 != findFile(srcName))) {
+		// Paramètres invalides (ou fichier non encore ouvert)
+		return false;
+	}
+
+#ifdef USE_CMD_LINE_ZIP
+	// Le fichier existe, il suffit de le copier
+	//
+	std::string srcFile(_tempPath(srcName));
+	sFileSystem::copy_file(srcFile, destFile);
+#else
+	try {
+		ZipFile::ExtractFile(zipPath_, srcName, destFile);
+	}
+	catch (...) {
+		// Une erreur lors de l'extraction
+		return false;
+	}
+#endif // #ifdef USE_CMD_LINE_ZIP
+
+	// Le fichier existe t'il ?
+	if (sFileSystem::exists(destFile)) {
+		// Le fichier doit être non vide
+		return sFileSystem::file_size(destFile) > 0;
+	}
+
+	return false;
+}
+
 #endif	//  __USE_ZIP_UTILS_LIB__
 
 // Ajout d'un fichier à l'archive
@@ -269,6 +326,10 @@ bool ODSFile::zipFile::addFile(const string& srcFile, const string& destName)
 #ifdef __USE_ZIP_UTILS_LIB__
 	return (ZR_OK == ZipAdd(file_, destName.c_str(), srcFile.c_str()));
 #else
+#ifdef USE_CMD_LINE_ZIP
+	std::string destFile(_tempPath(destName));
+	return sFileSystem::copy_file(srcFile, destFile);
+#else
 	//ZipArchiveEntry::Ptr newEntry(file_->CreateEntry(srcFile));
 	try {
 		ZipFile::AddFile(zipPath_, srcFile, destName);
@@ -280,6 +341,7 @@ bool ODSFile::zipFile::addFile(const string& srcFile, const string& destName)
 
 	// Ajouté ?
 	return ZipFile::IsInArchive(zipPath_, destName);
+#endif // #ifdef USE_CMD_LINE_ZIP
 
 	//return false;
 #endif // __USE_ZIP_UTILS_LIB__
@@ -311,6 +373,12 @@ bool ODSFile::zipFile::removeFile(const string& entryName)
 	}
 
 	// Retrait
+	//
+#ifdef USE_CMD_LINE_ZIP
+	// Suppression du fichier dans le dissier
+	string fileName(_tempPath(entryName));
+	return sFileSystem::remove(fileName);
+#else
 	try {
 		ZipFile::RemoveEntry(zipPath_, entryName);
 	}
@@ -318,39 +386,12 @@ bool ODSFile::zipFile::removeFile(const string& entryName)
 		// Une erreur lors du retrait
 		return false;
 	}
+#endif // #ifdef USE_CMD_LINE_ZIP
 
-	//file_->RemoveEntry(entryName);
 
 	// Existe t'il encore ?
 	return (-1 == findFile(entryName.c_str()));
 }
-
-// Extraction d'un fichier de l'archive
-//
-bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile)
-{
-	if (0 == zipPath_.length() || 0 == srcName.length() || 0 == destFile.length()) {
-		// Paramètres invalides (ou fichier non encore ouvert)
-		return false;
-	}
-
-	try {
-		ZipFile::ExtractFile(zipPath_, srcName, destFile);
-	}
-	catch (...){
-		// Une erreur lors de l'extraction
-		return false;
-	}
-
-	// Le fichier existe t'il ?
-	if (sFileSystem::exists(destFile)) {
-		// Le fichier doit être non vide
-		return sFileSystem::file_size(destFile) > 0;
-	}
-
-	return false;
-}
-
 #endif // #ifndef __USE_ZIP_UTILS_LIB__
 
 //----------------------------------------------------------------------
@@ -738,11 +779,11 @@ bool ODSFile::_openContentFile()
 			style = stylesRoot_.append_child(ODS_STYLE_NODE);
 
 			// Nom de la colonne
-#ifdef WIN32
+#ifdef _WIN32
 			sprintf_s(value, 19, STYLE_NAME_COL_VAL, colIndex + 1);
 #else
             sprintf(value, STYLE_NAME_COL_VAL, (int)(colIndex + 1));
-#endif // WIN32
+#endif // _WIN32
 			style.append_attribute(ODS_STYLE_NAME_ATTR) = value;
 
 			// c'est une colonne ...
@@ -999,11 +1040,11 @@ bool ODSFile::_createSheet(const char* name, bool withHeader, bool sizeColumns)
 				node = sheetRoot_.append_child(ODS_SHEET_COL_NODE);
 
 				// Nom de la colonne
-#ifdef WIN32
+#ifdef _WIN32
 				sprintf_s(value, 19, COL_STYLE_BASE_VAL, colIndex + 1);
 #else
 				sprintf(value, COL_STYLE_BASE_VAL, (int)(colIndex + 1));
-#endif // WIN32
+#endif // _WIN32
 				node.append_attribute(ODS_COL_STYLE_ATTR) = value;
 
 				node.append_attribute(ODS_COL_CELL_ATTR) = CELL_TYPE_HEADER;

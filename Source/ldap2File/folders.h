@@ -20,7 +20,7 @@
 //--
 //--	21/07/2020 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ namespace jhbLDAPTools {
 	public:
 
 		// Type(s) de dossiers
-		enum class FOLDER_TYPE { FOLDER_APP = 0, FOLDER_LOGS, FOLDER_TEMP, FOLDER_TEMPLATES, FOLDER_OUTPUTS};
+		enum class FOLDER_TYPE { FOLDER_APP = 0, FOLDER_LOGS, FOLDER_TEMP, FOLDER_TEMPLATES, FOLDER_OUTPUTS, FOLDER_ZIP};
 		
 		// Un dossiers (ou sous dossier)
 		//
@@ -87,7 +87,7 @@ namespace jhbLDAPTools {
 			//
 			folders::FOLDER_TYPE	type_;		// Type de dossier
 			string					path_;		// Chemin complet
-			bool					subFolder_;	// Un sopus-dossiezr ou un dossier "indépendant" ?
+			bool					subFolder_;	// Un sous-dossiezr ou un dossier "indépendant" ?
 		};
 
 		// Construction et destruction

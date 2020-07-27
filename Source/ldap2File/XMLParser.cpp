@@ -20,7 +20,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ XMLParser::XMLParser(folders* pFolders, logFile* logs)
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 
 	// Type de système de fichier "local"
-#ifdef WIN32
+#ifdef _WIN32
 	expectedOS_ = OS_WINDOWS;
 	defType_ = DEST_TYPE::DEST_FS_WINDOWS;
 #else
@@ -54,7 +54,7 @@ XMLParser::XMLParser(folders* pFolders, logFile* logs)
 	expectedOS_ = OS_LINUX;
 	defType_ = DEST_TYPE::DEST_FS_LINUX;
 #endif // __APPLE__
-#endif // WIN32
+#endif // _WIN32
 }
 
 // Utilitaires

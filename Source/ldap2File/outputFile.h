@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -177,9 +177,9 @@ public:
 	// Lecture des paramètres "personnels" dans le fichier de conf
 	//	retourne un booléen (conitniuer les traitements ?)
 	virtual bool getOwnParameters(){
-#ifdef WIN32
+#ifdef _WIN32
 		logs_->add(logFile::DBG, _T("Pas de paramètres supplémentaires dans le fichier XML"));
-#endif // ifdef WIN32
+#endif // ifdef _WIN32
 		return true;		// Pas de param => on continue
 	}
 

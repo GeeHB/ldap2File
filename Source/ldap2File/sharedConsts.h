@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
@@ -30,10 +30,10 @@
 #define __LDAP_USE_ALLIER_TITLES_h__
 
 // Gestion du scope LDAP_SCOPE_BASE lorsqu'il ne fonctionne pas
-#ifdef WIN32
+#ifdef _WIN32
 #define _JHB_OWN_LDAP_SCOPE_BASE_
 #define CUT_LDAP_REQUEST					// Saucisonnage des requêtes LDAP
-#endif // WIN32
+#endif // _WIN32
 
 // Fichier en mode test (ie. editable)
 //#define XML_BEST_FORMAT_MODE
@@ -52,7 +52,7 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.27"
+#define APP_RELEASE				"20.7.28"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -99,7 +99,7 @@ using namespace std;
 #include "folders.h"
 using namespace jhbLDAPTools;
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <time.h>
 #include <direct.h>
 #else
@@ -111,7 +111,7 @@ using namespace jhbLDAPTools;
 #ifndef MAX_PATH
 #define MAX_PATH	260
 #endif // MAX_PATH
-#endif // WIN32
+#endif // _WIN32
 
 #include <logFile.h>
 
@@ -277,11 +277,12 @@ using namespace jhbLDAPTools;
 #define DEF_OUTPUT_FILENAME			"ldap2File.txt"
 
 // Dossiers par défaut
-#ifdef WIN32
+#ifdef _WIN32
 #define FOLDER_APP_DEFAULT			"d:\\ldapTools"
 #else
 #define FOLDER_APP_DEFAULT			"~/ldapTools"
-#endif // #ifdef WIN32
+#endif // #ifdef _WIN32
+
 #define STR_FOLDER_TEMPLATES		"modeles"				// Modèles de documents
 #define STR_FOLDER_TEMP				"temp"					// Fichiers temporaires
 #define STR_FOLDER_LOGS				"logs"

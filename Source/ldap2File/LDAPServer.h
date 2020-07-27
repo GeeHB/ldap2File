@@ -19,14 +19,14 @@
 //--
 //--	19/06/2016 - JHB - Création
 //--
-//--	22/07/2020 - JHB - Version 20.7.25
+//--	27/07/2020 - JHB - Version 20.7.28
 //--
 //---------------------------------------------------------------------------
 
 #ifndef _LDAP_2_FILE_LDAPSERVER_h__
 #define _LDAP_2_FILE_LDAPSERVER_h__
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <winldap.h>
 #include <Winber.h>
 #else
@@ -41,7 +41,7 @@
 
 typedef unsigned int    UINT;
 
-#endif // WIN32
+#endif // _WIN32
 
 #include "ldapAttributes.h"
 
@@ -115,11 +115,11 @@ public:
 
 	// Connexion ...
 	ULONG connect(struct l_timeval* timeout = NULL){
-#ifdef WIN32
+#ifdef _WIN32
 		return (connection_ ? ldap_connect(connection_, timeout): LDAP_PARAM_ERROR);
 #else
 		return LDAP_SUCCESS;	// !!!
-#endif // WIN32
+#endif // _WIN32
 	}
 
 	bool connected()
@@ -181,7 +181,7 @@ public:
 	// Recherches
 	ULONG searchS(char* base, ULONG scope, char* filter, char* attrs[], ULONG attrsonly, PLDAPMessage *res)
 	{ return (connection_ ? ldap_search_s(connection_, base, scope, filter, attrs, attrsonly, res) : LDAP_PARAM_ERROR); }
-#ifdef WIN32
+#ifdef _WIN32
 	ULONG searchExtS(char* base, ULONG scope, char* filter, char* attrs[], ULONG attrsonly, PLDAPControlA *ServerControls,
 		PLDAPControlA *ClientControls, struct l_timeval *timeout, ULONG SizeLimit, PLDAPMessage *res)
 	{ return (connection_ ? ldap_search_ext_s(connection_, base, scope, filter, attrs, attrsonly, ServerControls, ClientControls, timeout, SizeLimit, res) : LDAP_PARAM_ERROR); }
@@ -189,7 +189,7 @@ public:
 	ULONG searchExtS(char* base, ULONG scope, char* filter, char* attrs[], ULONG attrsonly, PLDAPControlA *ServerControls,
 		PLDAPControlA *ClientControls, struct timeval *timeout, ULONG SizeLimit, PLDAPMessage *res)
 	{ return (connection_ ? ldap_search_ext_s(connection_, base, scope, filter, attrs, attrsonly, ServerControls, ClientControls, timeout, SizeLimit, res) : LDAP_PARAM_ERROR); }
-#endif // WIN32
+#endif // _WIN32
 
 	// Gestion des enregistrements
 	ULONG parseResult(LDAPMessage *ResultMessage, ULONG *ReturnCode , char** MatchedDNs, char** ErrorMessage,
@@ -198,11 +198,11 @@ public:
 			ldap_parse_result(
 				connection_,
 				ResultMessage,
-#ifdef WIN32
+#ifdef _WIN32
 				ReturnCode,
 #else
 				(int*)ReturnCode,
-#endif // WIN32
+#endif // _WIN32
 				MatchedDNs,
 				ErrorMessage,
 				Referrals,
@@ -228,11 +228,11 @@ public:
 	{ return (connection_ ? ldap_create_sort_control(connection_, SortKeys, IsCritical, Control) : LDAP_PARAM_ERROR); }
 
 	ULONG parseSortControl(PLDAPControlA Control, ULONG *Result, char** Attribute)
-#ifdef WIN32
+#ifdef _WIN32
     { return (connection_ ? ldap_parse_sort_control(connection_, &Control, Result, Attribute) : LDAP_PARAM_ERROR); }
 #else
     { return (connection_ ? ldap_parse_sortresponse_control(connection_, Control, (ber_int_t*)Result, Attribute) : LDAP_PARAM_ERROR); }
-#endif // WIN32
+#endif // _WIN32
 
 	// Pagination
 	ULONG createPageControl(ULONG PageSize, struct berval *Cookie, UCHAR IsCritical, PLDAPControlA *Control)
