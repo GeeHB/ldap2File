@@ -300,6 +300,9 @@
     <ClCompile Include="sFileSystem.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\RegEntry.cpp">
+      <Filter>Fichiers sources\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="columnList.h">
@@ -409,6 +412,9 @@
     </ClInclude>
     <ClInclude Include="sFileSystem.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\RegEntry.h">
+      <Filter>Fichiers d%27en-tête\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

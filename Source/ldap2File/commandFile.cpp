@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -83,43 +83,26 @@ bool commandFile::_load()
 		return false;
 	}
 
-	// On s'assure qu'il est bien formé (ie. qu'il y a des informations pour un fichier)
-	pugi::xml_node node = xmlDocument_.child(XML_ROOT_LDAP2FILE_NODE);
-	if (IS_EMPTY(node.name())){
-		// Pas le bon format ...
-		if (logs_){
-			logs_->add(logFile::ERR, "Le fichier de commandes n'est pas dans le bon format");
+	// Le "bon" fichier pour l'application ?
+	try {
+		checkProtocol(XML_FILE_NODE);
+	}
+	catch (LDAPException& e) {
+		if (logs_) {
+			logs_->add(logFile::ERR, e.what());
 		}
 
 		return false;
 	}
-
-	// Version du protocole
-	string currentVersion(node.attribute(XML_ROOT_VERSION_ATTR).value());
-	if (XML_CMD_VERSION_VAL != currentVersion){
-		// Pas la "bonne" version
-		if (logs_){
-			logs_->add(logFile::ERR, "La version du fichier de commandes n'est pas correcte. Version attendue : %s", XML_CMD_VERSION_VAL);
-		}
-
-		return false;
-	}
-
-	// "Racine" de parametres
-	paramsRoot_ = node.child(XML_FILE_NODE);
-	if (IS_EMPTY(paramsRoot_.name())){
-		// Pas de paramètres
-		if (logs_){
-			logs_->add(logFile::ERR, "Pas de paramètres dans le fichier de commandes");
-		}
-
-		return false;
-	}
+	
+	//
+	// Lecture des paramètres
+	//
 
 	// Y a t'il un fichier inclus
 	//	<= seulement si le fichier n'est pas lui même déjà inclus
 	if (!isIncluded_){
-		node = paramsRoot_.child(XML_INCLUDE_NODE);
+		pugi::xml_node node = paramsRoot_.child(XML_INCLUDE_NODE);
 		const char* includedName = node.first_child().value();
 		if (!IS_EMPTY(includedName)){
 			if (logs_){
@@ -474,9 +457,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 								// Est ce un chemin complet ?
 								if (folder.npos == folder.find(FILENAME_SEP)) {
 									// Non => chemin relatif au dossier courant
-									folder = sFileSystem::current_path();
-									folder += FILENAME_SEP;
-									folder += snode.first_child().value();
+									folder = sFileSystem::merge(sFileSystem::current_path(), snode.first_child().value());
 								}
 
 								// Qque soit de le cas, le dossier doit exister
@@ -509,10 +490,9 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 	//
 	if (!fileInfos.dests_.size()){
 		// Pas de dossier => dossier courant
-		folder = sFileSystem::current_path();
-		folder += FILENAME_SEP;
-		folder += STR_FOLDER_OUTPUTS;
-
+		//folder = sFileSystem::merge(sFileSystem::current_path(), STR_FOLDER_OUTPUTS);
+		folder = folders_->find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path();
+		
 		pDestination = new fileDestination(folder);
 		if (!pDestination){
 			return false;

@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//-- 27/07/2020 - JHB - Version 20.7.28
+//-- 28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -153,45 +153,16 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 
 	// Le fichier est crée dans le dossier temporaire
 	//
-	string tempFolder(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
-	size_t pos(0);
-
-	/*
-	fileSystem fs;
-	if (baseName.npos != (pos =  baseName.rfind(FILENAME_SEP))){
-		folder = baseName.substr(0, pos);
-	}
-	else{
-		folder = configurationFile_->applicationFolder();
-		folder += FILENAME_SEP;
-		folder += STR_FOLDER_TEMP;
-	}
-
-	// Le dossier doit-exister
-#ifdef _WIN32
-	if (!fs.changeFolder(folder)){
-		fs.createFolder(folder, false);
-	}
-#else
-	if (!chdir(folder.c_str())){
-		mkdir(folder.c_str(), 0777);
-	}
-#endif // _WIN32
-	*/
-
-	tempFolder += FILENAME_SEP;
-	baseName.insert(0, tempFolder.c_str());
+	baseName = sFileSystem::merge(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path(), baseName);
 
 	// L'extension est-elle correcte ?
 	string expected = ".";
+	size_t pos(0);
 	expected+=fileExtension();
 	if (baseName.npos == (pos = baseName.rfind(expected)) ||
 		(baseName.npos != pos && pos != (baseName.size()- expected.size()))){	// au milieu du fichier
 		// Pas la bonne extension
-		if (baseName.npos == (pos = baseName.rfind("."))){
-			// Pas d'extension du tout ...
-		}
-		else{
+		if (baseName.npos != (pos = baseName.rfind("."))){
 			// Retrait ...
 			baseName = baseName.substr(0, pos);
 		}

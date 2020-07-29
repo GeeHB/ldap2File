@@ -20,7 +20,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -32,6 +32,7 @@
 #include <./xml/pugixml.cpp>
 
 #include <charUtils.h>
+#include "sFileSystem.h"
 #include "regExpr.h"
 
 //
@@ -127,12 +128,25 @@ public:
 	virtual ~XMLParser()
 	{}
 
+	// Chargement du fichier XML
+	virtual bool load()
+	{ return _load(); }
+
+	// Vérification de la version
+	void checkProtocol(const string& parametersNode);
+	void checkProtocol(const char* parametersNode) {
+		string param(IS_EMPTY(parametersNode) ? "" : parametersNode);
+		checkProtocol(param);
+	}
+
 	// Accès
 	//
 	pugi::xml_document* document()
 	{ return &xmlDocument_; }
 	pugi::xml_node* paramsRoot()
 	{ return &paramsRoot_; }
+	const char* expectedOS()
+	{ return expectedOS_.c_str(); }
 
 	// Nom du fichier
 	void setFileName(const char* fileName)
@@ -143,11 +157,7 @@ public:
 	// Dossiers de l'application
 	folders* getFolders()
 	{ return folders_; }
-	/*
-	string applicationFolder()
-	{ return appFolder_; }
-	*/
-
+	
 	// Logs
 	logFile* getLogs()
 	{ return logs_; }
@@ -159,11 +169,29 @@ public:
 	void toUTF8(string& text)
 	{ encoder_.toUTF8(text, false); }
 
+	// Recherche d'un noeud "fils" ayant une valeur d'attribut particulière
+	pugi::xml_node findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue);
+	pugi::xml_node findChildNode(const pugi::xml_node& parent, const char* childName, const char* attrName, const char* attrValue) {
+		if (IS_EMPTY(childName) || IS_EMPTY(attrName) || IS_EMPTY(attrValue)) {
+			pugi::xml_node emptyNode;
+			return emptyNode;
+		}
+
+		string sChild(childName);
+		string sAttr(attrName);
+		string sValue(attrValue);
+		return findChildNode(parent, sChild, sAttr, sValue);
+	}
+
 	// Utilitaires
 	//
 	DEST_TYPE string2FolderType(const char* str);
 	DEST_TYPE string2FolderType(string& str)
 	{ return string2FolderType(str.c_str()); }
+
+	// Sauvegarde du fichier
+	//
+	virtual bool save();
 
 	// Méthodes privées
 	//
@@ -174,19 +202,7 @@ protected:
 	{ return (fileName_.size() > 0); }
 
 	// Chargement du fichier XML
-	virtual bool _load()
-	{
-		/*
-		if (fileName_.size() > 0)
-		{
-			pugi::xml_parse_result result = xmlDocument_.load_file(fileName_.c_str());
-			bool done = (pugi::status_ok == result.status);
-			return done;
-		}
-		return false;
-		*/
-		return (fileName_.size() && pugi::status_ok == xmlDocument_.load_file(fileName()).status);
-	}
+	virtual bool _load();
 
 	// Conversions
 	//

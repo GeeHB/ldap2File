@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -32,15 +32,15 @@
 // Gestion de la compression ZIP
 //
 
-#ifdef USE_CMD_LINE_ZIP
-#undef	USE_CMD_LINE_ZIP
-#endif // USE_CMD_LINE_ZIP
+#ifdef __USE_CMD_LINE_ZIP__
+#undef	__USE_CMD_LINE_ZIP__
+#endif // __USE_CMD_LINE_ZIP__
 
 #ifdef _WIN32
 #ifdef __USE_ZIP_UTILS_LIB__
-#include <./zip/ziputils/zip.h>
-#include <./zip/ziputils/unzip.h>
-#endif // #ifdef __USE_ZIP_UTILS_LIB__
+	#include <./zip/ziputils/zip.h>
+	#include <./zip/ziputils/unzip.h>
+#endif // __USE_ZIP_UTILS_LIB__
 #endif // WIN32
 
 #ifndef __USE_ZIP_UTILS_LIB__
@@ -49,19 +49,24 @@
 		#define _CRTDBG_MAP_ALLOC
 		#include <stdlib.h>
 		#include <crtdbg.h>
-		#endif
-
+		#endif	// _MSC_VER
+		
+		#include <fstream>
+		
 		#include "../ZipLib/ZipFile.h"
 		#include "../ZipLib/streams/memstream.h"
-		#include "../ZipLib//methods/Bzip2Method.h"
-		#include <fstream>
+		#include "../ZipLib//methods/Bzip2Method.h"		
 	#else
 		// Sous linux on utilise la ligne de commandes
-		#define	USE_CMD_LINE_ZIP
+		#define	__USE_CMD_LINE_ZIP__
 
+		// Dossier temporaire pour la gestion/création des fichiers ZIP/ODS
+		#define  ZIP_TEMP_FOLDER	"tmpODS"
+
+		// Commandes à exécuter
+		//
 		#define	ZIP_STR			"tar -czf"			// Tant qu'à faire on utilise tar ...
-		#define	UNZIP_STR		"unzip -d"			// ... puis unzip
-
+		#define	UNZIP_STR		"unzip -d"			// ... et unzip
 	#endif _WIN32
 #endif // #ifndef __USE_ZIP_UTILS_LIB__
 
@@ -157,7 +162,7 @@ private:
 	class zipFile
 	{
 	public:
-		// Constructions et destruction
+		// Construction et destruction
 		zipFile(){
 			zipPath_ = "";
 #ifdef __USE_ZIP_UTILS_LIB__
@@ -167,15 +172,19 @@ private:
 #endif // __USE_ZIP_UTILS_LIB__
 		}
 		
-#ifdef USE_CMD_LINE_ZIP
-		zipFile(const char* zipFolder)
-			:zipFile(){ 
+		virtual ~zipFile()
+		{ close(); }
+
+#ifdef __USE_CMD_LINE_ZIP__
+		void setTempFolder(const string& zipFolder) {
+			setTempFolder(zipFolder.c_str());
+		}
+		void setTempFolder(const char* zipFolder){
 			// Pas de dossier temp => on se positionne dans le dossier courant
 			zipFolder = ((IS_EMPTY(zipFolder)) ? "." : zipFolder);
 		}
-#endif // USE_CMD_LINE_ZIP
-		virtual ~zipFile()
-		{ close(); }
+#endif // __USE_CMD_LINE_ZIP__
+
 
 		const char* name()
 		{ return zipPath_.c_str(); }
@@ -241,14 +250,10 @@ private:
 
 	// Méthodes privées
 	protected:
-#ifdef USE_CMD_LINE_ZIP
-		std::string  _tempPath(const std::string& source) {
-			std::string fileName(zipTemp_);
-			fileName += FILENAME_SEP;
-			fileName += source;
-			return fileName;
-	}
-#endif // #ifdef USE_CMD_LINE_ZIP
+#ifdef __USE_CMD_LINE_ZIP__
+		std::string  _tempPath(const std::string& source)
+		{ return sFileSystem::merge(zipTemp_, source); }
+#endif // #ifdef __USE_CMD_LINE_ZIP__
 
 	private:
 		string	zipPath_;					// Chemin complet vers l'archive
@@ -257,9 +262,9 @@ private:
 #else
 		bool				file_;			// Le fichier est-il un zip valide ?
 
-	#ifdef USE_CMD_LINE_ZIP
+	#ifdef __USE_CMD_LINE_ZIP__
 		std::string			zipTemp_;		// Le dossier temporaire dans lequel sont dezipés/zipés les fichiers
-	#endif // #ifdef USE_CMD_LINE_ZIP
+	#endif // #ifdef __USE_CMD_LINE_ZIP__
 #endif // __USE_ZIP_UTILS_LIB__
 	};
 

@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -103,17 +103,8 @@ bool confFile::logInfos(LOGINFOS& dst)
 		dst.mode_ = attrValue;
 
 		// Recherche de la "bonne valeur" pour le dossier
-		bool found(false);
-		pugi::xml_node subNode = node.child(XML_CONF_LOGS_FOLDER_NODE);
-		while (!IS_EMPTY(subNode.name()) && !found){
-			found = (expectedOS_ == subNode.attribute(XML_CONF_FOLDER_OS_ATTR).value());
-
-			// Dossier suivant
-			if (!found){
-				subNode = subNode.next_sibling(XML_CONF_LOGS_FOLDER_NODE);
-			}
-		}
-
+		pugi::xml_node subNode = findChildNode(node, XML_CONF_LOGS_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str());
+		
 		// Trouvé ?
 		if (!IS_EMPTY(subNode.name())){
 			dst.folder_ = subNode.first_child().value();
@@ -416,9 +407,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 					// Est ce un chemin complet ?
 					if (folder.npos == folder.find(FILENAME_SEP)) {
 						// Non => chemin relatif au dossier courant
-						folder = sFileSystem::current_path();
-						folder += FILENAME_SEP;
-						folder += destinationServer_.node()->first_child().value();
+						folder = sFileSystem::merge(sFileSystem::current_path(), destinationServer_.node()->first_child().value());
 					}
 
 					// QQue soit de le cas, le dossier doit exister
@@ -616,41 +605,21 @@ bool confFile::_load()
 		return false;
 	}
 
-	pugi::xml_node node = xmlDocument_.child(XML_ROOT_LDAPTOOLS_NODE);
-	if (IS_EMPTY(node.name())) {
-		// Pas le bon format ...
+	// Le "bon" fichier pour l'application ?
+	try {
+		checkProtocol(XML_CONF_NODE);
+	}
+	catch (LDAPException& e) {
 		if (logs_) {
-			logs_->add(logFile::ERR, "Le fichier de configuration n'est pas dans le bon format");
+			logs_->add(logFile::ERR, e.what());
 		}
 
 		return false;
 	}
 
-	// Version du protocole
-	string currentVersion(node.attribute(XML_ROOT_VERSION_ATTR).value());
-	if (XML_CONF_VERSION_VAL != currentVersion) {
-		// Pas la "bonne" version
-		if (logs_) {
-			logs_->add(logFile::ERR, "La version du fichier de configuration n'est pas correcte. Version attendue : %s", XML_CONF_VERSION_VAL);
-		}
-
-		return false;
-	}
-
-	// "Racine" de paramètres
-	paramsRoot_ = node.child(XML_CONF_NODE);
-	if (IS_EMPTY(paramsRoot_.name())) {
-		// Pas le bon format ...
-		if (logs_) {
-			logs_->add(logFile::ERR, "Pas de paramètres dans le fichier de configuration");
-		}
-
-		// Pas de paramètres
-		return false;
-	}
-
-	// Initialisation des objets XMLNode
-
+	//
+	// Lecture des paramètres
+	//
 
 	// Dossier de l'application
 	//
@@ -658,17 +627,8 @@ bool confFile::_load()
 	pugi::xml_node subNode, childNode;
 
 	// Recherche de la "bonne valeur" pour le dossier
-	bool found(false);
-	childNode = paramsRoot_.child(XML_CONF_FOLDER_NODE);
-	while (!IS_EMPTY(childNode.name()) && !found) {
-		found = (expectedOS_ == childNode.attribute(XML_CONF_FOLDER_OS_ATTR).value());
-
-		// Dossier suivant
-		if (!found) {
-			childNode = childNode.next_sibling(XML_CONF_FOLDER_NODE);
-		}
-	}
-
+	childNode = findChildNode(paramsRoot_, XML_CONF_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str());
+	
 	// Trouvée ?
 	if (!IS_EMPTY(childNode.name())) {
 		//appFolder_ = childNode.first_child().value();

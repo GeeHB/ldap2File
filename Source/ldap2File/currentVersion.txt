@@ -1,3 +1,20 @@
+20.7.29
+	* 28 juillet 2020
+	+ Corrections mineures
+		+ Ajout de sfileSystem::merge (avec ses 4 prototypes)
+		+ Utilisation de folders  pour TOUS les dossiers internes de l'application
+	+ Modification de XMLParser => devient la référence pour tous les accès aux fichiers XML
+		+ Vérifications plus pertinentes
+		+ Messages d'erreur / exceptions plus explicites
+	+ Gestion du premier lancement de l'application
+		+ Windows => clé de registre
+		+ Linux / MacOS: ?
+
+### TODO ###
+	+ Gestion de la première connexion sous Linux et/ou MacOS
+	+ Génération d'exceptions par SMTPClient
+	+ Vérification & réecriture SMTPClient
+
 20.7.28
 	* 27 juillet 2020
 	+ Corrections mineures
@@ -10,11 +27,7 @@
 	+ Fichiers ODS => format zip
 		+ reprise de la classe ODSFile::zipFile
 		+ Windows : utilisation des sources de la librairies zipFile (ZitUtils fonctionne aussi en WIN32)
-		+ Linux : utilisation de tar/unzip en ligne de commande - #define USE_CMD_LINE_ZIP
-
-### TODO ###
-	+ Génération d'exceptions par SMTPClient
-	+ Vérification & réecriture SMTPClient
+		+ Linux : utilisation de tar/unzip en ligne de commande - #define __USE_CMD_LINE_ZIP__
 
 20.7.25
 	* 22 juillet 2020

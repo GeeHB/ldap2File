@@ -20,7 +20,7 @@
 //--
 //--	21/07/2020 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -116,9 +116,7 @@ namespace jhbLDAPTools {
 			}
 
 			// Mise à jour du chemin
-			realPath = pApp->path();
-			realPath += FILENAME_SEP;
-			realPath += path;
+			realPath = sFileSystem::merge(pApp->path(), path);
 		}
 
 		// Y a t'il déja un dossier de ce type ?

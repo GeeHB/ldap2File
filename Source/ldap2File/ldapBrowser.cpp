@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -818,9 +818,7 @@ RET_TYPE ldapBrowser::_createFile()
 				switch (dest->type()){
 				// Une copie de fichier
 				case DEST_TYPE::DEST_FS_WINDOWS:{
-					fullName = dest->folder();
-					fullName += FILENAME_SEP;
-					fullName += opfi.name_;
+					fullName = sFileSystem::merge(dest->folder(), opfi.name_);
 					if (!sFileSystem::copy_file(file_->fileName(), fullName.c_str())){
 						atLeastOneError = true;
 						logs_->add(logFile::ERR, "Impossible de créer le fichier '%s'", fullName.c_str());

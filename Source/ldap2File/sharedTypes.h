@@ -19,7 +19,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -975,7 +975,7 @@ class LDAPException : public exception
 {
 public:
 	LDAPException(const char* why)
-	{ reason_ = why; }
+	{ reason_ = IS_EMPTY(why)?"Erreur inconnue":why; }
 	LDAPException(string& why)
 	{ reason_ = why; }
 	virtual const char* what() const throw()

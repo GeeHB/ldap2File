@@ -17,6 +17,7 @@
 //--	APPELS :
 //--
 //--		[fichiers ou dossier]
+//--		-base:{folder} : {folder} est la racine de l'application
 //--		-s - Mode silencieux
 //--		-c - Effacement des fichiers après traitement
 //--		-f:{min} - Annalyse régulière (si pas de suppression) toutes les {min} minutes
@@ -35,27 +36,48 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
 #include "sharedConsts.h"
+#include "sFileSystem.h"
 #include "ldapBrowser.h"
+
+#include "XMLParser.h"
 
 #ifndef _WIN32
 #include <dirent.h>		// Gestion des repertoires
 #include <ctime>
-#endif // #ifndef _WIN32
+#endif // _WIN32
 
 // Prototypes
 //
 void _getFolderContent(const string& source, list<string>& content);
 void _now();
 int _getTickCount();
+bool _checkCurrentVersion(string& error);
+bool _updateConfigurationFiles(const char* app);
 
 // Point d'entrée du programme
 //
 int main(int argc, const char * argv[]){
+
+	string error("");
+	if (false == _checkCurrentVersion(error)) {
+		if (error.length()) {
+			cout << error;
+			return 1;
+		}
+
+		// Mise à jour du fichier de configuration
+		if (false == _updateConfigurationFiles(argv[0])) {
+			return 1;
+		}
+	}
+
+	// Lancement de l'application
+	//
 #ifdef _WIN32
 	bool verbose(true);
 #endif // _WIN32
@@ -121,9 +143,7 @@ int main(int argc, const char * argv[]){
 		myFolders.add(folders::FOLDER_TYPE::FOLDER_TEMP, STR_FOLDER_TEMP);				// fichiers temporaires
 		myFolders.add(folders::FOLDER_TYPE::FOLDER_OUTPUTS, STR_FOLDER_OUTPUTS);		// pour les fichiers générés
 
-		string file(folder);
-		file += FILENAME_SEP;
-		file += XML_CONF_FILE;
+		string file = sFileSystem::merge(folder, XML_CONF_FILE);
 
 		// Ouverture du fichier de configuration
 		//
@@ -462,6 +482,173 @@ int _getTickCount()
 	theTick += ts.tv_sec * 1000;
 	return theTick;
 #endif // _WIN32
+}
+
+// Vérification de la version courante de l'application et mise à jour
+//
+//	retourne un booléen indiquant si l'application est à jour
+//
+bool _checkCurrentVersion(string& error)
+{
+	bool valid(false);
+	error = "";
+
+#ifdef _WIN32
+	CRegEntry entry;
+	if (FALSE == entry.SetBaseDirectory(REG_LDAP2FILE_ROOT, REG_LDAP2FILE_PATH)) {
+		error = "Erreur - Impossible d'accdéder à la base de regsitres";
+		return false;	// pas à jour
+	}
+
+	string version = entry.GetPrivateString(REG_LDAP2FILE_SECTION, REG_LDAP2FILE_VER_KEY, REG_LDAP2FILE_VER_DEF);
+	
+	if (0 == version.length()) {
+		cout << "Premier lancement de l'application" << endl;
+	}
+	else {
+		cout << "Dernière version : " << version << endl;
+		valid = true;
+	}
+
+	// Mise à jour de la version
+#ifndef _DEBUG
+	entry.WritePrivateString(REG_LDAP2FILE_SECTION, REG_LDAP2FILE_VER_KEY, APP_RELEASE);
+#endif // _DEBUG
+
+#endif // _WIN32
+
+	// Ok ?
+	return valid;
+}
+
+// Mise à jour des fichiers de configuration
+//
+bool _updateConfigurationFiles(const char* appName)
+{
+	if (IS_EMPTY(appName)) {
+		cout << "Erreur - Paramètres invalides" << endl;
+		return false;
+	}
+
+	// Dossier de l'application
+	string fullName(appName), path("");	
+#ifdef _DEBUG
+	fullName = "d:\\ldapTools\\ldap2File.exe";
+#endif // _DEBUG
+
+	fullName = sFileSystem::split(fullName, path);
+
+	if (0 == path.length()) {
+		cout << "Erreur - Pas de nom de dossier dans le nom de l'application" << endl;
+		return false;
+	}
+
+	// Fichier de configuration
+	string confFile = sFileSystem::merge(path, XML_CONF_FILE);
+	XMLParser xmlConf(confFile.c_str(), NULL, NULL);
+
+	try {
+		// Chargement du fichier
+		xmlConf.load();
+
+		// Vérifications
+		xmlConf.checkProtocol(XML_CONF_NODE);
+	}
+	catch (LDAPException& e) {
+		cout << e.what() << endl;
+		return false;
+	}
+	
+	// Ma "racine"
+	pugi::xml_node paramsRoot = (*xmlConf.paramsRoot());
+	
+	// Dossier de l'application
+	//
+	bool update(true);
+	pugi::xml_node childNode = xmlConf.findChildNode(paramsRoot, XML_CONF_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, xmlConf.expectedOS());
+	
+	// Trouvé ?
+	if (!IS_EMPTY(childNode.name())) {
+		string val = childNode.first_child().value();
+		cout << "Dossier de l'application : " << val << endl;
+
+		if (val == path) {
+			update = false;
+			cout << "\t- Pas de mise a jour" << endl;
+		}
+		else {
+			cout << "\t- Nouvelle valeur : " << path << endl;
+
+			// Mise à jour
+			childNode.first_child().set_value(path.c_str());
+		}
+	}
+	else {
+		// Ajout
+		childNode = paramsRoot.prepend_child(XML_CONF_FOLDER_NODE);
+		childNode.first_child().set_value(path.c_str());
+		pugi::xml_attribute attr = childNode.append_attribute(XML_CONF_FOLDER_OS_ATTR);
+		attr.set_value(xmlConf.expectedOS());
+	}
+
+	// Dossier des logs
+	//
+	path = sFileSystem::merge(path, STR_FOLDER_LOGS);
+	pugi::xml_node logNode = paramsRoot.child(XML_CONF_LOGS_NODE);
+	if (IS_EMPTY(logNode.name())) {
+		cout << "Erreur - pas de noeud " << XML_CONF_LOGS_NODE << " dans le fichier '" << confFile << "'" << endl;
+		return false;
+	}
+
+	childNode = xmlConf.findChildNode(logNode, XML_CONF_LOGS_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, xmlConf.expectedOS());
+	cout << "Dossier des logs : " << endl;
+
+	// Trouvé ?
+	if (!IS_EMPTY(childNode.name())) {
+		string val = childNode.first_child().value();
+		
+		cout << "\t- Dans le fichier : " << val;
+		
+		if (val == path) {
+			cout << "\t- Pas de mise a jour" << endl;
+		}
+		else {
+			cout << "\t- Nouvelle valeur : " << path << endl;
+
+			// Mise à jour
+			childNode.first_child().set_value(path.c_str());
+			update = true;
+		}
+	}
+	else {
+		// Il n'existe pas => rien à faire
+		cout << "\t- Pas de dossier précisé => rien à faire" << endl;
+	}
+	
+	//
+	// Mise à jour du fichier
+	//
+	if (update) {
+		
+		// Conservation du fichier
+		string destFile(confFile);
+		destFile += ".old";
+		if (!sFileSystem::exists(destFile)) {
+			sFileSystem::copy_file(confFile, destFile);
+		}
+		
+		// Sauvegarde
+		if (false == xmlConf.save()) {
+			cout << "Erreur lors de la sauvegarde du fichier '" << confFile << "'" << endl;
+			return false;
+		}
+	}
+
+#ifdef _DEBUG
+#endif // _DEBUG
+	
+	// Ok
+	return true;
 }
 
 // EOF

@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -230,24 +230,46 @@ namespace sFileSystem {
 
 	// Extraction du nom de fichier (ou d'un sous-dossier)
 	//
-	std::string split(const std::string path)
+	std::string split(const std::string& fullName)
 	{
-		if (0 == path.length()) {
+		if (0 == fullName.length()) {
 			return "";
 		}
 		
-		std::string inter = charUtils::cleanName(path);
+		std::string inter = charUtils::cleanName(fullName);
 		size_t pos = inter.rfind(FILENAME_SEP);
 		return ((inter.npos == pos) ? inter : inter.substr(pos + 1));
 	}
 
-	bool split(const std::string& path, std::list<std::string>& out)
+	// Extraction du nom de fichier (ou du dossier) et du chemin du container
+	//
+	std::string split(const std::string& fullName, std::string& path)
+	{
+		if (0 == fullName.length()) {
+			return "";
+		}
+
+		std::string inter = charUtils::cleanName(fullName);
+		size_t pos = inter.rfind(FILENAME_SEP);
+		if (inter.npos == pos) {
+			// Pas de chemin
+			path = "";
+			return inter;
+		}
+
+		path = inter.substr(0, pos);	// chemin
+		return inter.substr(pos + 1);	// binaire (ou sous-dossier)
+	}
+
+	// Décomposition du nom du fichier/dossier
+	//
+	bool split(const std::string& fullName, std::list<std::string>& out)
 	{
 		// La liste est vide
 		out.clear();
 		
-		if (path.length() > 0) {
-			std::string fName = charUtils::cleanName(path);
+		if (fullName.length() > 0) {
+			std::string fName = charUtils::cleanName(fullName);
 			if (fName.length()) {
 				size_t pos;
 				while (fName.npos != (pos = fName.rfind(FILENAME_SEP))) {
@@ -269,6 +291,46 @@ namespace sFileSystem {
 
 		// Liste vide ?
 		return (out.size() > 0);
+	}
+
+	// Génération d'un nom de fichier
+	//
+	std::string merge(const std::string& path, const std::string& filename)
+	{
+		if (0 == filename.length()) {
+			return path;
+		}
+		std::string fullName("");
+		size_t len(0);
+		if ((len = path.length()) > 0) {
+			// un chemin !
+			fullName = path;
+
+			if (FILENAME_SEP != path[len - 1]) {
+				// le séparateur
+				fullName += FILENAME_SEP;
+			}
+		}
+		fullName += filename;
+		return fullName;
+	}
+
+	std::string merge(const std::string& path, const char* filename)
+	{
+		std::string sFilename(IS_EMPTY(filename) ? "" : filename);
+		return merge(path, sFilename);
+	}
+
+	std::string merge(const char* path, const char* filename)
+	{
+		std::string sPath(IS_EMPTY(path) ? "" : path);
+		std::string sFilename(IS_EMPTY(filename) ? "" : filename);
+		return merge(sPath, sFilename);
+	}
+	std::string merge(const char* path, const std::string& filename)
+	{
+		std::string sPath(IS_EMPTY(path) ? "" : path);
+		return merge(sPath, filename);
 	}
 
 }; // sFileSystem

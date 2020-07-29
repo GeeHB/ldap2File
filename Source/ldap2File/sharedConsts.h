@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -52,7 +52,7 @@
 //
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.7.28"
+#define APP_RELEASE				"20.7.29"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -78,10 +78,23 @@
 // Mode silencieux
 #define CMD_NO_VERBOSE			"-s"
 
+// Base de registres
+//
+#ifdef _WIN32
+#include <RegEntry.h>
+#define REG_LDAP2FILE_ROOT		HKEY_LOCAL_MACHINE
+#define REG_LDAP2FILE_PATH		"Software\\Allier"
+#define REG_LDAP2FILE_SECTION	"ldap2File"
+
+// Version courante
+#define REG_LDAP2FILE_VER_KEY	"Version"
+#define REG_LDAP2FILE_VER_DEF	""
+#endif // _WIN32
+
 // Expressions régulières
 //
-#define REG_EXPR_LDAP		"JHB - Découpage des requêtes"
-#define REG_EXPR_MINIMAL	"JHB - Objets de type utilisateur"
+#define REG_EXPR_LDAP			"JHB - Découpage des requêtes"
+#define REG_EXPR_MINIMAL		"JHB - Objets de type utilisateur"
 
 // Classes STL
 //

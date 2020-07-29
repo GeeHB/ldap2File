@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -91,9 +91,15 @@ namespace sFileSystem {
 	void current_path(std::string path);
 
 	// Extraction du nom de fichier (ou d'un sous-dossier)
-	std::string split(const std::string fullName);
-	bool split(const std::string& fileName, std::list<std::string>& out);
+	std::string split(const std::string& fullName);
+	std::string split(const std::string& fullName, std::string& path);
+	bool split(const std::string& fullName, std::list<std::string>& out);
 
+	// Génération d'un nom de fichier
+	std::string merge(const std::string& path, const std::string& filename);
+	std::string merge(const std::string& path, const char* filename);
+	std::string merge(const char* path, const char* filename);
+	std::string merge(const char* path, const std::string& filename);
 }; // sFileSystem
 
 #endif // __JHB_SIMPLE_FILE_SYSTEM_OBJECT_h__

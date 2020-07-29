@@ -20,7 +20,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	27/07/2020 - JHB - Version 20.7.28
+//--	28/07/2020 - JHB - Version 20.7.29
 //--
 //---------------------------------------------------------------------------
 
@@ -55,6 +55,77 @@ XMLParser::XMLParser(folders* pFolders, logFile* logs)
 	defType_ = DEST_TYPE::DEST_FS_LINUX;
 #endif // __APPLE__
 #endif // _WIN32
+}
+
+// Vérification de la version
+//
+void XMLParser::checkProtocol(const string& parametersNode)
+{
+	pugi::xml_node node = xmlDocument_.child(XML_ROOT_LDAPTOOLS_NODE);
+	if (0 == parametersNode.length() || IS_EMPTY(node.name())) {
+		string msg("Le fichier '");
+		msg += fileName_;
+		msg += "' n'est pas dans le bon format";
+		throw LDAPException(msg);
+	}
+
+	// Version du protocole
+	string currentVersion(node.attribute(XML_ROOT_VERSION_ATTR).value());
+	if (XML_CONF_VERSION_VAL != currentVersion) {
+		// Pas la "bonne" version
+		string msg("La version du fichier '");
+		msg += fileName_;
+		msg += "' n'est pas correcte. Version attendue : ";
+		msg += XML_CONF_VERSION_VAL;
+		throw LDAPException(msg);
+	}
+
+	// On se positionne à la "racine" des paramètres
+	paramsRoot_ = node.child(parametersNode.c_str());
+	if (IS_EMPTY(paramsRoot_.name())) {
+		// Pas le bon document
+		string msg("Pas de noeud");
+		msg += parametersNode;
+		msg += " dans le fichier '";
+		msg += fileName_;
+		msg += "'";;
+		throw LDAPException(msg);
+	}
+}
+
+// Enregistrement du fichier
+//
+bool XMLParser::save()
+{
+	try {
+		return xmlDocument_.save_file(fileName_.c_str(), PUGIXML_TEXT("\t"), pugi::format_default | pugi::format_save_file_text, pugi::encoding_utf8);
+	}
+	catch (...) {
+		return false;
+	}
+	
+	// Ok (inutile)
+	return true;
+}
+
+// Recherche d'un noeud "fils" ayant une valeur d'attribut particulière
+//
+pugi::xml_node XMLParser::findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue)
+{
+	// Recherche du "noeud"
+	bool found(false);
+	pugi::xml_node childNode = parent.child(childName.c_str());
+	while (!IS_EMPTY(childNode.name()) && !found) {
+		found = (attrValue == childNode.attribute(attrName.c_str()).value());
+
+		// noeud suivant
+		if (!found) {
+			childNode = childNode.next_sibling(childName.c_str());
+		}
+	}
+
+	// On retourne le noeud si trouvé ou un noeud vide
+	return childNode;
 }
 
 // Utilitaires
@@ -119,6 +190,27 @@ unsigned int XMLParser::_value2LinkType(string& value)
 
 	// Par défaut ...
 	return DATA_LINK_NONE;
+}
+
+// Chargement du fichier XML
+//
+bool XMLParser::_load()
+{
+	// Le fichier doit exister et être non-vide
+	if (0 == fileName_.size()) {
+		throw LDAPException("Pas de nom pour le fichier de configuration");
+	}
+
+	if (!sFileSystem::exists(fileName_) ||
+		0 == sFileSystem::file_size(fileName_)) {
+		string erreur("Le fichier de '");
+		erreur += fileName_;
+		erreur += "' n'existe pas ou est vide";
+		throw LDAPException(erreur);
+	}
+
+	// Tentative d'ouverture du fichier
+	return (pugi::status_ok == xmlDocument_.load_file(fileName()).status);
 }
 
 // EOF
