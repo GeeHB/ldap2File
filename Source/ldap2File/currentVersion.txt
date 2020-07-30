@@ -1,10 +1,10 @@
-20.7.29
-	* 28 juillet 2020
+20.7.30
+	* 29 juillet 2020
 	+ Corrections mineures
 		+ Ajout de sfileSystem::merge (avec ses 4 prototypes)
-		+ Utilisation de folders  pour TOUS les dossiers internes de l'application
+		+ Utilisation de la classe folders pour TOUS les dossiers internes de l'application
 	+ Modification de XMLParser => devient la référence pour tous les accès aux fichiers XML
-		+ Vérifications plus pertinentes
+		+ Vérifications plus pertinentes (existence, version du protocole, formation)
 		+ Messages d'erreur / exceptions plus explicites
 	+ Gestion du premier lancement de l'application
 		+ Windows => clé de registre

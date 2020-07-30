@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	28/07/2020 - JHB - Version 20.7.29
+//--	29/07/2020 - JHB - Version 20.7.30
 //--
 //---------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ confFile::confFile(const char* confFile, folders* pFolders, logFile* log)
 }
 
 confFile::confFile(folders* pFolders, logFile* log)
-	:XMLParser(pFolders, log)
+	:XMLParser(XML_ROOT_LDAPTOOLS_NODE, pFolders, log)
 {
 	// Intialisation des données membres
 	_init();

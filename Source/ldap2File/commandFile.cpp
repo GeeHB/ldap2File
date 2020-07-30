@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	28/07/2020 - JHB - Version 20.7.29
+//--	29/07/2020 - JHB - Version 20.7.30
 //--
 //---------------------------------------------------------------------------
 
@@ -30,7 +30,7 @@
 // Construction
 //
 commandFile::commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded)
-	: XMLParser(cmdFile, pFolders, log)
+	: XMLParser(cmdFile, XML_ROOT_LDAP2FILE_NODE, pFolders, log)
 {
 	// Intialisation des données membres
 	includedFile_ = NULL;

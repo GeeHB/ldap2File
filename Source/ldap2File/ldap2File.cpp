@@ -36,7 +36,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	28/07/2020 - JHB - Version 20.7.29
+//--	29/07/2020 - JHB - Version 20.7.30
 //--
 //---------------------------------------------------------------------------
 
@@ -63,6 +63,22 @@ bool _updateConfigurationFiles(const char* app);
 //
 int main(int argc, const char * argv[]){
 
+	// Binaire et sa version
+	//
+	string binName(argv[0]);
+	char sep(FILENAME_SEP);
+	size_t pos(0);
+	if (binName.npos != (pos = binName.rfind(sep))) {
+		binName = binName.substr(pos + 1);
+	}
+
+	if (binName.npos != (pos = binName.rfind("."))) {
+		binName = binName.substr(0, pos);
+	}
+	
+	cout << binName << " - Version " << APP_RELEASE << endl;
+	cout << "Copyright " << APP_COPYRIGHT << endl;
+	
 	string error("");
 	if (false == _checkCurrentVersion(error)) {
 		if (error.length()) {
@@ -90,22 +106,6 @@ int main(int argc, const char * argv[]){
 		cout << "Mauvaise ligne de commande";
 		return 1;
 	}
-
-	// Binaire et sa version
-	//
-	string binName(argv[0]);
-	char sep(FILENAME_SEP);
-	size_t pos(0);
-	if (binName.npos != (pos = binName.rfind(sep))){
-		binName = binName.substr(pos + 1);
-	}
-
-	if (binName.npos != (pos = binName.rfind("."))){
-		binName = binName.substr(0, pos);
-	}
-
-	cout << binName << " - Version " << APP_RELEASE << endl;
-	cout << "Copyright " << APP_COPYRIGHT << endl;
 
 	folders myFolders;		// Liste des dossiers utilisés par l'application	
 	logFile logs;
@@ -505,10 +505,12 @@ bool _checkCurrentVersion(string& error)
 	if (0 == version.length()) {
 		cout << "Premier lancement de l'application" << endl;
 	}
+	/*
 	else {
-		cout << "Dernière version : " << version << endl;
+		cout << "Version installée : " << version << endl;
 		valid = true;
 	}
+	*/
 
 	// Mise à jour de la version
 #ifndef _DEBUG
@@ -545,7 +547,7 @@ bool _updateConfigurationFiles(const char* appName)
 
 	// Fichier de configuration
 	string confFile = sFileSystem::merge(path, XML_CONF_FILE);
-	XMLParser xmlConf(confFile.c_str(), NULL, NULL);
+	XMLParser xmlConf(confFile.c_str(), XML_ROOT_LDAPTOOLS_NODE, NULL, NULL);
 
 	try {
 		// Chargement du fichier
@@ -607,7 +609,7 @@ bool _updateConfigurationFiles(const char* appName)
 	if (!IS_EMPTY(childNode.name())) {
 		string val = childNode.first_child().value();
 		
-		cout << "\t- Dans le fichier : " << val;
+		cout << "\t- Dans le fichier : " << val << endl;
 		
 		if (val == path) {
 			cout << "\t- Pas de mise a jour" << endl;

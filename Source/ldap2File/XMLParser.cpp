@@ -20,7 +20,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	28/07/2020 - JHB - Version 20.7.29
+//--	29/07/2020 - JHB - Version 20.7.30
 //--
 //---------------------------------------------------------------------------
 
@@ -33,9 +33,14 @@
 
 // Construction
 //
-XMLParser::XMLParser(folders* pFolders, logFile* logs)
+XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs)
 {
+	if (IS_EMPTY(rootName)) {
+		throw LDAPException("XMLParser - Pas de nom pour la racine");
+	}
+	
 	// Initialisation des paramètres
+	baseRootName_ = rootName;
 	folders_ = pFolders;
 	logs_ = logs;
 	fileName_ = "";
@@ -61,7 +66,7 @@ XMLParser::XMLParser(folders* pFolders, logFile* logs)
 //
 void XMLParser::checkProtocol(const string& parametersNode)
 {
-	pugi::xml_node node = xmlDocument_.child(XML_ROOT_LDAPTOOLS_NODE);
+	pugi::xml_node node = xmlDocument_.child(baseRootName_.c_str());
 	if (0 == parametersNode.length() || IS_EMPTY(node.name())) {
 		string msg("Le fichier '");
 		msg += fileName_;

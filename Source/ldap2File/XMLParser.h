@@ -20,7 +20,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	28/07/2020 - JHB - Version 20.7.29
+//--	29/07/2020 - JHB - Version 20.7.30
 //--
 //---------------------------------------------------------------------------
 
@@ -113,15 +113,15 @@ public:
 //
 public:
 
-	// Construction
+	// Constructeurs
 	//
-	XMLParser(const char* fileName, folders* pFolders, logFile* logs)
-		:XMLParser(pFolders, logs){
+	XMLParser(const char* fileName, const char* rootName, folders* pFolders, logFile* logs)
+		:XMLParser(rootName, pFolders, logs){
 		// Copie du nom du fichier
 		setFileName(fileName);
 	}
 
-	XMLParser(folders* pFolders, logFile* logs);
+	XMLParser(const char* rootName, folders* pFolders, logFile* logs);
 
 	// Destruction
 	//
@@ -214,6 +214,8 @@ protected:
 
 	// Fichier XML d'entrée
 	string				fileName_;
+
+	string				baseRootName_;		// Nom du noeud principal
 
 	pugi::xml_document	xmlDocument_;
 	pugi::xml_node		paramsRoot_;		// Base pour les paramètres
