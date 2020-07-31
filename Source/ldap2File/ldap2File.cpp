@@ -36,7 +36,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	29/07/2020 - JHB - Version 20.7.30
+//--	31/07/2020 - JHB - Version 20.8.31
 //--
 //---------------------------------------------------------------------------
 
@@ -505,18 +505,16 @@ bool _checkCurrentVersion(string& error)
 	if (0 == version.length()) {
 		cout << "Premier lancement de l'application" << endl;
 	}
-	/*
+	
+	if (APP_RELEASE != version) {
+		// Mise à jour de la version
+#ifndef _DEBUG
+		entry.WritePrivateString(REG_LDAP2FILE_SECTION, REG_LDAP2FILE_VER_KEY, APP_RELEASE);
+#endif // _DEBUG
+	}
 	else {
-		cout << "Version installée : " << version << endl;
 		valid = true;
 	}
-	*/
-
-	// Mise à jour de la version
-#ifndef _DEBUG
-	entry.WritePrivateString(REG_LDAP2FILE_SECTION, REG_LDAP2FILE_VER_KEY, APP_RELEASE);
-#endif // _DEBUG
-
 #endif // _WIN32
 
 	// Ok ?
@@ -566,7 +564,7 @@ bool _updateConfigurationFiles(const char* appName)
 	
 	// Dossier de l'application
 	//
-	bool update(true);
+	bool update(false);
 	pugi::xml_node childNode = xmlConf.findChildNode(paramsRoot, XML_CONF_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, xmlConf.expectedOS());
 	
 	// Trouvé ?
@@ -574,23 +572,24 @@ bool _updateConfigurationFiles(const char* appName)
 		string val = childNode.first_child().value();
 		cout << "Dossier de l'application : " << val << endl;
 
-		if (val == path) {
-			update = false;
-			cout << "\t- Pas de mise a jour" << endl;
-		}
-		else {
-			cout << "\t- Nouvelle valeur : " << path << endl;
+		// Le dossier doit exister !
+		if (!val.length() || !sFileSystem::exists(val)){
+		
+			cout << "\t- Le dossier n'existe pas,  mise à jour avec '" << path << "'" << endl;
 
 			// Mise à jour
 			childNode.first_child().set_value(path.c_str());
+			update = true;
 		}
 	}
 	else {
-		// Ajout
+		// Pas de dossier => on ajoute la version par défaut
+		cout << "\t- Pas de dossier pour l'application,  mise à jour avec " << path << endl;
+
 		childNode = paramsRoot.prepend_child(XML_CONF_FOLDER_NODE);
-		childNode.first_child().set_value(path.c_str());
-		pugi::xml_attribute attr = childNode.append_attribute(XML_CONF_FOLDER_OS_ATTR);
-		attr.set_value(xmlConf.expectedOS());
+		childNode.append_child(pugi::node_pcdata).set_value(path.c_str());
+		childNode.append_attribute(XML_CONF_FOLDER_OS_ATTR) = xmlConf.expectedOS();
+		update = true;
 	}
 
 	// Dossier des logs
@@ -608,18 +607,16 @@ bool _updateConfigurationFiles(const char* appName)
 	// Trouvé ?
 	if (!IS_EMPTY(childNode.name())) {
 		string val = childNode.first_child().value();
-		
-		cout << "\t- Dans le fichier : " << val << endl;
-		
-		if (val == path) {
-			cout << "\t- Pas de mise a jour" << endl;
-		}
-		else {
-			cout << "\t- Nouvelle valeur : " << path << endl;
+		if (!sFileSystem::exists(val)) {
+			cout << "\t- Le dossier '" << val << "' n'existe pas"  << endl;
+			cout << "\t- Utilisation du dossier '" << path << "'"  << endl;
 
 			// Mise à jour
 			childNode.first_child().set_value(path.c_str());
 			update = true;
+		}
+		else {
+			cout << "\t- Utilisation du dossier '" << val << "'" << endl;
 		}
 	}
 	else {
@@ -632,7 +629,7 @@ bool _updateConfigurationFiles(const char* appName)
 	//
 	if (update) {
 		
-		// Conservation du fichier
+		// Conservation du fichier (s'il n'existe pas déja)
 		string destFile(confFile);
 		destFile += ".old";
 		if (!sFileSystem::exists(destFile)) {
@@ -646,9 +643,6 @@ bool _updateConfigurationFiles(const char* appName)
 		}
 	}
 
-#ifdef _DEBUG
-#endif // _DEBUG
-	
 	// Ok
 	return true;
 }
