@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ protected:
 	
 	// Ouverture
 	virtual bool _open();
-	virtual bool _load();
+	virtual void _load();
 
 	// Recherche d'un noeud (fils ou frère) par son nom en fonction de l'environnement
 	bool _nextNode(XMLParser::XMLNode* xmlNode, const char* parentNode, const char* envName, std::string* envValue);

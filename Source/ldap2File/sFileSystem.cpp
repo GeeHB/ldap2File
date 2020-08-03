@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -143,6 +143,28 @@ namespace sFileSystem {
 	//
 	// Dossiers
 	//
+
+	// Est-ce un dossier ?
+	//
+	bool is_directory(const std::string& path)
+	{
+		if (0 == path.length()) {
+			return false;
+		}
+
+		try {
+#ifdef _WIN32
+			DWORD dwAttrib = GetFileAttributes(path.c_str());
+			return ((dwAttrib != INVALID_FILE_ATTRIBUTES) && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+#else
+			return fs::is_directory(path);
+#endif // WIN32
+		}
+		catch (...) {
+			// Une erreur
+			return false;
+		}
+	}
 
 	// Création
 	//

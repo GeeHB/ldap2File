@@ -18,7 +18,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -158,6 +158,7 @@ bool JScriptFile::saveLine(bool header, LPAGENTINFOS agent)
 	agent->setOwnData(line_);
 
 	// On repart à  "0"
+	_incLines();
 	_newLine();
 	return true;
 }

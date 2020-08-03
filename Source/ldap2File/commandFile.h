@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -151,7 +151,7 @@ protected:
 	virtual bool _open();
 
 	// Chargement / ouverture du document XML
-	virtual bool _load();
+	virtual void _load();
 
 	// Remplissage de la structure OPFI
 	bool _fileInfos(aliases& aliases, OPFI& fileInfos);

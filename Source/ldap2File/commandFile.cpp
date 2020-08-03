@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -62,12 +62,7 @@ bool commandFile::_open()
 	}
 
 	// Ouverture et lecture du document XML
-	if (!_load()){
-		string str("Impossible d'ouvrir le fichier de commandes '");
-		str += fileName_;
-		str += "'. Le fichier est soit inexistant soit mal-formé";
-		throw LDAPException(str);
-	}
+	_load();
 
 	// Ok
 	valid_ = true;
@@ -76,13 +71,11 @@ bool commandFile::_open()
 
 // Chargement / ouverture du fichier de commandes
 //
-bool commandFile::_load()
+void commandFile::_load()
 {
 	// Chargement du fichier ...
-	if (!XMLParser::_load()){
-		return false;
-	}
-
+	XMLParser::_load();
+	
 	// Le "bon" fichier pour l'application ?
 	try {
 		checkProtocol(XML_FILE_NODE);
@@ -92,7 +85,7 @@ bool commandFile::_load()
 			logs_->add(logFile::ERR, e.what());
 		}
 
-		return false;
+		return;
 	}
 	
 	//
@@ -145,9 +138,6 @@ bool commandFile::_load()
 			}
 		}
 	}
-
-	// Ok
-	return true;
 }
 
 // Informations sur une colonne

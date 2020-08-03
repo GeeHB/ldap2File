@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -82,6 +82,9 @@ namespace sFileSystem {
 
 	// Dossiers
 	//
+
+	// Un dossier ?
+	bool is_directory(const std::string& path);
 
 	// Création
 	bool create_directory(const std::string& path);

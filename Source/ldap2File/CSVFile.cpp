@@ -18,7 +18,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//-- 31/07/2020 - JHB - Version 20.8.31
+//-- 03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -133,7 +133,9 @@ bool CSVFile::getOwnParameters()
 	}
 
 	if (logs_){
-		logs_->add(logFile::LOG, "CSV - Séparateur colonnes : \'%s\' - Valeurs : \'%s\'", sepCols_.c_str(), sepValues_.c_str());
+		logs_->add(logFile::LOG, "Paramètres CSV :");
+		logs_->add(logFile::LOG, "\t- Séparateur de colonnes : \'%s\'", sepCols_.c_str());
+		logs_->add(logFile::LOG, "\t- Séparateur de valeurs : \'%s\'", sepValues_.c_str());
 	}
 
 	return true;

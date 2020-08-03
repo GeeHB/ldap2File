@@ -20,7 +20,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@
 
 // Construction
 //
-XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs)
+XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs, bool loadComments)
 {
 	if (IS_EMPTY(rootName)) {
 		throw LDAPException("XMLParser - Pas de nom pour la racine");
@@ -44,6 +44,7 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs)
 	folders_ = pFolders;
 	logs_ = logs;
 	fileName_ = "";
+	loadComments_ = loadComments;
 	
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 
@@ -199,7 +200,7 @@ unsigned int XMLParser::_value2LinkType(string& value)
 
 // Chargement du fichier XML
 //
-bool XMLParser::_load()
+void XMLParser::_load()
 {
 	// Le fichier doit exister et être non-vide
 	if (0 == fileName_.size()) {
@@ -215,7 +216,90 @@ bool XMLParser::_load()
 	}
 
 	// Tentative d'ouverture du fichier
-	return (pugi::status_ok == xmlDocument_.load_file(fileName()).status);
+	int options = (loadComments_? pugi::parse_default | pugi::parse_comments : pugi::parse_default);
+	string erreur("");
+	pugi::xml_parse_result result;
+
+	try {
+		result = xmlDocument_.load_file(fileName(), options);	
+	}
+	catch (...) {
+		erreur = "Erreur inconnue lors du chargement de '";
+		erreur += fileName_;
+		erreur += "'";
+		throw LDAPException(erreur);
+	}
+
+	// Analyse du code retour
+	//
+	switch (result.status) {
+	case pugi::status_ok:
+		return;
+
+	case pugi::status_file_not_found:
+		erreur = "Le fichier n'existe pas : '";
+		break;
+
+	case pugi::status_io_error:
+		erreur = "Erreur(s) lors de la lecture de '";
+		break;
+
+	case pugi::status_out_of_memory:
+		erreur = "Erreur mémoire pendant la lecture de '";
+		break;
+
+	case pugi::status_unrecognized_tag:
+		erreur = "Tag invalide au caractère ";
+		erreur += charUtils::itoa(result.offset);
+		erreur += " dans '";
+		break;
+
+	case pugi::status_bad_comment:
+	case pugi::status_bad_cdata:
+	case pugi::status_bad_doctype:
+	case pugi::status_bad_pcdata:
+		erreur = "Format invalide au caractère ";
+		erreur += charUtils::itoa(result.offset);
+		erreur += " dans '";
+		break;
+
+	case pugi::status_bad_start_element:
+		erreur = "Début d'élément invalide au caractère ";
+		erreur += charUtils::itoa(result.offset);
+		erreur += " dans '";
+		break;
+
+	case pugi::status_bad_attribute:
+		erreur = "Erreur d'attribut au caractère ";
+		erreur += charUtils::itoa(result.offset);
+		erreur += " dans '";
+		break;
+
+	case pugi::status_bad_end_element:
+		erreur = "Fin d'élément invalide au caractère ";
+		erreur += charUtils::itoa(result.offset);
+		erreur += " dans '";
+		break;
+
+	case pugi::status_end_element_mismatch:
+		erreur = "La fermeture d'élement ne correspond à aucun élément ouvert au caractère ";
+		erreur += charUtils::itoa(result.offset);
+		erreur += " dans '";
+		break;
+
+	case pugi::status_no_document_element:
+		erreur = "Document invalide ou vide : '";
+		break;
+
+	case pugi::status_internal_error:
+	default:
+		erreur = "Erreur inconnue lors du chargement de '";
+		break;
+	}
+
+	erreur += fileName_;
+	erreur += "'";
+	throw LDAPException(erreur);
 }
 
 // EOF

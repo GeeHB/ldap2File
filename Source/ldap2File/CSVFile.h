@@ -18,7 +18,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -47,6 +47,12 @@ public:
 
 	// Paramètres spécifiques
 	virtual bool getOwnParameters();
+
+	// Nombre d'éléments enregistrés
+	virtual size_t size(){
+		size_t count = outputFile::size();
+		return ((count > 1) ? count - 1 : 0);
+	 }
 
 	// Création / initialisation(s)
 	virtual bool create();

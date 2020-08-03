@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//-- 31/07/2020 - JHB - Version 20.8.31
+//-- 03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ outputFile::outputFile(const LPOPFI fileInfos, columnList* columns, confFile* co
 	
 	columns_ = columns;
 	fileName_ = "";
-	//_shortFileName = "";
+	elements_ = 0;
 	clearLine_ = false;
 
 	setAttributeNames();
@@ -74,6 +74,7 @@ outputFile::outputFile(const outputFile& right)
 	configurationFile_ = right.configurationFile_;
 	columns_ = right.columns_;
 	fileName_ = right.fileName_;
+	elements_ = right.elements_;;
 	clearLine_ = false;
 }
 

@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -212,6 +212,10 @@ public:
 	{ _setFileType(fileType, false); }
 	FILE_TYPE fileType()
 	{ return fileInfos_->format_; }
+	
+	// Nombre d'éléments enregistrés
+	virtual size_t size()
+	{ return elements_; }
 
 	// Changement de nom
 	void setFileName(string& source) {
@@ -320,11 +324,18 @@ public:
 	//
 protected:
 
+	// Nouvelle ligne...
+	void _incLines()
+	{ elements_++; }
+
 	// Outils pour l'organigramme
 
 	// Nouvelle ligne
-	bool _saveLine(bool header = false, LPAGENTINFOS agent = NULL)
-	{ clearLine_ = false; return true; }
+	bool _saveLine(bool header = false, LPAGENTINFOS agent = NULL){
+		_incLines();
+		clearLine_ = false;
+		return true;
+	}
 
 	// Effacement de la ligne
 	void _clearLine()
@@ -355,6 +366,7 @@ protected:
 
 	LPATTRNAMES		currentAttribute_;	// Attribut en cours de traitement
 
+	size_t			elements_;			// Nombre d'éléments (ie de lignes) ajoutés
 	bool			clearLine_;			// Doit-on effacer la ligne ?
 };
 

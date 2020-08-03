@@ -22,7 +22,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -114,19 +114,7 @@ bool XMLFile::init(){
 #ifndef _GEN_DOC_
 
 		// Le fichier template existe t'il ?
-		bool exists(true);
-#ifdef _WIN32
-
-		HANDLE hTemplate = CreateFile(templateFile_.c_str(), FILE_READ_DATA, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		if (INVALID_HANDLE_VALUE == hTemplate){
-			exists = false;
-		}
-		else{
-			CloseHandle(hTemplate);
-		}
-#endif // _WIN32
-
-		if (!exists){
+		if (!sFileSystem::exists(templateFile_)){
 			if (logs_){
 				logs_->add(logFile::ERR, "Le modèle '%s' n'existe pas", templateFile_.c_str());
 			}
@@ -137,18 +125,13 @@ bool XMLFile::init(){
 #endif // _GEN_DOC_
 
 	// Si le fichier de contenu existe, on le supprime
-#ifdef _WIN32
-	HANDLE file = CreateFile(contentFile_.c_str(), FILE_ALL_ACCESS, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_ARCHIVE, NULL);
-	if (INVALID_HANDLE_VALUE != file){
-		CloseHandle(file);
-
 #ifndef XML_TEST_FORMAT_MODE
-		if (!DeleteFile(contentFile_.c_str())){
+	if (sFileSystem::exists(contentFile_)) {
+		if (!sFileSystem::remove(contentFile_)) {
 			return false;
 		}
-#endif // XML_TEST_FORMAT_MODE
 	}
-#endif // _WIN32
+#endif // XML_TEST_FORMAT_MODE
 
 	// Fichier à générer
 	defaultContentFileName(contentFile_, false);

@@ -20,7 +20,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -115,13 +115,13 @@ public:
 
 	// Constructeurs
 	//
-	XMLParser(const char* fileName, const char* rootName, folders* pFolders, logFile* logs)
-		:XMLParser(rootName, pFolders, logs){
+	XMLParser(const char* fileName, const char* rootName, folders* pFolders, logFile* logs, bool loadComments = false)
+		:XMLParser(rootName, pFolders, logs, loadComments){
 		// Copie du nom du fichier
 		setFileName(fileName);
 	}
 
-	XMLParser(const char* rootName, folders* pFolders, logFile* logs);
+	XMLParser(const char* rootName, folders* pFolders, logFile* logs, bool loadComments = false);
 
 	// Destruction
 	//
@@ -129,8 +129,8 @@ public:
 	{}
 
 	// Chargement du fichier XML
-	virtual bool load()
-	{ return _load(); }
+	virtual void load()
+	{ _load(); }
 
 	// Vérification de la version
 	void checkProtocol(const string& parametersNode);
@@ -202,7 +202,7 @@ protected:
 	{ return (fileName_.size() > 0); }
 
 	// Chargement du fichier XML
-	virtual bool _load();
+	virtual void _load();
 
 	// Conversions
 	//
@@ -219,6 +219,8 @@ protected:
 
 	pugi::xml_document	xmlDocument_;
 	pugi::xml_node		paramsRoot_;		// Base pour les paramètres
+
+	bool				loadComments_;		// Chargement des commentaires
 
 	charUtils			encoder_;			// Formatage des chaines accentuees
 

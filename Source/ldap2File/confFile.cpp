@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -585,25 +585,16 @@ bool confFile::_open()
 	}
 
 	// Ouverture et lecture du document XML
-	if (!_load()) {
-		string str("Impossible d'ouvrir le fichier de configuration '");
-		str += fileName_;
-		str += "'";
-		throw LDAPException(str);
-	}
-
-	// Ok
+	_load();
 	return true;
 }
 
 // Lecture d'un fichier de conf.
 //
-bool confFile::_load()
+void confFile::_load()
 {
 	// Chargement du fichier ...
-	if (!XMLParser::_load()) {
-		return false;
-	}
+	XMLParser::_load();
 
 	// Le "bon" fichier pour l'application ?
 	try {
@@ -613,8 +604,6 @@ bool confFile::_load()
 		if (logs_) {
 			logs_->add(logFile::ERR, e.what());
 		}
-
-		return false;
 	}
 
 	//
@@ -650,7 +639,6 @@ bool confFile::_load()
 
 	// Ok
 	fileRead_ = true;
-	return true;
 }
 
 // Recherche d'un noeud (fils ou frère) par son nom en fonction de l'environnement

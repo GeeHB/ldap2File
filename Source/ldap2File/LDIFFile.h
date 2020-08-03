@@ -21,7 +21,7 @@
 //--	05/04/2020 - JHB - Version 20.4.6
 //--						+ Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -220,9 +220,12 @@ private:
 		bool					allowEmpty_;		// Autorisation de création d'un attribut sans valeur
 		deque<LDAPATTRIBUTE*>	attributes_;		// Liste des attributs
 	};
-
+	
 	// Nouvelle ligne vierge
 	void _newLine() {
+		// Une ligne de +
+		_incLines();
+		
 		// Nettoyage des attributs
 		attributesToSave_.clean();
 

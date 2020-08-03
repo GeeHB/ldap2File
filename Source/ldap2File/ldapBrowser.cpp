@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	31/07/2020 - JHB - Version 20.8.31
+//--	03/08/2020 - JHB - Version 20.8.32
 //--
 //---------------------------------------------------------------------------
 
@@ -1479,8 +1479,9 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	}
 #endif // CUT_LDAP_REQUEST
 
-	// retourne le nombre d'agents effectivement ajoutés
-	return totalAgents;
+	// retourne le nombre d'agents effectivement  ajoutés
+	//	totalAgents correspond au nombre d'éléments dans l'organigramme et outputFile::size() au nombre de "lignes" dans le fichier de sortie
+	return ((0 == totalAgents)?file_->size():totalAgents);
 }
 
 // Obtention de la liste des services et directions
