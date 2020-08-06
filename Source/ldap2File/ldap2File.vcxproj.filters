@@ -416,10 +416,18 @@
     <ClInclude Include="..\..\..\Common\RegEntry.h">
       <Filter>Fichiers d%27en-tête\Common</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="currentVersion.txt">
       <Filter>Fichiers Txt</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ldap2File.rc">
+      <Filter>Fichiers de ressources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -36,7 +36,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	03/08/2020 - JHB - Version 20.8.32
+//--	06/08/2020 - JHB - Version 20.8.33
 //--
 //---------------------------------------------------------------------------
 
@@ -313,14 +313,14 @@ bool _updateConfigurationFile(const char* appName)
 //
 void _usage()
 {
-	cout << "\n\t" << APP_FULL_NAME << " {files or folder} [-base {app folder}] [-d:{folder}] [-f:{freq}] [-o:{output filename}] [-c] [-s]" << endl;
-	cout << "\n\t\t{files or folder} : Listes des fichiers de commande a traiter. Lorsqu'un seul nom est fourni, et qu'il s'agit d'un dossier, tout le contenu du dossier sera traite (identique a -d:{folder})" << endl;
-	cout << "\n\t\t-base {folder} : Le dossier 'folder' est considere comme le dossier de l'application. Par defaut, le dossier de l'application est celui dans lequel se trouve le binaire." << endl;
-	cout << "\n\t\t-d:{folder} : Analyse de tous les fichiers de commandes contenus dans le dossier {folder}" << endl;
-	cout << "\n\t\t-f:{freq} : Analyse periodique des fichiers et des dossiers. Freq est la fréquence d'analyse en minutes" << endl;
-	cout << "\n\t\t -o:{output-file} : Le fichier genere sera renomme en {output-file] meme si le fichier de commande indique une autre destination." << endl;
-	cout << "\n\t\t -c : Suppression du fichier de commande apres traitement." << endl;
-	cout << "\n\t\t -s : Windows uniquement = pas de MessageBox" << endl;
+	cout << "\n\t" << APP_FULL_NAME << " {files or folder} [-base:{folder}] [-d:{folder}] [-f:{freq}] [-o:{output filename}] [-c] [-s]" << endl;
+	cout << "\n\t\t. {files or folder} : Listes des fichiers de commande à traiter. Lorsqu'un seul nom est fourni, et qu'il s'agit d'un dossier, tout le contenu du dossier sera traité (identique à -d:{folder})" << endl;
+	cout << "\n\t\t. -base:{folder} : Le dossier 'folder' est considéré comme le dossier de l'application. Par défaut, le dossier de l'application est celui dans lequel se trouve le binaire." << endl;
+	cout << "\n\t\t. -d:{folder} : Analyse de tous les fichiers de commandes contenus dans le dossier {folder}" << endl;
+	cout << "\n\t\t. -f:{freq} : Analyse périodique des fichiers et des dossiers. Freq est la fréquence d'analyse en minutes" << endl;
+	cout << "\n\t\t. -o:{output-file} : Le fichier généré sera renommé en {output-file] même si le fichier de commande indique une autre destination." << endl;
+	cout << "\n\t\t . -c : Suppression du fichier de commande après traitement." << endl;
+	cout << "\n\t\t.  -s : Windows uniquement = pas de MessageBox" << endl;
 	
 	cout << "\n\tExemples d'appels:" << endl;
 	
@@ -330,7 +330,7 @@ void _usage()
 	cout << "\n\tTraitement du fichier '~/ldap2Files/datas/dsun.xml'; le dossier de l'application étant '/shared/cmdFiles" << endl;
 	cout << "\n\t\tldap2File -base /shared/cmdFiles ~/ldap2Files/datas/dsun.xml" << endl;
 
-	cout << "\n\tTraitement des 5 ficiers passes en ligne de commande ! " << endl;
+	cout << "\n\tTraitement des 5 fichiers passes en ligne de commande ! " << endl;
 	cout << "\n\t\tldap2File.exe  file1.xml file2.xml file3.xml file4.xml file5.xml" << endl;
 }
 
@@ -338,6 +338,12 @@ void _usage()
 //
 int main(int argc, const char* argv[]) {
 
+#ifdef _WIN32
+	// On bascule la console en UTF8 !!!
+	SetConsoleOutputCP(CP_UTF8);
+	setvbuf(stdout, nullptr, _IOFBF, 1000);
+#endif // _WIN32
+	
 	// Binaire et sa version
 	//
 	string binName(argv[0]);
@@ -352,7 +358,7 @@ int main(int argc, const char* argv[]) {
 	}
 
 	cout << binName << " - Version " << APP_RELEASE << endl;
-	cout << "Copyright " << APP_COPYRIGHT << endl;
+	cout << "Copyright © " << APP_COPYRIGHT << endl;
 
 	// Paramètres de la ligne de commandes
 	//
@@ -395,7 +401,7 @@ int main(int argc, const char* argv[]) {
 		// Passé en ligne de commande ?
 		for (int index = 1; 0 == folder.size() && index < argc; index++) {
 			if (argv[index] == strstr(argv[index], CMD_LINE_BASE_FOLDER)) {
-				folder = argv[index] + strlen(CMD_LINE_BASE_FOLDER) + 1;
+				folder = argv[index] + strlen(CMD_LINE_BASE_FOLDER);
 			}
 		}
 

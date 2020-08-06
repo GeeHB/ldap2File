@@ -281,6 +281,7 @@
     <ClInclude Include="ODSFile.h" />
     <ClInclude Include="outputFile.h" />
     <ClInclude Include="regExpr.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="servicesList.h" />
     <ClInclude Include="sFileSystem.h" />
     <ClInclude Include="sharedConsts.h" />
@@ -294,6 +295,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="currentVersion.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ldap2File.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
