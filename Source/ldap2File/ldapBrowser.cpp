@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.33
+//--	06/08/2020 - JHB - Version 20.8.34
 //--
 //---------------------------------------------------------------------------
 
@@ -235,20 +235,21 @@ RET_TYPE ldapBrowser::browse()
 			return RET_TYPE::RET_LDAP_ERROR;
 		}
 		else {
+			logs_->add(logFile::LOG, "Serveur LDAP :");
 			if (0 == env.length()) {
-				logs_->add(logFile::LOG, "Serveur LDAP - Pas d'environnement particulier");
+				logs_->add(logFile::LOG, "\t- Pas d'environnement particulier");
 			}
 			else {
-				logs_->add(logFile::LOG, "Serveur LDAP -  environnement \'%s\'", env.c_str());
+				logs_->add(logFile::LOG, "\t- Environnement : \'%s\'", env.c_str());
 			}
 		}
 
-		logs_->add(logFile::LOG, "Serveur LDAP : %s - Port : %d", ldapServer_.host(), ldapServer_.port());
-		logs_->add(logFile::LOG, "DN : %s", ldapServer_.baseDN());
+		logs_->add(logFile::LOG, "\t- Host : %s - Port : %d", ldapServer_.host(), ldapServer_.port());
+		logs_->add(logFile::LOG, "\t- DN : %s", ldapServer_.baseDN());
 		if (charUtils::stricmp(ldapServer_.baseDN(),ldapServer_.usersDN())){
-			logs_->add(logFile::LOG, "Base des utilisateurs : %s", ldapServer_.usersDN());
+			logs_->add(logFile::LOG, "\t- Base des utilisateurs : %s", ldapServer_.usersDN());
 		}
-		logs_->add(logFile::LOG, "Compte : %s", strlen(ldapServer_.user())? ldapServer_ .user():"anonyme");
+		logs_->add(logFile::LOG, "\t- Compte : %s", strlen(ldapServer_.user())? ldapServer_ .user():"anonyme");
 
 		// Connexion à LDAP
 		if (!_initLDAP()){

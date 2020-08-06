@@ -1,15 +1,16 @@
-20.8.33
+20.8.34
 	* 6 aout 2020
 	+ Windows : ajout d'une ressource VERSION_INFO
 	+ Affichage de l'usage si erreur ou pas de paramètres en ligne de commande
 	+ Corrections mineures
+		- Bug lors de l'appel en mode console sans dossier (ni extension sous windows)
 		+ Affichage UTF8 dans la console pour Windows (par défault en Latin 1)
 		+ Utilisation de sFilesystem pour tous les accès au système de fichier
 			+ ajout de sfileSystem::merge (avec ses 4 prototypes)
 			+ ajout de sFileSystem::is_directory
 		+ Utilisation de la classe jhbLDAPTools::folders pour TOUS les dossiers internes de l'application
 		+ Modification des affichages et des logs
-		+ (re)généraion des commentaires dans les fichiers XML
+		- bug de regression sur le nbre de "lignes" générées pourlesd fichiers sans organigramme (csv, js)
 	+ Modification de XMLParser => devient la référence pour tous les accès aux fichiers XML
 		+ Vérifications plus pertinentes (existence, version du protocole, formation)
 		+ Messages d'erreur / exceptions plus explicites
@@ -19,6 +20,7 @@
 		+ le dossier de l'application et celui des logs doivent exister => sinon sous-dossier de dossier de l'application
 	+ pugi::XML
 		+ Gestion des codes retours => génération d'exceptions
+		+ (re)généraion des commentaires d'origine dans les fichiers XML
 
 ### TODO ###
 	+ pugi::XML Utilisation des XPaths et des predicates

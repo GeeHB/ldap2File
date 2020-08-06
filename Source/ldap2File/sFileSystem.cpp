@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.33
+//--	06/08/2020 - JHB - Version 20.8.34
 //--
 //---------------------------------------------------------------------------
 
@@ -197,6 +197,7 @@ namespace sFileSystem {
 	{
 		try{
 #ifdef _WIN32
+			/*
 			LPWSTR* szArglist;
 			int nArgs;
 			std::string folder("");
@@ -219,8 +220,10 @@ namespace sFileSystem {
 				// Libérations ...
 				LocalFree(szArglist);
 			}
-
-			return folder;
+			*/
+			char curDir[MAX_PATH + 1];
+			GetCurrentDirectory(MAX_PATH, curDir);
+			return curDir;
 #else
 			return fs::current_path();
 #endif // WIN32

@@ -20,7 +20,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.33
+//--	06/08/2020 - JHB - Version 20.8.34
 //--
 //---------------------------------------------------------------------------
 
@@ -209,7 +209,7 @@ void XMLParser::_load()
 
 	if (!sFileSystem::exists(fileName_) ||
 		0 == sFileSystem::file_size(fileName_)) {
-		string erreur("Le fichier de '");
+		string erreur("Le fichier '");
 		erreur += fileName_;
 		erreur += "' n'existe pas ou est vide";
 		throw LDAPException(erreur);

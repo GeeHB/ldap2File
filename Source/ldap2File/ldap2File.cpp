@@ -36,7 +36,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.33
+//--	06/08/2020 - JHB - Version 20.8.34
 //--
 //---------------------------------------------------------------------------
 
@@ -343,10 +343,25 @@ int main(int argc, const char* argv[]) {
 	SetConsoleOutputCP(CP_UTF8);
 	setvbuf(stdout, nullptr, _IOFBF, 1000);
 #endif // _WIN32
+
+	// Nom complet de l'application
+	//
+	string fullAppName(argv[0]);
+	
+	// Pas de chemin
+	size_t pathPos = fullAppName.rfind(FILENAME_SEP);
+	if (fullAppName.npos == pathPos) {
+		string path = sFileSystem::current_path();
+		fullAppName = sFileSystem::merge(path, fullAppName);
+	}
+
+#ifdef _WIN32
+	// L'extension ?
+#endif _WIN32
 	
 	// Binaire et sa version
 	//
-	string binName(argv[0]);
+	string binName(fullAppName);
 	char sep(FILENAME_SEP);
 	size_t pos(0);
 	if (binName.npos != (pos = binName.rfind(sep))) {
@@ -375,7 +390,7 @@ int main(int argc, const char* argv[]) {
 		}
 
 		// Mise à jour du fichier de configuration
-		if (false == _updateConfigurationFile(argv[0])) {
+		if (false == _updateConfigurationFile(fullAppName.c_str())) {
 			return 1;
 		}
 	}
@@ -392,6 +407,7 @@ int main(int argc, const char* argv[]) {
 	folders myFolders;		// Liste des dossiers utilisés par l'application	
 	logFile logs;
 	confFile configurationFile(&myFolders, &logs);
+	string file("");
 
 	try {
 		// Dossier "de base" de l'application
@@ -406,16 +422,14 @@ int main(int argc, const char* argv[]) {
 		}
 
 		if (0 == folder.size()) {
-			// Sinon dans le dossier courant
-/*
-#ifdef _DEBUG
+/*#ifdef _DEBUG
 			folder = FOLDER_APP_DEFAULT;
-#else
-*/
-			folder = argv[0];
+#else*/
+			//folder = argv[0];
+			folder = fullAppName;
 			size_t pos(folder.rfind(FILENAME_SEP));
 			folder.resize(pos);
-			//#endif // _DEBUG
+//#endif // _DEBUG
 		}
 
 		// Ajout du dossier de l'application ...
@@ -425,14 +439,26 @@ int main(int argc, const char* argv[]) {
 		myFolders.add(folders::FOLDER_TYPE::FOLDER_TEMP, STR_FOLDER_TEMP);				// fichiers temporaires
 		myFolders.add(folders::FOLDER_TYPE::FOLDER_OUTPUTS, STR_FOLDER_OUTPUTS);		// pour les fichiers générés
 
-		string file = sFileSystem::merge(folder, XML_CONF_FILE);
+		file = sFileSystem::merge(folder, XML_CONF_FILE);
 
 		// Ouverture du fichier de configuration
 		//
 		if (!configurationFile.open(file.c_str())) {
+			// Une "petite" erreur ...
 			return 1;
 		}
+	}
+	catch (LDAPException& e) {
+		cout << "Erreur : " << e.what() << endl;
+		return 1;
+	}
+	catch (...) {
+		// Erreur inconnue
+		cout << "Erreur inconnue lors de l'initialisation" << endl;
+		return 1;
+	}
 
+	try{
 		// Informations sur les logs ...
 		LOGINFOS lInfos;
 		configurationFile.logInfos(lInfos);
@@ -448,13 +474,14 @@ int main(int argc, const char* argv[]) {
 			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée");
 		}
 
-		cout << "Binaire : " << argv[0] << endl;
+		//cout << "Binaire : " << argv[0] << endl;
+		cout << "Binaire : " << fullAppName << endl;
 
 		cout << "Dossiers de l'application : " << endl;
 		cout << "\t - app : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path() << endl;
 		cout << "\t - logs : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS)->path() << endl;
 		cout << "\t - templates : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path() << endl;
-		cout << "\t - temps : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path() << endl;
+		cout << "\t - temporaires : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path() << endl;
 
 		// Initialisation du fichier de logs
 		//
@@ -477,12 +504,13 @@ int main(int argc, const char* argv[]) {
 			logs.add(logFile::DBG, "Conservation des logs %d jours", lInfos.duration_);
 		}
 
-		logs.add(logFile::LOG, "Binaire : %s", argv[0]);
+		//logs.add(logFile::LOG, "Binaire : %s", argv[0]);
+		logs.add(logFile::LOG, "Binaire : %s", fullAppName);
 		logs.add(logFile::LOG, "Fichier de configuration : '%s'", file.c_str());
 		logs.add(logFile::LOG, "Dossiers de l'application : ");
 		logs.add(logFile::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
 		logs.add(logFile::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
-		logs.add(logFile::LOG, "\t- temps : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
+		logs.add(logFile::LOG, "\t- temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
 	}
 	catch (LDAPException& e) {
 		logs.add(logFile::ERR, "Erreur : %s", e.what());
