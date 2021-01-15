@@ -20,7 +20,7 @@
 //--
 //--	09/07/2020 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
@@ -66,11 +66,12 @@ namespace jhbLDAPTools {
 			return false;
 		}
 
-		// Le titre doit être unique (par son ID)
+		// Le titre doit être unique (par son ID mais aussi sa valeur !!!)
 		LPAGENTTITLE pTitle(NULL);
-		if (NULL != (pTitle = find(id))) {
+		if (NULL != (pTitle = find(id)) && pTitle->label() != label) {
 			if (logs_) {
-				logs_->add(logFile::DBG, "Erreur - Le titre id:%s est déja défini pour '%s'", id.c_str(), pTitle->label());
+				logs_->add(logFile::DBG, "Erreur - Impossible d'ajouter le titre '%s' il est déja utilisé avec l'ID %s pour '%s'", label.c_str(), id.c_str(), pTitle->label());
+				//logs_->add(logFile::DBG, "Erreur - Le titre id:%s est déja défini pour '%s'", id.c_str(), pTitle->label());
 			}
 
 			return false;

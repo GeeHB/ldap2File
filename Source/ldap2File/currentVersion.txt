@@ -1,3 +1,20 @@
+ToDO :
+	- msg "Les informations sur le fichier à générer sont invalides" => donner la raison (pas de destination, ...)
+
+
+
+21.1.1
+	* 14 janvier 2021
+	+ "Expressions regulières"
+		+ "searchExpr" devient "searchExpr" : expressions de recherches !!!
+		+ ajout des opérateurs <=, >= pour la recherche des attributs
+			+ les opérateurs < et > ne sont pas dns la normes
+			! Attention : OpenLDAP ne reconnaita aucun des 4 opérateurs : <, >, <= ou >=
+	+ Corrections mineures
+		+ Ajout de la mention "Debug" dans les log spour identfier la version du binaire
+		- Enumérateur et accès aux alias
+		- Faux doublons dans la liste des titres
+
 20.8.34
 	* 6 aout 2020
 	+ Windows : ajout d'une ressource VERSION_INFO

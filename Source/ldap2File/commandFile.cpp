@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
@@ -556,7 +556,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 		}
 		else {
 			// Pas de "type" pour l'onglet" => un seul onglet
-			// peut-être at'il un nom particulier ?
+			// peut-être a t'il un nom particulier ?
 			sValue = child.attribute(TAB_NAME_ATTR).value();
 			if (sValue.length()) {
 				search.setTabName(sValue.c_str());
@@ -566,34 +566,34 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 
 	// Les expressions régulières
 	//
-	regExpr* reg(NULL), *baseReg(NULL);
+	searchExpr* reg(NULL), *baseReg(NULL);
 	string description(""), op(""), nom(""), val(""), compOp("");
-	regExpr::EXPRGATTR* newExpr(NULL);
+	searchExpr::EXPRGATTR* newExpr(NULL);
 
 	// Lecture de toutes les expressions
-	child = node.child(XML_REGEX_NODE);
+	child = node.child(XML_SEARCH_EXPR_NODE);
 
-	deque<regExpr*> regList;
+	deque<searchExpr*> regList;
 
 	while (!IS_EMPTY(child.name())){
-		description = child.attribute(XML_REGEX_DESC_ATTR).value();
+		description = child.attribute(XML_SEARCH_EXPR_DESC_ATTR).value();
 		encoder_.fromUTF8(description);
-		op = child.attribute(XML_REGEX_OPERATOR_ATTR).value();
+		op = child.attribute(XML_SEARCH_EXPR_LOG_OPERATOR_ATTR).value();
 		encoder_.fromUTF8(op);
 
-		if (NULL != (reg = new regExpr(cols, description, op))){
+		if (NULL != (reg = new searchExpr(cols, description, op))){
 			// Lecture de ses "attributs" ...
-			pugi::xml_node sChild = child.child(XML_REGEX_ATTRIBUTE_NODE);
+			pugi::xml_node sChild = child.child(XML_SEARCH_EXPR_ATTRIBUTE_NODE);
 			while (!IS_EMPTY(sChild.name())){
 				val = sChild.first_child().value();
 				encoder_.fromUTF8(val);
-				nom = sChild.attribute(XML_REGEX_NAME_ATTR).value();
+				nom = sChild.attribute(XML_SEARCH_EXPR_NAME_ATTR).value();
 				encoder_.fromUTF8(nom);
 				if (val.size() && nom.size()){
 					// Ajout de l'attribut
-					if (NULL != (newExpr = reg->add(nom, val))){
+					if (NULL != (newExpr = reg->add(nom.c_str(), SEARCH_ATTR_COMP_EQUAL, val.c_str()))){
 						// A t'il un opérateur de comparaison ?
-						compOp = sChild.attribute(XML_REGEX_OPERATOR_ATTR).value();
+						compOp = sChild.attribute(XML_SEARCH_EXPR_ATTR_OPERATOR_ATTR).value();
 						if (compOp.size()){
 							newExpr->compOperator_ = reg->string2CompOperator(compOp);
 						}
@@ -605,20 +605,20 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 			}
 
 			// ... puis de toutes les sous-expressions
-			sChild = child.child(XML_REGEX_NODE);
+			sChild = child.child(XML_SEARCH_EXPR_NODE);
 			while (!IS_EMPTY(sChild.name())){
 				val = sChild.first_child().value();
 				encoder_.fromUTF8(val);
 				if (val.size()){
 					// L'expression existe t'elle ?
-					regExpr* found(NULL);
-					deque<regExpr*>::iterator it = regList.begin();
+					searchExpr* found(NULL);
+					deque<searchExpr*>::iterator it = regList.begin();
 					while (!found && it != regList.end()){
 						if ((*it) && (*it)->name() == val){
 							// C'est elle !
 							found = (*it);
 
-							// Il faut le retirer de la liste (pour le pas le supprimer 2 fois)
+							// Il faut le retirer de la liste (pour ne pas le supprimer 2 fois)
 							regList.erase(it);
 						}
 						else{
@@ -646,7 +646,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 
 	//  A ce stade, regList contient toutes les expressions et la dernière est "la bonne"
 	if (regList.size()){
-		deque<regExpr*>::iterator it = regList.begin();
+		deque<searchExpr*>::iterator it = regList.begin();
 		baseReg = (*it);
 
 		// Toutes les autres expressions (il ne devrait pas y en avoir)
@@ -660,8 +660,8 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 
 	// Il faut qu'il y ait un type d'objet dans la recherche
 	if (!baseReg || (baseReg && !baseReg->find(STR_ATTR_OBJECT_CLASS))){
-		if (NULL != (reg = new regExpr(cols, REG_EXPR_MINIMAL, XML_OPERATOR_AND))){
-			reg->add(STR_ATTR_OBJECT_CLASS, LDAP_TYPE_PERSON);
+		if (NULL != (reg = new searchExpr(cols, SEARCH_EXPR_MINIMAL, XML_LOG_OPERATOR_AND))){
+			reg->add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_TYPE_PERSON);
 			/*
 			reg->add(STR_ATTR_PRENOM, "*");
 			reg->add(STR_ATTR_NOM, "*");
@@ -689,7 +689,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 		throw LDAPException("Erreur mémoire lors de la création des critères LDAP");
 	}
 
-	search.setRegExpression(baseReg);
+	search.setsearchExpression(baseReg);
 
 	// Ok
 	return true;

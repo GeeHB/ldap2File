@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_FULL_NAME			"ldap2File.exe"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"20.8.34"
+#define APP_RELEASE				"21.1.1"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -94,8 +94,8 @@
 
 // Expressions régulières
 //
-#define REG_EXPR_LDAP			"JHB - Découpage des requêtes"
-#define REG_EXPR_MINIMAL		"JHB - Objets de type utilisateur"
+#define SEARCH_EXPR_LDAP			"JHB - Découpage des requêtes"
+#define SEARCH_EXPR_MINIMAL		"JHB - Objets de type utilisateur"
 
 // Classes STL
 //

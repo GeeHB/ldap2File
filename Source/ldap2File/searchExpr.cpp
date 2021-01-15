@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 //--
-//--	FICHIER	: regExpr.cpp
+//--	FICHIER	: searchExpr.cpp
 //--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
@@ -10,8 +10,8 @@
 //--
 //--	DESCRIPTIONS:
 //--
-//--			Implémentation de la classe regExpr
-//--			Gestion des expressions régulières
+//--			Implémentation de la classe searchExpr
+//--			Gestion des expressions pour les recherches
 //--
 //---------------------------------------------------------------------------
 //--
@@ -20,11 +20,11 @@
 //--
 //--	05/02/2016 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
-#include "regExpr.h"
+#include "searchExpr.h"
 
 //----------------------------------------------------------------------
 //--
@@ -35,7 +35,7 @@
 
 //----------------------------------------------------------------------
 //--
-//-- regExpr
+//-- searchExpr
 //--	Expresison régulière avec gesiton dynamique
 //--	ie. peut être modifiée au fur et à mesure ...
 //--
@@ -43,7 +43,7 @@
 
 // Constructions
 //
-regExpr::regExpr(columnList* cols, const char* description, const char* op)
+searchExpr::searchExpr(columnList* cols, const char* description, const char* op)
 {
 	// Initialisation des données membres
 	schema_ = cols;
@@ -53,7 +53,7 @@ regExpr::regExpr(columnList* cols, const char* description, const char* op)
 	output_ = "";
 }
 
-regExpr::regExpr(const char* description, const char* op)
+searchExpr::searchExpr(const char* description, const char* op)
 {
 	// Initialisation des données membres
 	schema_ = NULL;
@@ -65,7 +65,7 @@ regExpr::regExpr(const char* description, const char* op)
 
 // Constructeur par recopie
 //
-regExpr::regExpr(regExpr& source)
+searchExpr::searchExpr(searchExpr& source)
 {
 	schema_ = source.schema_;
 	op_ = source.op_;
@@ -79,7 +79,7 @@ regExpr::regExpr(regExpr& source)
 	}
 }
 
-regExpr::regExpr(regExpr* source)
+searchExpr::searchExpr(searchExpr* source)
 {
 	if (source){
 		schema_ = source->schema_;
@@ -97,7 +97,7 @@ regExpr::regExpr(regExpr* source)
 
 // Libération de la mémoire
 //
-void regExpr::clear(bool freeMemory)
+void searchExpr::clear(bool freeMemory)
 {
 	if (freeMemory){
 		for (deque<EXPRGATTR*>::iterator i = expressions_.begin(); i != expressions_.end(); i++){
@@ -114,19 +114,19 @@ void regExpr::clear(bool freeMemory)
 //
 //	... opérateur de combinaison des expressions
 //
-string regExpr::string2Operator(string& sValue)
+string searchExpr::string2Operator(string& sValue)
 {
 	if (!sValue.size() ||				// Par défaut
-		XML_OPERATOR_AND == sValue){
-		return REG_EXPR_OPERATOR_AND;
+		XML_LOG_OPERATOR_AND == sValue){
+		return SEARCH_EXPR_OPERATOR_AND;
 	}
 
-	if (XML_OPERATOR_OR == sValue){
-		return REG_EXPR_OPERATOR_OR;
+	if (XML_LOG_OPERATOR_OR == sValue){
+		return SEARCH_EXPR_OPERATOR_OR;
 	}
 
-	if (XML_OPERATOR_NOT == sValue){
-		return REG_EXPR_OPERATOR_NOT;
+	if (XML_LOG_OPERATOR_NOT == sValue){
+		return SEARCH_EXPR_OPERATOR_NOT;
 	}
 
 	// Inconnu ...
@@ -135,30 +135,65 @@ string regExpr::string2Operator(string& sValue)
 
 // ... opérateur de comparaison des attributs
 //
-string regExpr::string2CompOperator(string& sValue)
+string searchExpr::string2CompOperator(string& sValue)
 {
-	if (XML_COMP_OPERATOR_AND == sValue){
-		return REG_ATTR_COMP_AND;
+	if (!sValue.size() ||				// Par défaut
+		XML_COMP_OPERATOR_EQUAL == sValue){
+		return SEARCH_ATTR_COMP_EQUAL;
+	}
+
+	//
+	// Comparaisons numériques
+	//
+	/*
+	if (XML_COMP_OPERATOR_GREATER == sValue) {
+		return SEARCH_ATTR_COMP_GREATER;
+	}
+	*/
+
+	if (XML_COMP_OPERATOR_GREATER_OR_EQUAL == sValue) {
+		return SEARCH_ATTR_COMP_GREATER_OR_EQUAL;
+	}
+
+	/*
+	if (XML_COMP_OPERATOR_LOWER == sValue) {
+		return SEARCH_ATTR_COMP_LOWER;
+	}
+	*/
+
+	if (XML_COMP_OPERATOR_LOWER_OR_EQUAL == sValue) {
+		return SEARCH_ATTR_COMP_LOWER_OR_EQUAL;
+	}
+
+	//
+	// Logiques
+	//
+	if (XML_COMP_OPERATOR_AND == sValue) {
+		return SEARCH_ATTR_COMP_AND;
+	}
+
+	if (XML_COMP_OPERATOR_OR == sValue) {
+		return SEARCH_ATTR_COMP_OR;
 	}
 
 	// Inconnu => égalité
-	return REG_ATTR_COMP_EQUAL;
+	return SEARCH_ATTR_COMP_EQUAL;
 }
 
 // Ajouts d'expressions
 //
-bool regExpr::add(regExpr* pExprSrc, bool copy)
+bool searchExpr::add(searchExpr* pExprSrc, bool copy)
 {
 	if (NULL == pExprSrc || !pExprSrc->size()){
 		return false;
 	}
 
 	bool ret(false);
-	regExpr* pExpr(NULL);
+	searchExpr* pExpr(NULL);
 
 	// Doit-on copier ?
 	if (copy){
-		pExpr = new regExpr(pExprSrc);	// On effectue une copie carbone
+		pExpr = new searchExpr(pExprSrc);	// On effectue une copie carbone
 	}
 	else{
 		pExpr = pExprSrc;
@@ -173,7 +208,7 @@ bool regExpr::add(regExpr* pExprSrc, bool copy)
 			other = (*pExpr)[index];
 			if (!other->otherExpr_){
 				// Attribut = valeur
-				add(other->attribute_, other->value_);
+				add(other->attribute_, other->compOperator_, other->value_);
 			}
 			else{
 				// sous-expression
@@ -204,7 +239,7 @@ bool regExpr::add(regExpr* pExprSrc, bool copy)
 }
 
 /*
-bool regExpr::add(string& name, string& value)
+bool searchExpr::add(string& name, string& value)
 {
 	EXPRGATTR* attr(NULL);
 	if (name.size() && value.size() &&
@@ -221,11 +256,11 @@ bool regExpr::add(string& name, string& value)
 }
 */
 
-regExpr::EXPRGATTR* regExpr::add(string& name, string& value)
+searchExpr::EXPRGATTR* searchExpr::add(string& name, string& op, string& value)
 {
 	EXPRGATTR* attr(NULL);
 	if (name.size() && value.size() &&
-		NULL != (attr = new EXPRGATTR(_colName2AttrName(name), value))){
+		NULL != (attr = new EXPRGATTR(_colName2AttrName(name), op, value))){
 		expressions_.push_back(attr);
 
 		// fait
@@ -238,11 +273,11 @@ regExpr::EXPRGATTR* regExpr::add(string& name, string& value)
 
 // Recherche d'un attribut
 //
-regExpr* regExpr::find(const char* name)
+searchExpr* searchExpr::find(const char* name)
 {
 	if (!IS_EMPTY(name)){
 		EXPRGATTR* val(NULL);
-		regExpr* other(NULL);
+		searchExpr* other(NULL);
 		for (deque<EXPRGATTR*>::iterator i = expressions_.begin(); i != expressions_.end(); i++){
 			if (NULL != (val =(*i))){
 				if (val->otherExpr_ && NULL != (other = val->otherExpr_->find(name))){
@@ -265,7 +300,7 @@ regExpr* regExpr::find(const char* name)
 
 // Recherche d'une expression à partir de son nom (sa description)
 //
-regExpr* regExpr::findByName(const char* name)
+searchExpr* searchExpr::findByName(const char* name)
 {
 	if (!IS_EMPTY(name)){
 		// Moi ?
@@ -292,7 +327,7 @@ regExpr* regExpr::findByName(const char* name)
 
 // Retrait d'une sous-expression
 //
-bool regExpr::remove(const char* name, bool freeMemory)
+bool searchExpr::remove(const char* name, bool freeMemory)
 {
 	if (!IS_EMPTY(name)){
 		EXPRGATTR* attr(NULL);
@@ -314,7 +349,7 @@ bool regExpr::remove(const char* name, bool freeMemory)
 	return false;
 }
 
-bool regExpr::remove(const regExpr* toRemove, bool freeMemory)
+bool searchExpr::remove(const searchExpr* toRemove, bool freeMemory)
 {
 	if (toRemove){
 		EXPRGATTR* attr(NULL);
@@ -338,8 +373,8 @@ bool regExpr::remove(const regExpr* toRemove, bool freeMemory)
 
 // Génération d'une chaine de caractères
 //
-//regExpr::operator const char*()
-const char* regExpr::_expression(bool addOperator)
+//searchExpr::operator const char*()
+const char* searchExpr::_expression(bool addOperator)
 {
 	output_ = "";
 
@@ -382,7 +417,7 @@ const char* regExpr::_expression(bool addOperator)
 
 // Ajout de parenthèse autour de l'expression
 //
-string regExpr::_addParenthesis(string& op, string& output)
+string searchExpr::_addParenthesis(string& op, string& output)
 {
 	string noutput("");
 	if (output.size()){
@@ -396,7 +431,7 @@ string regExpr::_addParenthesis(string& op, string& output)
 
 // Recherche du nom d'un attribut
 //
-string regExpr::_colName2AttrName(string& colName)
+string searchExpr::_colName2AttrName(string& colName)
 {
 	if (NULL != schema_){
 		// Recherche dans le schema

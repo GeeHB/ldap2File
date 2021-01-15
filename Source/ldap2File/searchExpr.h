@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 //--
-//--	FICHIER	: regExpr.h
+//--	FICHIER	: searchExpr.h
 //--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
@@ -10,8 +10,8 @@
 //--
 //--	DESCRIPTIONS:
 //--
-//--			Définition de la classe regExpr
-//--			Gestion des expressions régulières LDAP
+//--			Définition de la classe searchExpr
+//--			Gestion des expressions pour les recherches LDAP
 //--
 //--	TODO:
 //--
@@ -22,12 +22,12 @@
 //--
 //--	05/02/2016 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
-#ifndef __LDAP_2_FILE_REGULAR_EXPRESSIONS_HANDLER_h__
-#define __LDAP_2_FILE_REGULAR_EXPRESSIONS_HANDLER_h__
+#ifndef __LDAP_2_FILE_SEARCH_EXPRESSIONS_HANDLER_h__
+#define __LDAP_2_FILE_SEARCH_EXPRESSIONS_HANDLER_h__
 
 #include "sharedConsts.h"
 #include "columnList.h"
@@ -40,15 +40,21 @@
 
 // Opérateurs de combinaison
 //
-#define REG_EXPR_OPERATOR_AND			"&"
-#define REG_EXPR_OPERATOR_OR			"|"
-#define REG_EXPR_OPERATOR_NOT			"!"
+#define SEARCH_EXPR_OPERATOR_AND		"&"
+#define SEARCH_EXPR_OPERATOR_OR			"|"
+#define SEARCH_EXPR_OPERATOR_NOT		"!"
 
 // Opérateurs de comparaison
 //
-#define REG_ATTR_COMP_EQUAL				"="
-#define REG_ATTR_COMP_AND				":1.2.840.113556.1.4.803:="		// Bitwise AND
-#define REG_ATTR_COMP_OR				":1.2.840.113556.1.4.804:="		// Bitwise OR
+#define SEARCH_ATTR_COMP_EQUAL				"="
+#define SEARCH_ATTR_COMP_GREATER_OR_EQUAL	">="
+#define SEARCH_ATTR_COMP_LOWER_OR_EQUAL		"<=" 
+/*
+#define SEARCH_ATTR_COMP_GREATER			">"
+#define SEARCH_ATTR_COMP_LOWER				"<"
+*/
+#define SEARCH_ATTR_COMP_AND				":1.2.840.113556.1.4.803:="		// Bitwise AND
+#define SEARCH_ATTR_COMP_OR					":1.2.840.113556.1.4.804:="		// Bitwise OR
 
 //----------------------------------------------------------------------
 //--
@@ -56,21 +62,22 @@
 //--
 //----------------------------------------------------------------------
 
-class regExpr
+class searchExpr
 {
 public:
 
 	typedef struct tagExprAttr
 	{
 		// Constructions
-		tagExprAttr(const string& attr, const string& val){
+		tagExprAttr(const string& attr, const string& op, const string& val){
 			attribute_ = attr;
 			value_ = val;
-			compOperator_ = REG_ATTR_COMP_EQUAL;		// Par défaut égalité
+			//compOperator_ = SEARCH_ATTR_COMP_EQUAL;		// Par défaut égalité
+			compOperator_ = op;
 			otherExpr_ = NULL;
 		}
 
-		tagExprAttr(regExpr* val){
+		tagExprAttr(searchExpr* val){
 			attribute_ = value_ = compOperator_ = "";
 			otherExpr_ = val;
 		}
@@ -80,7 +87,7 @@ public:
 			attribute_ = source.attribute_;
 			value_ = source.value_;
 			compOperator_ = source.compOperator_;
-			otherExpr_ = (source.otherExpr_?new regExpr(source.otherExpr_):NULL);
+			otherExpr_ = (source.otherExpr_?new searchExpr(source.otherExpr_):NULL);
 		}
 
 		// Destruction
@@ -91,7 +98,7 @@ public:
 		string		attribute_;
 		string		value_;
 		string		compOperator_;		// Opérateur de comparaison
-		regExpr*	otherExpr_;
+		searchExpr*	otherExpr_;
 	}EXPRGATTR;
 
 	// Méthodes publiques
@@ -99,20 +106,20 @@ public:
 public:
 
 	// Constructions
-	regExpr(columnList* cols, string& description, string& op)
-	:regExpr(cols, description.c_str(), op.c_str())
+	searchExpr(columnList* cols, string& description, string& op)
+	:searchExpr(cols, description.c_str(), op.c_str())
 	{}
-	regExpr(columnList* cols, const char* description, const char* op);
-	regExpr(const char* description, const char* op);
-	regExpr(const char* op)
-	:regExpr(NULL, op)
+	searchExpr(columnList* cols, const char* description, const char* op);
+	searchExpr(const char* description, const char* op);
+	searchExpr(const char* op)
+	:searchExpr(NULL, op)
 	{}
-	regExpr(regExpr* source);	// Par recopie
-	regExpr(regExpr& source);
+	searchExpr(searchExpr* source);	// Par recopie
+	searchExpr(searchExpr& source);
 
 
 	// Destruction
-	virtual ~regExpr()
+	virtual ~searchExpr()
 	{ dispose(); }
 
 	// Libération de la mémoire
@@ -134,21 +141,26 @@ public:
 	}
 
 	// Ajouts d'expressions
-	bool add(regExpr* pExpr, bool copy = false);
+	bool add(searchExpr* pExpr, bool copy = false);
 	//bool add(string& name, string& value);
-	regExpr::EXPRGATTR* add(string& name, string& value);
-
+	
 	// Ajout/remplacement d'un attribut (selon l'opérateur)
-	bool add(const char* name, const char* value){
-		string sName(name), sValue(value);
-		return add(sName, sValue);
+	searchExpr::EXPRGATTR* add(string& name, string& op, string& value);
+	searchExpr::EXPRGATTR* add(const char* name, const char* op, const char* value){
+		string sName(name), sOp(op), sValue(value);
+		return add(sName, sOp, sValue);
 	}
+	/*
+	bool add(const char* name, const char* op, const char* value) {
+		return (NULL != add(name, op, value));
+	}
+	*/
 	bool add(const char* name)
-	{ return add(name, "*"); }
+	{ return add(name, SEARCH_ATTR_COMP_EQUAL, "*"); }
 	bool add(string& name)
 	{
-		string value("*");
-		return add(name, value);
+		string op(SEARCH_ATTR_COMP_EQUAL), value("*");
+		return add(name, op, value);
 	}
 
 	// L'attribut existe
@@ -158,16 +170,16 @@ public:
 	{ return add(name); }
 
 	// Recherche d'un attribut
-	regExpr* find(const char* name);
+	searchExpr* find(const char* name);
 
 	// Recherche d'une expression régulière
-	regExpr* findByName(const char* name);
-	regExpr* findByDescription(const char* description)
+	searchExpr* findByName(const char* name);
+	searchExpr* findByDescription(const char* description)
 	{ return findByName(description); }
 
 	// Suppressions
 	bool remove(const char* regName, bool freeMemory = true);
-	bool remove(const regExpr* toRemove, bool freeMemory = true);
+	bool remove(const searchExpr* toRemove, bool freeMemory = true);
 
 	// Accès
 	string name()
@@ -217,6 +229,6 @@ protected:
 	string				output_;		// Expression formatée
 };
 
-#endif // #ifndef __LDAP_2_FILE_REGULAR_EXPRESSIONS_HANDLER_h__
+#endif // #ifndef __LDAP_2_FILE_SEARCH_EXPRESSIONS_HANDLER_h__
 
 // EOF

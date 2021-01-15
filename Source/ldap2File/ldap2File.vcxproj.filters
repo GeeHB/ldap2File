@@ -69,9 +69,6 @@
     <ClCompile Include="treeStructure.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="regExpr.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="destinationList.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -303,6 +300,9 @@
     <ClCompile Include="..\..\..\Common\RegEntry.cpp">
       <Filter>Fichiers sources\Common</Filter>
     </ClCompile>
+    <ClCompile Include="searchExpr.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="columnList.h">
@@ -345,9 +345,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="XMLParser.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="regExpr.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="destinationList.h">
@@ -417,6 +414,9 @@
       <Filter>Fichiers d%27en-tête\Common</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="searchExpr.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

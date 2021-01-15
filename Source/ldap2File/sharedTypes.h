@@ -19,7 +19,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
@@ -503,9 +503,9 @@ public:
 	alias* operator[](size_t index) {
 
 		if (index < size()) {
-			list<alias*>::iterator i = aliases_.begin();
-			for (size_t i = 0; i < index; i++) i++;
-			return (*i);
+			list<alias*>::iterator it = aliases_.begin();
+			for (size_t i = 0; i < index; i++) it++;
+			return (*it);
 		}
 
 		// Non trouvé

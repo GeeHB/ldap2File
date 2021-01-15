@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
@@ -78,6 +78,7 @@
 #define XML_PWD						"mdp"
 #define XML_PORT					"Port"
 #define XML_ACCESS					"Acces"
+#define XML_OPERATOR				"Operateur"
 
 // Types d'accès au serveur LDAP
 #define XML_ACCESS_READ				"Lecture"
@@ -179,7 +180,7 @@
 #define DEFAULT_PHOTO					"nophoto.jpg"
 
 //
-// Strucutre de l'arbre LDAP 
+// Structure de l'arbre LDAP 
 //
 #define XML_STRUCTURE_NODE			"Structure"
 #define XML_STRUCTURE_LEVEL_NODE	"Niveau"
@@ -308,19 +309,31 @@
 #define TAB_NAME_ATTR					XML_NAME		// Pour spécifier le nom d'un onglet
 
 //
-// Expressions régulières
+// Expressions de recherche
 //
-#define XML_REGEX_NODE					"Expression"
-#define XML_REGEX_ATTRIBUTE_NODE		XML_ATTRIBUTE
-#define XML_REGEX_NAME_ATTR				XML_NAME
-#define XML_REGEX_DESC_ATTR				XML_DESCRIPTION
-#define XML_REGEX_OPERATOR_ATTR			"Operateur"
-#define XML_OPERATOR_AND				"ET"
-#define XML_OPERATOR_OR					"OU"
-#define XML_OPERATOR_NOT				"NON"
+#define XML_SEARCH_EXPR_NODE				"Expression"
+#define XML_SEARCH_EXPR_ATTRIBUTE_NODE		XML_ATTRIBUTE
+#define XML_SEARCH_EXPR_NAME_ATTR			XML_NAME
+#define XML_SEARCH_EXPR_DESC_ATTR			XML_DESCRIPTION
 
-#define XML_COMP_OPERATOR_AND			"AND"
-#define XML_COMP_OPERATOR_OR			"OR"
+// Opérateur de combinaison logique des expressions
+//
+#define XML_SEARCH_EXPR_LOG_OPERATOR_ATTR	XML_OPERATOR	// Logique
+#define XML_LOG_OPERATOR_AND				"ET"
+#define XML_LOG_OPERATOR_OR					"OU"
+#define XML_LOG_OPERATOR_NOT				"NON"
+
+// Opérateur de comparaison des valeurs des attribut "" de la valeur
+//
+#define XML_SEARCH_EXPR_ATTR_OPERATOR_ATTR	XML_OPERATOR	// Arithmétique et logique sur les attributs
+
+#define XML_COMP_OPERATOR_EQUAL				"eq"	// "==" => Implicite
+//#define XML_COMP_OPERATOR_GREATER			"gt"	// ">"
+#define XML_COMP_OPERATOR_GREATER_OR_EQUAL	"ge"	// ">="
+//#define XML_COMP_OPERATOR_LOWER				"lt"	// "<" 
+#define XML_COMP_OPERATOR_LOWER_OR_EQUAL	"le"	// "<=" 
+#define XML_COMP_OPERATOR_AND				"AND"	// Opérateur binaires
+#define XML_COMP_OPERATOR_OR				"OR"
 
 //
 // Colonnes

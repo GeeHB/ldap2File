@@ -21,12 +21,12 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
 #include "ldapBrowser.h"
-#include "regExpr.h"
+#include "searchExpr.h"
 
 #include "CSVFile.h"
 #include "ODSFile.h"
@@ -79,7 +79,7 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	for (size_t index = 0; index < aliases_.size(); index++) {
 		palias = aliases_[index];
 		if (palias) {
-			logs_->add(logFile::DBG, "\t : - %s -> %s", palias->name(), palias->application());
+			logs_->add(logFile::DBG, "\t- %s -> %s", palias->name(), palias->application());
 		}
 	}
 
@@ -972,20 +972,20 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	string currentFilter;
 #ifdef CUT_LDAP_REQUEST
 	// Recherche alpha
-	regExpr* pRegExpr(sCriterium.regExpression());
+	searchExpr* psearchExpr(sCriterium.searchExpression());
 
 	logs_->add(logFile::DBG, "La requète LDAP sera scindée");
-	regExpr* fullReg(NULL);
+	searchExpr* fullReg(NULL);
 
 	{
 #ifdef _DEBUG
-		string out = sCriterium.regExpression()->expression();
+		string out = sCriterium.searchExpression()->expression();
 #endif _DEBUG
 
-		fullReg = new regExpr(REG_EXPR_OPERATOR_AND);
+		fullReg = new searchExpr(SEARCH_EXPR_OPERATOR_AND);
 	}
 
-	fullReg->add(pRegExpr, true);	// Pour l'instant l'expression contient juste celle définit par l'utilisateur
+	fullReg->add(psearchExpr, true);	// Pour l'instant l'expression contient juste celle définit par l'utilisateur
 
 #ifdef _DEBUG
 	string inter = fullReg->expression();
@@ -995,8 +995,8 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	char currentLetter(0);
 #else
 	//currentFilter = filter;
-	regExpr* pRegExpr(sCriterium.regExpression());
-	currentFilter = pRegExpr->expression();
+	searchExpr* psearchExpr(sCriterium.searchExpression());
+	currentFilter = psearchExpr->expression();
 #endif // CUT_LDAP_REQUEST
 
 	//
@@ -1007,31 +1007,31 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		// Génération du filtre
 		if (fullReg){
 			// Ajout de la nouvelle lettre
-			if (NULL != (pRegExpr = new regExpr(REG_EXPR_LDAP, REG_EXPR_OPERATOR_OR))){
+			if (NULL != (psearchExpr = new searchExpr(SEARCH_EXPR_LDAP, SEARCH_EXPR_OPERATOR_OR))){
 				// Majuscules
 				string value("");
 				value += (char)('A' + currentLetter);
 				value += "*";
-				pRegExpr->add(STR_ATTR_UID, value.c_str());
+				psearchExpr->add(STR_ATTR_UID, SEARCH_ATTR_COMP_EQUAL, value.c_str());
 
 				// Minuscules
 				value = ('a' + currentLetter);
 				value += "*";
-				pRegExpr->add(STR_ATTR_UID, value.c_str());
+				psearchExpr->add(STR_ATTR_UID, SEARCH_ATTR_COMP_EQUAL, value.c_str());
 
 #ifdef _DEBUG
 				string inter = fullReg->expression();
 #endif // _DEBUG
 
 				// Ajout à l'expression générale
-				fullReg->add(pRegExpr);
+				fullReg->add(psearchExpr);
 
-				//sCriterium.regExpression()->add(pRegExpr);
+				//sCriterium.searchExpression()->add(psearchExpr);
 				currentFilter = fullReg->expression();
 			}
 		}
 		else{
-			currentFilter = sCriterium.regExpression()->expression();
+			currentFilter = sCriterium.searchExpression()->expression();
 		}
 
 		if (fullReg){
@@ -1447,10 +1447,10 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 #ifdef JHB_USE_OLD_REG_SYNTAX
 			todo = (currentLetter < 26);	// < 'z' ou 'Z'
 #else
-			fullReg->remove(REG_EXPR_LDAP);
+			fullReg->remove(SEARCH_EXPR_LDAP);
 
-			if (pRegExpr){
-				pRegExpr = NULL;
+			if (psearchExpr){
+				psearchExpr = NULL;
 			}
 
 			todo = (fullReg?(currentLetter < 26):false);
@@ -1502,8 +1502,8 @@ bool ldapBrowser::_getServices()
 	myAttributes += STR_ATTR_ALLIER_SITE;				// Site
 
 	// Génération de la requête
-	regExpr expression(REG_EXPR_OPERATOR_AND);
-	expression.add(STR_ATTR_OBJECT_CLASS, LDAP_TYPE_OU);
+	searchExpr expression(SEARCH_EXPR_OPERATOR_AND);
+	expression.add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_TYPE_OU);
 	expression.exists(STR_ATTR_DESCRIPTION);
 
 #ifdef _DEBUG
@@ -1659,8 +1659,8 @@ bool ldapBrowser::_getTitles()
 	while (todo) {
 
 		// Génération de la requête
-		regExpr expression(REG_EXPR_OPERATOR_AND);
-		expression.add(STR_ATTR_OBJECT_CLASS, LDAP_CLASS_ALLIER_POSTE);
+		searchExpr expression(SEARCH_EXPR_OPERATOR_AND);
+		expression.add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_CLASS_ALLIER_POSTE);
 
 		// Ajout de la nouvelle recherche sur la base de l'identifiant (par paqauet de 100)
 		string wild("");
@@ -1674,9 +1674,9 @@ bool ldapBrowser::_getTitles()
 		value += wild;
 		
 		// Ajout à l'expression générale
-		expression.add(STR_ATTR_ALLIER_ID_POSTE, value.c_str());
+		expression.add(STR_ATTR_ALLIER_ID_POSTE, SEARCH_ATTR_COMP_EQUAL, value.c_str());
 
-		//sCriterium.regExpression()->add(pRegExpr);
+		//sCriterium.searchExpression()->add(psearchExpr);
 		currentFilter = expression.expression();
 		
 		// Exécution de la requete
@@ -1753,7 +1753,7 @@ bool ldapBrowser::_getTitles()
 
 		// On avance
 		searchID++;
-		//expression.remove(REG_EXPR_LDAP);
+		//expression.remove(SEARCH_EXPR_LDAP);
 
 		// Tant que l'on a trouve des comptes on recherche
 		//todo = (titleCount > 0 );
@@ -1804,9 +1804,9 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 	myAttributes += STR_ATTR_GROUP_ID_NUMBER;	// et son identifiant
 
 	// Génération de la requête
-	regExpr expression(REG_EXPR_OPERATOR_AND);
-	expression.add(STR_ATTR_OBJECT_CLASS, LDAP_TYPE_POSIX_GROUP);	// Tous les groupes ...
-	expression.add(STR_ATTR_GROUP_MEMBER, userDN.c_str());			// ... qui contiennent l'agent
+	searchExpr expression(SEARCH_EXPR_OPERATOR_AND);
+	expression.add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_TYPE_POSIX_GROUP);	// Tous les groupes ...
+	expression.add(STR_ATTR_GROUP_MEMBER, SEARCH_ATTR_COMP_EQUAL, userDN.c_str());			// ... qui contiennent l'agent
 
 	// Execution de la requete
 	//

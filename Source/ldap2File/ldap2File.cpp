@@ -36,7 +36,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
@@ -372,7 +372,12 @@ int main(int argc, const char* argv[]) {
 		binName = binName.substr(0, pos);
 	}
 
-	cout << binName << " - Version " << APP_RELEASE << endl;
+	cout << binName << " - Version " << APP_RELEASE;
+#ifdef _DEBUG
+	cout << " - DEBUG";
+#endif |DEBUG
+	cout << endl;
+
 	cout << "Copyright © " << APP_COPYRIGHT << endl;
 
 	// Paramètres de la ligne de commandes
@@ -495,7 +500,11 @@ int main(int argc, const char* argv[]) {
 		logs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
 
 		logs.add(logFile::LOG, "=========================================================================");
+#ifdef _DEBUG
 		logs.add(logFile::LOG, "==== %s - version %s - %s", APP_SHORT_NAME, APP_RELEASE, APP_DESC);
+#else
+		logs.add(logFile::LOG, "==== %s - version %s - DEBUG - %s", APP_SHORT_NAME, APP_RELEASE, APP_DESC);
+#endif // _DEBUG
 		logs.add(logFile::LOG, "==== Copyright %s", APP_COPYRIGHT);
 		logs.add(logFile::LOG, "Lancement de l'application");
 		logs.add(logFile::DBG, "Logs en mode DEBUG");

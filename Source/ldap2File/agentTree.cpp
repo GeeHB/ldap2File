@@ -20,12 +20,12 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	14/01/2021 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
 #include "agentTree.h"
-#include "regExpr.h"
+#include "searchExpr.h"
 
 #ifndef WIN32
 #include <ldap.h>
@@ -331,9 +331,9 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 	}
 
 	// Génération de la requête
-	regExpr expression(XML_OPERATOR_AND);
-	expression.add(STR_ATTR_OBJECT_CLASS, LDAP_TYPE_PERSON);
-	expression.add(STR_ATTR_UID, agentInfos::idFromDN(dnAgent).c_str());
+	searchExpr expression(XML_LOG_OPERATOR_AND);
+	expression.add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_TYPE_PERSON);
+	expression.add(STR_ATTR_UID, SEARCH_ATTR_COMP_EQUAL, agentInfos::idFromDN(dnAgent).c_str());
 
 	// Execution de la requete
 	//

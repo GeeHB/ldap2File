@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	06/08/2020 - JHB - Version 20.8.34
+//--	15/08/2020 - JHB - Version 21.1.1
 //--
 //---------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ public:
 	public:
 		// Construction
 		criterium()
-		:container_{ "" }, tabType_{ "" }, tabName_{ "DEF_TAB_NAME" }, sorted_{ false }, regExpr_{ NULL }
+		:container_{ "" }, tabType_{ "" }, tabName_{ "DEF_TAB_NAME" }, sorted_{ false }, searchExpr_{ NULL }
 		{}
 
 		// Destruction
@@ -64,9 +64,9 @@ public:
 
 		// Libérations
 		void dispose(){
-			if (regExpr_){
-				// delete regExpr_;		// Devrait fonctionner !!!!
-				regExpr_ = NULL;
+			if (searchExpr_){
+				// delete searchExpr_;		// Devrait fonctionner !!!!
+				searchExpr_ = NULL;
 			}
 		}
 
@@ -89,17 +89,17 @@ public:
 		{ sorted_ = sorted; }
 		bool sorted()
 		{ return sorted_; }
-		void setRegExpression(regExpr* reg)
-		{ regExpr_ = reg; }
-		regExpr* regExpression()
-		{ return regExpr_; }
+		void setsearchExpression(searchExpr* reg)
+		{ searchExpr_ = reg; }
+		searchExpr* searchExpression()
+		{ return searchExpr_; }
 
 	protected:
 		string		container_;
 		string		tabType_;
 		string		tabName_;
 		bool		sorted_;
-		regExpr*	regExpr_;
+		searchExpr*	searchExpr_;
 	};
 
 
