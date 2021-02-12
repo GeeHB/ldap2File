@@ -19,7 +19,7 @@
 //--
 //--	12/03/2020 - JHB - Version 20.3.2 - Création
 //--	
-//--	15/08/2020 - JHB - Version 21.1.1
+//--	12/02/2021 - JHB - Version 21.2.1
 //--
 //---------------------------------------------------------------------------
 
@@ -73,8 +73,13 @@
 
 // Numero long
 //
-#define STR_ATTR_ALLIER_FULL_TEL_NUMBER		"allierFullTelephoneNumber"
-#define W_ATTR_ALLIER_FULL_TEL_NUMBER		L"allierFullTelephoneNumber"
+#define STR_ATTR_ALLIER_FULL_TEL_NUMBER		"allierTelLong"
+#define W_ATTR_ALLIER_FULL_TEL_NUMBER		L"allierTelLong"
+
+// Numero court
+//
+#define STR_ATTR_ALLIER_SHORT_TEL_NUMBER	"allierTelCourt"
+#define W_ATTR_ALLIER_SHORT_TEL_NUMBER		L"allierTelCourt"
 
 // MAC du tel.
 //

@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	15/08/2020 - JHB - Version 21.1.1
+//--	12/02/2021 - JHB - Version 21.2.1
 //--
 //---------------------------------------------------------------------------
 
@@ -55,6 +55,7 @@
 #define XML_YES						"oui"
 #define XML_NO						"non"
 
+#define XML_ADD						"Ajout"
 #define XML_ALIAS					"Alias"
 #define XML_SERVER					"Serveur"
 #define XML_ENVIRONMENT				"Environnement"
@@ -263,7 +264,8 @@
 #define TYPE_FILE_HTML					"HTML"
 #define TYPE_FILE_JS					"JS"
 #define TYPE_FILE_LDIF					"LDIF"
-#define TYPE_FILE_LDAP					"LDAP"
+#define TYPE_FILE_LDAP					"LDAP"			// JHB : ????
+#define TYPE_FILE_VCARD					"VCARD"
 
 #define XML_FORMAT_TEMPLATE_ATTR		"Modele"
 
@@ -371,31 +373,38 @@
 // Génération des fichiers CSV
 //
 
-#define XML_OWN_CSV_NODE						_T("CSV")
+#define XML_OWN_CSV_NODE						"CSV"
 
 // Attribut sépéarateur dans le fichier de configuration
-#define XML_OWN_CSV_FORMAT_COL_SEPARATOR		_T("Separateur-Colonnes")
-#define XML_OWN_CSV_FORMAT_VAL_SEPARATOR		_T("Separateur-Valeurs")
-#define XML_OWN_CSV_FORMAT_UTF8					_T("UTF8")
-#define XML_OWN_CSV_FORMAT_SHOW_VACANT			_T("Affiche-Vacant")
+#define XML_OWN_CSV_FORMAT_COL_SEPARATOR		"Separateur-Colonnes"
+#define XML_OWN_CSV_FORMAT_VAL_SEPARATOR		"Separateur-Valeurs"
+#define XML_OWN_CSV_FORMAT_UTF8					"UTF8"
+#define XML_OWN_CSV_FORMAT_SHOW_VACANT			"Affiche-Vacant"
 
 // Génération des fichiers LDIF
 //
-#define XML_OWN_LDIF_NODE			_T("LDIF")
+#define XML_OWN_LDIF_NODE			"LDIF"
 
-#define XML_OWN_LDIF_USERS_NODE		_T("Utilisateurs")	// OU pour les comptes utilisateurs
-#define XML_OWN_LDIF_BASEDN_NODE	_T("baseDN")
+#define XML_OWN_LDIF_USERS_NODE		"Utilisateurs"		// OU pour les comptes utilisateurs
+#define XML_OWN_LDIF_BASEDN_NODE	"baseDN"
 
-#define XML_OWN_LDIF_MANDATORY_NODE	_T("Obligatoire")
+#define XML_OWN_LDIF_MANDATORY_NODE	"Obligatoire"
 
-#define XML_OWN_LDIF_ADD_NODE		_T("Ajout")
+#define XML_OWN_LDIF_ADD_NODE		XML_ADD
 #define XML_ADD_NAME_ATTR			XML_NAME			// Nom de l'attribut
 
-#define XML_OWN_LDIF_EXCLUSION_NODE	("Exclusion")
+#define XML_OWN_LDIF_EXCLUSION_NODE	"Exclusion"
 #define XML_EXCLUSION_NAME_ATTR		XML_NAME			// Nom de l'attribut
 
-#define XML_OWN_LDIF_FUSION_NODE	("Fusion")
+#define XML_OWN_LDIF_FUSION_NODE	"Fusion"
 #define XML_FUSION_NAME_ATTR		XML_NAME			// Nom de l'attribut source
+
+// Génération des fichiers VCARD / VCF
+//
+#define XML_OWN_VCARD_NODE			"VCARD"
+
+#define XML_OWN_VCARD_ORG_NODE		"Organisation"
+#define XML_OWN_VCARD_ADD_NODE		XML_ADD
 
 #endif /* _LDAP_2_FILE_XML_CONSTS_h__ */
 

@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	15/08/2020 - JHB - Version 21.1.1
+//--	12/02/2021 - JHB - Version 21.2.1
 //--
 //---------------------------------------------------------------------------
 
@@ -33,6 +33,7 @@
 #include "JScriptFile.h"
 //#include "YealinkFile.h"
 #include "LDIFFile.h"
+#include "vCardFile.h"
 
 #include "sFileSystem.h"
 
@@ -599,6 +600,12 @@ RET_TYPE ldapBrowser::_createFile()
 		// Un fichier LDIF
 		case FILE_TYPE::FILE_LDIF: {
 			file_ = (outputFile*)new LDIFFile(&opfi, &cols_, configurationFile_);
+			break;
+		}
+
+		// Un fichier VCARD / VCF
+		case FILE_TYPE::FILE_VCARD: {
+			file_ = (outputFile*)new vCardFile(&opfi, &cols_, configurationFile_);
 			break;
 		}
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 //--
-//--	FICHIER	: LDIFFile.h
+//--	FICHIER	: vCardFile.h
 //--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
@@ -10,23 +10,23 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition de la classe LDIFFile
-//--			Génération d'un fichier au format LDIF
+//--			Définition de la classe vCardFile
+//--			Génération d'un fichier au format VCARD 3.0
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	05/04/2020 - JHB - Version 20.4.6
+//--	08/02/2021 - JHB - Version 21.2.2
 //--						+ Création
 //--
 //--	12/02/2021 - JHB - Version 21.2.1
 //--
 //---------------------------------------------------------------------------
 
-#ifndef __LDAP_2_FILE_LDIF_OUTPUT_FILE_h__
-#define __LDAP_2_FILE_LDIF_OUTPUT_FILE_h__
+#ifndef __LDAP_2_FILE_VCARD_OUTPUT_FILE_h__
+#define __LDAP_2_FILE_VCARD_OUTPUT_FILE_h__
 
 #include "textFile.h"
 
@@ -36,6 +36,24 @@
 //--
 //----------------------------------------------------------------------
 
+#define VCARD_ASSIGN_OP			":"
+#define VCARD_VALUE_SEP			";"
+
+// Encadrement de la fiche
+#define VCARD_BEGIN				"BEGIN"
+#define VCARD_END				"END"
+#define VCARD_VCARD				"VCARD"
+
+// Attributs utilisés
+#define VCARD_ORGANISATION		"ORG"
+#define VCARD_ADDR				"ADR;type=WORK"
+#define VCARD_FULLNAME			"N"
+#define VCARD_FORMATED_NAME		"FN"
+#define VCARD_TITLE				"TITLE"
+#define VCARD_EMAIL				"EMAIL;type=INTERNET"
+#define VCARD_MOBILE			"TEL;type=CELL;type=VOICE"
+#define VCARD_TELEPHONENUMBER	"TEL;type=WORK;type=VOICE"
+
 
 //----------------------------------------------------------------------
 //--
@@ -43,17 +61,17 @@
 //--
 //----------------------------------------------------------------------
 
-class LDIFFile : public textFile
+class vCardFile : public textFile
 {
 	// Méthodes publiques
 	//
 public:
 
 	// Construction
-	LDIFFile(const LPOPFI fileInfos, columnList* columns, confFile* parameters);
+	vCardFile(const LPOPFI fileInfos, columnList* columns, confFile* parameters);
 
 	// Destruction
-	virtual ~LDIFFile() {}
+	virtual ~vCardFile() {}
 
 	// Création du fichier
 	virtual bool create();
@@ -93,18 +111,7 @@ private:
 		// Constructions
 		tagLDAPATTRIBUTE(string& attrName, string& attrValue){
 			name_ = attrName;
-			outputName_ = "";
 			values_.push_back(attrValue);
-		}
-
-		tagLDAPATTRIBUTE(tagLDAPATTRIBUTE& other) {
-			name_ = other.name_;
-
-			for (list<string>::iterator it = other.values_.begin(); it != other.values_.end(); it++) {
-				if ((*it).size()) {
-					values_.push_back(*it);
-				}
-			}
 		}
 
 		// Destruction
@@ -112,7 +119,7 @@ private:
 
 		// Son nom ...
 		string name()
-		{ return outputName_.length() ? outputName_ : name_; }
+		{ return name_; }
 
 		// Recherche d'une valeur
 		bool exists(string& attrValue);
@@ -123,6 +130,11 @@ private:
 				// Pas déja en mémoire ...
 				values_.push_back(value);
 			}
+		}
+
+		// Je ne veux que la première valeur
+		string value() {
+			return (values_.size()?*(values_.begin()):"");
 		}
 
 		// Nettoyage (ie. suppression de toutes les valeurs)
@@ -136,32 +148,18 @@ private:
 		}
 
 		string			name_;			// Nom de l'attribut
-		string			outputName_;	// Nom de sortie (permet de fusionner les attributs)
 		list<string>	values_;		// Les valeurs (à priori non vides)
 	}LDAPATTRIBUTE;
 
 	// Toutes les informations d'un agent (ie. une "ligne" dans la logique fichier plat / CSV)
-	class LDIFUserDatas /*: public agentInfos::agentDatas*/
+	class vCardUserDatas
 	{
 	public:
 		// Construction
-		LDIFUserDatas(){
-			allowEmpty_ = false;
-		}
+		vCardUserDatas(){}
 
 		// Destruction
-		virtual ~LDIFUserDatas();
-
-		// Transfert du contenu dans un autre objet
-		void transferIn(LDIFUserDatas& other);
-
-		// Valeurs "nulles" acceptées ?
-		void setAllowEmpty(bool allow = true) {
-			allowEmpty_ = allow;
-		}
-		bool allowEmpty() {
-			return allowEmpty_;
-		}
+		virtual ~vCardUserDatas();
 
 		// Nombre d'éléments
 		size_t size() {
@@ -189,16 +187,6 @@ private:
 			return (attrName.length() ? newAttribute(attrName, "", force) : NULL);
 		}
 
-		// Cet attribut sera à fusionner !
-		LDAPATTRIBUTE* newFusionAttribute(string& attrName, string& fusionWith){
-			LDAPATTRIBUTE* newAttr(newAttribute(attrName, "", true));
-			if (NULL != newAttr) {
-				// Mise à jour de non fusionné
-				newAttr->outputName_ = fusionWith;
-			}
-
-			return newAttr;
-		}
 
 		// Ajout d'un attribut et de sa valeur
 		LDAPATTRIBUTE* newAttribute(string& attrName, string& attrValue, bool force = false);
@@ -218,7 +206,6 @@ private:
 		LDAPATTRIBUTE* operator [](size_t index);
 
 	protected:
-		bool					allowEmpty_;		// Autorisation de création d'un attribut sans valeur
 		deque<LDAPATTRIBUTE*>	attributes_;		// Liste des attributs
 	};
 	
@@ -229,35 +216,18 @@ private:
 		
 		// Nettoyage des attributs
 		attributesToSave_.clean();
-
-		// On remet les attributs prévu pour tous
-		add2All_.transferIn(attributesToSave_);
 	}
 
-	// L'attribut est-il obligatoire
-	bool _isMandatory(string& name);
-
+	// Sauvegarde d'un attribut monovalué
+	void _attribute2VCARD(const char* szName, const char* szValue){
+		if (!IS_EMPTY(szName) && !IS_EMPTY(szValue)) {
+			string value(encoder_.toUTF8(szValue));		// VCARD est en UTF8
+			file_ << szName << VCARD_ASSIGN_OP << value << eol_;
+		}
+	}
+	
 	// Sauvegarde d'un attribut avec toutes ses valeurs
-	void _attribute2LDIF(LDAPATTRIBUTE*);
-
-	// Formatage d'une chaine pour LDIF (UTF8 + Base64 si nécessaire) + découpage multi-ligne
-	//		La chaine générée est au format [key][affectation][valeur encodée]
-	string _string2LDIF(const char* key, const char* source){
-        if (IS_EMPTY(key)) {
-			return "";
-		}
-		string sKey(key);
-		string sSource(IS_EMPTY(source)?"":source);
-		return _string2LDIF(sKey, sSource);
-	}
-	string _string2LDIF(string& key, string& source);
-	string _string2LDIF(const char* key, string& source) {
-		if (IS_EMPTY(key)) {
-			return "";
-		}
-		string val(key);
-		return _string2LDIF(val, source);
-	}
+	void _attribute2VCARD(LDAPATTRIBUTE*, const char* szName = NULL);
 
 
 	// Données membres privées
@@ -265,20 +235,15 @@ private:
 private:
 	charUtils					encoder_;			// Gestion de l'encodage des caractères
 
-	LDIFUserDatas				attributesToSave_;	// Attributs à sauvegarder
+	vCardUserDatas				attributesToSave_;	// Attributs à sauvegarder
 
 	// Dans le fichier XML ...
-	string						usersOU_;			// OU pour les comptes
-	string						shortUsersOU_;		// Nom court
-	string						baseDN_;
-
-	LDIFUserDatas				add2All_;			// Attributs ajoutés à tous les objets
-	deque<string>				mandatories_;		// Attributs obligatoires
-	LDIFUserDatas				exclusions_;		// Valeurs d'attribut à ne pas copier
-
+	string						organisation_;
+	vCardUserDatas				add2All_;			// Attributs ajoutés à tous les objets
+	
 	bool						newFile_;
 };
 
-#endif // #ifndef __LDAP_2_FILE_LDIF_OUTPUT_FILE_h__
+#endif // #ifndef __LDAP_2_FILE_VCARD_OUTPUT_FILE_h__
 
 // EOF

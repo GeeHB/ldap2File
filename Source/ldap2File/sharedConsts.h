@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	15/08/2020 - JHB - Version 21.1.1
+//--	12/02/2021 - JHB - Version 21.2.1
 //--
 //---------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_FULL_NAME			"ldap2File.exe"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"21.1.1"
+#define APP_RELEASE				"21.2.1"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -346,7 +346,7 @@ using namespace jhbLDAPTools;
 
 // Type(s) de fichier générés
 //
-enum class FILE_TYPE { FILE_UNKNOWN_TYPE = 0, FILE_TXT = 0, FILE_CSV, FILE_XLS, FILE_XLSX, FILE_ODS, FILE_JS, FILE_LDIF, FILE_LDAP};
+enum class FILE_TYPE { FILE_UNKNOWN_TYPE = 0, FILE_TXT = 0, FILE_CSV, FILE_XLS, FILE_XLSX, FILE_ODS, FILE_JS, FILE_LDIF, FILE_VCARD};
 
 // Types de destinations
 //

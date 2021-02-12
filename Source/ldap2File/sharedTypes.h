@@ -19,7 +19,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	15/08/2020 - JHB - Version 21.1.1
+//--	12/02/2021 - JHB - Version 21.2.1
 //--
 //---------------------------------------------------------------------------
 
@@ -1056,6 +1056,11 @@ public:
 									if (0 == charUtils::stricmp(TYPE_FILE_LDIF, upper.c_str()) ||
 										0 == charUtils::stricmp(TYPE_FILE_LDAP, upper.c_str())) {
 										return FILE_TYPE::FILE_LDIF;
+									}
+									else {
+										if (0 == charUtils::stricmp(TYPE_FILE_VCARD, upper.c_str())) {
+											return FILE_TYPE::FILE_VCARD;
+										}
 									}
 								}
 							}

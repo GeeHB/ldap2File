@@ -21,7 +21,7 @@
 //--	05/04/2020 - JHB - Version 20.4.6
 //--						+ Création
 //--
-//--	15/08/2020 - JHB - Version 21.1.1
+//--	12/02/2021 - JHB - Version 21.2.1
 //--
 //---------------------------------------------------------------------------
 
@@ -129,7 +129,7 @@ bool LDIFFile::getOwnParameters()
 		// Si les 2 sont renseignés => ajout à la liste
 		add2All_.newAttribute(name, value);
 
-		// Exclusion suivante
+		// attribut suivant
 		snode = snode.next_sibling(XML_OWN_LDIF_ADD_NODE);
 	}
 

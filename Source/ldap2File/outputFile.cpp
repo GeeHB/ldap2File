@@ -122,9 +122,13 @@ const char* outputFile::fileExtension()
 		return FILE_EXT_JS;
 
 	// Fichier LDIF
-	case FILE_TYPE::FILE_LDAP:
+	/*case FILE_TYPE::FILE_LDAP:*/
 	case FILE_TYPE::FILE_LDIF:
 		return FILE_EXT_LDIF;
+
+	// Fichier vCard
+	case FILE_TYPE::FILE_VCARD:
+		return FILE_EXT_VCF;
 
 	//case FILE_ORG_VISIO:
 	case FILE_TYPE::FILE_TXT:

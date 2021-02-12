@@ -2,11 +2,15 @@ ToDO :
 	- msg "Les informations sur le fichier à générer sont invalides" => donner la raison (pas de destination, ...)
 
 
+21.2.1
+	* le 12 février 2021
+	+ ajout de la classe vCardFile pour la génération d'un fichier de carnet d'adresse au format VCARD / VCF
+	+ corrections mineures
 
 21.1.1
 	* 14 janvier 2021
 	+ "Expressions regulières"
-		+ "searchExpr" devient "searchExpr" : expressions de recherches !!!
+		+ "regExpr" devient "searchExpr" : expressions de recherches !!!
 		+ ajout des opérateurs <=, >= pour la recherche des attributs
 			+ les opérateurs < et > ne sont pas dns la normes
 			! Attention : OpenLDAP ne reconnaita aucun des 4 opérateurs : <, >, <= ou >=

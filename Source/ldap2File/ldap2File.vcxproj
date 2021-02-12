@@ -28,13 +28,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -71,9 +71,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Nextcloud\dev\cpp\Common\jhbCURLTools;D:\Nextcloud\dev\cpp\Common;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Nextcloud\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
-    <OutDir>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Debug\</OutDir>
+    <IncludePath>D:\dev\cpp\Common\jhbCURLTools;D:\dev\cpp\Common;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
+    <OutDir>D:\dev\cpp\ldap2File\Bin\x86\Debug\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -82,9 +82,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Nextcloud\dev\cpp\Common;D:\Nextcloud\dev\cpp\Common\zip;D:\Nextcloud\dev\cpp\Common\jhbCURLTools;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Nextcloud\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
-    <OutDir>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Release\</OutDir>
+    <IncludePath>D:\dev\cpp\Common;D:\dev\cpp\Common\zip;D:\dev\cpp\Common\jhbCURLTools;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
+    <OutDir>D:\dev\cpp\ldap2File\Bin\x86\Release\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -107,7 +107,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Wldap32.lib;%(AdditionalDependencies);wininet.lib;libcurl.lib;wsock32.lib</AdditionalDependencies>
-      <OutputFile>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Debug\ldap2File.exe</OutputFile>
+      <OutputFile>D:\dev\cpp\ldap2File\Bin\x86\Debug\ldap2File.exe</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -142,7 +142,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Wldap32.lib;%(AdditionalDependencies);wininet.lib ;libcurl.lib;wsock32.lib</AdditionalDependencies>
-      <OutputFile>D:\Nextcloud\dev\cpp\ldap2File\Bin\x86\Release\ldap2File.exe</OutputFile>
+      <OutputFile>D:\dev\cpp\ldap2File\Bin\x86\Release\ldap2File.exe</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -250,6 +250,7 @@
     <ClCompile Include="textFile.cpp" />
     <ClCompile Include="titles.cpp" />
     <ClCompile Include="treeStructure.cpp" />
+    <ClCompile Include="vCardFile.cpp" />
     <ClCompile Include="XMLFile.cpp" />
     <ClCompile Include="XMLParser.cpp" />
   </ItemGroup>
@@ -289,6 +290,7 @@
     <ClInclude Include="textFile.h" />
     <ClInclude Include="titles.h" />
     <ClInclude Include="treeStructure.h" />
+    <ClInclude Include="vCardFile.h" />
     <ClInclude Include="XMLConsts.h" />
     <ClInclude Include="XMLFile.h" />
     <ClInclude Include="XMLParser.h" />

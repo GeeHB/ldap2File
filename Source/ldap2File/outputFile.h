@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	15/08/2020 - JHB - Version 21.1.1
+//--	12/02/2021 - JHB - Version 21.2.1
 //--
 //---------------------------------------------------------------------------
 
@@ -50,8 +50,9 @@
 #define FILE_EXT_XLS    "xls"
 #define FILE_EXT_ODS    "ods"
 #define FILE_EXT_JS     "js"
-#define FILE_EXT_LDIF    "ldif"
-#define FILE_EXT_TXT     "txt"
+#define FILE_EXT_LDIF   "ldif"
+#define FILE_EXT_TXT	"txt"
+#define FILE_EXT_VCF    "vcf"
 
 //----------------------------------------------------------------------
 //--
