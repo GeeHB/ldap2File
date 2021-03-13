@@ -1,6 +1,11 @@
 ToDO :
 	- msg "Les informations sur le fichier à générer sont invalides" => donner la raison (pas de destination, ...)
 
+21.3.2
+	* le 13 mars 2021
+	+ Corrections mineures
+		- Suppression du fichier temporaire dès que possible
+	+ Ajout de logs
 
 21.2.1
 	* le 12 février 2021

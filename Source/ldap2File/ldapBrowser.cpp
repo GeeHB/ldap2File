@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	12/02/2021 - JHB - Version 21.2.1
+//--	13/03/2021 - JHB - Version 21.3.2
 //--
 //---------------------------------------------------------------------------
 
@@ -351,7 +351,7 @@ RET_TYPE ldapBrowser::browse()
 	return _createFile();
 }
 
-// Liberation de la memoire
+// Liberation de la mémoire
 //
 void ldapBrowser::_dispose()
 {
@@ -878,6 +878,13 @@ RET_TYPE ldapBrowser::_createFile()
 
 	if (pageControl){
 		ldapServer_.controlFree(pageControl);
+	}
+
+	// Plus besoin du fichier temporaire
+	if (file_) {
+		logs_->add(logFile::DBG, "Suppression du fichier temporaire '%s'", file_->fileName());
+		delete file_;
+		file_ = NULL;
 	}
 
 	// Ok
