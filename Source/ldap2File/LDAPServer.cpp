@@ -11,6 +11,7 @@
 //--	DESCRIPTION:
 //--
 //--		Implémentation de la classe LDAPServer - Connexoin à un serveur LDAP
+//--		Gestion de la connexion et des échanges avec un serveur LDAP
 //--
 //---------------------------------------------------------------------------
 //--

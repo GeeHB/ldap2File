@@ -58,15 +58,15 @@ public:
 	string managersCol()
 	{ return managersCol_; }
 
-	// Nom de l'environnement
-	string environment()
-	{ return environment_; }
 
 	// Fichier de Logs de sortie
 	bool logInfos(LOGINFOS& dst);
 
-	// Recherche du premier serveur LDAP "correct"
-	bool ldapServer(LDAPServer& dst);
+	// Serveur(s) LDAP
+	bool nextLDAPServer(LDAPServer& dst);
+
+	// Environnement (ie. nom du serveur LDAP) par défaut
+	string environment();
 
 	// Serveur pour les images
 	bool imagesServer(IMGSERVER& dst);
@@ -90,7 +90,6 @@ public:
 	{ return commandFile_; }
 
 	// 
-
 	// Méthodes privées
 	//
 protected:
@@ -98,7 +97,6 @@ protected:
 	// Initialisation
 	void _init(){
 		fileRead_ = false;		// Pas encore lu
-		environment_ = "";		// Pas d'environnement
 		commandFile_ = NULL;
 		managersCol_ = "";		// Pas de manager !!!
 	}
@@ -120,7 +118,6 @@ protected:
 	bool				fileRead_;		// Le fichier source a t'il été lu ?
 
 	commandFile*		commandFile_;	// Fichier de commandes
-	string				environment_;	// Nom de l'environnement (peut être vide)
 	string				managersCol_;	// Nom de la colonne qui contiendra le DN des managers
 
 												
@@ -135,6 +132,9 @@ protected:
 
 	// Colonnes du fichier de sortie
 	XMLParser::XMLNode	xmlColumn_;
+
+	// Serveurs LDAP
+	XMLParser::XMLNode	LDAPServer_;
 };
 
 #endif /* __LDAP_2_CONFIGURATION_FILE_h__ */

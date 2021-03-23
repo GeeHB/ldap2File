@@ -11,6 +11,7 @@
 //--	DESCRIPTION:
 //--
 //--		Définition de la classe LDAPServer
+//--		Gestion de la connexion et des échanges avec un serveur LDAP
 //--
 //---------------------------------------------------------------------------
 //--
@@ -245,11 +246,14 @@ public:
 
 	// Accès
 	//
-	//LDAP* setConnection(LDAP* connectionID)
+	
+	// Nom / nom de l'environnement associé
 	void setEnvironment(const char* value)
 	{ environment_ = value;	}
 	const char* environment()
 	{ return environment_.c_str(); }
+	const char*name()
+	{ return environment(); }
 
 	void setHost(const char* value)
 	{ host_ = value; }

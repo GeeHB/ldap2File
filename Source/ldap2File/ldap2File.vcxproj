@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -241,6 +241,7 @@
     <ClCompile Include="ldap2File.cpp" />
     <ClCompile Include="ldapBrowser.cpp" />
     <ClCompile Include="LDAPServer.cpp" />
+    <ClCompile Include="LDAPSources.cpp" />
     <ClCompile Include="LDIFFile.cpp" />
     <ClCompile Include="ODSFile.cpp" />
     <ClCompile Include="outputFile.cpp" />
@@ -277,6 +278,7 @@
     <ClInclude Include="ldapAttributes.h" />
     <ClInclude Include="ldapBrowser.h" />
     <ClInclude Include="LDAPServer.h" />
+    <ClInclude Include="LDAPSources.h" />
     <ClInclude Include="LDIFFile.h" />
     <ClInclude Include="ODSConsts.h" />
     <ClInclude Include="ODSFile.h" />
