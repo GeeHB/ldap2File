@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	13/03/2021 - JHB - Version 21.3.2
+//--	26/03/2021 - JHB - Version 21.3.4
 //--
 //---------------------------------------------------------------------------
 
@@ -137,6 +137,92 @@ bool confFile::logInfos(LOGINFOS& dst)
 
 // Serveur(s) LDAP
 //
+
+// Serveur LDAP suivant (ou le premier)
+//
+bool confFile::nextLDAPServer(LDAPServer** pDest)
+{
+	if (NULL == pDest||					// Le pointeur doit être valide	
+		IS_EMPTY(paramsRoot_.name())) {	// A t'on vérifié qu'il était bien formé ?
+		return false;
+	}
+
+	// Premier serveur ?
+	if (!LDAPEnv_.index()) {
+		pugi::xml_node element = paramsRoot_.child(XML_CONF_LDAP_SOURCES_NODE);
+		if (!IS_EMPTY(element.name())) {
+			element = element.child(XML_CONF_LDAP_NODE);
+		}
+
+		LDAPEnv_ = element;
+	}
+
+	// Est-ce bien un serveur LDAP ?
+	if (0 != strcmp(LDAPEnv_.node()->name(), XML_CONF_LDAP_NODE)) {
+		// Non => on arrête l'énumération
+		return false;
+	}
+	
+	// Allocation de l'objet
+	LDAPServer* dst = new LDAPServer();
+	if (NULL == dst) {
+		return false;
+	}
+
+	dst->init(LDAPServer::LDAP_ACCESS_MODE::LDAP_READ);
+	
+	// Environnement
+	dst->setEnvironment(LDAPEnv_.node()->attribute(XML_ENVIRONMENT).value());
+
+	// Adresse du serveur
+	dst->setHost(LDAPEnv_.node()->attribute(XML_CONF_LDAP_HOST_ATTR).value());
+
+	// Port d'écoute
+	string attrValue(LDAPEnv_.node()->attribute(XML_CONF_LDAP_PORT_ATTR).value());
+	if (attrValue.size()) {
+		__int16 value = atoi(attrValue.c_str());
+		dst->setPort(!value ? LDAP_DEF_PORT : value);
+	}
+
+	// Base DN
+	pugi::xml_node subNode = LDAPEnv_.node()->child(XML_CONF_LDAP_BASE_NODE);
+	if (!IS_EMPTY(subNode.name())) {
+		dst->setBaseDN(subNode.first_child().value());
+	}
+	}
+	}
+
+	// Base des comptes utilisateurs
+	subNode = LDAPEnv_.node()->child(XML_CONF_LDAP_USERS_DN_NODE);
+	dst->setUsersDN(IS_EMPTY(subNode.name()) ? dst->baseDN() : subNode.first_child().value());
+
+	// Compte et mot de passe
+	subNode = LDAPEnv_.node()->child(XML_CONF_LDAP_ACCOUNT_NODE);
+	if (!IS_EMPTY(subNode.name())) {
+		dst->setUser(subNode.first_child().value());
+
+		if (charUtils::stricmp(dst->user(), ACCOUNT_ANONYMOUS)) {
+			dst->setPwd(subNode.attribute(XML_CONF_LDAP_PWD_ATTR).value());
+		}
+	}
+
+	// Valeurs "vides"
+	subNode = LDAPEnv_.node()->child(XML_CONF_LDAP_EMPTY_VAL_NODE);
+	while (!IS_EMPTY(subNode.name())) {
+		dst->addEmptyVal(subNode.attribute(XML_CONF_LDAP_EMPTY_VAL_ATTR).value());
+		subNode = subNode.next_sibling(XML_CONF_LDAP_EMPTY_VAL_NODE);
+	}
+	
+	// Serveur LDAP suivant
+	LDAPEnv_ = LDAPEnv_.node()->next_sibling(XML_CONF_LDAP_NODE);
+	
+	// OK
+	(*pDest) = dst;		// Retour du pointeur
+	return true;
+}
+
+// Recherche du serveur pour l'environement sélectionné
+/*
 bool confFile::ldapServer(LDAPServer& dst)
 {
 	dst.init(LDAPServer::LDAP_ACCESS_MODE::LDAP_READ);
@@ -193,6 +279,7 @@ bool confFile::ldapServer(LDAPServer& dst)
 	// OK
 	return true;
 }
+*/
 
 // Serveur pour les images
 //
@@ -693,7 +780,8 @@ pugi::xml_node confFile::_findFirstNode(XMLParser::XMLNode* xmlNode, const char*
 	// Parcours de la branche à la recherche du premier serveur pouvont convenir
 	//
 	while (cont) {
-		if (true == _nextNode(xmlNode, XML_CONF_LDAP_SOURCES_NODE, XML_CONF_ENV_NODE, &env)) {
+		//if (true == _nextNode(xmlNode, XML_CONF_LDAP_SOURCES_NODE, XML_CONF_ENV_NODE, &env)) {
+		if (true == _nextNode(xmlNode, parentNode, envName, &env)) {
 			if (0 == environment_.length() ||
 				env == environment_) {
 				// Trouvé le "bon" ou pas d'environnement de précisé (le 1er est le bon alors)
@@ -705,7 +793,7 @@ pugi::xml_node confFile::_findFirstNode(XMLParser::XMLNode* xmlNode, const char*
 			}
 			else {
 				if ("" == env) {
-					// Le serveur n'a aucun environnement mais pourrait convnir par défaut
+					// Le serveur n'a aucun environnement mais pourrait convenir par défaut
 					noEnvNode = *xmlNode->node();
 					foundEmpty = true;
 				}

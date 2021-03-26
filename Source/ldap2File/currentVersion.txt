@@ -1,6 +1,13 @@
 ToDO :
 	- msg "Les informations sur le fichier à générer sont invalides" => donner la raison (pas de destination, ...)
 
+21.3.4
+	* le 26 mars 2021
+	+ Corrections mineures
+	+ Ajout de la classe LDAPSources qui permet de définir un serveur source par fichier conf
+		+ Lecture de {conf}<Fichier><Environnement ..> pour définir le nom de l'env. LDAP
+		? TODO : Généraliser à tous les services (destinations, alias, ...)
+
 21.3.2
 	* le 13 mars 2021
 	+ Corrections mineures

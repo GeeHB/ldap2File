@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	13/03/2021 - JHB - Version 21.3.2
+//--	26/03/2021 - JHB - Version 21.3.4
 //--
 //---------------------------------------------------------------------------
 
@@ -33,6 +33,7 @@ commandFile::commandFile(const char* cmdFile, folders* pFolders, logFile* log, b
 	: XMLParser(cmdFile, XML_ROOT_LDAP2FILE_NODE, pFolders, log)
 {
 	// Intialisation des données membres
+	environment_ = "";
 	includedFile_ = NULL;
 	isIncluded_ = isIncluded;
 
@@ -92,10 +93,18 @@ void commandFile::_load()
 	// Lecture des paramètres
 	//
 
+	// Nom de l'environnement
+	//
+	pugi::xml_node node = paramsRoot_.child(XML_ENVIRONMENT);
+	if (0 == strcmp(node.name(), XML_ENVIRONMENT)) {
+		string val(node.attribute(ENV_NAME_ATTR).value());
+		environment_ = (val.size() ? val : "");
+	}
+
 	// Y a t'il un fichier inclus
 	//	<= seulement si le fichier n'est pas lui même déjà inclus
 	if (!isIncluded_){
-		pugi::xml_node node = paramsRoot_.child(XML_INCLUDE_NODE);
+		node = paramsRoot_.child(XML_INCLUDE_NODE);
 		const char* includedName = node.first_child().value();
 		if (!IS_EMPTY(includedName)){
 			if (logs_){

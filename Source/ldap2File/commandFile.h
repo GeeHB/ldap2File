@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	13/03/2021 - JHB - Version 21.3.2
+//--	26/03/2021 - JHB - Version 21.3.4
 //--
 //---------------------------------------------------------------------------
 
@@ -111,6 +111,10 @@ public:
 	commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded = false);
 	virtual ~commandFile();
 
+	// Environnement
+	const char* environment()
+	{ return environment_.c_str(); }
+
 	bool isValid()
 	{ return valid_; }
 
@@ -168,6 +172,8 @@ protected:
 		SELF = 1,
 		INCLUDED = 2
 	};
+
+	string				environment_;		// Nom de l'environnement (celui du fichier de conf. si non précisé)
 
 	commandFile*		includedFile_;		// Fichier inclus
 	bool				valid_;

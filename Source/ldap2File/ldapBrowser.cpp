@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	13/03/2021 - JHB - Version 21.3.2
+//--	26/03/2021 - JHB - Version 21.3.4
 //--
 //---------------------------------------------------------------------------
 
@@ -56,21 +56,41 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	file_ = NULL;
 	orgFile_ = NULL;
 	logs_ = logs;
-	firstTime_ = true;
 	cmdLineFile_ = NULL;
 	managersCol_ = managersAttr_ = "";
+	ldapServer_ = NULL;
 
 #ifdef __LDAP_USE_ALLIER_TITLES_h__
 	titles_ = NULL;
 #endif // __LDAP_USE_ALLIER_TITLES_h__
 
-	// Environnement de travail
-	std::string env = configurationFile_->environment();
-	if (env.length()){
-		logs_->add(logFile::LOG, "Configuration - environnement : \'%s\'", env.c_str());
+	// Serveur(s) LDAP
+	LDAPServer* myServer(NULL);
+	while (configurationFile_->nextLDAPServer(&myServer)) {
+		ldapSources_+=myServer;
+	}
+	logs_->add(logFile::LOG, "%d serveur(s) LDAP identifié(s)", ldapSources_.size());
+	for (size_t index = 0; index < ldapSources_.size(); index++) {
+		myServer= ldapSources_[index];
+		if (myServer) {
+			logs_->add(logFile::DBG, "\t- Environement : %s", myServer->environment());
+		}
+	}
+
+	// Environement par défaut
+	string envName(configurationFile_->environment());
+	if (false == ldapSources_.setDefaultSourceName(envName)) {
+		string error("Erreur de paramètre. L'environnement'");
+		error += envName;
+		error+="' n'est pas défini dans le fichier de configuration";
+		throw LDAPException(error);
+	}
+	
+	if (envName.size()) {
+		logs_->add(logFile::LOG, "Environnement par défaut : %s", envName.c_str());
 	}
 	else {
-		logs_->add(logFile::LOG, "Configuration - pas d'environnement précisé");
+		logs_->add(logFile::LOG, "Pas d'environnement par défaut");
 	}
 
 	// Alias
@@ -180,13 +200,6 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 //
 ldapBrowser::~ldapBrowser()
 {
-	// Fermeture des connexions
-	if (ldapServer_.connected()){
-		if (logs_){
-			logs_->add(logFile::LOG, "Fermeture de la connexion LDAP ");
-		}
-	}
-
 	// Je n'ai plus besoin de mes listes
 	//
 	if (services_){
@@ -215,56 +228,69 @@ ldapBrowser::~ldapBrowser()
 //
 RET_TYPE ldapBrowser::browse()
 {
-	// Libération des paramètres précédents
-	_dispose();
+	commandFile* cmdFile(NULL);
+	if (NULL == (cmdFile = configurationFile_->cmdFile())) {
+		// ???
+		logs_->add(logFile::ERR, "Pas de fichier de commande");
+		return RET_TYPE::RET_INVALID_PARAMETERS;
+	}
+	
+	// Connexion LDAP
+	//
+	string envName(cmdFile->environment());
+	bool findOne(false);
+	if (!envName.size()) {
+		logs_->add(logFile::LOG, "Pas de nom d'environnement dans le fichier de configuration");
 
+		// Utilisation de l'env. par défaut
+		envName = configurationFile_->environment();
+		findOne = true;
+	}
+	else {
+		logs_->add(logFile::DBG, "Environnement LDAP demandé '%s'", envName.c_str());
+	}
+	
+	// Cet environnement existe t'il (ou un autre) ?
+	LDAPServer* newServer(envName.length()?ldapSources_.findEnvironmentByName(envName): ldapSources_[0]);
+	if (NULL == newServer) {
+		logs_->add(logFile::ERR, "L'environnement '%s' n'existe pas ou il n'y a pas d'environnement par défaut", envName.c_str());
+		return RET_TYPE::RET_INVALID_PARAMETERS;
+	}
+
+	logs_->add(logFile::LOG, "Utilisation de l'environnement '%s'", newServer->name());
+
+		
+	// Libération des paramètres précédents
+	bool ldapChanged(newServer != ldapServer_);
+	_dispose(ldapChanged);
+	
 	// Paramètres LDAP
 	//
-	if (firstTime_ && logs_){
+	ldapServer_ = newServer;
+	string env(ldapServer_->name());
+
+	if (ldapChanged && logs_){
 		// Paramètres de la connexion
 		//
-		bool done = configurationFile_->ldapServer(ldapServer_);
-		string env(ldapServer_.environment());
-		if (!done){
-			if (0 == env.length()) {
-				logs_->add(logFile::ERR, "Impossible de récupérer les paramètres de connexion LDAP. Aucun serveur n'a été identifié dans le fichier.");
-			}
-			else {
-				logs_->add(logFile::ERR, "Impossible de récupérer les paramètres de connexion LDAP pour l'environnement \'%s\'", env.c_str());
-			}
-
-			return RET_TYPE::RET_LDAP_ERROR;
+		logs_->add(logFile::LOG, "Serveur LDAP :");
+		if (0 == env.length()) {
+			logs_->add(logFile::LOG, "\t- Pas d'environnement particulier");
 		}
 		else {
-			logs_->add(logFile::LOG, "Serveur LDAP :");
-			if (0 == env.length()) {
-				logs_->add(logFile::LOG, "\t- Pas d'environnement particulier");
-			}
-			else {
-				logs_->add(logFile::LOG, "\t- Environnement : \'%s\'", env.c_str());
-			}
+			logs_->add(logFile::LOG, "\t- Environnement : \'%s\'", env.c_str());
 		}
 
-		logs_->add(logFile::LOG, "\t- Host : %s - Port : %d", ldapServer_.host(), ldapServer_.port());
-		logs_->add(logFile::LOG, "\t- DN : %s", ldapServer_.baseDN());
-		if (charUtils::stricmp(ldapServer_.baseDN(),ldapServer_.usersDN())){
-			logs_->add(logFile::LOG, "\t- Base des utilisateurs : %s", ldapServer_.usersDN());
+		logs_->add(logFile::LOG, "\t- Host : %s - Port : %d", ldapServer_->host(), ldapServer_->port());
+		logs_->add(logFile::LOG, "\t- DN : %s", ldapServer_->baseDN());
+		if (charUtils::stricmp(ldapServer_->baseDN(),ldapServer_->usersDN())){
+			logs_->add(logFile::LOG, "\t- Base des utilisateurs : %s", ldapServer_->usersDN());
 		}
-		logs_->add(logFile::LOG, "\t- Compte : %s", strlen(ldapServer_.user())? ldapServer_ .user():"anonyme");
+		logs_->add(logFile::LOG, "\t- Compte : %s", strlen(ldapServer_->user())? ldapServer_ ->user():"anonyme");
 
 		// Connexion à LDAP
 		if (!_initLDAP()){
 			return RET_TYPE::RET_LDAP_ERROR;
 		}
-	}
-
-	firstTime_ = false;
-
-	commandFile* cmdFile(NULL);
-	if (NULL == (cmdFile = configurationFile_->cmdFile())){
-		// ???
-		logs_->add(logFile::ERR, "Pas de fichier de commande");
-		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
 
 	//logs_->add(logFile::LOG, ">>> Lecture du fichier de paramètres : '%s'", cmdFile->fileName());
@@ -337,7 +363,7 @@ RET_TYPE ldapBrowser::browse()
 
 	// Arborescence et/ou managers
 	if (cols_.npos != colManager){
-		if (NULL == (agents_ = new agentTree(&encoder_, logs_, &ldapServer_, ldapServer_.usersDN()))){
+		if (NULL == (agents_ = new agentTree(&encoder_, logs_, ldapServer_, ldapServer_->usersDN()))){
 			logs_->add(logFile::ERR, "Pas d'onglet 'arborescence' - Impossible d'allouer de la mémoire");
 		}
 		else{
@@ -351,10 +377,16 @@ RET_TYPE ldapBrowser::browse()
 	return _createFile();
 }
 
-// Liberation de la mémoire
+// Libération de la mémoire
 //
-void ldapBrowser::_dispose()
+void ldapBrowser::_dispose(bool freeLDAP)
 {
+	// (de)connexion LDAP
+	if (freeLDAP && ldapServer_) {
+		logs_->add(logFile::DBG, "Fermeture de la connexion LDAP '%s'", ldapServer_->name());
+		ldapServer_->disConnect();
+	}
+	
 	// Arborescence
 	if (agents_){
 		delete agents_;
@@ -385,7 +417,7 @@ bool ldapBrowser::_initLDAP()
 {
 	// Initialisation de la connexion LDAP
 	//
-	if (NULL == ldapServer_.open()){
+	if (NULL == ldapServer_->open()){
 		logs_->add(logFile::ERR, "Impossible de trouver le serveur");
 		return false;
 	}
@@ -393,22 +425,22 @@ bool ldapBrowser::_initLDAP()
 	// Connexion au serveur
 	//
 	ULONG retCode;
-	if (LDAP_SUCCESS != (retCode = ldapServer_.connect())){
-		logs_->add(logFile::ERR, "Impossible de se connecter au serveur LDAP. Erreur : '%s'", ldapServer_.err2string(retCode).c_str());
+	if (LDAP_SUCCESS != (retCode = ldapServer_->connect())){
+		logs_->add(logFile::ERR, "Impossible de se connecter au serveur LDAP. Erreur : '%s'", ldapServer_->err2string(retCode).c_str());
 		return false;
 	}
 
 	// Vérification de la version
 	//
 	ULONG version(LDAP_VERSION3);
-	if (LDAP_SUCCESS != ldapServer_.setOption(LDAP_OPT_PROTOCOL_VERSION, (void*)&version)){
+	if (LDAP_SUCCESS != ldapServer_->setOption(LDAP_OPT_PROTOCOL_VERSION, (void*)&version)){
 		logs_->add(logFile::ERR, "Le serveur n'est pas compatible LDAP V%d", LDAP_VERSION3);
 		return false;
 	}
 
 	// Bind "anonyme" ou nommé
 	//
-	if (LDAP_SUCCESS != ldapServer_.simpleBindS()){
+	if (LDAP_SUCCESS != ldapServer_->simpleBindS()){
 		logs_->add(logFile::ERR, "Impossible de se ""lier"" au serveur");
 		return false;
 	}
@@ -417,7 +449,7 @@ bool ldapBrowser::_initLDAP()
 
 	// Nbre d'enregistrements
 	ULONG sizeLimit(0);
-	if (LDAP_SUCCESS == ldapServer_.getOption(LDAP_OPT_SIZELIMIT, (void*)&sizeLimit) && 0 != sizeLimit){
+	if (LDAP_SUCCESS == ldapServer_->getOption(LDAP_OPT_SIZELIMIT, (void*)&sizeLimit) && 0 != sizeLimit){
 		logs_->add(logFile::LOG, "Le serveur limite le nombre d'enregistrements à %d", sizeLimit);
 	}
 	else{
@@ -697,7 +729,7 @@ RET_TYPE ldapBrowser::_createFile()
 		sortKey[1] = NULL;
 
 		// Création du "contrôle" car le tri sera effectué par le serveur
-		if (LDAP_SUCCESS != ldapServer_.createSortControl(sortKey, 0, &sortControl)){
+		if (LDAP_SUCCESS != ldapServer_->createSortControl(sortKey, 0, &sortControl)){
 			logs_->add(logFile::ERR, "Impossible de créer le contrôle pour le tri");
 			search.setSorted(false);	// !!!
 		}
@@ -709,13 +741,13 @@ RET_TYPE ldapBrowser::_createFile()
 
 	// Pagination
 	/*
-	if (LDAP_SUCCESS == ldapServer_.createPageControl(100, NULL, 0, &pageControl)){
+	if (LDAP_SUCCESS == ldapServer_->createPageControl(100, NULL, 0, &pageControl)){
 		int index = (srvControls[0] == NULL ? 0 : 1);
 		//srvControls[index] = pageControl;
 		//ldap_init_search_page
 	}
 	*/
-	ldapServer_.createPageControl(100, NULL, 0, &pageControl);
+	ldapServer_->createPageControl(100, NULL, 0, &pageControl);
 
 	// Gestion de la (ou des) requête(s)
 	//
@@ -766,7 +798,7 @@ RET_TYPE ldapBrowser::_createFile()
 		file_->setSheetName(tabName);
 
 		// Juste une requête avec l'onglet renommé à la demande
-		agentsCount = _simpleLDAPRequest(pAttributes, search, baseContainer.size() ? baseContainer.c_str() : ldapServer_.usersDN(), true, /*search.sorted ? srvControls : NULL*/srvControls, sortControl);
+		agentsCount = _simpleLDAPRequest(pAttributes, search, baseContainer.size() ? baseContainer.c_str() : ldapServer_->usersDN(), true, /*search.sorted ? srvControls : NULL*/srvControls, sortControl);
 		logs_->add(logFile::DBG, "Ajout de l'onglet '%s' avec %d agent(s)", tabName.c_str(), agentsCount);
 	}
 
@@ -873,11 +905,11 @@ RET_TYPE ldapBrowser::_createFile()
 	free(pAttributes);
 	if (sortControl){
 
-		ldapServer_.controlFree(sortControl);
+		ldapServer_->controlFree(sortControl);
 	}
 
 	if (pageControl){
-		ldapServer_.controlFree(pageControl);
+		ldapServer_->controlFree(pageControl);
 	}
 
 	// Plus besoin du fichier temporaire
@@ -1062,25 +1094,25 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		//
 		//
 
-		string nodeDN = searchDN ? searchDN : ldapServer_.baseDN();
+		string nodeDN = searchDN ? searchDN : ldapServer_->baseDN();
 #ifdef _JHB_OWN_LDAP_SCOPE_BASE_
 		/// Seules les recherches en mode LDAP_SCOPE_SUBTREE fonctionnent ...
-		retCode = ldapServer_.searchExtS((PSTR)(nodeDN.c_str()), LDAP_SCOPE_SUBTREE, (PSTR)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
+		retCode = ldapServer_->searchExtS((PSTR)(nodeDN.c_str()), LDAP_SCOPE_SUBTREE, (PSTR)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
 #else
 		// ... et lorsque le scope LDAP_SCOPE_BASE fonctionne
-		retCode = ldapServer_.searchExtS((char*)(searchDN ? searchDN : ldapServer_.baseDN()), treeSearch ? LDAP_SCOPE_SUBTREE : LDAP_SCOPE_BASE, (char*)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
+		retCode = ldapServer_->searchExtS((char*)(searchDN ? searchDN : ldapServer_->baseDN()), treeSearch ? LDAP_SCOPE_SUBTREE : LDAP_SCOPE_BASE, (char*)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
 #endif // _JHB_OWN_LDAP_SCOPE_BASE_
-		agentsFound = ldapServer_.countEntries(searchResult);
+		agentsFound = ldapServer_->countEntries(searchResult);
 
 		// Des résultats ?
 		//
 		if (LDAP_SUCCESS != retCode){
 			// Erreur lors de la recherche
 			if (searchResult){
-				ldapServer_.msgFree(searchResult);
+				ldapServer_->msgFree(searchResult);
 			}
 
-			logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de l'execution de la requête", retCode, ldapServer_.err2string(retCode).c_str());
+			logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de l'execution de la requête", retCode, ldapServer_->err2string(retCode).c_str());
 #ifdef CUT_LDAP_REQUEST
 			todo = false;
 #endif // CUT_LDAP_REQUEST
@@ -1093,22 +1125,22 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 				LDAPControl** returnedControls(NULL);
 
 				// Parse du résultât
-				ULONG retCode(ldapServer_.parseResult(searchResult, &errorCode, NULL, NULL, NULL, &returnedControls, 0));
+				ULONG retCode(ldapServer_->parseResult(searchResult, &errorCode, NULL, NULL, NULL, &returnedControls, 0));
 				if ((LDAP_SUCCESS != retCode) || (LDAP_SUCCESS != errorCode)){
 					ULONG code = (LDAP_SUCCESS != retCode) ? retCode : errorCode;
-					logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors du parse de la réponse", code, ldapServer_.err2string(code).c_str());
+					logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors du parse de la réponse", code, ldapServer_->err2string(code).c_str());
 				}
 				else{
 					// Parse du contrôle de tri
 					if (returnedControls != NULL){
 						char* attrInError(NULL);
-						retCode = ldapServer_.parseSortControl(*returnedControls, &errorCode, &attrInError);
+						retCode = ldapServer_->parseSortControl(*returnedControls, &errorCode, &attrInError);
 
 						if ((LDAP_SUCCESS != retCode) || (LDAP_SUCCESS != errorCode)){
 							logs_->add(logFile::ERR, "Erreur LDAP %d lors du tri de la réponse. L'attribut '%s' a causé l'erreur", (LDAP_SUCCESS != retCode) ? retCode : errorCode, attrInError);
 						}
 
-						ldapServer_.controlsFree(returnedControls);
+						ldapServer_->controlsFree(returnedControls);
 					}
 				}
 			}
@@ -1141,12 +1173,12 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 				otherDNs.clear();
 
 				// Première valeur ?
-				pEntry = (!index ? ldapServer_.firstEntry(searchResult) : ldapServer_.nextEntry(pEntry));
+				pEntry = (!index ? ldapServer_->firstEntry(searchResult) : ldapServer_->nextEntry(pEntry));
 
 				// Récupération du DN de l'agent
-				if (NULL != (pDN = ldapServer_.getDn(pEntry))){
+				if (NULL != (pDN = ldapServer_->getDn(pEntry))){
 					dn = pDN;
-					ldapServer_.memFree(pDN);
+					ldapServer_->memFree(pDN);
 				}
 
 				// Récupération des informations portées par la structure
@@ -1160,7 +1192,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 					}
 					else {
 						// Juste le "dossier" courant => on s'assure que l'agent est à la racine
-						userContainer = ldapServer_.getContainer(dn);
+						userContainer = ldapServer_->getContainer(dn);
 						validUser = (userContainer == nodeDN);
 					}
 
@@ -1238,18 +1270,18 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 						// Parcours par attribut
 						//
-						pAttribute = ldapServer_.firstAttribute(pEntry, &pBer);
+						pAttribute = ldapServer_->firstAttribute(pEntry, &pBer);
 						while (pAttribute) {
 							// Index de la colonne - LDAP ne retourne pas tous les attributs et surtout pas dans l'ordre demandé...
 							realColIndex = cols_.getColumnByAttribute(pAttribute, NULL);
 							pci = cols_.at(realColIndex);
 
 							// Valeur de l'attribut
-							pValue = ldapServer_.getValues(pEntry, pAttribute);
+							pValue = ldapServer_->getValues(pEntry, pAttribute);
 
 							// Valeur non vide (NULL ou ide,ntifiée comme vide dans le fichier de conf
 							if (pValue && !IS_EMPTY(*pValue) &&
-								!ldapServer_.isEmptyVal(*pValue)) {
+								!ldapServer_->isEmptyVal(*pValue)) {
 #ifdef UTF8_ENCODE_INPUTS
 								u8Value = encoder_.toUTF8(*pValue);
 #else
@@ -1313,7 +1345,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 															else {
 																if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_OTHER_DN)) {
 																	// Plusieurs valeurs ?
-																	for (ULONG vIndex = 0; vIndex < ldapServer_.countValues(pValue); vIndex++) {
+																	for (ULONG vIndex = 0; vIndex < ldapServer_->countValues(pValue); vIndex++) {
 																		otherDNs.push_back(pValue[vIndex]);
 																	}
 																}
@@ -1366,13 +1398,13 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 									} // VALUE_TYPE::MULTIVALUE
 								} // if visible
 
-								ldapServer_.valueFree(pValue);
+								ldapServer_->valueFree(pValue);
 							} // pValue ?
 
 							file_->setAttributeNames(NULL);
 
 							// Prochain attribut
-							pAttribute = ldapServer_.nextAttribute(pEntry, pBer);
+							pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
 						} // While attributess
 
 						// Faut-il ajouter les groupes ?
@@ -1504,7 +1536,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 bool ldapBrowser::_getServices()
 {
 	// Connecté ?
-	if (!ldapServer_.connected()){
+	if (!ldapServer_->connected()){
 		return false;
 	}
 
@@ -1528,16 +1560,16 @@ bool ldapBrowser::_getServices()
 	// Execution de la requete
 	//
 	LDAPMessage* searchResult(NULL);
-	ULONG retCode(ldapServer_.searchS((char*)ldapServer_.baseDN(), LDAP_SCOPE_SUBTREE, (char*)(const char*)expression, (char**)(const char**)myAttributes, 0, &searchResult));
+	ULONG retCode(ldapServer_->searchS((char*)ldapServer_->baseDN(), LDAP_SCOPE_SUBTREE, (char*)(const char*)expression, (char**)(const char**)myAttributes, 0, &searchResult));
 
 	// Je n'ai plus besoin de la liste ...
 	if (LDAP_SUCCESS != retCode){
 		// Erreur lors de la recherche
 		if (searchResult){
-			ldapServer_.msgFree(searchResult);
+			ldapServer_->msgFree(searchResult);
 		}
 
-		logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des services", retCode, ldapServer_.err2string(retCode).c_str());
+		logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des services", retCode, ldapServer_->err2string(retCode).c_str());
 		return false;
 	}
 
@@ -1548,7 +1580,7 @@ bool ldapBrowser::_getServices()
 	PCHAR pDN(NULL);
 	std::string u8Value;
 
-	ULONG svcCount(ldapServer_.countEntries(searchResult));
+	ULONG svcCount(ldapServer_->countEntries(searchResult));
 	if (logs_){
 		logs_->add(logFile::DBG, "%d service(s) dans l'annuaire", svcCount);
 	}
@@ -1560,11 +1592,11 @@ bool ldapBrowser::_getServices()
 	//
 	for (ULONG index(0); index < svcCount; index++){
 		// Première valeur ?
-		pEntry = (!index ? ldapServer_.firstEntry(searchResult) : ldapServer_.nextEntry(pEntry));
-		pAttribute = ldapServer_.firstAttribute(pEntry, &pBer);
+		pEntry = (!index ? ldapServer_->firstEntry(searchResult) : ldapServer_->nextEntry(pEntry));
+		pAttribute = ldapServer_->firstAttribute(pEntry, &pBer);
 
 		// Récupération du DN
-		if (NULL != (pDN = ldapServer_.getDn(pEntry))){
+		if (NULL != (pDN = ldapServer_->getDn(pEntry))){
 			description = "";
 			bkColor = "";
 			shortName = "";
@@ -1575,7 +1607,7 @@ bool ldapBrowser::_getServices()
 			//
 			while (pAttribute){
 				// Valeur de l'attribut
-				if (NULL != (pValue = ldapServer_.getValues(pEntry, pAttribute))){
+				if (NULL != (pValue = ldapServer_->getValues(pEntry, pAttribute))){
 #ifdef _DEBUG
 					std::string temp(*pValue);
 #endif // _DEBUG
@@ -1584,7 +1616,7 @@ bool ldapBrowser::_getServices()
 #else
 					u8Value = (*pValue);
 #endif // UTF8_ENCODE_INPUTS
-					ldapServer_.valueFree(pValue);
+					ldapServer_->valueFree(pValue);
 
 					if (!encoder_.stricmp(pAttribute, STR_ATTR_DESCRIPTION)){
 						description = u8Value;
@@ -1612,7 +1644,7 @@ bool ldapBrowser::_getServices()
 				}
 
 				// Prochain attribut
-				pAttribute = ldapServer_.nextAttribute(pEntry, pBer);
+				pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
 			} // While
 
 			// Création du "service"
@@ -1620,7 +1652,7 @@ bool ldapBrowser::_getServices()
 				services_->add(pDN, description, shortName, fileName, bkColor, site);
 			}
 
-			ldapServer_.memFree(pDN);			// Je n'ai plus besoin du pointeur ...
+			ldapServer_->memFree(pDN);			// Je n'ai plus besoin du pointeur ...
 		}
 	} // for index
 
@@ -1631,7 +1663,7 @@ bool ldapBrowser::_getServices()
 		ber_free(pBer, 0);
 	}
 
-	ldapServer_.msgFree(searchResult);
+	ldapServer_->msgFree(searchResult);
 
 	return true;
 }
@@ -1643,7 +1675,7 @@ bool ldapBrowser::_getServices()
 bool ldapBrowser::_getTitles()
 {
 	// Connecté ?
-	if (!ldapServer_.connected()) {
+	if (!ldapServer_->connected()) {
 		return false;
 	}
 
@@ -1695,28 +1727,28 @@ bool ldapBrowser::_getTitles()
 		
 		// Exécution de la requete
 		//
-		retCode = ldapServer_.searchS((char*)ldapServer_.baseDN(), LDAP_SCOPE_SUBTREE, (PSTR)currentFilter.c_str(), (char**)(const char**)myAttributes, 0, &searchResult);
+		retCode = ldapServer_->searchS((char*)ldapServer_->baseDN(), LDAP_SCOPE_SUBTREE, (PSTR)currentFilter.c_str(), (char**)(const char**)myAttributes, 0, &searchResult);
 
 		// Je n'ai plus besoin de la liste ...
 		if (LDAP_SUCCESS != retCode) {
 			// Erreur lors de la recherche
 			if (searchResult) {
-				ldapServer_.msgFree(searchResult);
+				ldapServer_->msgFree(searchResult);
 			}
 
-			logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des libéllés de postes", retCode, ldapServer_.err2string(retCode).c_str());
+			logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des libéllés de postes", retCode, ldapServer_->err2string(retCode).c_str());
 			return false;
 		}
 
-		titleCount = ldapServer_.countEntries(searchResult);
+		titleCount = ldapServer_->countEntries(searchResult);
 
 		//
 		// Transfert des données dans la liste
 		//
 		for (ULONG index(0); index < titleCount; index++) {
 			// Première valeur ?
-			pEntry = (!index ? ldapServer_.firstEntry(searchResult) : ldapServer_.nextEntry(pEntry));
-			pAttribute = ldapServer_.firstAttribute(pEntry, &pBer);
+			pEntry = (!index ? ldapServer_->firstEntry(searchResult) : ldapServer_->nextEntry(pEntry));
+			pAttribute = ldapServer_->firstAttribute(pEntry, &pBer);
 
 			id = "";
 			label = "";
@@ -1727,13 +1759,13 @@ bool ldapBrowser::_getTitles()
 			//
 			while (pAttribute) {
 				// Valeur de l'attribut
-				if (NULL != (pValue = ldapServer_.getValues(pEntry, pAttribute))) {
+				if (NULL != (pValue = ldapServer_->getValues(pEntry, pAttribute))) {
 #ifdef UTF8_ENCODE_INPUTS
 					u8Value = encoder_.toUTF8(*pValue);
 #else
 					u8Value = (*pValue);
 #endif // UTF8_ENCODE_INPUTS
-					ldapServer_.valueFree(pValue);
+					ldapServer_->valueFree(pValue);
 
 					if (!encoder_.stricmp(pAttribute, STR_ATTR_DESCRIPTION)) {
 						description = u8Value;
@@ -1756,7 +1788,7 @@ bool ldapBrowser::_getTitles()
 				}
 
 				// Prochain attribut
-				pAttribute = ldapServer_.nextAttribute(pEntry, pBer);
+				pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
 			} // While
 
 			// Création du "titre"
@@ -1780,7 +1812,7 @@ bool ldapBrowser::_getTitles()
 			ber_free(pBer, 0);
 		}
 
-		//ldapServer_.msgFree(searchResult);
+		//ldapServer_->msgFree(searchResult);
 	}
 
 	return true;
@@ -1792,7 +1824,7 @@ bool ldapBrowser::_getTitles()
 bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 {
 	// Vérification des paramètres
-	if (!ldapServer_.connected() ||
+	if (!ldapServer_->connected() ||
 		!userDN.size() || SIZE_MAX == colID){
 		return false;
 	}
@@ -1825,16 +1857,16 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 	// Execution de la requete
 	//
 	LDAPMessage* searchResult(NULL);
-	ULONG retCode(ldapServer_.searchS((char*)ldapServer_.baseDN(), LDAP_SCOPE_SUBTREE, (char*)(const char*)expression, (char**)(const char**)myAttributes, 0, &searchResult));
+	ULONG retCode(ldapServer_->searchS((char*)ldapServer_->baseDN(), LDAP_SCOPE_SUBTREE, (char*)(const char*)expression, (char**)(const char**)myAttributes, 0, &searchResult));
 
 	// Je n'ai plus besoin de la liste ...
 	if (LDAP_SUCCESS != retCode){
 		// Erreur lors de la recherche
 		if (searchResult){
-			ldapServer_.msgFree(searchResult);
+			ldapServer_->msgFree(searchResult);
 		}
 
-		logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des groupes pour '%s'", retCode, ldapServer_.err2string(retCode).c_str(), userDN.c_str());
+		logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des groupes pour '%s'", retCode, ldapServer_->err2string(retCode).c_str(), userDN.c_str());
 		return false;
 	}
 
@@ -1844,7 +1876,7 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 	PCHAR* pValue(NULL);
 	std::string u8Value;
 
-	ULONG grpCount(ldapServer_.countEntries(searchResult));
+	ULONG grpCount(ldapServer_->countEntries(searchResult));
 	deque<string> values;
 	size_t primaryGroup(SIZE_MAX);
 
@@ -1852,16 +1884,16 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 	//
 	for (ULONG index(0); index < grpCount; index++){
 		// Première valeur ?
-		pEntry = (!index ? ldapServer_.firstEntry(searchResult) : ldapServer_.nextEntry(pEntry));
-		pAttribute = ldapServer_.firstAttribute(pEntry, &pBer);
+		pEntry = (!index ? ldapServer_->firstEntry(searchResult) : ldapServer_->nextEntry(pEntry));
+		pAttribute = ldapServer_->firstAttribute(pEntry, &pBer);
 
 		// Parcours par colonnes
 		//
 		while (pAttribute){
 			if (!charUtils::stricmp(pAttribute, STR_ATTR_CN)){
 				// Valeur de l'attribut
-				if (NULL != (pValue = ldapServer_.getValues(pEntry, pAttribute))){
-					ldapServer_.valueFree(pValue);
+				if (NULL != (pValue = ldapServer_->getValues(pEntry, pAttribute))){
+					ldapServer_->valueFree(pValue);
 #ifdef UTF8_ENCODE_INPUTS
 					values.push_back(encoder_.toUTF8(pValue[0]));
 #else
@@ -1872,16 +1904,16 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 			else{
 				if (!encoder_.stricmp(pAttribute, STR_ATTR_GROUP_ID_NUMBER)){
 					// Valeur de l'attribut
-					if (NULL != (pValue = ldapServer_.getValues(pEntry, pAttribute)) &&
+					if (NULL != (pValue = ldapServer_->getValues(pEntry, pAttribute)) &&
 						0 == strcmp(*pValue, gID)){
-						ldapServer_.valueFree(pValue);
+						ldapServer_->valueFree(pValue);
 						primaryGroup = index;	// Mon groupe primaire
 					}
 				}
 			}
 
 			// Prochain attribut
-			pAttribute = ldapServer_.nextAttribute(pEntry, pBer);
+			pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
 		} // While
 	} // for index
 
@@ -1929,7 +1961,7 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 		ber_free(pBer, 0);
 	}
 
-	ldapServer_.msgFree(searchResult);
+	ldapServer_->msgFree(searchResult);
 
 	// Ok
 	return true;

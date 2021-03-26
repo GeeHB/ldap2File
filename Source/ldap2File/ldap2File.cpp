@@ -36,7 +36,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	13/03/2021 - JHB - Version 21.3.2
+//--	26/03/2021 - JHB - Version 21.3.4
 //--
 //---------------------------------------------------------------------------
 
@@ -514,8 +514,8 @@ int main(int argc, const char* argv[]) {
 		}
 
 		//logs.add(logFile::LOG, "Binaire : %s", argv[0]);
-		logs.add(logFile::LOG, "Binaire : %s", fullAppName);
-		logs.add(logFile::LOG, "Fichier de configuration : '%s'", file.c_str());
+		logs.add(logFile::LOG, "Binaire : %s", fullAppName.c_str());
+		logs.add(logFile::LOG, "Fichier de configuration : %s", file.c_str());
 		logs.add(logFile::LOG, "Dossiers de l'application : ");
 		logs.add(logFile::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
 		logs.add(logFile::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());

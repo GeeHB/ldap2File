@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	13/03/2021 - JHB - Version 21.3.2
+//--	26/03/2021 - JHB - Version 21.3.4
 //--
 //---------------------------------------------------------------------------
 
@@ -63,10 +63,11 @@ public:
 	bool logInfos(LOGINFOS& dst);
 
 	// Serveur(s) LDAP
-	bool nextLDAPServer(LDAPServer& dst);
+	bool nextLDAPServer(LDAPServer** dst);
 
-	// Environnement (ie. nom du serveur LDAP) par défaut
-	string environment();
+	// Environnement par défaut
+	string environment()
+	{ return environment_; }
 
 	// Serveur pour les images
 	bool imagesServer(IMGSERVER& dst);
@@ -119,6 +120,7 @@ protected:
 
 	commandFile*		commandFile_;	// Fichier de commandes
 	string				managersCol_;	// Nom de la colonne qui contiendra le DN des managers
+	string				environment_;	// Nom de l'environnement (peut être vide)
 
 												
 	// Gestion de la structure de l'arborescence
@@ -134,7 +136,7 @@ protected:
 	XMLParser::XMLNode	xmlColumn_;
 
 	// Serveurs LDAP
-	XMLParser::XMLNode	LDAPServer_;
+	XMLParser::XMLNode	LDAPEnv_LDAPEnv_LDAPEnv_;
 };
 
 #endif /* __LDAP_2_CONFIGURATION_FILE_h__ */

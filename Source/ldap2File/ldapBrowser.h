@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	13/03/2021 - JHB - Version 21.3.2
+//--	26/03/2021 - JHB - Version 21.3.4
 //--
 //---------------------------------------------------------------------------
 
@@ -32,6 +32,8 @@
 #include "confFile.h"
 #include "agentTree.h"
 #include "outputFile.h"
+
+#include "LDAPSources.h"
 #include "servicesList.h"
 #include "treeStructure.h"
 #include "destinationList.h"
@@ -60,7 +62,7 @@ public:
 protected:
 	
 	// Liberation de la mémoire
-	void _dispose();
+	void _dispose(bool freeLDAP = true);
 
 	// Intialisation de LDAP
 	bool _initLDAP();
@@ -109,15 +111,14 @@ protected:
 	//
 protected:
 	
-	bool					firstTime_;
-	
 	// Paramètres généraux pour la génération
 	confFile*				configurationFile_;
 
 	charUtils				encoder_;
 	
-	// Connexion LDAP
-	LDAPServer				ldapServer_;
+	// Connexions LDAP
+	LDAPSources				ldapSources_;
+	LDAPServer*				ldapServer_;
 		
 	// Logs
 	logFile*				logs_;

@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	13/03/2021 - JHB - Version 21.3.2
+//--	26/03/2021 - JHB - Version 21.3.4
 //--
 //---------------------------------------------------------------------------
 
@@ -125,6 +125,7 @@
 
 // Environnement
 #define XML_CONF_ENV_NODE			XML_ENVIRONMENT
+#define ENV_NAME_ATTR				XML_NAME
 #define ENV_NAME_ATTR				XML_NAME
 
 // Nom de la colonne de l'encadrant
