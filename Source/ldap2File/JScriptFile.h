@@ -24,7 +24,7 @@
 //--					+ Ajout de toutes les colonnes (si pas reconnue, utilisation du nom du schéma)
 //--					+ Valeur par défaut des attributs
 //--
-//--	26/03/2021 - JHB - Version 21.3.4
+//--	29/03/2021 - JHB - Version 21.3.5
 //--
 //---------------------------------------------------------------------------
 

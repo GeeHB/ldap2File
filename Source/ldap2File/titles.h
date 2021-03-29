@@ -20,7 +20,7 @@
 //--
 //--	09/07/2020 - JHB - Création
 //--
-//--	26/03/2021 - JHB - Version 21.3.4
+//--	29/03/2021 - JHB - Version 21.3.5
 //--
 //---------------------------------------------------------------------------
 
@@ -103,7 +103,11 @@ namespace jhbLDAPTools {
 		//
 		titles(logFile* logs)
 		{ logs_ = logs; }
-		virtual ~titles();
+		virtual ~titles()
+		{ clear(); }
+
+		// Vidage
+		void clear();
 
 		// Nombre d'elements
 		size_t size()

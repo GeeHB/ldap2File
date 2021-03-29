@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	26/03/2021 - JHB - Version 21.3.4
+//--	29/03/2021 - JHB - Version 21.3.5
 //--
 //---------------------------------------------------------------------------
 
@@ -136,7 +136,7 @@ protected:
 	XMLParser::XMLNode	xmlColumn_;
 
 	// Serveurs LDAP
-	XMLParser::XMLNode	LDAPEnv_LDAPEnv_LDAPEnv_;
+	XMLParser::XMLNode	LDAPEnv_;
 };
 
 #endif /* __LDAP_2_CONFIGURATION_FILE_h__ */

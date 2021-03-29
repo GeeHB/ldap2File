@@ -20,7 +20,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	26/03/2021 - JHB - Version 21.3.4
+//--	29/03/2021 - JHB - Version 21.3.5
 //--
 //---------------------------------------------------------------------------
 
@@ -119,7 +119,11 @@ public:
 	// Construction et destruction
 	//
 	servicesList(logFile* logs, treeStructure* structure);
-	virtual ~servicesList();
+	virtual ~servicesList()
+	{ clear(); }
+
+	// Vidage de la liste
+	void clear();
 
 	// Nombre d'elements
 	size_t size()

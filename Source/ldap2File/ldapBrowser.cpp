@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	26/03/2021 - JHB - Version 21.3.4
+//--	29/03/2021 - JHB - Version 21.3.5
 //--
 //---------------------------------------------------------------------------
 
@@ -221,7 +221,7 @@ ldapBrowser::~ldapBrowser()
 
 	// Libérations
 	//
-	_dispose();
+	_dispose(true);
 }
 
 // Interrogation du serveur LDAP
@@ -277,7 +277,7 @@ RET_TYPE ldapBrowser::browse()
 			logs_->add(logFile::LOG, "\t- Pas d'environnement particulier");
 		}
 		else {
-			logs_->add(logFile::LOG, "\t- Environnement : \'%s\'", env.c_str());
+			logs_->add(logFile::LOG, "\t- Environnement : %s", env.c_str());
 		}
 
 		logs_->add(logFile::LOG, "\t- Host : %s - Port : %d", ldapServer_->host(), ldapServer_->port());
@@ -385,6 +385,13 @@ void ldapBrowser::_dispose(bool freeLDAP)
 	if (freeLDAP && ldapServer_) {
 		logs_->add(logFile::DBG, "Fermeture de la connexion LDAP '%s'", ldapServer_->name());
 		ldapServer_->disConnect();
+
+		// Suppression du contenu des listes
+		services_->clear();
+
+#ifdef __LDAP_USE_ALLIER_TITLES_h__
+		titles_->clear();
+#endif // #ifdef __LDAP_USE_ALLIER_TITLES_h__
 	}
 	
 	// Arborescence

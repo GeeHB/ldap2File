@@ -20,7 +20,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	26/03/2021 - JHB - Version 21.3.4
+//--	29/03/2021 - JHB - Version 21.3.5
 //--
 //---------------------------------------------------------------------------
 
@@ -188,8 +188,6 @@ bool confFile::nextLDAPServer(LDAPServer** pDest)
 	pugi::xml_node subNode = LDAPEnv_.node()->child(XML_CONF_LDAP_BASE_NODE);
 	if (!IS_EMPTY(subNode.name())) {
 		dst->setBaseDN(subNode.first_child().value());
-	}
-	}
 	}
 
 	// Base des comptes utilisateurs

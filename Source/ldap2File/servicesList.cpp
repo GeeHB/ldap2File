@@ -20,7 +20,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	26/03/2021 - JHB - Version 21.3.4
+//--	29/03/2021 - JHB - Version 21.3.5
 //--
 //---------------------------------------------------------------------------
 
@@ -106,11 +106,11 @@ servicesList::servicesList(logFile* logs, treeStructure* structure)
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 }
 
-// Destruction
+// Vidage
 //
-servicesList::~servicesList()
+void servicesList::clear()
 {
-	// Libération des services
+	// Suppression des services
 	for (deque<LPLDAPSERVICE>::iterator it = services_.begin(); it != services_.end(); it++){
 		if ((*it)){
 			delete (*it);

@@ -20,7 +20,7 @@
 //--
 //--	09/07/2020 - JHB - Création
 //--
-//--	26/03/2021 - JHB - Version 21.3.4
+//--	29/03/2021 - JHB - Version 21.3.5
 //--
 //---------------------------------------------------------------------------
 
@@ -42,11 +42,11 @@ namespace jhbLDAPTools {
 	// Classe titles
 	//
 
-	// Destruction
+	// Vidage de la liste
 	//
-	titles::~titles()
+	void titles::clear()
 	{
-		// Libération des services
+		// Suppression de tous les éléments de la liste
 		for (deque<LPAGENTTITLE>::iterator it = titles_.begin(); it != titles_.end(); it++) {
 			if ((*it)) {
 				delete (*it);
