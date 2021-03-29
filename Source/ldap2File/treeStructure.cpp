@@ -24,7 +24,7 @@
 //--
 //--	14/02/2065 - JHB - Création
 //--
-//--	29/03/2021 - JHB - Version 21.3.5
+//--	29/03/2021 - JHB - Version 21.3.6
 //--
 //---------------------------------------------------------------------------
 
@@ -53,9 +53,12 @@ void treeStructure::clear()
 	{
 		if (NULL != (element = (*it)))
 		{
-			element->clear();
+			//element->clear();
+			delete element;
 		}
 	}
+
+	elements_.clear();
 }
 
 // Ajout d'un élément

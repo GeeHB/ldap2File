@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	29/03/2021 - JHB - Version 21.3.5
+//--	29/03/2021 - JHB - Version 21.3.6
 //--
 //---------------------------------------------------------------------------
 
@@ -200,9 +200,13 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 //
 ldapBrowser::~ldapBrowser()
 {
+	// Libérations
+	//
+	_dispose(true);
+
 	// Je n'ai plus besoin de mes listes
 	//
-	if (services_){
+	if (services_) {
 		delete services_;
 		services_ = NULL;
 	}
@@ -214,14 +218,10 @@ ldapBrowser::~ldapBrowser()
 	}
 #endif // __LDAP_USE_ALLIER_TITLES_h__
 
-	if (struct_){
+	if (struct_) {
 		delete struct_;
 		struct_ = NULL;
 	}
-
-	// Libérations
-	//
-	_dispose(true);
 }
 
 // Interrogation du serveur LDAP
@@ -387,11 +387,19 @@ void ldapBrowser::_dispose(bool freeLDAP)
 		ldapServer_->disConnect();
 
 		// Suppression du contenu des listes
-		services_->clear();
+		if (services_) {
+			services_->clear();
+		}
 
 #ifdef __LDAP_USE_ALLIER_TITLES_h__
-		titles_->clear();
+		if (titles_) {
+			titles_->clear();
+		}
 #endif // #ifdef __LDAP_USE_ALLIER_TITLES_h__
+
+		if (struct_) {
+			struct_->clear();
+		}
 	}
 	
 	// Arborescence

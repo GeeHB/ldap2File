@@ -4,6 +4,10 @@ ToDO :
 21.3.5
 	* le 29 mars 2021
 	+ Corrections mineures
+		- bugs de regression
+		+ libération des listes de cache
+		- logs
+		+ dans le fichier ldapTools.conf !
 	+ Ajout de la classe LDAPSources qui permet de définir un serveur source par fichier de paramètres
 		+ Mise en cache de toutes les connexions définies dans le fichier ldapTools.conf
 		+ Lecture de {param}<Fichier><Environnement ..> pour définir le nom de l'env. LDAP
