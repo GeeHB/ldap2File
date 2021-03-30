@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	29/03/2021 - JHB - Version 21.3.6
+//--	30/03/2021 - JHB - Version 21.3.7
 //--
 //---------------------------------------------------------------------------
 
@@ -234,13 +234,15 @@ RET_TYPE ldapBrowser::browse()
 		logs_->add(logFile::ERR, "Pas de fichier de commande");
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
+
+	logs_->add(logFile::LOG, "Ouverture du fichier de configuration '%s'", cmdFile->fileName());
 	
 	// Connexion LDAP
 	//
 	string envName(cmdFile->environment());
 	bool findOne(false);
 	if (!envName.size()) {
-		logs_->add(logFile::LOG, "Pas de nom d'environnement dans le fichier de configuration");
+		logs_->add(logFile::LOG, "Pas de nom d'environnement");
 
 		// Utilisation de l'env. par défaut
 		envName = configurationFile_->environment();
@@ -258,7 +260,6 @@ RET_TYPE ldapBrowser::browse()
 	}
 
 	logs_->add(logFile::LOG, "Utilisation de l'environnement '%s'", newServer->name());
-
 		
 	// Libération des paramètres précédents
 	bool ldapChanged(newServer != ldapServer_);
@@ -269,31 +270,31 @@ RET_TYPE ldapBrowser::browse()
 	ldapServer_ = newServer;
 	string env(ldapServer_->name());
 
-	if (ldapChanged && logs_){
-		// Paramètres de la connexion
-		//
-		logs_->add(logFile::LOG, "Serveur LDAP :");
-		if (0 == env.length()) {
-			logs_->add(logFile::LOG, "\t- Pas d'environnement particulier");
-		}
-		else {
-			logs_->add(logFile::LOG, "\t- Environnement : %s", env.c_str());
-		}
+	if (ldapChanged && logs_) {
+		if (logs_) {
+			// Paramètres de la connexion
+			//
+			logs_->add(logFile::LOG, "Serveur LDAP :");
+			if (0 == env.length()) {
+				logs_->add(logFile::LOG, "\t- Pas d'environnement particulier");
+			}
+			else {
+				logs_->add(logFile::LOG, "\t- Environnement : %s", env.c_str());
+			}
 
-		logs_->add(logFile::LOG, "\t- Host : %s - Port : %d", ldapServer_->host(), ldapServer_->port());
-		logs_->add(logFile::LOG, "\t- DN : %s", ldapServer_->baseDN());
-		if (charUtils::stricmp(ldapServer_->baseDN(),ldapServer_->usersDN())){
-			logs_->add(logFile::LOG, "\t- Base des utilisateurs : %s", ldapServer_->usersDN());
+			logs_->add(logFile::LOG, "\t- Host : %s - Port : %d", ldapServer_->host(), ldapServer_->port());
+			logs_->add(logFile::LOG, "\t- DN : %s", ldapServer_->baseDN());
+			if (charUtils::stricmp(ldapServer_->baseDN(), ldapServer_->usersDN())) {
+				logs_->add(logFile::LOG, "\t- Base des utilisateurs : %s", ldapServer_->usersDN());
+			}
+			logs_->add(logFile::LOG, "\t- Compte : %s", strlen(ldapServer_->user()) ? ldapServer_->user() : "anonyme");
 		}
-		logs_->add(logFile::LOG, "\t- Compte : %s", strlen(ldapServer_->user())? ldapServer_ ->user():"anonyme");
 
 		// Connexion à LDAP
 		if (!_initLDAP()){
 			return RET_TYPE::RET_LDAP_ERROR;
 		}
 	}
-
-	//logs_->add(logFile::LOG, ">>> Lecture du fichier de paramètres : '%s'", cmdFile->fileName());
 
 	// Lecture des colonnes
 	//
@@ -441,7 +442,8 @@ bool ldapBrowser::_initLDAP()
 	//
 	ULONG retCode;
 	if (LDAP_SUCCESS != (retCode = ldapServer_->connect())){
-		logs_->add(logFile::ERR, "Impossible de se connecter au serveur LDAP. Erreur : '%s'", ldapServer_->err2string(retCode).c_str());
+		logs_->add(logFile::ERR, "Impossible de se connecter au serveur LDAP. Erreur %d / '%s'", retCode, ldapServer_->err2string(retCode).c_str());
+		ldapServer_->disConnect();
 		return false;
 	}
 

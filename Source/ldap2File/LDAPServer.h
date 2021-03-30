@@ -20,7 +20,7 @@
 //--
 //--	19/06/2016 - JHB - Création
 //--
-//--	29/03/2021 - JHB - Version 21.3.6
+//--	30/03/2021 - JHB - Version 21.3.7
 //--
 //---------------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ public:
 		emptyVals_.clear();		// vide
 	}
 
-	// initialisation de la connexion
+	// Initialisation de la connexion
 	LDAP* open() {
 		if (host_.size()) {
 			connection_ = ldap_init((char*)host_.c_str(), port_);
@@ -142,7 +142,8 @@ public:
 		char* buf = ldap_err2string(retCode);
 		if (buf) {
 			string message(buf);
-			ldap_memfree(buf);
+			// cf. doc. do not free this string (???)
+			//ldap_memfree(buf);
 			return message;
 		}
 
