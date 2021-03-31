@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	30/03/2021 - JHB - Version 21.3.7
+//--	31/03/2021 - JHB - Version 21.3.8
 //--
 //---------------------------------------------------------------------------
 
@@ -261,8 +261,16 @@ RET_TYPE ldapBrowser::browse()
 
 	logs_->add(logFile::LOG, "Utilisation de l'environnement '%s'", newServer->name());
 		
+	// Nouvelle connexion ou besoin de reinitialiser ?
+	/*
+	bool ldapChanged(true);
+	if (newServer == ldapServer_) {
+		// Même pointeur, mais suis-je connecté ?
+		ldapChanged = (false == newServer->connected());
+	}*/
+	bool ldapChanged((newServer != ldapServer_) || (false == newServer->connected()));
+	
 	// Libération des paramètres précédents
-	bool ldapChanged(newServer != ldapServer_);
 	_dispose(ldapChanged);
 	
 	// Paramètres LDAP

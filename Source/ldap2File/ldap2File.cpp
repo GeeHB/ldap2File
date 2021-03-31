@@ -36,7 +36,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	30/03/2021 - JHB - Version 21.3.7
+//--	31/03/2021 - JHB - Version 21.3.8
 //--
 //---------------------------------------------------------------------------
 
@@ -262,7 +262,10 @@ bool _updateConfigurationFile(const char* appName)
 	//
 	if (!IS_EMPTY(childNode.name())) {
 		string val = childNode.first_child().value();
+		
+#ifdef _DEBUG
 		cout << "Dossier des logs : " << val << endl;
+#endif // _DEBUG
 
 		if (!sFileSystem::exists(val)) {
 #ifdef _DEBUG
