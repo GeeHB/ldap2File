@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	31/03/2021 - JHB - Version 21.3.8
+//--	01/04/2021 - JHB - Version 21.4.9
 //--
 //---------------------------------------------------------------------------
 
@@ -478,7 +478,7 @@ bool ldapBrowser::_initLDAP()
 		logs_->add(logFile::LOG, "Le serveur limite le nombre d'enregistrements à %d", sizeLimit);
 	}
 	else{
-		logs_->add(logFile::ERR, "Impossible de lire le nombre maximal d'enregistrement ... 500 ?");
+		logs_->add(logFile::LOG, "Impossible de lire le nombre maximal d'enregistrement ... (500 ?)");
 	}
 
 	// Récupération des services
@@ -2338,11 +2338,11 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 					}
 				}
 				else {
-					logs_->add(logFile::ERR, "Action postgen' %s' - %s", action->name(), errorMessage.c_str());
+					logs_->add(logFile::ERR, "Action postgen pour '%s' - %s", action->name(), errorMessage.c_str());
 				}
 			}
 			else {
-				logs_->add(logFile::ERR, "Action postgen %s' - Format invalide pour la commande", action->name());
+				logs_->add(logFile::ERR, "Action postgen pour '%s' - Format invalide pour la commande", action->name());
 			}
 		} // action!= NULL
 	} // for
@@ -2392,8 +2392,14 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 		CloseHandle(pi.hThread);
 	}
 	else {
+		DWORD lastError(GetLastError());
 		errorMessage = "Erreur n° ";
-		errorMessage += charUtils::itoa(GetLastError());
+		errorMessage += charUtils::itoa(lastError);
+
+		char errStr[256];
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, lastError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), errStr, 255, NULL);
+		errorMessage += " - : ";
+		errorMessage += errStr;
 	}
 #endif // _WIN32
 

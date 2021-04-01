@@ -1,14 +1,14 @@
 ToDO :
 	- msg "Les informations sur le fichier à générer sont invalides" => donner la raison (pas de destination, ...)
 
-21.3.8
-	* le 31 mars 2021
+21.4.9
+	* le 1er avril 2021
 	+ Corrections mineures
 		- bugs de regression
 		+ libération des listes de cache
 		+ logs
 			+ Plus précis
-			- bug lors de l'appel de err2str
+			- bug lors de l'appel de ldap::err2str
 		+ Erreurs dans le fichier ldapTools.conf !
 	+ Ajout de la classe LDAPSources qui permet de définir un serveur source par fichier de paramètres
 		+ Mise en cache de toutes les connexions définies dans le fichier ldapTools.conf
