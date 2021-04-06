@@ -68,7 +68,7 @@ bool CSVFile::create()
 {
 	// Préparation de la matrice en mémoire
 	values_ = columns_->size();
-	if (NULL == (line_ = new string[values_])){
+	if (NULL == (line_ = new VALUE[values_])){
 		throw LDAPException("CSVFile - Impossible d'allouer de la mémoire pour la modélisation d'une ligne");
 	}
 	
@@ -161,7 +161,7 @@ bool CSVFile::addAt(size_t colIndex, string& value)
 	}
 
 	// Copie de la valeur dans la matrice mémoire
-	line_[colIndex] = value;
+	line_[colIndex].value_ = value;
 
 	return true;
 }
@@ -196,7 +196,7 @@ void CSVFile::_emptyLine()
 {
 	if (line_){
 		for (size_t index = 0; index < values_; index++){
-			line_[index] = "";
+			line_[index].value_ = "";
 		}
 	}
 }
@@ -218,6 +218,16 @@ void CSVFile::_addHeader()
 		if (col->visible()){
 			add(col->name_);
 			visibleIndex++;
+		}
+
+		line_[colIndex].visible_ = col->visible();
+	}
+
+	if (logs_) {
+		logs_->add(logFile::DBG, "%d colonnes afficheés sur %d", visibleIndex, columns_->size());
+	
+		if (false == fileInfos_->showHeader_) {
+			logs_->add(logFile::LOG, "Pas d'entete dans le fichier");
 		}
 	}
 
@@ -253,78 +263,64 @@ void CSVFile::_formatTelephoneNumber(string& value)
 
 // Nouvelle ligne
 //
-/*
 bool CSVFile::saveLine(bool header, LPAGENTINFOS agent)
 {
-	// Ajout de la ligne courante à la liste des lignes "ecrites"
-	if (currentLine_.size() && !clearLine_) {
-		lines_.push_back(currentLine_);
-	}
-
-	outputFile::_saveLine(header);
-
-	// On repart a "0"
-	currentLine_ = "";
-	return true;
-}
-*/
-
-// Nouvelle ligne
-//
-bool CSVFile::saveLine(bool header, LPAGENTINFOS agent)
-{
-	// Création d'une ligne au format texte en utilisant
-	// le séparateur
-	string currentLine("");
-	for (size_t index = 0; index < values_; index++) {
-		if (line_[index].size()) {
-			currentLine += line_[index];
-		}
-
-		// Ajout du séparateur
-		currentLine += sepCols_;
-	}
-
-	// Retrait du dernier sep.
-	currentLine.resize(currentLine.size() - 1);
-
-	// Ajout de la ligne courante a la liste des lignes "ecrites"
-	if (currentLine.size() && !clearLine_) {
-#ifdef _DEBUG
-		if (0 != strstr(currentLine.c_str(), STR_VACANT_POST)) {
-			int i(5);
-			i++;
-		}
-#endif // _DEBUG
-
-		bool add(true);
-
-		// Un poste vacant
-		if (0 != strstr(currentLine.c_str(), STR_VACANT_POST)) {
-			add = showVacant_;
-		}
-
-		if (add) {
-			// Doit-on encoder en UTF8 ?
-			if (utf8_) {
-#ifdef _DEBUG
-				size_t pos;
-				if (currentLine.npos != (pos = currentLine.find("m.mouli"))) {
-					int i(5);
-					char test = currentLine[pos + 21];
-					unsigned __int8 bidon = test;
-					i++;
+	if (false == header || (header && fileInfos_->showHeader_)) {
+		// Création d'une ligne au format texte en utilisant
+		// le séparateur
+		string currentLine("");
+		for (size_t index = 0; index < values_; index++) {
+			if (line_[index].visible_) {
+				if (line_[index].value_.size()) {
+					currentLine += line_[index].value_;
 				}
+
+				// Ajout du séparateur
+				currentLine += sepCols_;
+			}
+		}
+
+		// Retrait du dernier sep.
+		currentLine.resize(currentLine.size() - 1);
+
+		// Ajout de la ligne courante à la liste des lignes "ecrites"
+		if (currentLine.size() && !clearLine_) {
+#ifdef _DEBUG
+			if (0 != strstr(currentLine.c_str(), STR_VACANT_POST)) {
+				int i(5);
+				i++;
+			}
 #endif // _DEBUG
-				encoder_.toUTF8(currentLine, false);
+
+			bool add(true);
+
+			// Un poste vacant
+			if (0 != strstr(currentLine.c_str(), STR_VACANT_POST)) {
+				add = showVacant_;
 			}
 
-			lines_.push_back(currentLine);
-		}
-	}
+			if (add) {
+				// Doit-on encoder en UTF8 ?
+				if (utf8_) {
+#ifdef _DEBUG
+					size_t pos;
+					if (currentLine.npos != (pos = currentLine.find("m.mouli"))) {
+						int i(5);
+						char test = currentLine[pos + 21];
+						unsigned __int8 bidon = test;
+						i++;
+					}
+#endif // _DEBUG
+					encoder_.toUTF8(currentLine, false);
+				}
 
-	// Méthode héritée
-	outputFile::_saveLine(header);
+				lines_.push_back(currentLine);
+			}
+		}
+
+		// Méthode héritée
+		outputFile::_saveLine(header);
+	}
 
 	// On repart a "0"
 	_emptyLine();

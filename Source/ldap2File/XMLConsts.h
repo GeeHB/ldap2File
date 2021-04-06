@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	01/04/2021 - JHB - Version 21.4.9
+//--	06/04/2021 - JHB - Version 21.4.10
 //--
 //---------------------------------------------------------------------------
 
@@ -273,6 +273,9 @@
 #define XML_FORMAT_NAME_NODE			XML_NAME
 //#define XML_USE_LDAP_NAME				"%ldapName%"
 #define XML_DEF_OUTPUT_FILENAME			"output.xml"
+
+// Affichage de l'entete ?
+#define XML_FORMAT_SHOW_HEADER_NODE		"EnteteVisible"
 
 // Longueur du nom d'un onglet
 #define XML_TAB_NAME_SIZE_NODE			"TailleOnglet"

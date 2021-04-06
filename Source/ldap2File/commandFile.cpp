@@ -20,7 +20,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	01/04/2021 - JHB - Version 21.4.9
+//--	06/04/2021 - JHB - Version 21.4.10
 //--
 //---------------------------------------------------------------------------
 
@@ -312,6 +312,13 @@ bool commandFile::_fileInfos(aliases& aliases, OPFI& fileInfos)
 	fileInfos.templateFile_ = node.attribute(XML_FORMAT_TEMPLATE_ATTR).value();
 	encoder_.fromUTF8(fileInfos.templateFile_);
 
+	// Affichage de la ligne d'entête ?
+	snode = node.child(XML_FORMAT_SHOW_HEADER_NODE);
+	string val(IS_EMPTY(snode.name())? "" : snode.first_child().value());
+	if (val == XML_NO) {
+		fileInfos.showHeader_ = false;
+	}
+	
 	// Longeur max. du nom d'un onglet
 	snode = node.child(XML_TAB_NAME_SIZE_NODE);
 	if (!IS_EMPTY(snode.name())) {

@@ -18,7 +18,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	01/04/2021 - JHB - Version 21.4.9
+//--	06/04/2021 - JHB - Version 21.4.10
 //--
 //---------------------------------------------------------------------------
 
@@ -103,6 +103,20 @@ private:
 	
 	void _addHeader();
 	void _emptyLine();
+
+protected:
+
+	// Une valeur
+	typedef struct _tagVALUE
+	{
+		_tagVALUE() {
+			value_  = "";
+			visible_ = true;
+		}
+
+		string	value_;
+		bool	visible_;
+	}VALUE;
 	
 	// Données membres privées
 	//
@@ -114,7 +128,7 @@ protected:
 
 	size_t		colIndex_;		// Index de la valeur courante
 	
-	string*		line_;			// Tableau des valeurs
+	VALUE*		line_;			// Tableau des valeurs
 	size_t		values_;		// Nombre de colonnes (ie. de valeurs)
 
 	string		sepCols_;		// Séparateurs

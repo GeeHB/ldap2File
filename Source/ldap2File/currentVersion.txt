@@ -1,6 +1,15 @@
 ToDO :
 	- msg "Les informations sur le fichier à générer sont invalides" => donner la raison (pas de destination, ...)
 
+21.4.10
+	* le 6 avril 2021
+	+ Corrections
+		+ CSVFile : les colonnes vides ne sont plus crées !!!
+		+ bugs mineurs
+	+ L'entête est paramétrable : <Fichier><Format><EnteteVisible>oui/non</EnteteVisible> - Par défaut "oui"
+		+ CSV, TXT : Ok
+		+ LDIF, vCard, ODS, js : sans objet 
+
 21.4.9
 	* le 1er avril 2021
 	+ Corrections mineures

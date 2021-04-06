@@ -19,7 +19,7 @@
 //--
 //--	18/01/2016 - JHB - Création - Version 1.2
 //--
-//--	01/04/2021 - JHB - Version 21.4.9
+//--	06/04/2021 - JHB - Version 21.4.10
 //--
 //---------------------------------------------------------------------------
 
@@ -191,12 +191,14 @@ bool textFile::close()
 //
 bool textFile::_saveLine(bool header, LPAGENTINFOS agent)
 {
-	// Ajout de la ligne courante a la liste des lignes "ecrites"
-	if (currentLine_.size() && !clearLine_) {
-		lines_.push_back(currentLine_);
-	}
+	if (false == header || (header && fileInfos_->showHeader_)) {
+		// Ajout de la ligne courante a la liste des lignes "ecrites"
+		if (currentLine_.size() && !clearLine_) {
+			lines_.push_back(currentLine_);
+		}
 
-	outputFile::_saveLine(header);
+		outputFile::_saveLine(header);
+	}
 
 	// On repart a "0"
 	currentLine_ = "";

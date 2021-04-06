@@ -19,7 +19,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	01/04/2021 - JHB - Version 21.4.9
+//--	06/04/2021 - JHB - Version 21.4.10
 //--
 //---------------------------------------------------------------------------
 
@@ -945,6 +945,7 @@ typedef struct tagOUTPUTFILEINFOS
 		format_= FILE_TYPE::FILE_UNKNOWN_TYPE;
 		sheetNameLen_ = -1;
 		formatName_ = name_ = templateFile_ = managersCol_ = "";
+		showHeader_ = true;
 	}
 
 	// Ajout d'une destination
@@ -960,6 +961,7 @@ typedef struct tagOUTPUTFILEINFOS
 	string					formatName_;
 	string					name_;
 	string					templateFile_;
+	bool					showHeader_;
 	int 					sheetNameLen_;		// Longueur max. en caractères du nom d'un onglet (-1 = pas de limite)
 	fileActions				actions_;
 	string					managersCol_;		// Nom de la colonne pour les managers (peut surcharger la donnée du fichier de conf)
