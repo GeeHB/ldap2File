@@ -19,7 +19,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	06/04/2021 - JHB - Version 21.4.10
+//--	07/04/2021 - JHB - Version 21.4.11
 //--
 //---------------------------------------------------------------------------
 
@@ -944,7 +944,7 @@ typedef struct tagOUTPUTFILEINFOS
 	void init(){
 		format_= FILE_TYPE::FILE_UNKNOWN_TYPE;
 		sheetNameLen_ = -1;
-		formatName_ = name_ = templateFile_ = managersCol_ = "";
+		/*extension_ = */formatName_ = name_ = templateFile_ = managersCol_ = "";
 		showHeader_ = true;
 	}
 
@@ -958,6 +958,7 @@ typedef struct tagOUTPUTFILEINFOS
 	}
 
 	FILE_TYPE				format_;
+	//string					extension_;
 	string					formatName_;
 	string					name_;
 	string					templateFile_;

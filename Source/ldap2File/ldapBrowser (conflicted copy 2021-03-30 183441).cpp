@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/04/2021 - JHB - Version 21.4.11
+//--	30/03/2021 - JHB - Version 21.3.7
 //--
 //---------------------------------------------------------------------------
 
@@ -261,14 +261,12 @@ RET_TYPE ldapBrowser::browse()
 
 	logs_->add(logFile::LOG, "Utilisation de l'environnement '%s'", newServer->name());
 		
-	// Nouvelle connexion ou besoin de reinitialiser ?
-	/*
+	// Nouvelle connexion ?
 	bool ldapChanged(true);
 	if (newServer == ldapServer_) {
 		// Même pointeur, mais suis-je connecté ?
 		ldapChanged = (false == newServer->connected());
-	}*/
-	bool ldapChanged((newServer != ldapServer_) || (false == newServer->connected()));
+	}
 	
 	// Libération des paramètres précédents
 	_dispose(ldapChanged);
@@ -478,7 +476,7 @@ bool ldapBrowser::_initLDAP()
 		logs_->add(logFile::LOG, "Le serveur limite le nombre d'enregistrements à %d", sizeLimit);
 	}
 	else{
-		logs_->add(logFile::LOG, "Impossible de lire le nombre maximal d'enregistrement ... (500 ?)");
+		logs_->add(logFile::ERR, "Impossible de lire le nombre maximal d'enregistrement ... 500 ?");
 	}
 
 	// Récupération des services
@@ -883,11 +881,7 @@ RET_TYPE ldapBrowser::_createFile()
 				switch (dest->type()){
 				// Une copie de fichier
 				case DEST_TYPE::DEST_FS_WINDOWS:{
-					
-					//  fullName = sFileSystem::merge(dest->folder(), opfi.name_);
-					string name = sFileSystem::split(file_->fileName());
-					fullName = sFileSystem::merge(dest->folder(), name);
-					
+					fullName = sFileSystem::merge(dest->folder(), opfi.name_);
 					if (!sFileSystem::copy_file(file_->fileName(), fullName.c_str())){
 						atLeastOneError = true;
 						logs_->add(logFile::ERR, "Impossible de créer le fichier '%s'", fullName.c_str());
@@ -2342,11 +2336,11 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 					}
 				}
 				else {
-					logs_->add(logFile::ERR, "Action postgen pour '%s' - %s", action->name(), errorMessage.c_str());
+					logs_->add(logFile::ERR, "Action postgen' %s' - %s", action->name(), errorMessage.c_str());
 				}
 			}
 			else {
-				logs_->add(logFile::ERR, "Action postgen pour '%s' - Format invalide pour la commande", action->name());
+				logs_->add(logFile::ERR, "Action postgen %s' - Format invalide pour la commande", action->name());
 			}
 		} // action!= NULL
 	} // for
@@ -2396,14 +2390,8 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 		CloseHandle(pi.hThread);
 	}
 	else {
-		DWORD lastError(GetLastError());
 		errorMessage = "Erreur n° ";
-		errorMessage += charUtils::itoa(lastError);
-
-		char errStr[256];
-		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, lastError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), errStr, 255, NULL);
-		errorMessage += " - : ";
-		errorMessage += errStr;
+		errorMessage += charUtils::itoa(GetLastError());
 	}
 #endif // _WIN32
 
