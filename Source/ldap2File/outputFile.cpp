@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/04/2021 - JHB - Version 21.4.11
+//--	25/04/2021 - JHB - Version 21.4.12
 //--
 //---------------------------------------------------------------------------
 
@@ -202,7 +202,7 @@ void outputFile::shift(int offset, treeCursor& ascendants)
 
 // Tokenisation d'une chaine
 //
-string outputFile::tokenize(const char* source, const char* fullName, const char* shortName, const char* def)
+string outputFile::tokenize(commandFile* cmdFile, const char* source, const char* fullName, const char* shortName, const char* def)
 {
 	if (IS_EMPTY(source)) {
 		throw LDAPException("[outputFile::tokenize] Paramètres invalides");
@@ -227,6 +227,16 @@ string outputFile::tokenize(const char* source, const char* fullName, const char
 	// Nom complet
 	if (!IS_EMPTY(fullName)) {
 		st.addToken(TOKEN_CONTAINER_FULLNAME, fullName);
+	}
+
+	// Nom du fichier XML source
+	if (cmdFile) {
+		string sSource(sFileSystem::split(cmdFile->fileName()));
+		size_t pos(sSource.rfind("."));
+		if (sSource.npos != pos) {
+			sSource = sSource.substr(0, pos);
+		}
+		st.addToken(TOKEN_SRC_SHORT_FILENAME, sSource.c_str());
 	}
 
 	// éléments de date

@@ -19,7 +19,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/04/2021 - JHB - Version 21.4.11
+//--	25/04/2021 - JHB - Version 21.4.12
 //--
 //---------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_FULL_NAME			"ldap2File.exe"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"21.4.11"
+#define APP_RELEASE				"21.4.12"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -201,6 +201,7 @@ using namespace jhbLDAPTools;
 #define TOKEN_DEST_SHORTNAME		"%DEST-NAME%"
 #define TOKEN_DEST_FOLDER			"%DEST-FOLDER%"
 #define TOKEN_SRC_FILENAME			"%SRC-NAME%"
+#define TOKEN_SRC_SHORT_FILENAME	"%SRC-SHORT-NAME%"		// Sans nom ni extension
 #define TOKEN_USER_NAME				"%USER-NAME%"
 #define TOKEN_USER_PWD				"%USER-PASSWORD%"
 #define TOKEN_SERVER_NAME			"%SERVER-NAME%"

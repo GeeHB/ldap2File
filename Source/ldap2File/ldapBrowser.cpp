@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/04/2021 - JHB - Version 21.4.11
+//--	25/04/2021 - JHB - Version 21.4.12
 //--
 //---------------------------------------------------------------------------
 
@@ -626,10 +626,10 @@ RET_TYPE ldapBrowser::_createFile()
 
 	// Nom court du fichier de sortie
 	if (pService) {
-			opfi.name_ = outputFile::tokenize(opfi.name_.c_str(), pService->realName(), pService->shortName());
+			opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pService->realName(), pService->shortName());
 	}
 	else {
-		opfi.name_ = outputFile::tokenize(opfi.name_.c_str(), NULL, NULL);
+		opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), NULL, NULL);
 	}
 
 	// Création du générateur de fichier de sortie
@@ -819,7 +819,7 @@ RET_TYPE ldapBrowser::_createFile()
 		}
 	}
 	else{
-		string tabName(file_->tokenize(search.tabName().c_str(), pService ? pService->realName() : "",  pService ? pService->shortName() : "", DEF_TAB_SHORTNAME));
+		string tabName(file_->tokenize(cmdFile, search.tabName().c_str(), pService ? pService->realName() : "",  pService ? pService->shortName() : "", DEF_TAB_SHORTNAME));
 		file_->setSheetName(tabName);
 
 		// Juste une requête avec l'onglet renommé à la demande

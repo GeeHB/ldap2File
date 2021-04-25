@@ -1,9 +1,10 @@
 ToDO :
 	- msg "Les informations sur le fichier à générer sont invalides" => donner la raison (pas de destination, ...)
 
-21.4.11
-	* le 7 avril 2021 / MAJ de la ressource
+21.4.12
+	* le 25 avril 2021 / MAJ de la ressource
 	+ Corrections
+		+ Tokenisation du nom du fichier généré : utilisation du nom "source" (%SRC-SHORT-NAME%)
 		+ CSVFile : les colonnes vides ne sont plus crées !!!
 		+ bugs mineurs
 		+ Pas d'extension par défaut si omise dans le fichier de commandes

@@ -20,7 +20,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/04/2021 - JHB - Version 21.4.11
+//--	25/04/2021 - JHB - Version 21.4.12
 //--
 //---------------------------------------------------------------------------
 
@@ -35,6 +35,8 @@
 
 #include <sstream>
 #include <iostream>
+
+using namespace sFileSystem;
 
 //----------------------------------------------------------------------
 //--
@@ -232,7 +234,7 @@ public:
 	}
 
 	// Tokenisation d'une chaine
-	static string tokenize(const char* source, const char* fullName, const char* shortName, const char* def = NULL);
+	static string tokenize(commandFile* cmdFile, const char* source, const char* fullName, const char* shortName, const char* def = NULL);
 
 	// Création des entetes et des onglets
 	virtual void setSheetName(string& sheetName)
