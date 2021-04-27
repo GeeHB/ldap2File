@@ -1,0 +1,14 @@
+.vscode/
+__pycache__/
+release/
+debug/
+Release/
+Debug/
+Bin/
+Obj/
+Anciennes*/
+*.obj
+*.tlog
+*.pdb
+*.ipch
+.vs/
