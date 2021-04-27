@@ -21,7 +21,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	25/04/2021 - JHB - Version 21.4.12
+//--	27/04/2021 - JHB - Version 21.4.13
 //--
 //---------------------------------------------------------------------------
 
@@ -334,7 +334,7 @@ RET_TYPE ldapBrowser::browse()
 	}
 
 	// Liste des colonnes demandées
-	logs_->add(logFile::LOG, "%d colonnes demandées", cols_.size());
+	logs_->add(logFile::LOG, "%d colonne(s) demandée(s)", cols_.size());
 
 	// Dans tous les cas, il faut l'ID de l'agent, son prénom, son nom, le statut du compte et la DGA
 	//
@@ -2370,8 +2370,15 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 #ifdef _WIN32
 	STARTUPINFO startupInfo = { sizeof(startupInfo) };	//startupInfo.cb = sizeof(startupInfo);
 	PROCESS_INFORMATION pi;
-
-	valid = (TRUE == CreateProcessA((LPCSTR)app.c_str(), (LPSTR)parameters.c_str(), NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &pi));
+	
+	// Devrait fonctionner ...
+	//valid = (TRUE == CreateProcessA((LPCSTR)app.c_str(), (LPSTR)parameters.c_str(), NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &pi));
+	
+	// On concatène le nom de l'application et ses paramètres
+	string fullCmd(app);
+	fullCmd += " ";
+	fullCmd += parameters;
+	valid = (TRUE == CreateProcessA(NULL, (LPSTR)fullCmd.c_str(), NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &pi));
 
 	if (true == valid) {
 		// On attend sa mort (du moins 5 s)...
