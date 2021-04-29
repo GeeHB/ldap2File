@@ -36,7 +36,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	27/04/2021 - JHB - Version 21.4.13
+//--	29/04/2021 - JHB - Version 21.4.14
 //--
 //---------------------------------------------------------------------------
 
@@ -57,10 +57,26 @@
 
 // Lecture du contenu d'un dossier
 //
-void _getFolderContent(const string& source, list<string>& content)
+void _getFolderContent(const string& source, list<string>& content, logFile* logs)
 {
 	if (!source.size()){
 		return;
+	}
+
+	// Le dossier doit existe
+	if (!sFileSystem::exists(source)) {
+		cout << "Le dossier '" << source.c_str() << "' n'existe pas" << endl;
+
+		if (logs) {
+			logs->add(logFile::ERR, "Le dossier '%s' n'existe pas", source.c_str());
+		}
+
+		return;
+	}
+
+	cout << "Parcours du dossier '" << source.c_str() << "'" << endl;
+	if (logs) {
+		logs->add(logFile::LOG, "Parcours du dossier '%s'", source.c_str());
 	}
 
 	// La liste est vide
@@ -105,6 +121,11 @@ void _getFolderContent(const string& source, list<string>& content)
 		closedir(d);
 	}
 #endif // _WIN32
+
+	cout << content.size() << " fichier(s) à analyser" << endl;
+	if (logs) {
+		logs->add(logFile::LOG, "%d fichier(s) à analyser", content.size());
+	}
 }
 
 // Heure locale
@@ -589,13 +610,13 @@ int main(int argc, const char* argv[]) {
 
 		// Analyse d'un dossier
 		if (remoteFolder.size()) {
-			_getFolderContent(remoteFolder, files);
+			_getFolderContent(remoteFolder, files, &logs);
 		}
 		else {
 			// Si un seul fichier, c'est peut être un dossier ...
 			if (1 == files.size() && sFileSystem::is_directory(*files.begin())) {
 					remoteFolder = (*files.begin());
-					_getFolderContent(remoteFolder, files);
+					_getFolderContent(remoteFolder, files, &logs);
 			}
 		}
 
@@ -671,7 +692,7 @@ int main(int argc, const char* argv[]) {
 
 				// Analyse du dossier ?
 				if (remoteFolder.size()) {
-					_getFolderContent(remoteFolder, files);
+					_getFolderContent(remoteFolder, files, &logs);
 					done = (0 == files.size());
 				}
 			}

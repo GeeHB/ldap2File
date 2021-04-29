@@ -1,7 +1,7 @@
 ToDO :
 	- msg "Les informations sur le fichier à générer sont invalides" => donner la raison (pas de destination, ...)
 
-21.4.13
+21.4.14
 	* le 27 avril 2021 / MAJ de la ressource
 	+ Alias :
 		+ Validation de Windows::LibreOffice
@@ -12,6 +12,7 @@ ToDO :
 		+ CSVFile : les colonnes vides ne sont plus crées !!!
 		+ bugs mineurs
 		+ Pas d'extension par défaut si omise dans le fichier de commandes
+		+ appel -d{folder} : le dossier doit exister !
 	+ L'entête est paramétrable : <Fichier><Format><EnteteVisible>oui/non</EnteteVisible> - Par défaut "oui"
 		+ CSV, TXT : Ok
 		+ LDIF, vCard, ODS, js : sans objet 
