@@ -6,9 +6,11 @@
 //--
 //--	03/06/2020 - JHB - Version 20.6.13
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
 //--		Définition de l'objet columList
 //--		pour la modelisation de l'entete des tableaux
@@ -20,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -116,8 +118,8 @@ public:
 		{ return (orgChartMode_?false:(dataType_ & BASE_TYPE_VALID)); }
 		void setValid(bool bValid = true)
 		{
-			if (orgChartMode_) { 
-				if (dataType_ & BASE_TYPE_VALID) 
+			if (orgChartMode_) {
+				if (dataType_ & BASE_TYPE_VALID)
 					dataType_ -= BASE_TYPE_VALID;
 			}
 			else

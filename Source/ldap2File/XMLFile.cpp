@@ -6,10 +6,12 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
-//--	
+//--	DESCRIPTION:
+//--
 //--			Implémentation de la classe XMLFile
 //--			Génération d'un fichier au format XML
 //--
@@ -22,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -68,7 +70,7 @@ void XMLFile::XMLCELL::_init(const char* value, bool firstTime)
 //--
 //----------------------------------------------------------------------
 
-	
+
 // Construction
 //
 XMLFile::XMLFile(const LPOPFI fileInfos, columnList* columns, confFile* parameters, bool indentXML)
@@ -179,7 +181,7 @@ bool XMLFile::removeAt(size_t colIndex)
 	if (line_[colIndex]._next){
 		line_[colIndex]._next->_init();
 	}
-	
+
 	// Fait
 	return true;
 }
@@ -205,7 +207,7 @@ bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 		// Encodage
 		validValue = (*value);
 		encoder_.toUTF8(validValue, false);
-		
+
 		// Création de la nouvelle cellule
 		if (NULL != (next = new XMLCELL(validValue))){
 			// chainage

@@ -1,26 +1,28 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: titles.h
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
-//--	
+//--
 //--	PROJET	: ldap2File
-//--	
+//--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	DESCRIPTIONS:
-//--	
+//--
 //--			Définition de la classe titles
 //--			Liste des titres/intitulés de postes
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	MODIFICATIONS:
 //--	-------------
 //--
 //--	09/07/2020 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -143,6 +145,6 @@ namespace jhbLDAPTools {
 
 #endif // __LDAP_2_FILE_TITLES_LIST_h__
 
-#endif __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES_h__
 
 // EOF

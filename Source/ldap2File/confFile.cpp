@@ -6,12 +6,16 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
 //--
 //--		Implémentation de la classe confFile pour la lecture des parametres
 //--		dans le fichier de configuration (au format XML)
+//--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -20,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -104,7 +108,7 @@ bool confFile::logInfos(LOGINFOS& dst)
 
 		// Recherche de la "bonne valeur" pour le dossier
 		pugi::xml_node subNode = findChildNode(node, XML_CONF_LOGS_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str());
-		
+
 		// Trouvé ?
 		if (!IS_EMPTY(subNode.name())){
 			dst.folder_ = subNode.first_child().value();
@@ -142,7 +146,7 @@ bool confFile::logInfos(LOGINFOS& dst)
 //
 bool confFile::nextLDAPServer(LDAPServer** pDest)
 {
-	if (NULL == pDest||					// Le pointeur doit être valide	
+	if (NULL == pDest||					// Le pointeur doit être valide
 		IS_EMPTY(paramsRoot_.name())) {	// A t'on vérifié qu'il était bien formé ?
 		return false;
 	}
@@ -162,7 +166,7 @@ bool confFile::nextLDAPServer(LDAPServer** pDest)
 		// Non => on arrête l'énumération
 		return false;
 	}
-	
+
 	// Allocation de l'objet
 	LDAPServer* dst = new LDAPServer();
 	if (NULL == dst) {
@@ -170,7 +174,7 @@ bool confFile::nextLDAPServer(LDAPServer** pDest)
 	}
 
 	dst->init(LDAPServer::LDAP_ACCESS_MODE::LDAP_READ);
-	
+
 	// Environnement
 	dst->setEnvironment(LDAPEnv_.node()->attribute(XML_ENVIRONMENT).value());
 
@@ -210,10 +214,10 @@ bool confFile::nextLDAPServer(LDAPServer** pDest)
 		dst->addEmptyVal(subNode.attribute(XML_CONF_LDAP_EMPTY_VAL_ATTR).value());
 		subNode = subNode.next_sibling(XML_CONF_LDAP_EMPTY_VAL_NODE);
 	}
-	
+
 	// Serveur LDAP suivant
 	LDAPEnv_ = LDAPEnv_.node()->next_sibling(XML_CONF_LDAP_NODE);
-	
+
 	// OK
 	(*pDest) = dst;		// Retour du pointeur
 	return true;
@@ -702,7 +706,7 @@ void confFile::_load()
 
 	// Recherche de la "bonne valeur" pour le dossier
 	childNode = findChildNode(paramsRoot_, XML_CONF_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str());
-	
+
 	// Trouvée ?
 	if (!IS_EMPTY(childNode.name())) {
 		//appFolder_ = childNode.first_child().value();

@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -20,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -49,18 +51,18 @@ class ldapBrowser
 {
 	// Methodes publiques
 public:
-	
+
 	// Construction et destruction
 	//
 	ldapBrowser(logFile* logs = NULL, confFile* configurationFile = NULL);
 	virtual ~ldapBrowser();
-	
-	
+
+
 	RET_TYPE browse();
-	
+
 	// Methodes privees
 protected:
-	
+
 	// Liberation de la mémoire
 	void _dispose(bool freeLDAP = true);
 
@@ -97,7 +99,7 @@ protected:
 
 	// Envoi du fichier en PJ d'un mail
 	const bool _SMTPTransfer(mailDestination* mailDest);
-	
+
 	// Transfert par FTP
 	const bool _FTPTransfer(FTPDestination* ftpDest);
 
@@ -106,20 +108,20 @@ protected:
 
 	// Execution d'une application
 	bool _exec(const string& application, const string& parameters, string& errorMessage);
-	
+
 	// Données membres privees
 	//
 protected:
-	
+
 	// Paramètres généraux pour la génération
 	confFile*				configurationFile_;
 
 	charUtils				encoder_;
-	
+
 	// Connexions LDAP
 	LDAPSources				ldapSources_;
 	LDAPServer*				ldapServer_;
-		
+
 	// Logs
 	logFile*				logs_;
 
@@ -134,7 +136,7 @@ protected:
 	treeStructure*			struct_;			// Struture de l'annuaire LDAP
 
 	aliases					aliases_;			// Liste des alias
-	
+
 	destinationList			servers_;			// Serveurs destination
 	fileDestination*		cmdLineFile_;		// Fichier destination en ligne de commande
 

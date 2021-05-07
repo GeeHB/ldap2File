@@ -6,9 +6,11 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
 //--		Constantes de l'application pour les fichiers XML
 //--
@@ -19,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -27,9 +29,9 @@
 #define _LDAP_2_FILE_XML_CONSTS_h__
 
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	Constantes communes
-//--	
+//--
 //---------------------------------------------------------------------------
 
 #define TYPE_NONE					"aucun"		// Pas de type defini
@@ -93,9 +95,9 @@
 #define XML_LINK_IMAGE				"image"
 
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	Fichier de paramètres
-//--	
+//--
 //---------------------------------------------------------------------------
 
 #define XML_CONF_FILE				"ldapTools.conf"
@@ -182,7 +184,7 @@
 #define DEFAULT_PHOTO					"nophoto.jpg"
 
 //
-// Structure de l'arbre LDAP 
+// Structure de l'arbre LDAP
 //
 #define XML_STRUCTURE_NODE			"Structure"
 #define XML_STRUCTURE_LEVEL_NODE	"Niveau"
@@ -191,7 +193,7 @@
 #define LEVEL_INHERITABLE_ATTR		"Heritable"
 
 //
-// Schéma LDAP 
+// Schéma LDAP
 //
 #define XML_SCHEMA_NODE				"Schema"
 #define XML_SCHEMA_ATTRIBUTE_NODE	XML_ATTRIBUTE
@@ -236,14 +238,15 @@
 #define XML_DESTINATION_SMTTP_TLS_ATTR		"TLS"
 
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	Fichier de commande
-//--	
+//--
 //---------------------------------------------------------------------------
 
 #define XML_FILE_NODE					XML_FILE
+#define FILE_LIMIT_ATTR					"Limite"
 
-// Inclusions
+// Inclusion
 #define XML_INCLUDE_NODE				"Inclure"
 
 // Nom de la colonne de l'encadrant
@@ -305,7 +308,7 @@
 #define XML_FORMAT_SHOW_EMPTY_ATTR		"Attributs"
 #define SHOW_EMPTY_ATTR_VAL				"vide"			// Affichage des attributs vide
 
-// 
+//
 // Recherche
 //
 
@@ -336,8 +339,8 @@
 #define XML_COMP_OPERATOR_EQUAL				"eq"	// "==" => Implicite
 //#define XML_COMP_OPERATOR_GREATER			"gt"	// ">"
 #define XML_COMP_OPERATOR_GREATER_OR_EQUAL	"ge"	// ">="
-//#define XML_COMP_OPERATOR_LOWER				"lt"	// "<" 
-#define XML_COMP_OPERATOR_LOWER_OR_EQUAL	"le"	// "<=" 
+//#define XML_COMP_OPERATOR_LOWER				"lt"	// "<"
+#define XML_COMP_OPERATOR_LOWER_OR_EQUAL	"le"	// "<="
 #define XML_COMP_OPERATOR_AND				"AND"	// Opérateur binaires
 #define XML_COMP_OPERATOR_OR				"OR"
 

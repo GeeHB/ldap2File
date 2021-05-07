@@ -7,6 +7,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -21,7 +23,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -85,7 +87,7 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 		error+="' n'est pas défini dans le fichier de configuration";
 		throw LDAPException(error);
 	}
-	
+
 	if (envName.size()) {
 		logs_->add(logFile::LOG, "Environnement par défaut : %s", envName.c_str());
 	}
@@ -236,22 +238,38 @@ RET_TYPE ldapBrowser::browse()
 	}
 
 	logs_->add(logFile::LOG, "Ouverture du fichier de configuration '%s'", cmdFile->fileName());
-	
+
+	// Limite d'utilisation du fichier
+	commandFile::date* pLimit(cmdFile->limit());
+	if (pLimit) {
+		if (pLimit->isOver()) {
+			logs_->add(logFile::LOG, "La date limite du fichier '%s' est dépassée. Le fichier doit être supprimé.", pLimit->value().c_str());
+			// Sortie
+			return RET_TYPE::RET_FILE_TO_DELETE;
+		}
+		else {
+			logs_->add(logFile::LOG, "La date limite du fichier '%s' n'est pas dépassée", pLimit->value().c_str());
+		}
+	}
+	else {
+		logs_->add(logFile::DBG, "Pas de limite d'utilisation pour le fichier");
+	}
+
 	// Connexion LDAP
 	//
 	string envName(cmdFile->environment());
-	bool findOne(false);
+	//bool findOne(false);
 	if (!envName.size()) {
 		logs_->add(logFile::LOG, "Pas de nom d'environnement");
 
 		// Utilisation de l'env. par défaut
 		envName = configurationFile_->environment();
-		findOne = true;
+		//findOne = true;
 	}
 	else {
 		logs_->add(logFile::DBG, "Environnement LDAP demandé '%s'", envName.c_str());
 	}
-	
+
 	// Cet environnement existe t'il (ou un autre) ?
 	LDAPServer* newServer(envName.length()?ldapSources_.findEnvironmentByName(envName): ldapSources_[0]);
 	if (NULL == newServer) {
@@ -260,7 +278,7 @@ RET_TYPE ldapBrowser::browse()
 	}
 
 	logs_->add(logFile::LOG, "Utilisation de l'environnement '%s'", newServer->name());
-		
+
 	// Nouvelle connexion ou besoin de reinitialiser ?
 	/*
 	bool ldapChanged(true);
@@ -269,10 +287,10 @@ RET_TYPE ldapBrowser::browse()
 		ldapChanged = (false == newServer->connected());
 	}*/
 	bool ldapChanged((newServer != ldapServer_) || (false == newServer->connected()));
-	
+
 	// Libération des paramètres précédents
 	_dispose(ldapChanged);
-	
+
 	// Paramètres LDAP
 	//
 	ldapServer_ = newServer;
@@ -410,7 +428,7 @@ void ldapBrowser::_dispose(bool freeLDAP)
 			struct_->clear();
 		}
 	}
-	
+
 	// Arborescence
 	if (agents_){
 		delete agents_;
@@ -858,7 +876,7 @@ RET_TYPE ldapBrowser::_createFile()
 		// On s'occupe maintenant des différentes destinations
 		//
 		fileDestination* dest(NULL), *destination(NULL);
-		mailDestination* pMail(NULL);
+		//mailDestination* pMail(NULL);
 		string fullName("");
 		for (deque<fileDestination*>::iterator it = opfi.dests_.begin(); it != opfi.dests_.end(); it++){
 			destination = (*it);
@@ -883,11 +901,11 @@ RET_TYPE ldapBrowser::_createFile()
 				switch (dest->type()){
 				// Une copie de fichier
 				case DEST_TYPE::DEST_FS_WINDOWS:{
-					
+
 					//  fullName = sFileSystem::merge(dest->folder(), opfi.name_);
 					string name = sFileSystem::split(file_->fileName());
 					fullName = sFileSystem::merge(dest->folder(), name);
-					
+
 					if (!sFileSystem::copy_file(file_->fileName(), fullName.c_str())){
 						atLeastOneError = true;
 						logs_->add(logFile::ERR, "Impossible de créer le fichier '%s'", fullName.c_str());
@@ -1724,7 +1742,7 @@ bool ldapBrowser::_getTitles()
 	BerElement* pBer(NULL);
 	PCHAR pAttribute(NULL);
 	PCHAR* pValue(NULL);
-	
+
 	string id(""), label(""), description("");
 	int responsable(0);
 	ULONG titleCount(0);
@@ -1743,20 +1761,20 @@ bool ldapBrowser::_getTitles()
 			wild = charUtils::itoa(searchID);
 		}
 		wild += "*";
-			
+
 		string value("*");						// La longueur de la chaine n'est pas fixe !!!
 		value.append(9 - wild.length(), '0');	// nbre de 0
 		value += wild;
-		
+
 		// Ajout à l'expression générale
 		expression.add(STR_ATTR_ALLIER_ID_POSTE, SEARCH_ATTR_COMP_EQUAL, value.c_str());
 
 		//sCriterium.searchExpression()->add(psearchExpr);
 		currentFilter = expression.expression();
-		
+
 		// Exécution de la requete
 		//
-		retCode = ldapServer_->searchS((char*)ldapServer_->baseDN(), LDAP_SCOPE_SUBTREE, (PSTR)currentFilter.c_str(), (char**)(const char**)myAttributes, 0, &searchResult);
+		retCode = ldapServer_->searchS((char*)ldapServer_->baseDN(), LDAP_SCOPE_SUBTREE, (LPSTR)currentFilter.c_str(), (char**)(const char**)myAttributes, 0, &searchResult);
 
 		// Je n'ai plus besoin de la liste ...
 		if (LDAP_SUCCESS != retCode) {
@@ -2138,7 +2156,7 @@ const bool ldapBrowser::_SMTPTransfer(mailDestination* mailDest)
 		logs_->add(logFile::ERR, "Impossible d'envoyer le mail à '%s'. Erreur : %d", mailDest->folder(), ret);
 		return false;
 	}
-	
+
 	logs_->add(logFile::LOG, "Envoi du fichier par mail à '%s'", mailDest->folder());
 	return true;
 }
@@ -2309,7 +2327,7 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 
 				// Exécution ...
 				if (true == (launched = _exec(action->application(), action->parameters(), errorMessage))) {
-					
+
 					bool done(true);
 
 					// Y a t'il eu génération d'un fichier ?
@@ -2370,10 +2388,10 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 #ifdef _WIN32
 	STARTUPINFO startupInfo = { sizeof(startupInfo) };	//startupInfo.cb = sizeof(startupInfo);
 	PROCESS_INFORMATION pi;
-	
+
 	// Devrait fonctionner ...
 	//valid = (TRUE == CreateProcessA((LPCSTR)app.c_str(), (LPSTR)parameters.c_str(), NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &pi));
-	
+
 	// On concatène le nom de l'application et ses paramètres
 	string fullCmd(app);
 	fullCmd += " ";

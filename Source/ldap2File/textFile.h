@@ -1,23 +1,25 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: textFile.h
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
-//--	
+//--
 //--	PROJET	: ldap2File
-//--	
+//--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
-//--	
-//--	DESCRIPTIONS:
-//--	
+//--
+//--	DESCRIPTION:
+//--
 //--			Définition de la classe textFile
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -80,24 +82,24 @@ protected:
 
 	// Nouvelle ligne
 	bool _saveLine(bool header = false, LPAGENTINFOS agent = NULL);
-	
+
 	// Gestion du fichier
 	//
 	bool _open();
 	void _close()
 	{ file_.close(); }
-	
+
 	// Données membres privées
 	//
 protected:
-	
+
 	string				sep_;			// Séparateur de valeurs
 	string				eol_;			// Fin de ligne
 
 	ofstream			file_;			// Fichier à générer
-	
+
 	string				currentLine_;	// ligne en cours
-	
+
 	// Les lignes
 	deque<string>		lines_;
 };

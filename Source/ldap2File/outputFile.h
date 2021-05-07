@@ -6,9 +6,11 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
 //--			Définition de la classe outputFile
 //--			Cette classe est la base pour la generation des fichiers de sortie
@@ -20,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -215,7 +217,7 @@ public:
 	{ _setFileType(fileType, false); }
 	FILE_TYPE fileType()
 	{ return fileInfos_->format_; }
-	
+
 	// Nombre d'éléments enregistrés
 	virtual size_t size()
 	{ return elements_; }

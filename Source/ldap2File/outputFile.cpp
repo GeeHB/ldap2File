@@ -6,9 +6,11 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
 //--			Implémentation de la classe outputFile
 //--			Cette classe est la base pour la generation des fichiers de sortie
@@ -20,13 +22,12 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
 #include "outputFile.h"
 #include "sFileSystem.h"
-
 
 //----------------------------------------------------------------------
 //--
@@ -40,7 +41,7 @@ outputFile::outputFile(const LPOPFI fileInfos, columnList* columns, confFile* co
 {
 	fileInfos_ = fileInfos;
 	configurationFile_ = configurationFile;
-	
+
 	// Le fichier de configuration existe ainsi que les pointeurs associés !!!
 	//
 	if (NULL == configurationFile) {
@@ -53,7 +54,7 @@ outputFile::outputFile(const LPOPFI fileInfos, columnList* columns, confFile* co
 	if (NULL == folders_ || NULL == logs_) {
 		throw LDAPException("outputFile::outputFile - Erreur dans les paramètres");
 	}
-	
+
 	columns_ = columns;
 	fileName_ = "";
 	elements_ = 0;
@@ -150,7 +151,7 @@ string outputFile::_createFileName(string& shortName, bool newFile)
 
 	// Formatage du nom du fichier
 	string file(shortName);
-	
+
 	// Mise à jour du nom court
 	shortName = file;
 
@@ -207,18 +208,18 @@ string outputFile::tokenize(commandFile* cmdFile, const char* source, const char
 	if (IS_EMPTY(source)) {
 		throw LDAPException("[outputFile::tokenize] Paramètres invalides");
 	}
-	
+
 	// Quelque chose à faire ?
 	if (NULL == strstr(source, "%")) {
 		return source;
 	}
-	
+
 	string value(source);
-	
+
 	// Tokens reconnus
 	//
 	stringTokenizer st;
-	
+
 	// Nom court
 	if (!IS_EMPTY(shortName)) {
 		st.addToken(TOKEN_CONTAINER_SHORTNAME, shortName);
@@ -267,7 +268,7 @@ string outputFile::tokenize(commandFile* cmdFile, const char* source, const char
 	else {
 		value = (IS_EMPTY(def)?source:def);	// rien ...
 	}
-	
+
 	return value;
 }
 

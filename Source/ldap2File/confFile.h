@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -20,7 +22,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -40,7 +42,7 @@ class confFile : public XMLParser
 {
 	// Méthodes publiques
 public:
-	
+
 	// Constructions et destruction
 	//
 	confFile(folders* pFolders, logFile* log = NULL);
@@ -49,7 +51,7 @@ public:
 
 	// Ouverture d'un fichier
 	bool open(const char* confFile);
-	
+
 	//
 	// Paramètres généraux
 	//
@@ -90,7 +92,7 @@ public:
 	commandFile* cmdFile()
 	{ return commandFile_; }
 
-	// 
+	//
 	// Méthodes privées
 	//
 protected:
@@ -101,7 +103,7 @@ protected:
 		commandFile_ = NULL;
 		managersCol_ = "";		// Pas de manager !!!
 	}
-	
+
 	// Ouverture
 	virtual bool _open();
 	virtual void _load();
@@ -115,17 +117,17 @@ protected:
 	// Données membres privées
 	//
 protected:
-	
+
 	bool				fileRead_;		// Le fichier source a t'il été lu ?
 
 	commandFile*		commandFile_;	// Fichier de commandes
 	string				managersCol_;	// Nom de la colonne qui contiendra le DN des managers
 	string				environment_;	// Nom de l'environnement (peut être vide)
 
-												
+
 	// Gestion de la structure de l'arborescence
 	XMLParser::XMLNode	structureElement_;
-	
+
 	// Définition du schéma
 	XMLParser::XMLNode	schemaExtension_;
 

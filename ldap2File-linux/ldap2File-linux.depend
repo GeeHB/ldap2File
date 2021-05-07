@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1593003768 source:/home/jhb/Nextcloud/dev/cpp/Common/charUtils.cpp
+1594110801 source:/home/jhb/Nextcloud/dev/cpp/Common/charUtils.cpp
+	<charUtils.h>
 	<charUtils.h>
 	<charUtils.h>
 
-1593681504 .h>
+1594110747 .h>
 
-1593679267 /home/jhb/Nextcloud/dev/cpp/Common/charUtils.h
+1594105352 /home/jhb/Nextcloud/dev/cpp/Common/charUtils.h
 	<sstream>
 	<iomanip>
 	<deque>
@@ -16,8 +17,13 @@
 	<deque>
 	<string>
 	<commonTypes.h>
+	<sstream>
+	<iomanip>
+	<deque>
+	<string>
+	<commonTypes.h>
 
-1593679267 es.h>
+1594105352 es.h>
 
 1593597268 /home/jhb/Nextcloud/dev/cpp/Common/commonTypes.h
 	<windows.h>
@@ -34,8 +40,15 @@
 	<stdlib.h>
 	<errno.h>
 	<string.h>
+	<windows.h>
+	<tchar.h>
+	<string.h>
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<string.h>
 
-1555498663 
+1593162728 
 
 1592486648 source:/home/jhb/Nextcloud/dev/cpp/Common/logFile.cpp
 	"logFile.h"
@@ -54,8 +67,21 @@
 	<cstring>
 	<sys/stat.h>
 	<sys/types.h>
+	"logFile.h"
+	<stdio.h>
+	<stdarg.h>
+	<assert.h>
+	<time.h>
+	<cstring>
+	<sys/stat.h>
+	<sys/types.h>
 
 1592826204 /home/jhb/Nextcloud/dev/cpp/Common/logFile.h
+	<commonTypes.h>
+	<charUtils.h>
+	<stdio.h>
+	<unistd.h>
+	<syslog.h>
 	<commonTypes.h>
 	<charUtils.h>
 	<stdio.h>
@@ -88,7 +114,7 @@
 1593004692 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/agentTree.h
 	"sharedConsts.h"
 
-1593681362 sts.h"
+1594124726 sts.h"
 
 1593005545 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/sharedConsts.h
 	<iostream>
@@ -109,7 +135,7 @@
 	"LDAPServer.h"
 	"sharedTypes.h"
 
-1593686463 es.h"
+1594124776 es.h"
 
 1593004901 /home/jhb/Nextcloud/dev/cpp/Common/FTPClient.h
 	"commonTypes.h"
@@ -129,12 +155,12 @@
 	<ldap.h>
 	"ldapAttributes.h"
 
-1593608018 butes.h"
+1594124726 butes.h"
 
 1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/ldapAttributes.h
 	<./directory/directoryAttr.h>
 
-1593607953 ry/directoryAttr.h>
+1594124726 ry/directoryAttr.h>
 
 1586158947 /home/jhb/Nextcloud/dev/cpp/Common/directory/directoryAttr.h
 
@@ -146,7 +172,7 @@
 	"sharedConsts.h"
 	"columnList.h"
 
-1593608086 t.h"
+1594124726 t.h"
 
 1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/columnList.h
 	"sharedConsts.h"
@@ -162,7 +188,7 @@
 1593004756 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/CSVFile.h
 	"textFile.h"
 
-1593607885 h"
+1593162728 h"
 
 1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/textFile.h
 	"outputFile.h"
@@ -181,7 +207,7 @@
 	"XMLParser.h"
 	"commandFile.h"
 
-1593607909 le.h"
+1594124726 le.h"
 
 1593004467 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/XMLParser.h
 	<./xml/pugixml.hpp>
@@ -189,9 +215,9 @@
 	<charUtils.h>
 	"regExpr.h"
 
-1593608023 "
+1593162728 "
 
-1555498672 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.hpp
+1568231462 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.hpp
 	"pugiconfig.hpp"
 	<stddef.h>
 	<exception>
@@ -204,10 +230,16 @@
 	<iterator>
 	<iosfwd>
 	<string>
+	"pugiconfig.hpp"
+	<stddef.h>
+	<exception>
+	<iterator>
+	<iosfwd>
+	<string>
 
-1555498672 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugiconfig.hpp
+1568231462 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugiconfig.hpp
 
-1555498672 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.cpp
+1568231462 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.cpp
 	"pugixml.hpp"
 	<stdlib.h>
 	<stdio.h>
@@ -231,6 +263,20 @@
 	<math.h>
 	<float.h>
 	<setjmp.h>
+	<istream>
+	<ostream>
+	<string>
+	<new>
+	<stdint.h>
+	"pugixml.hpp"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<assert.h>
+	<limits.h>
+	<wchar.h>
+	<math.h>
+	<float.h>
 	<istream>
 	<ostream>
 	<string>
@@ -243,12 +289,12 @@
 	"columnList.h"
 	"XMLParser.h"
 
-1593682871 .h"
+1594111090 .h"
 
 1592465197 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/destinationList.cpp
 	"destinationList.h"
 
-1593607959 onList.h"
+1594124726 onList.h"
 
 1592465197 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/destinationList.h
 	"sharedConsts.h"
@@ -261,7 +307,7 @@
 	"textFile.h"
 	"JScriptConsts.h"
 
-1593607929 nsts.h"
+1594124726 nsts.h"
 
 1593010133 /home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/JScriptConsts.h
 
@@ -278,7 +324,7 @@
 	<commonTypes.h>
 	"LDAPServer.h"
 
-1593608043 r.h"
+1594124726 r.h"
 
 1593004901 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File/ldap2File.cpp
 	"sharedConsts.h"
@@ -316,6 +362,11 @@
 	<string>
 	<deque>
 	<list>
+	"commonTypes.h"
+	<shlobj.h>
+	<string>
+	<deque>
+	<list>
 
 1593438000 source:/home/jhb/Nextcloud/dev/cpp/Common/fileSystem.cpp
 	"fileSystem.h"
@@ -332,6 +383,14 @@
 	<filesystem>
 	<unistd.h>
 	<experimental/filesystem>
+	"fileSystem.h"
+	<charUtils.h>
+	<iostream>
+	<fstream>
+	<strsafe.h>
+	<filesystem>
+	<unistd.h>
+	<experimental/filesystem>
 
 1593438000 tal/filesystem>
 
@@ -339,17 +398,21 @@
 	"commandFile.h"
 	<fileSystem.h>
 
-1593680809 m.h>
+1594124726 m.h>
 
-1593608092 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/agentTree.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/agentTree.cpp
+	"agentTree.h"
+	"regExpr.h"
+	<ldap.h>
 	"agentTree.h"
 	"regExpr.h"
 	<ldap.h>
 
-1593607942 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/agentTree.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/agentTree.h
+	"sharedConsts.h"
 	"sharedConsts.h"
 
-1593686463 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedConsts.h
+1594124776 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedConsts.h
 	<iostream>
 	<string>
 	<sstream>
@@ -367,101 +430,173 @@
 	"XMLConsts.h"
 	"LDAPServer.h"
 	"sharedTypes.h"
+	<iostream>
+	<string>
+	<sstream>
+	<fstream>
+	<vector>
+	<deque>
+	<list>
+	<time.h>
+	<direct.h>
+	<sys/stat.h>
+	<sys/types.h>
+	<logFile.h>
+	<commonTypes.h>
+	"XMLConsts.h"
+	"LDAPServer.h"
+	"sharedTypes.h"
 
-1593607783 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLConsts.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLConsts.h
 
-1593607890 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.h
+	<winldap.h>
+	<Winber.h>
+	<ldap.h>
+	"ldapAttributes.h"
 	<winldap.h>
 	<Winber.h>
 	<ldap.h>
 	"ldapAttributes.h"
 
-1593607953 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldapAttributes.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldapAttributes.h
+	<./directory/directoryAttr.h>
 	<./directory/directoryAttr.h>
 
-1593679581 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedTypes.h
+1594288542 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedTypes.h
+	<charUtils.h>
+	<exception>
 	<charUtils.h>
 	<exception>
 
-1593607792 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/regExpr.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/regExpr.h
+	"sharedConsts.h"
+	"columnList.h"
 	"sharedConsts.h"
 	"columnList.h"
 
-1593607947 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/columnList.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/columnList.h
+	"sharedConsts.h"
+	"ldapAttributes.h"
 	"sharedConsts.h"
 	"ldapAttributes.h"
 
-1593608086 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/columnList.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/columnList.cpp
+	"columnList.h"
 	"columnList.h"
 
-1593608080 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/commandFile.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/commandFile.cpp
+	"commandFile.h"
+	<fileSystem.h>
 	"commandFile.h"
 	<fileSystem.h>
 
-1593607967 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/commandFile.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/commandFile.h
+	"sharedConsts.h"
+	"sharedTypes.h"
+	"columnList.h"
+	"XMLParser.h"
 	"sharedConsts.h"
 	"sharedTypes.h"
 	"columnList.h"
 	"XMLParser.h"
 
-1593607759 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLParser.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLParser.h
+	<./xml/pugixml.hpp>
+	<./xml/pugixml.cpp>
+	<charUtils.h>
+	"regExpr.h"
 	<./xml/pugixml.hpp>
 	<./xml/pugixml.cpp>
 	<charUtils.h>
 	"regExpr.h"
 
-1593608074 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.cpp
+	"confFile.h"
+	<fileSystem.h>
 	"confFile.h"
 	<fileSystem.h>
 
-1593607909 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.h
+	"sharedConsts.h"
+	"sharedTypes.h"
+	"XMLParser.h"
+	"commandFile.h"
 	"sharedConsts.h"
 	"sharedTypes.h"
 	"XMLParser.h"
 	"commandFile.h"
 
-1593608068 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/CSVFile.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/CSVFile.cpp
+	"CSVFile.h"
+	<fstream>
 	"CSVFile.h"
 	<fstream>
 
-1593607901 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/CSVFile.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/CSVFile.h
+	"textFile.h"
 	"textFile.h"
 
-1593607825 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/textFile.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/textFile.h
+	"outputFile.h"
+	<fstream>
 	"outputFile.h"
 	<fstream>
 
-1593607849 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/outputFile.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/outputFile.h
+	"sharedConsts.h"
+	"confFile.h"
+	"agentTree.h"
+	<sstream>
+	<iostream>
 	"sharedConsts.h"
 	"confFile.h"
 	"agentTree.h"
 	<sstream>
 	<iostream>
 
-1593608063 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/destinationList.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/destinationList.cpp
+	"destinationList.h"
 	"destinationList.h"
 
-1593607915 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/destinationList.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/destinationList.h
+	"sharedConsts.h"
 	"sharedConsts.h"
 
-1593608058 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptFile.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptFile.cpp
+	"JScriptFile.h"
+	<iomanip>
 	"JScriptFile.h"
 	<iomanip>
 
-1593607929 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptFile.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptFile.h
+	"textFile.h"
+	"JScriptConsts.h"
 	"textFile.h"
 	"JScriptConsts.h"
 
-1593607922 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptConsts.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptConsts.h
 
-1593608053 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldap2File.cpp
+1594223669 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldap2File.cpp
+	"sharedConsts.h"
+	"ldapBrowser.h"
+	<fileSystem.h>
+	<dirent.h>
+	<ctime>
 	"sharedConsts.h"
 	"ldapBrowser.h"
 	<fileSystem.h>
 	<dirent.h>
 	<ctime>
 
-1593607959 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldapBrowser.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldapBrowser.h
+	"sharedConsts.h"
+	"confFile.h"
+	"agentTree.h"
+	"outputFile.h"
+	"servicesList.h"
+	"treeStructure.h"
+	"destinationList.h"
 	"sharedConsts.h"
 	"confFile.h"
 	"agentTree.h"
@@ -470,32 +605,47 @@
 	"treeStructure.h"
 	"destinationList.h"
 
-1593607808 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/servicesList.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/servicesList.h
 	"sharedConsts.h"
 	"treeStructure.h"
+	"sharedConsts.h"
+	"treeStructure.h"
+	"JScriptConsts.h"
+	"ldapAttributes.h"
 
-1593607831 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/treeStructure.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/treeStructure.h
+	"sharedConsts.h"
 	"sharedConsts.h"
 
-1593608043 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.cpp
+	<string>
+	<list>
+	<commonTypes.h>
+	"LDAPServer.h"
 	<string>
 	<list>
 	<commonTypes.h>
 	"LDAPServer.h"
 
-1593608038 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDIFFile.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDIFFile.cpp
+	"LDIFFile.h"
+	<iomanip>
 	"LDIFFile.h"
 	<iomanip>
 
-1593607885 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDIFFile.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDIFFile.h
+	"textFile.h"
 	"textFile.h"
 
-1593680809 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSFile.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSFile.cpp
+	"ODSFile.h"
+	"ODSConsts.h"
+	<fileSystem.h>
 	"ODSFile.h"
 	"ODSConsts.h"
 	<fileSystem.h>
 
-1593678724 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSFile.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSFile.h
 	"XMLFile.h"
 	<./zip/ziputils/zip.h>
 	<./zip/ziputils/unzip.h>
@@ -505,19 +655,34 @@
 	<./ZipLib/streams/memstream.h>
 	<./ZipLib//methods/Bzip2Method.h>
 	<fstream>
+	"XMLFile.h"
+	<./zip/ziputils/zip.h>
+	<./zip/ziputils/unzip.h>
+	<stdlib.h>
+	<crtdbg.h>
+	"../ZipLib/ZipFile.h"
+	"../ZipLib/streams/memstream.h"
+	"../ZipLib//methods/Bzip2Method.h"
+	<fstream>
 
-1593607776 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLFile.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLFile.h
+	"outputFile.h"
+	<./xml/pugixml.hpp>
+	<./xml/pugixml.cpp>
 	"outputFile.h"
 	<./xml/pugixml.hpp>
 	<./xml/pugixml.cpp>
 
-1593607776 ixml.cpp>
+1594124726 ixml.cpp>
 
 1555498691 /home/jhb/Nextcloud/dev/cpp/Common/zip/ziputils/zip.h
 
 1555498690 /home/jhb/Nextcloud/dev/cpp/Common/zip/ziputils/unzip.h
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/ZipFile.h
+	"ZipArchive.h"
+	<string>
+	<memory>
 	"ZipArchive.h"
 	<string>
 	<memory>
@@ -530,13 +695,36 @@
 	<algorithm>
 	<atomic>
 	<memory>
+	"detail/EndOfCentralDirectoryBlock.h"
+	"ZipArchiveEntry.h"
+	<istream>
+	<vector>
+	<algorithm>
+	<atomic>
+	<memory>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/EndOfCentralDirectoryBlock.h
 	<cstdint>
 	<string>
 	<iostream>
+	<cstdint>
+	<string>
+	<iostream>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/ZipArchiveEntry.h
+	"detail/ZipLocalFileHeader.h"
+	"detail/ZipCentralDirectoryFileHeader.h"
+	"methods/ICompressionMethod.h"
+	"methods/StoreMethod.h"
+	"methods/DeflateMethod.h"
+	"methods/LzmaMethod.h"
+	"streams/substream.h"
+	"utils/enum_utils.h"
+	<cstdint>
+	<ctime>
+	<string>
+	<vector>
+	<memory>
 	"detail/ZipLocalFileHeader.h"
 	"detail/ZipCentralDirectoryFileHeader.h"
 	"methods/ICompressionMethod.h"
@@ -556,13 +744,25 @@
 	<iostream>
 	<vector>
 	<cstdint>
+	"ZipGenericExtraField.h"
+	<iostream>
+	<vector>
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipGenericExtraField.h
 	<cstdint>
 	<vector>
 	<iostream>
+	<cstdint>
+	<vector>
+	<iostream>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipCentralDirectoryFileHeader.h
+	"ZipGenericExtraField.h"
+	<iostream>
+	<string>
+	<vector>
+	<cstdint>
 	"ZipGenericExtraField.h"
 	<iostream>
 	<string>
@@ -574,8 +774,14 @@
 	"../compression/store/store_encoder.h"
 	"../compression/store/store_decoder.h"
 	<memory>
+	"../compression/compression_interface.h"
+	"../compression/store/store_encoder.h"
+	"../compression/store/store_decoder.h"
+	<memory>
 
 1593164434 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/compression_interface.h
+	<iostream>
+	<algorithm>
 	<iostream>
 	<algorithm>
 
@@ -585,12 +791,21 @@
 	"../../streams/crc32stream.h"
 	"../../extlibs/zlib/zlib.h"
 	<cstdint>
+	"../compression_interface.h"
+	"store_encoder_properties.h"
+	"../../streams/crc32stream.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_encoder_properties.h
 	"../compression_interface.h"
 	<algorithm>
+	"../compression_interface.h"
+	<algorithm>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/crc32stream.h
+	<istream>
+	"streambuffs/crc32_streambuf.h"
 	<istream>
 	"streambuffs/crc32_streambuf.h"
 
@@ -601,10 +816,16 @@
 	<cstdint>
 	"../substream.h"
 	"../../extlibs/zlib/zlib.h"
+	<streambuf>
+	<cstdint>
+	"../substream.h"
+	"../../extlibs/zlib/zlib.h"
 
 1593162728 libs/zlib/zlib.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/substream.h
+	<istream>
+	"streambuffs/sub_streambuf.h"
 	<istream>
 	"streambuffs/sub_streambuf.h"
 
@@ -614,11 +835,21 @@
 	<streambuf>
 	<istream>
 	<cstdint>
+	<streambuf>
+	<istream>
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/zlib.h
 	"zconf.h"
+	"zconf.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/zconf.h
+	<windows.h>
+	<limits.h>
+	<sys/types.h>
+	<stddef.h>
+	<unistd.h>
+	<unixio.h>
 	<windows.h>
 	<limits.h>
 	<sys/types.h>
@@ -632,12 +863,23 @@
 	"../../streams/crc32stream.h"
 	"../../extlibs/zlib/zlib.h"
 	<cstdint>
+	"../compression_interface.h"
+	"store_decoder_properties.h"
+	"../../streams/crc32stream.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_decoder_properties.h
 	"../compression_interface.h"
 	<algorithm>
+	"../compression_interface.h"
+	<algorithm>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/StoreMethod.h
+	"ICompressionMethod.h"
+	"../compression/store/store_encoder.h"
+	"../compression/store/store_decoder.h"
+	<memory>
 	"ICompressionMethod.h"
 	"../compression/store/store_encoder.h"
 	"../compression/store/store_decoder.h"
@@ -648,8 +890,16 @@
 	"../compression/deflate/deflate_encoder.h"
 	"../compression/deflate/deflate_decoder.h"
 	<memory>
+	"ICompressionMethod.h"
+	"../compression/deflate/deflate_encoder.h"
+	"../compression/deflate/deflate_decoder.h"
+	<memory>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_encoder.h
+	"../compression_interface.h"
+	"deflate_encoder_properties.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
 	"../compression_interface.h"
 	"deflate_encoder_properties.h"
 	"../../extlibs/zlib/zlib.h"
@@ -658,8 +908,14 @@
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_encoder_properties.h
 	"../compression_interface.h"
 	<algorithm>
+	"../compression_interface.h"
+	<algorithm>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_decoder.h
+	"../compression_interface.h"
+	"deflate_decoder_properties.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
 	"../compression_interface.h"
 	"deflate_decoder_properties.h"
 	"../../extlibs/zlib/zlib.h"
@@ -667,10 +923,15 @@
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_decoder_properties.h
 	"../compression_interface.h"
+	"../compression_interface.h"
 
 1593162728 ssion_interface.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/LzmaMethod.h
+	"ICompressionMethod.h"
+	"../compression/lzma/lzma_encoder.h"
+	"../compression/lzma/lzma_decoder.h"
+	<memory>
 	"ICompressionMethod.h"
 	"../compression/lzma/lzma_encoder.h"
 	"../compression/lzma/lzma_decoder.h"
@@ -687,8 +948,21 @@
 	<ostream>
 	<thread>
 	<cstdint>
+	"../compression_interface.h"
+	"lzma_encoder_properties.h"
+	"detail/lzma_alloc.h"
+	"detail/lzma_handle.h"
+	"detail/lzma_header.h"
+	"detail/lzma_in_stream.h"
+	"detail/lzma_out_stream.h"
+	<ostream>
+	<thread>
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_encoder_properties.h
+	"../compression_interface.h"
+	"detail/lzma_handle.h"
+	"../../extlibs/lzma/LzmaEnc.h"
 	"../compression_interface.h"
 	"detail/lzma_handle.h"
 	"../../extlibs/lzma/LzmaEnc.h"
@@ -698,19 +972,25 @@
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_handle.h
 	"lzma_alloc.h"
 	"../../../extlibs/lzma/LzmaEnc.h"
+	"lzma_alloc.h"
+	"../../../extlibs/lzma/LzmaEnc.h"
 
 1593162728 extlibs/lzma/LzmaEnc.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_alloc.h
 	"../../../extlibs/lzma/Types.h"
+	"../../../extlibs/lzma/Types.h"
 
-1593162728 extlibs/lzma/Types.h"
+1594288751 extlibs/lzma/Types.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Types.h
 	<stddef.h>
 	<windows.h>
+	<stddef.h>
+	<windows.h>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaEnc.h
+	"Types.h"
 	"Types.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_header.h
@@ -718,8 +998,13 @@
 	"lzma_out_stream.h"
 	"../../../extlibs/lzma/7zVersion.h"
 	"../../../extlibs/lzma/LzmaEnc.h"
+	"lzma_handle.h"
+	"lzma_out_stream.h"
+	"../../../extlibs/lzma/7zVersion.h"
+	"../../../extlibs/lzma/LzmaEnc.h"
 
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_out_stream.h
+1594288751 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_out_stream.h
+	"../../../extlibs/lzma/Types.h"
 	"../../../extlibs/lzma/Types.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zVersion.h
@@ -728,10 +1013,18 @@
 	"../../../extlibs/lzma/Types.h"
 	<condition_variable>
 	<mutex>
+	"../../../extlibs/lzma/Types.h"
+	<condition_variable>
+	<mutex>
 
 1593162728 _variable>
 
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_decoder.h
+1594288843 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_decoder.h
+	"../compression_interface.h"
+	"detail/lzma_alloc.h"
+	"lzma_decoder_properties.h"
+	"../../extlibs/lzma/LzmaDec.h"
+	<cstdint>
 	"../compression_interface.h"
 	"detail/lzma_alloc.h"
 	"lzma_decoder_properties.h"
@@ -740,14 +1033,20 @@
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_decoder_properties.h
 	"../compression_interface.h"
+	"../compression_interface.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaDec.h
+	"Types.h"
 	"Types.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/utils/enum_utils.h
 	<cstdint>
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/memstream.h
+	<iostream>
+	<cstdint>
+	"streambuffs/mem_streambuf.h"
 	<iostream>
 	<cstdint>
 	"streambuffs/mem_streambuf.h"
@@ -758,8 +1057,15 @@
 	<streambuf>
 	<cstdint>
 	<cassert>
+	<streambuf>
+	<cstdint>
+	<cassert>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//methods/Bzip2Method.h
+	"ICompressionMethod.h"
+	"../compression/bzip2/bzip2_encoder.h"
+	"../compression/bzip2/bzip2_decoder.h"
+	<memory>
 	"ICompressionMethod.h"
 	"../compression/bzip2/bzip2_encoder.h"
 	"../compression/bzip2/bzip2_decoder.h"
@@ -770,8 +1076,14 @@
 	"../compression/store/store_encoder.h"
 	"../compression/store/store_decoder.h"
 	<memory>
+	"../compression/compression_interface.h"
+	"../compression/store/store_encoder.h"
+	"../compression/store/store_decoder.h"
+	<memory>
 
 1593164434 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/compression_interface.h
+	<iostream>
+	<algorithm>
 	<iostream>
 	<algorithm>
 
@@ -781,12 +1093,21 @@
 	"../../streams/crc32stream.h"
 	"../../extlibs/zlib/zlib.h"
 	<cstdint>
+	"../compression_interface.h"
+	"store_encoder_properties.h"
+	"../../streams/crc32stream.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_encoder_properties.h
 	"../compression_interface.h"
 	<algorithm>
+	"../compression_interface.h"
+	<algorithm>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/crc32stream.h
+	<istream>
+	"streambuffs/crc32_streambuf.h"
 	<istream>
 	"streambuffs/crc32_streambuf.h"
 
@@ -795,8 +1116,14 @@
 	<cstdint>
 	"../substream.h"
 	"../../extlibs/zlib/zlib.h"
+	<streambuf>
+	<cstdint>
+	"../substream.h"
+	"../../extlibs/zlib/zlib.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/substream.h
+	<istream>
+	"streambuffs/sub_streambuf.h"
 	<istream>
 	"streambuffs/sub_streambuf.h"
 
@@ -804,11 +1131,21 @@
 	<streambuf>
 	<istream>
 	<cstdint>
+	<streambuf>
+	<istream>
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//extlibs/zlib/zlib.h
 	"zconf.h"
+	"zconf.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//extlibs/zlib/zconf.h
+	<windows.h>
+	<limits.h>
+	<sys/types.h>
+	<stddef.h>
+	<unistd.h>
+	<unixio.h>
 	<windows.h>
 	<limits.h>
 	<sys/types.h>
@@ -822,8 +1159,15 @@
 	"../../streams/crc32stream.h"
 	"../../extlibs/zlib/zlib.h"
 	<cstdint>
+	"../compression_interface.h"
+	"store_decoder_properties.h"
+	"../../streams/crc32stream.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_decoder_properties.h
+	"../compression_interface.h"
+	<algorithm>
 	"../compression_interface.h"
 	<algorithm>
 
@@ -832,12 +1176,20 @@
 	"bzip2_encoder_properties.h"
 	"../../extlibs/bzip2/bzlib.h"
 	<cstdint>
+	"../compression_interface.h"
+	"bzip2_encoder_properties.h"
+	"../../extlibs/bzip2/bzlib.h"
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_encoder_properties.h
 	"../compression_interface.h"
 	<algorithm>
+	"../compression_interface.h"
+	<algorithm>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//extlibs/bzip2/bzlib.h
+	<stdio.h>
+	<windows.h>
 	<stdio.h>
 	<windows.h>
 
@@ -846,33 +1198,47 @@
 	"bzip2_decoder_properties.h"
 	"../../extlibs/bzip2/bzlib.h"
 	<cstdint>
+	"../compression_interface.h"
+	"bzip2_decoder_properties.h"
+	"../../extlibs/bzip2/bzlib.h"
+	<cstdint>
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_decoder_properties.h
 	"../compression_interface.h"
+	"../compression_interface.h"
 
-1593607838 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSConsts.h
+1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSConsts.h
 
-1593608023 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/regExpr.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/regExpr.cpp
+	"regExpr.h"
 	"regExpr.h"
 
-1593608018 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/servicesList.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/servicesList.cpp
 	"servicesList.h"
 	"JScriptConsts.h"
 	"ldapAttributes.h"
+	"servicesList.h"
 
-1593681362 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/textFile.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/textFile.cpp
+	"textFile.h"
+	"sharedConsts.h"
 	"textFile.h"
 	"sharedConsts.h"
 
-1593681504 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/treeStructure.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/treeStructure.cpp
+	"treeStructure.h"
+	<charUtils.h>
 	"treeStructure.h"
 	<charUtils.h>
 
-1593608002 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLFile.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLFile.cpp
+	"XMLFile.h"
+	"ODSConsts.h"
 	"XMLFile.h"
 	"ODSConsts.h"
 
-1593682871 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLParser.cpp
+1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLParser.cpp
+	"XMLParser.h"
 	"XMLParser.h"
 
 1593686433 source:/home/jhb/Nextcloud/dev/cpp/Common/FTP/BlockingSocket.cpp
@@ -935,603 +1301,13 @@
 
 1555498664 ts.h"
 
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSFile.cpp
-	"ODSFile.h"
-	"ODSConsts.h"
-	<fileSystem.h>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSFile.h
-	"XMLFile.h"
-	<./zip/ziputils/zip.h>
-	<./zip/ziputils/unzip.h>
-	<stdlib.h>
-	<crtdbg.h>
-	"../ZipLib/ZipFile.h"
-	"../ZipLib/streams/memstream.h"
-	"../ZipLib//methods/Bzip2Method.h"
-	<fstream>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLFile.h
-	"outputFile.h"
-	<./xml/pugixml.hpp>
-	<./xml/pugixml.cpp>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/outputFile.h
-	"sharedConsts.h"
-	"confFile.h"
-	"agentTree.h"
-	<sstream>
-	<iostream>
-
-1594124776 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedConsts.h
-	<iostream>
-	<string>
-	<sstream>
-	<fstream>
-	<vector>
-	<deque>
-	<list>
-	<time.h>
-	<direct.h>
-	<sys/stat.h>
-	<sys/types.h>
-	<logFile.h>
-	<commonTypes.h>
-	"XMLConsts.h"
-	"LDAPServer.h"
-	"sharedTypes.h"
-
-1592826204 /home/jhb/Nextcloud/dev/cpp/Common/logFile.h
-	<commonTypes.h>
-	<charUtils.h>
-	<stdio.h>
-	<unistd.h>
-	<syslog.h>
-
-1593597268 /home/jhb/Nextcloud/dev/cpp/Common/commonTypes.h
-	<windows.h>
-	<tchar.h>
-	<string.h>
-	<stdio.h>
-	<stdlib.h>
-	<errno.h>
-	<string.h>
-
-1594105352 /home/jhb/Nextcloud/dev/cpp/Common/charUtils.h
-	<sstream>
-	<iomanip>
-	<deque>
-	<string>
-	<commonTypes.h>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLConsts.h
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.h
-	<winldap.h>
-	<Winber.h>
-	<ldap.h>
-	"ldapAttributes.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldapAttributes.h
-	<./directory/directoryAttr.h>
-
-1586158947 /home/jhb/Nextcloud/dev/cpp/Common/directory/directoryAttr.h
-
-1594288542 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedTypes.h
-	<charUtils.h>
-	<exception>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.h
-	"sharedConsts.h"
-	"sharedTypes.h"
-	"XMLParser.h"
-	"commandFile.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLParser.h
-	<./xml/pugixml.hpp>
-	<./xml/pugixml.cpp>
-	<charUtils.h>
-	"regExpr.h"
-
-1568231462 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.hpp
-	"pugiconfig.hpp"
-	<stddef.h>
-	<exception>
-	<iterator>
-	<iosfwd>
-	<string>
-
-1568231462 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugiconfig.hpp
-
-1568231462 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.cpp
-	"pugixml.hpp"
-	<stdlib.h>
-	<stdio.h>
-	<string.h>
-	<assert.h>
-	<limits.h>
-	<wchar.h>
-	<math.h>
-	<float.h>
-	<istream>
-	<ostream>
-	<string>
-	<new>
-	<stdint.h>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/regExpr.h
-	"sharedConsts.h"
-	"columnList.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/columnList.h
-	"sharedConsts.h"
-	"ldapAttributes.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/commandFile.h
-	"sharedConsts.h"
-	"sharedTypes.h"
-	"columnList.h"
-	"XMLParser.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/agentTree.h
-	"sharedConsts.h"
-
-1555498691 /home/jhb/Nextcloud/dev/cpp/Common/zip/ziputils/zip.h
-
-1555498690 /home/jhb/Nextcloud/dev/cpp/Common/zip/ziputils/unzip.h
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/ZipFile.h
-	"ZipArchive.h"
-	<string>
-	<memory>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/ZipArchive.h
-	"detail/EndOfCentralDirectoryBlock.h"
-	"ZipArchiveEntry.h"
-	<istream>
-	<vector>
-	<algorithm>
-	<atomic>
-	<memory>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/EndOfCentralDirectoryBlock.h
-	<cstdint>
-	<string>
-	<iostream>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/ZipArchiveEntry.h
-	"detail/ZipLocalFileHeader.h"
-	"detail/ZipCentralDirectoryFileHeader.h"
-	"methods/ICompressionMethod.h"
-	"methods/StoreMethod.h"
-	"methods/DeflateMethod.h"
-	"methods/LzmaMethod.h"
-	"streams/substream.h"
-	"utils/enum_utils.h"
-	<cstdint>
-	<ctime>
-	<string>
-	<vector>
-	<memory>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipLocalFileHeader.h
-	"ZipGenericExtraField.h"
-	<iostream>
-	<vector>
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipGenericExtraField.h
-	<cstdint>
-	<vector>
-	<iostream>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipCentralDirectoryFileHeader.h
-	"ZipGenericExtraField.h"
-	<iostream>
-	<string>
-	<vector>
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/ICompressionMethod.h
-	"../compression/compression_interface.h"
-	"../compression/store/store_encoder.h"
-	"../compression/store/store_decoder.h"
-	<memory>
-
-1593164434 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/compression_interface.h
-	<iostream>
-	<algorithm>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_encoder.h
-	"../compression_interface.h"
-	"store_encoder_properties.h"
-	"../../streams/crc32stream.h"
-	"../../extlibs/zlib/zlib.h"
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_encoder_properties.h
-	"../compression_interface.h"
-	<algorithm>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/crc32stream.h
-	<istream>
-	"streambuffs/crc32_streambuf.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/streambuffs/crc32_streambuf.h
-	<streambuf>
-	<cstdint>
-	"../substream.h"
-	"../../extlibs/zlib/zlib.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/substream.h
-	<istream>
-	"streambuffs/sub_streambuf.h"
-
-1593609127 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/streambuffs/sub_streambuf.h
-	<streambuf>
-	<istream>
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/zlib.h
-	"zconf.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/zconf.h
-	<windows.h>
-	<limits.h>
-	<sys/types.h>
-	<stddef.h>
-	<unistd.h>
-	<unixio.h>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_decoder.h
-	"../compression_interface.h"
-	"store_decoder_properties.h"
-	"../../streams/crc32stream.h"
-	"../../extlibs/zlib/zlib.h"
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_decoder_properties.h
-	"../compression_interface.h"
-	<algorithm>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/StoreMethod.h
-	"ICompressionMethod.h"
-	"../compression/store/store_encoder.h"
-	"../compression/store/store_decoder.h"
-	<memory>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/DeflateMethod.h
-	"ICompressionMethod.h"
-	"../compression/deflate/deflate_encoder.h"
-	"../compression/deflate/deflate_decoder.h"
-	<memory>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_encoder.h
-	"../compression_interface.h"
-	"deflate_encoder_properties.h"
-	"../../extlibs/zlib/zlib.h"
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_encoder_properties.h
-	"../compression_interface.h"
-	<algorithm>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_decoder.h
-	"../compression_interface.h"
-	"deflate_decoder_properties.h"
-	"../../extlibs/zlib/zlib.h"
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_decoder_properties.h
-	"../compression_interface.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/LzmaMethod.h
-	"ICompressionMethod.h"
-	"../compression/lzma/lzma_encoder.h"
-	"../compression/lzma/lzma_decoder.h"
-	<memory>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_encoder.h
-	"../compression_interface.h"
-	"lzma_encoder_properties.h"
-	"detail/lzma_alloc.h"
-	"detail/lzma_handle.h"
-	"detail/lzma_header.h"
-	"detail/lzma_in_stream.h"
-	"detail/lzma_out_stream.h"
-	<ostream>
-	<thread>
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_encoder_properties.h
-	"../compression_interface.h"
-	"detail/lzma_handle.h"
-	"../../extlibs/lzma/LzmaEnc.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_handle.h
-	"lzma_alloc.h"
-	"../../../extlibs/lzma/LzmaEnc.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_alloc.h
-	"../../../extlibs/lzma/Types.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Types.h
-	<stddef.h>
-	<windows.h>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaEnc.h
-	"Types.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_header.h
-	"lzma_handle.h"
-	"lzma_out_stream.h"
-	"../../../extlibs/lzma/7zVersion.h"
-	"../../../extlibs/lzma/LzmaEnc.h"
-
-1594288751 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_out_stream.h
-	"../../../extlibs/lzma/Types.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zVersion.h
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_in_stream.h
-	"../../../extlibs/lzma/Types.h"
-	<condition_variable>
-	<mutex>
-
-1594288843 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_decoder.h
-	"../compression_interface.h"
-	"detail/lzma_alloc.h"
-	"lzma_decoder_properties.h"
-	"../../extlibs/lzma/LzmaDec.h"
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_decoder_properties.h
-	"../compression_interface.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaDec.h
-	"Types.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/utils/enum_utils.h
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/memstream.h
-	<iostream>
-	<cstdint>
-	"streambuffs/mem_streambuf.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/streambuffs/mem_streambuf.h
-	<streambuf>
-	<cstdint>
-	<cassert>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//methods/Bzip2Method.h
-	"ICompressionMethod.h"
-	"../compression/bzip2/bzip2_encoder.h"
-	"../compression/bzip2/bzip2_decoder.h"
-	<memory>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//methods/ICompressionMethod.h
-	"../compression/compression_interface.h"
-	"../compression/store/store_encoder.h"
-	"../compression/store/store_decoder.h"
-	<memory>
-
-1593164434 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/compression_interface.h
-	<iostream>
-	<algorithm>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_encoder.h
-	"../compression_interface.h"
-	"store_encoder_properties.h"
-	"../../streams/crc32stream.h"
-	"../../extlibs/zlib/zlib.h"
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_encoder_properties.h
-	"../compression_interface.h"
-	<algorithm>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/crc32stream.h
-	<istream>
-	"streambuffs/crc32_streambuf.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/streambuffs/crc32_streambuf.h
-	<streambuf>
-	<cstdint>
-	"../substream.h"
-	"../../extlibs/zlib/zlib.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/substream.h
-	<istream>
-	"streambuffs/sub_streambuf.h"
-
-1593609127 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/streambuffs/sub_streambuf.h
-	<streambuf>
-	<istream>
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//extlibs/zlib/zlib.h
-	"zconf.h"
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//extlibs/zlib/zconf.h
-	<windows.h>
-	<limits.h>
-	<sys/types.h>
-	<stddef.h>
-	<unistd.h>
-	<unixio.h>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_decoder.h
-	"../compression_interface.h"
-	"store_decoder_properties.h"
-	"../../streams/crc32stream.h"
-	"../../extlibs/zlib/zlib.h"
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_decoder_properties.h
-	"../compression_interface.h"
-	<algorithm>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_encoder.h
-	"../compression_interface.h"
-	"bzip2_encoder_properties.h"
-	"../../extlibs/bzip2/bzlib.h"
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_encoder_properties.h
-	"../compression_interface.h"
-	<algorithm>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//extlibs/bzip2/bzlib.h
-	<stdio.h>
-	<windows.h>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_decoder.h
-	"../compression_interface.h"
-	"bzip2_decoder_properties.h"
-	"../../extlibs/bzip2/bzlib.h"
-	<cstdint>
-
-1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_decoder_properties.h
-	"../compression_interface.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSConsts.h
-
-1593426587 /home/jhb/Nextcloud/dev/cpp/Common/fileSystem.h
-	"commonTypes.h"
-	<shlobj.h>
-	<string>
-	<deque>
-	<list>
-
-1593438000 source:/home/jhb/Nextcloud/dev/cpp/Common/fileSystem.cpp
-	"fileSystem.h"
-	<charUtils.h>
-	<iostream>
-	<fstream>
-	<strsafe.h>
-	<filesystem>
-	<unistd.h>
-	<experimental/filesystem>
-
-1592486648 source:/home/jhb/Nextcloud/dev/cpp/Common/logFile.cpp
-	"logFile.h"
-	<stdio.h>
-	<stdarg.h>
-	<assert.h>
-	<time.h>
-	<cstring>
-	<sys/stat.h>
-	<sys/types.h>
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/regExpr.cpp
-	"regExpr.h"
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/textFile.cpp
-	"textFile.h"
-	"sharedConsts.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/textFile.h
-	"outputFile.h"
-	<fstream>
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/treeStructure.cpp
-	"treeStructure.h"
-	<charUtils.h>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/treeStructure.h
-	"sharedConsts.h"
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLFile.cpp
-	"XMLFile.h"
-	"ODSConsts.h"
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLParser.cpp
-	"XMLParser.h"
-
-1594110801 source:/home/jhb/Nextcloud/dev/cpp/Common/charUtils.cpp
-	<charUtils.h>
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/agentTree.cpp
-	"agentTree.h"
-	"regExpr.h"
-	<ldap.h>
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/columnList.cpp
-	"columnList.h"
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/commandFile.cpp
-	"commandFile.h"
-	<fileSystem.h>
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.cpp
-	"confFile.h"
-	<fileSystem.h>
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/CSVFile.cpp
-	"CSVFile.h"
-	<fstream>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/CSVFile.h
-	"textFile.h"
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/destinationList.cpp
-	"destinationList.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/destinationList.h
-	"sharedConsts.h"
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptFile.cpp
-	"JScriptFile.h"
-	<iomanip>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptFile.h
-	"textFile.h"
-	"JScriptConsts.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptConsts.h
-
-1594223669 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldap2File.cpp
-	"sharedConsts.h"
-	"ldapBrowser.h"
-	<fileSystem.h>
-	<dirent.h>
-	<ctime>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldapBrowser.h
-	"sharedConsts.h"
-	"confFile.h"
-	"agentTree.h"
-	"outputFile.h"
-	"servicesList.h"
-	"treeStructure.h"
-	"destinationList.h"
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/servicesList.h
-	"sharedConsts.h"
-	"treeStructure.h"
-	"JScriptConsts.h"
-	"ldapAttributes.h"
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.cpp
-	<string>
-	<list>
-	<commonTypes.h>
-	"LDAPServer.h"
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDIFFile.cpp
-	"LDIFFile.h"
-	<iomanip>
-
-1594124726 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDIFFile.h
-	"textFile.h"
-
-1594124726 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/servicesList.cpp
-	"servicesList.h"
+1594124726 ist.h"
 
 1594289374 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipGenericExtraField.cpp
 	"ZipGenericExtraField.h"
 	"../streams/serialization.h"
+
+1594289374 s/serialization.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/serialization.h
 	<iostream>
@@ -1558,6 +1334,8 @@
 
 1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/blocksort.c
 	"bzlib_private.h"
+
+1593162728 vate.h"
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/bzlib_private.h
 	<stdlib.h>
@@ -1697,6 +1475,8 @@
 	"CpuArch.h"
 	<VersionHelpers.h>
 
+1593609127 lpers.h>
+
 1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Delta.c
 	"Delta.h"
 
@@ -1724,10 +1504,702 @@
 	<FTPClient.h>
 	<SMTPClient.h>
 
+1482477776 t.h>
+
 1594111090 /home/jhb/Nextcloud/dev/cpp/Common/jhbCURLTools/FTPClient.h
 	"CURLTools.h"
 
 1594292713 /home/jhb/Nextcloud/dev/cpp/Common/jhbCURLTools/CURLTools.h
+	<exception>
+	<curl/curl.h>
+	<algorithm>
+	<atomic>
+	<cstddef>
+	<cstdio>
+	<cstdlib>
+	<cstring>
+	<ctime>
+	<direct.h>
+	<stdarg.h>
+	<stdio.h>
+	<stdlib.h>
+	<sys/stat.h>
+	<sys/types.h>
+	<fstream>
+	<functional>
+	<iostream>
+	<memory>
+	<mutex>
+	<sstream>
+	<string>
+	<vector>
+
+1482132476 /home/jhb/Nextcloud/dev/cpp/Common/curl/curl.h
+	"curlver.h"
+	"curlbuild.h"
+	"curlrules.h"
+	<stdio.h>
+	<limits.h>
+	<osreldate.h>
+	<sys/types.h>
+	<time.h>
+	<winsock2.h>
+	<ws2tcpip.h>
+	<sys/select.h>
+	<sys/socket.h>
+	<sys/time.h>
+	<support/SupportDefs.h>
+	"easy.h"
+	"multi.h"
+	"typecheck-gcc.h"
+
+1482132476 -gcc.h"
+
+1482477776 /home/jhb/Nextcloud/dev/cpp/Common/curl/curlver.h
+
+1482477776 /home/jhb/Nextcloud/dev/cpp/Common/curl/curlbuild.h
+	<sys/types.h>
+	<sys/socket.h>
+
+1478108725 /home/jhb/Nextcloud/dev/cpp/Common/curl/curlrules.h
+
+1482132476 /home/jhb/Nextcloud/dev/cpp/Common/curl/easy.h
+
+1478108725 /home/jhb/Nextcloud/dev/cpp/Common/curl/multi.h
+	"curl.h"
+
+1482132476 /home/jhb/Nextcloud/dev/cpp/Common/curl/typecheck-gcc.h
+
+1594110747 /home/jhb/Nextcloud/dev/cpp/Common/jhbCURLTools/SMTPClient.h
+	"CURLTools.h"
+	<charUtils.h>
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma2Dec.c
+	<stdio.h>
+	<string.h>
+	"Lzma2Dec.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma86Dec.c
+	"Lzma86.h"
+	"Alloc.h"
+	"Bra.h"
+	"LzmaDec.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma86.h
+	"Types.h"
+
+1620376754 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldap2File.cpp
+	"sharedConsts.h"
+	"sFileSystem.h"
+	"ldapBrowser.h"
+	"XMLParser.h"
+	<dirent.h>
+	<ctime>
+
+1620378195 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedConsts.h
+	<RegEntry.h>
+	<iostream>
+	<string>
+	<sstream>
+	<fstream>
+	<vector>
+	<deque>
+	<list>
+	"folders.h"
+	<time.h>
+	<direct.h>
+	<sys/stat.h>
+	<sys/types.h>
+	<logFile.h>
+	<commonTypes.h>
+	"XMLConsts.h"
+	"LDAPServer.h"
+	"sharedTypes.h"
+
+1233838654 /home/jhb/Nextcloud/dev/cpp/Common/RegEntry.h
+	<tchar.h>
+	<deque>
+	<string>
+
+1620377654 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/folders.h
+	<commonTypes.h>
+	<string>
+	<list>
+
+1619860414 /home/jhb/Nextcloud/dev/cpp/Common/commonTypes.h
+	<windows.h>
+	<tchar.h>
+	<string.h>
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<string.h>
+
+1595857085 /home/jhb/Nextcloud/dev/cpp/Common/logFile.h
+	<commonTypes.h>
+	<charUtils.h>
+	<stdio.h>
+	<unistd.h>
+	<syslog.h>
+
+1619346739 /home/jhb/Nextcloud/dev/cpp/Common/charUtils.h
+	<sstream>
+	<iomanip>
+	<deque>
+	<string>
+	<commonTypes.h>
+
+1620377558 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLConsts.h
+
+1620377068 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.h
+	<winldap.h>
+	<Winber.h>
+	<ldap.h>
+	"ldapAttributes.h"
+
+1619682163 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldapAttributes.h
+	<./directory/directoryAttr.h>
+
+1613040623 /home/jhb/Nextcloud/dev/cpp/Common/directory/directoryAttr.h
+
+1620377540 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedTypes.h
+	<charUtils.h>
+	<exception>
+
+1620377852 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sFileSystem.h
+	"commonTypes.h"
+	<string>
+	<list>
+
+1620376930 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldapBrowser.h
+	"sharedConsts.h"
+	"confFile.h"
+	"agentTree.h"
+	"outputFile.h"
+	"LDAPSources.h"
+	"servicesList.h"
+	"treeStructure.h"
+	"destinationList.h"
+	"titles.h"
+
+1620377411 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.h
+	"sharedConsts.h"
+	"sharedTypes.h"
+	"XMLParser.h"
+	"commandFile.h"
+
+1620377354 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLParser.h
+	<./xml/pugixml.hpp>
+	<./xml/pugixml.cpp>
+	<charUtils.h>
+	"sFileSystem.h"
+	"searchExpr.h"
+
+1568231462 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.hpp
+	"pugiconfig.hpp"
+	<stddef.h>
+	<exception>
+	<iterator>
+	<iosfwd>
+	<string>
+
+1568231462 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugiconfig.hpp
+
+1568231462 /home/jhb/Nextcloud/dev/cpp/Common/xml/pugixml.cpp
+	"pugixml.hpp"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<assert.h>
+	<limits.h>
+	<wchar.h>
+	<math.h>
+	<float.h>
+	<istream>
+	<ostream>
+	<string>
+	<new>
+	<stdint.h>
+
+1620377691 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/searchExpr.h
+	"sharedConsts.h"
+	"columnList.h"
+
+1620377386 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/columnList.h
+	"sharedConsts.h"
+	"ldapAttributes.h"
+
+1620377398 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/commandFile.h
+	"sharedConsts.h"
+	"sharedTypes.h"
+	"columnList.h"
+	"XMLParser.h"
+	<iostream>
+	<sstream>
+	<ctime>
+
+1620376559 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/agentTree.h
+	"sharedConsts.h"
+
+1620377155 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/outputFile.h
+	"sharedConsts.h"
+	"confFile.h"
+	"agentTree.h"
+	<sstream>
+	<iostream>
+
+1619682163 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPSources.h
+	<commonTypes.h>
+	<list>
+	<string>
+	"LDAPServer.h"
+
+1620377194 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/servicesList.h
+	"sharedConsts.h"
+	"treeStructure.h"
+	"JScriptConsts.h"
+	"ldapAttributes.h"
+
+1620377278 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/treeStructure.h
+	"sharedConsts.h"
+
+1620377439 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptConsts.h
+
+1620377433 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/destinationList.h
+	"sharedConsts.h"
+
+1620377885 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/titles.h
+	"sharedConsts.h"
+
+1595857090 source:/home/jhb/Nextcloud/dev/cpp/Common/charUtils.cpp
+	<charUtils.h>
+
+1595514590 source:/home/jhb/Nextcloud/dev/cpp/Common/fileSystem.cpp
+	"fileSystem.h"
+	<charUtils.h>
+	<iostream>
+	<fstream>
+	<strsafe.h>
+	<filesystem>
+	<unistd.h>
+	<experimental/filesystem>
+
+1595511277 /home/jhb/Nextcloud/dev/cpp/Common/fileSystem.h
+	"commonTypes.h"
+	<shlobj.h>
+	<string>
+	<deque>
+	<list>
+
+1595857087 source:/home/jhb/Nextcloud/dev/cpp/Common/logFile.cpp
+	"logFile.h"
+	<stdio.h>
+	<stdarg.h>
+	<assert.h>
+	<time.h>
+	<cstring>
+	<sys/stat.h>
+	<sys/types.h>
+
+1620376962 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/agentTree.cpp
+	"agentTree.h"
+	"searchExpr.h"
+	<ldap.h>
+
+1620376972 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/columnList.cpp
+	"columnList.h"
+
+1620376986 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/commandFile.cpp
+	"commandFile.h"
+	"sFileSystem.h"
+
+1620376995 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.cpp
+	"confFile.h"
+	"sFileSystem.h"
+
+1620377011 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/CSVFile.cpp
+	"CSVFile.h"
+	<fstream>
+
+1620377422 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/CSVFile.h
+	"textFile.h"
+
+1620377230 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/textFile.h
+	"outputFile.h"
+	<fstream>
+
+1620377025 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/destinationList.cpp
+	"destinationList.h"
+
+1620377642 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/folders.cpp
+	"folders.h"
+	"sFileSystem.h"
+
+1620377034 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptFile.cpp
+	"JScriptFile.h"
+	<iomanip>
+
+1620377454 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/JScriptFile.h
+	"textFile.h"
+	"JScriptConsts.h"
+
+1620376920 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldapBrowser.cpp
+	"ldapBrowser.h"
+	"searchExpr.h"
+	"CSVFile.h"
+	"ODSFile.h"
+	"JScriptFile.h"
+	"LDIFFile.h"
+	"vCardFile.h"
+	"sFileSystem.h"
+	<FTPClient.h>
+	<SMTPClient.h>
+
+1620378451 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSFile.h
+	"XMLFile.h"
+	<./zip/ziputils/zip.h>
+	<./zip/ziputils/unzip.h>
+	<stdlib.h>
+	<crtdbg.h>
+	<fstream>
+	"../ZipLib/ZipFile.h"
+	"../ZipLib/streams/memstream.h"
+	"../ZipLib//methods/Bzip2Method.h"
+
+1620377317 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLFile.h
+	"outputFile.h"
+	<./xml/pugixml.hpp>
+	<./xml/pugixml.cpp>
+
+1555498691 /home/jhb/Nextcloud/dev/cpp/Common/zip/ziputils/zip.h
+
+1555498690 /home/jhb/Nextcloud/dev/cpp/Common/zip/ziputils/unzip.h
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/ZipFile.h
+	"ZipArchive.h"
+	<string>
+	<memory>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/ZipArchive.h
+	"detail/EndOfCentralDirectoryBlock.h"
+	"ZipArchiveEntry.h"
+	<istream>
+	<vector>
+	<algorithm>
+	<atomic>
+	<memory>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/EndOfCentralDirectoryBlock.h
+	<cstdint>
+	<string>
+	<iostream>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/ZipArchiveEntry.h
+	"detail/ZipLocalFileHeader.h"
+	"detail/ZipCentralDirectoryFileHeader.h"
+	"methods/ICompressionMethod.h"
+	"methods/StoreMethod.h"
+	"methods/DeflateMethod.h"
+	"methods/LzmaMethod.h"
+	"streams/substream.h"
+	"utils/enum_utils.h"
+	<cstdint>
+	<ctime>
+	<string>
+	<vector>
+	<memory>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipLocalFileHeader.h
+	"ZipGenericExtraField.h"
+	<iostream>
+	<vector>
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipGenericExtraField.h
+	<cstdint>
+	<vector>
+	<iostream>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipCentralDirectoryFileHeader.h
+	"ZipGenericExtraField.h"
+	<iostream>
+	<string>
+	<vector>
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/ICompressionMethod.h
+	"../compression/compression_interface.h"
+	"../compression/store/store_encoder.h"
+	"../compression/store/store_decoder.h"
+	<memory>
+
+1593164434 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/compression_interface.h
+	<iostream>
+	<algorithm>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_encoder.h
+	"../compression_interface.h"
+	"store_encoder_properties.h"
+	"../../streams/crc32stream.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_encoder_properties.h
+	"../compression_interface.h"
+	<algorithm>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/crc32stream.h
+	<istream>
+	"streambuffs/crc32_streambuf.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/streambuffs/crc32_streambuf.h
+	<streambuf>
+	<cstdint>
+	"../substream.h"
+	"../../extlibs/zlib/zlib.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/substream.h
+	<istream>
+	"streambuffs/sub_streambuf.h"
+
+1593609127 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/streambuffs/sub_streambuf.h
+	<streambuf>
+	<istream>
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/zlib.h
+	"zconf.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/zconf.h
+	<windows.h>
+	<limits.h>
+	<sys/types.h>
+	<stddef.h>
+	<unistd.h>
+	<unixio.h>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_decoder.h
+	"../compression_interface.h"
+	"store_decoder_properties.h"
+	"../../streams/crc32stream.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/store/store_decoder_properties.h
+	"../compression_interface.h"
+	<algorithm>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/StoreMethod.h
+	"ICompressionMethod.h"
+	"../compression/store/store_encoder.h"
+	"../compression/store/store_decoder.h"
+	<memory>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/DeflateMethod.h
+	"ICompressionMethod.h"
+	"../compression/deflate/deflate_encoder.h"
+	"../compression/deflate/deflate_decoder.h"
+	<memory>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_encoder.h
+	"../compression_interface.h"
+	"deflate_encoder_properties.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_encoder_properties.h
+	"../compression_interface.h"
+	<algorithm>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_decoder.h
+	"../compression_interface.h"
+	"deflate_decoder_properties.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/deflate/deflate_decoder_properties.h
+	"../compression_interface.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/methods/LzmaMethod.h
+	"ICompressionMethod.h"
+	"../compression/lzma/lzma_encoder.h"
+	"../compression/lzma/lzma_decoder.h"
+	<memory>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_encoder.h
+	"../compression_interface.h"
+	"lzma_encoder_properties.h"
+	"detail/lzma_alloc.h"
+	"detail/lzma_handle.h"
+	"detail/lzma_header.h"
+	"detail/lzma_in_stream.h"
+	"detail/lzma_out_stream.h"
+	<ostream>
+	<thread>
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_encoder_properties.h
+	"../compression_interface.h"
+	"detail/lzma_handle.h"
+	"../../extlibs/lzma/LzmaEnc.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_handle.h
+	"lzma_alloc.h"
+	"../../../extlibs/lzma/LzmaEnc.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_alloc.h
+	"../../../extlibs/lzma/Types.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Types.h
+	<stddef.h>
+	<windows.h>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaEnc.h
+	"Types.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_header.h
+	"lzma_handle.h"
+	"lzma_out_stream.h"
+	"../../../extlibs/lzma/7zVersion.h"
+	"../../../extlibs/lzma/LzmaEnc.h"
+
+1594399218 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_out_stream.h
+	"../../../extlibs/lzma/Types.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zVersion.h
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/detail/lzma_in_stream.h
+	"../../../extlibs/lzma/Types.h"
+	<condition_variable>
+	<mutex>
+
+1594399218 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_decoder.h
+	"../compression_interface.h"
+	"detail/lzma_alloc.h"
+	"lzma_decoder_properties.h"
+	"../../extlibs/lzma/LzmaDec.h"
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/compression/lzma/lzma_decoder_properties.h
+	"../compression_interface.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaDec.h
+	"Types.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/utils/enum_utils.h
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/memstream.h
+	<iostream>
+	<cstdint>
+	"streambuffs/mem_streambuf.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/streambuffs/mem_streambuf.h
+	<streambuf>
+	<cstdint>
+	<cassert>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//methods/Bzip2Method.h
+	"ICompressionMethod.h"
+	"../compression/bzip2/bzip2_encoder.h"
+	"../compression/bzip2/bzip2_decoder.h"
+	<memory>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//methods/ICompressionMethod.h
+	"../compression/compression_interface.h"
+	"../compression/store/store_encoder.h"
+	"../compression/store/store_decoder.h"
+	<memory>
+
+1593164434 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/compression_interface.h
+	<iostream>
+	<algorithm>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_encoder.h
+	"../compression_interface.h"
+	"store_encoder_properties.h"
+	"../../streams/crc32stream.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_encoder_properties.h
+	"../compression_interface.h"
+	<algorithm>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/crc32stream.h
+	<istream>
+	"streambuffs/crc32_streambuf.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/streambuffs/crc32_streambuf.h
+	<streambuf>
+	<cstdint>
+	"../substream.h"
+	"../../extlibs/zlib/zlib.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/substream.h
+	<istream>
+	"streambuffs/sub_streambuf.h"
+
+1593609127 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//streams/streambuffs/sub_streambuf.h
+	<streambuf>
+	<istream>
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//extlibs/zlib/zlib.h
+	"zconf.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//extlibs/zlib/zconf.h
+	<windows.h>
+	<limits.h>
+	<sys/types.h>
+	<stddef.h>
+	<unistd.h>
+	<unixio.h>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_decoder.h
+	"../compression_interface.h"
+	"store_decoder_properties.h"
+	"../../streams/crc32stream.h"
+	"../../extlibs/zlib/zlib.h"
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/store/store_decoder_properties.h
+	"../compression_interface.h"
+	<algorithm>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_encoder.h
+	"../compression_interface.h"
+	"bzip2_encoder_properties.h"
+	"../../extlibs/bzip2/bzlib.h"
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_encoder_properties.h
+	"../compression_interface.h"
+	<algorithm>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//extlibs/bzip2/bzlib.h
+	<stdio.h>
+	<windows.h>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_decoder.h
+	"../compression_interface.h"
+	"bzip2_decoder_properties.h"
+	"../../extlibs/bzip2/bzlib.h"
+	<cstdint>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib//compression/bzip2/bzip2_decoder_properties.h
+	"../compression_interface.h"
+
+1620377091 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDIFFile.h
+	"textFile.h"
+
+1620377930 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/vCardFile.h
+	"textFile.h"
+
+1594111090 /home/jhb/Nextcloud/dev/cpp/Common/jhbCURLTools/FTPClient.h
+	"CURLTools.h"
+
+1595317479 /home/jhb/Nextcloud/dev/cpp/Common/jhbCURLTools/CURLTools.h
 	<exception>
 	<curl/curl.h>
 	<algorithm>
@@ -1786,9 +2258,250 @@
 
 1482132476 /home/jhb/Nextcloud/dev/cpp/Common/curl/typecheck-gcc.h
 
-1594110747 /home/jhb/Nextcloud/dev/cpp/Common/jhbCURLTools/SMTPClient.h
+1595317282 /home/jhb/Nextcloud/dev/cpp/Common/jhbCURLTools/SMTPClient.h
 	"CURLTools.h"
 	<charUtils.h>
+
+1620377059 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.cpp
+	<string>
+	<list>
+	<commonTypes.h>
+	"LDAPServer.h"
+
+1620377083 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDIFFile.cpp
+	"LDIFFile.h"
+	<iomanip>
+
+1620378435 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSFile.cpp
+	"ODSFile.h"
+	"ODSConsts.h"
+	"sFileSystem.h"
+
+1620377498 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ODSConsts.h
+
+1620377145 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/outputFile.cpp
+	"outputFile.h"
+	"sFileSystem.h"
+
+1620377681 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/searchExpr.cpp
+	"searchExpr.h"
+
+1620377182 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/servicesList.cpp
+	"servicesList.h"
+
+1620377833 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sFileSystem.cpp
+	"sFileSystem.h"
+	<charUtils.h>
+	<shlobj.h>
+	<unistd.h>
+	<experimental/filesystem>
+
+1620377220 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/textFile.cpp
+	"textFile.h"
+	"sharedConsts.h"
+
+1620377871 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/titles.cpp
+	"sharedConsts.h"
+	"titles.h"
+
+1620377268 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/treeStructure.cpp
+	"treeStructure.h"
+	<charUtils.h>
+
+1620377916 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/vCardFile.cpp
+	"vCardFile.h"
+	<iomanip>
+
+1620377304 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLFile.cpp
+	"XMLFile.h"
+	"ODSConsts.h"
+
+1620377345 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLParser.cpp
+	"XMLParser.h"
+
+1620378976 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/EndOfCentralDirectoryBlock.cpp
+	"EndOfCentralDirectoryBlock.h"
+	"../streams/serialization.h"
+	<cstring>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/streams/serialization.h
+	<iostream>
+	<string>
+	<vector>
+
+1620378605 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipCentralDirectoryFileHeader.cpp
+	"ZipCentralDirectoryFileHeader.h"
+	"ZipLocalFileHeader.h"
+	"../streams/serialization.h"
+	<cstring>
+	<ctime>
+
+1594399218 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipGenericExtraField.cpp
+	"ZipGenericExtraField.h"
+	"../streams/serialization.h"
+
+1620379224 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/detail/ZipLocalFileHeader.cpp
+	"ZipLocalFileHeader.h"
+	"ZipCentralDirectoryFileHeader.h"
+	"../streams/serialization.h"
+	<cstring>
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/blocksort.c
+	"bzlib_private.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/bzlib_private.h
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<string.h>
+	"bzlib.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/bzlib.h
+	<stdio.h>
+	<windows.h>
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/bzerror.c
+	<assert.h>
+
+1593609127 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/bzip2-compress.c
+	"bzlib_private.h"
+
+1594399218 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/bzlib.c
+	"bzlib_private.h"
+	<fcntl.h>
+	<io.h>
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/crctable.c
+	"bzlib_private.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/decompress.c
+	"bzlib_private.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/huffman.c
+	"bzlib_private.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/bzip2/randtable.c
+	"bzlib_private.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zAlloc.c
+	"7zAlloc.h"
+	<windows.h>
+	<stdio.h>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zAlloc.h
+	<stdlib.h>
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zBuf.c
+	"7zBuf.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zBuf.h
+	"Types.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zBuf2.c
+	<string.h>
+	"7zBuf.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zCrc.c
+	"7zCrc.h"
+	"CpuArch.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zCrc.h
+	"Types.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/CpuArch.h
+	"Types.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zCrcOpt.c
+	"CpuArch.h"
+
+1595838984 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zDec.c
+	<string.h>
+	"7z.h"
+	"Bcj2.h"
+	"Bra.h"
+	"CpuArch.h"
+	"LzmaDec.h"
+	"Lzma2Dec.h"
+	"Ppmd7.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7z.h
+	"7zBuf.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Bcj2.h
+	"Types.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Bra.h
+	"Types.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma2Dec.h
+	"LzmaDec.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Ppmd7.h
+	"Ppmd.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Ppmd.h
+	"Types.h"
+	"CpuArch.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zFile.c
+	"7zFile.h"
+	<errno.h>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zFile.h
+	<windows.h>
+	<stdio.h>
+	"Types.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zIn.c
+	<string.h>
+	"7z.h"
+	"7zCrc.h"
+	"CpuArch.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/7zStream.c
+	<string.h>
+	"Types.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Alloc.c
+	<windows.h>
+	<stdlib.h>
+	"Alloc.h"
+	<stdio.h>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Alloc.h
+	<stddef.h>
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Bcj2.c
+	"Bcj2.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Bra.c
+	"Bra.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Bra86.c
+	"Bra.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/BraIA64.c
+	"Bra.h"
+
+1593609127 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/CpuArch.c
+	"CpuArch.h"
+	<VersionHelpers.h>
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Delta.c
+	"Delta.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Delta.h
+	"Types.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzFind.c
+	<string.h>
+	"LzFind.h"
+	"LzHash.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzFind.h
+	"Types.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzHash.h
 
 1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma2Dec.c
 	<stdio.h>
@@ -1803,4 +2516,158 @@
 
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma86.h
 	"Types.h"
+
+1594399218 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzFindMt.c
+	"LzHash.h"
+	"LzFindMt.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzFindMt.h
+	"LzFind.h"
+	"Threads.h"
+
+1620378935 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Threads.h
+	"Types.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma2Enc.c
+	<string.h>
+	"Lzma2Enc.h"
+	"MtCoder.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma2Enc.h
+	"LzmaEnc.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/MtCoder.h
+	"Threads.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma86Enc.c
+	<string.h>
+	"Lzma86.h"
+	"Alloc.h"
+	"Bra.h"
+	"LzmaEnc.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaDec.c
+	"LzmaDec.h"
+	<string.h>
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaEnc.c
+	<string.h>
+	<stdio.h>
+	"LzmaEnc.h"
+	"LzFind.h"
+	"LzFindMt.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaLib.c
+	"LzmaEnc.h"
+	"LzmaDec.h"
+	"Alloc.h"
+	"LzmaLib.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/LzmaLib.h
+	"Types.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/MtCoder.c
+	<stdio.h>
+	"MtCoder.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Ppmd7.c
+	<memory.h>
+	"Ppmd7.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Ppmd7Dec.c
+	"Ppmd7.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Ppmd7Enc.c
+	"Ppmd7.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Sha256.c
+	"RotateDefs.h"
+	"Sha256.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/RotateDefs.h
+	<stdlib.h>
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Sha256.h
+	"Types.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Xz.c
+	"7zCrc.h"
+	"CpuArch.h"
+	"Xz.h"
+	"XzCrc64.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Xz.h
+	"Sha256.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/XzCrc64.h
+	<stddef.h>
+	"Types.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/XzCrc64.c
+	"XzCrc64.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/XzDec.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"7zCrc.h"
+	"Alloc.h"
+	"Bra.h"
+	"CpuArch.h"
+	"Delta.h"
+	"Lzma2Dec.h"
+	"Bcj3Dec.c"
+	"SbDec.c"
+	"Xz.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/XzIn.c
+	<string.h>
+	"7zCrc.h"
+	"CpuArch.h"
+	"Xz.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/adler32.c
+	"zutil.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/zutil.h
+	"zlib.h"
+	<stddef.h>
+	<string.h>
+	<stdlib.h>
+	<alloc.h>
+	<malloc.h>
+	<malloc.h>
+	<unix.h>
+	<stdio.h>
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/compress.c
+	"zlib.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/crc32.c
+	<stdio.h>
+	"zutil.h"
+	"crc32.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/crc32.h
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/deflate.c
+	"deflate.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/deflate.h
+	"zutil.h"
+
+1593162728 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/infback.c
+	"zutil.h"
+	"inftrees.h"
+	"inflate.h"
+	"inffast.h"
+	"inffixed.h"
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/inftrees.h
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/inflate.h
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/inffast.h
+
+1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/zlib/inffixed.h
 

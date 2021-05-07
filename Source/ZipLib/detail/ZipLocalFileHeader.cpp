@@ -9,7 +9,7 @@ namespace detail {
 
 ZipLocalFileHeader::ZipLocalFileHeader()
 {
-  memset(this, 0, sizeof(ZipLocalFileHeaderBase));
+  memset((void*)this, 0, sizeof(ZipLocalFileHeaderBase));
   Signature = SignatureConstant;
 }
 
@@ -53,7 +53,7 @@ bool ZipLocalFileHeader::Deserialize(std::istream& stream)
   if (stream.fail() || Signature != SignatureConstant)
   {
     stream.clear();
-    stream.seekg(static_cast<std::ios::off_type>(static_cast<std::ios::streamoff>(stream.tellg()) - stream.gcount()), std::ios::beg);
+    stream.seekg(static_cast<std::ios::off_type>(static_cast<std::streamoff>(stream.tellg()) - stream.gcount()), std::ios::beg);
     return false;
   }
 

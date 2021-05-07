@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -20,7 +22,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -157,7 +159,7 @@ public:
 	// Dossiers de l'application
 	folders* getFolders()
 	{ return folders_; }
-	
+
 	// Logs
 	logFile* getLogs()
 	{ return logs_; }
@@ -228,8 +230,8 @@ protected:
 	DEST_TYPE			defType_;
 
 	// Dossiers de l'application
-	folders*			folders_;	
-	
+	folders*			folders_;
+
 	// Logs
 	logFile*			logs_;
 };

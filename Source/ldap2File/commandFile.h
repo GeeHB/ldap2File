@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -20,7 +22,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -33,12 +35,114 @@
 #include "columnList.h"
 #include "XMLParser.h"
 
+#include <iostream>
+#include <sstream>
+#include <ctime>
+
 //
 // Définition de la classe
 //
 class commandFile : public XMLParser
 {
 public:
+
+	// Date "limite" d'utilisation du fichier
+	//
+	class date
+	{
+	public:
+		// Construction
+		date() {
+			sDate_ = "";
+			isOver_ = false;	// Pas de date => elle est donc "valide"
+
+			// Par défaut, aujourd'hui
+			time_t now = time(0);
+			date_ = *localtime(&now);
+		}
+
+		date(string&value) {
+			set(value);
+		}
+
+		// Mise à jour de la date
+		void set(string& value) {
+			sDate_ = value;		// Juste pour les traces
+
+			if (value.size()) {
+				if (true == (isOver_ = _extractDate())) {
+					// Le format est bon,
+
+					// date < aujourd'hui ? (oui => le fichier est dépassé)
+					commandFile::date today;	// Par défaut la date pointe sur le jour courant
+					isOver_ = (*this) < today;
+				}
+			}
+			else{
+				// Pas de date ou format invalide
+				// => la date n'est donc pas dépassée
+				isOver_ = false;
+			}
+		}
+
+		// Dépassée ?
+		bool isOver() {
+			return isOver_;
+		}
+
+		// La date en chaine de caractère (telle qu'elle a été donnée)
+		string value()
+		{ return sDate_; }
+
+		// Comparaisons
+		//
+
+		bool operator<(const commandFile::date& right) {
+			return ((date_.tm_year < right.date_.tm_year)
+				|| ((date_.tm_year == right.date_.tm_year)
+					&& (date_.tm_mon < right.date_.tm_mon))
+				|| ((date_.tm_year == right.date_.tm_year)
+					&& (date_.tm_mon == right.date_.tm_mon)
+					&& (date_.tm_mday < right.date_.tm_mday)));
+		}
+
+	// Méthodes privées
+	protected:
+		// Parse de la date
+		// La chaîne doit être au format dd/mm/yyyy
+		bool _extractDate() {
+			std::istringstream is(sDate_);
+			char delimiter;
+			int d(0), m(0), y(0);
+			if (is >> d >> delimiter >> m >> delimiter >> y) {
+				date_ = { 0 };
+				date_.tm_mday = d;
+				date_.tm_mon = m - 1;
+				date_.tm_year = y - 1900;
+				date_.tm_isdst = -1;
+
+				// Normalisation ...
+				time_t when = mktime(&date_);
+				const struct tm *norm = localtime(&when);
+
+				// Après nprmalisation la date ne devrait pas avoir changé !!!:
+				return (norm->tm_mday == d &&
+					norm->tm_mon == m - 1 &&
+					norm->tm_year == y - 1900);
+			}
+
+			// Une erreur
+			return false;
+		}
+
+	// Données membres
+	protected:
+
+		string		sDate_;		// LA date proposée
+		bool		isOver_;	// Dépassée ?
+		struct tm	date_;		// Au "bon" format
+	};
+
 	// Critère de recherche et expression régulière
 	//
 	class criterium
@@ -111,15 +215,21 @@ public:
 	commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded = false);
 	virtual ~commandFile();
 
-	// Environnement
-	const char* environment()
-	{ return environment_.c_str(); }
-
+	// Le fichier est-il valide ?
 	bool isValid()
 	{ return valid_; }
 
 	// Accès aux données
 	//
+
+	// Environnement
+	const char* environment()
+	{ return environment_.c_str(); }
+
+
+	// Pointeur sur la date "limite"
+	commandFile::date* limit()
+	{ return &limit_; }
 
 	bool showEmptyAttributes();
 
@@ -173,6 +283,7 @@ protected:
 		INCLUDED = 2
 	};
 
+	commandFile::date	limit_;				// Date "limite" pour le fichier
 	string				environment_;		// Nom de l'environnement (celui du fichier de conf. si non précisé)
 
 	commandFile*		includedFile_;		// Fichier inclus

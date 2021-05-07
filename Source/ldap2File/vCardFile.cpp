@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -21,7 +23,7 @@
 //--	08/02/2021 - JHB - Version 21.2.2
 //--						+ Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -91,7 +93,7 @@ bool vCardFile::getOwnParameters()
 	else {
 		organisation_ = "";
 	}
-	
+
 	// Attributs à ajouter à tous les objets
 	//
 	snode = node.child(XML_OWN_VCARD_ADD_NODE);
@@ -112,7 +114,7 @@ bool vCardFile::getOwnParameters()
 		snode = snode.next_sibling(XML_OWN_LDIF_ADD_NODE);
 	}
 
-	
+
 	if (logs_) {
 		logs_->add(logFile::LOG, "VCARD - %d attribut(s) ajouté(s)", add2All_.size());
 	}
@@ -134,7 +136,7 @@ bool vCardFile::create()
 		return false;
 	}
 
-	
+
 	return true;
 }
 
@@ -157,7 +159,7 @@ bool vCardFile::saveLine(bool header, LPAGENTINFOS agent)
 		}
 	}
 
-	// ... puis les autres 
+	// ... puis les autres
 	//
 
 	// Nom complet
@@ -197,7 +199,7 @@ bool vCardFile::saveLine(bool header, LPAGENTINFOS agent)
 	}
 
 	// Numéro de tel.
-	// 
+	//
 
 	// tel. long
 	pAttr = attributesToSave_.findAttribute(STR_ATTR_TELEPHONENUMBER);
@@ -210,16 +212,16 @@ bool vCardFile::saveLine(bool header, LPAGENTINFOS agent)
 	if (pAttr) {
 		_attribute2VCARD(pAttr, VCARD_TELEPHONENUMBER);
 	}
-	
+
 	// mobile(s)
 	pAttr = attributesToSave_.findAttribute(STR_ATTR_MOBILE);
 	if (pAttr) {
 		_attribute2VCARD(pAttr, VCARD_MOBILE);
 	}
-	
+
 	// Organisation (+ dir + svc)
 	//
-	
+
 	// Organisation
 	value = organisation_;
 	value += VCARD_VALUE_SEP;
@@ -251,7 +253,7 @@ bool vCardFile::saveLine(bool header, LPAGENTINFOS agent)
 		value += VCARD_VALUE_SEP;
 		_attribute2VCARD(VCARD_ADDR, value.c_str());
 	}
-	
+
 	// Fin d'enregistrement
 	_attribute2VCARD(VCARD_END, VCARD_VCARD);
 

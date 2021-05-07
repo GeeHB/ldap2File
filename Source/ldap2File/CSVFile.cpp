@@ -1,20 +1,22 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: CSVFile.cpp
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
-//--	
+//--
 //--	PROJET	: ldap2File
-//--	
+//--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
-//--	
-//--	DESCRIPTIONS:
-//--	
+//--
+//--	DESCRIPTION:
+//--
 //--			Implémentation de la classe CSVFile
 //--			Génération des fichiers au format CSV (liste et organigramme)
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	MODIFICATIONS:
 //--	-------------
 //--
@@ -46,7 +48,7 @@ CSVFile::CSVFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 
 	sepCols_ = STR_FR_SEP;
 	sepValues_ = STR_VALUE_SEP;
-	
+
 	// La ligne est vide
 	line_ = NULL;
 	values_ = 0;
@@ -71,7 +73,7 @@ bool CSVFile::create()
 	if (NULL == (line_ = new VALUE[values_])){
 		throw LDAPException("CSVFile - Impossible d'allouer de la mémoire pour la modélisation d'une ligne");
 	}
-	
+
 	// Création de l'entête
 	_addHeader();
 
@@ -106,7 +108,7 @@ bool CSVFile::getOwnParameters()
 	// Valeur des séparateurs
 	pugi::xml_node snode = node.child(XML_OWN_CSV_FORMAT_COL_SEPARATOR);
 	if (!IS_EMPTY(snode.name())){
-		sepCols_ = snode.first_child().value();		
+		sepCols_ = snode.first_child().value();
 	}
 
 	snode = node.child(XML_OWN_CSV_FORMAT_VAL_SEPARATOR);
@@ -142,7 +144,7 @@ bool CSVFile::getOwnParameters()
 }
 
 
-// Ajout d'une valeur 
+// Ajout d'une valeur
 //
 bool CSVFile::addAt(size_t colIndex, string& value)
 {
@@ -154,7 +156,7 @@ bool CSVFile::addAt(size_t colIndex, string& value)
 	// Est-ce un numéro de mobile ?
 	if (value.size() == 10 &&
 		(value.find("04") == 0 ||
-		(value.find("06")==0 || 
+		(value.find("06")==0 ||
 		 value.find("07")==0 ||
 		 value.find("09") == 0))){
 		_formatTelephoneNumber(value);
@@ -175,7 +177,7 @@ bool CSVFile::addAt(size_t colIndex, deque<string>& values)
 // Un autre fichier pour gérer du contenu ?
 //
 orgChartFile* CSVFile::addOrgChartFile(bool flatMode, bool fullMode, bool& newFile)
-{ 
+{
 	// Les fichiers plats sont gérés
 	if (flatMode){
 		newFile = true;
@@ -185,7 +187,7 @@ orgChartFile* CSVFile::addOrgChartFile(bool flatMode, bool fullMode, bool& newFi
 		}
 		return handler;
 	}
-	
+
 	// sinon, rien ...
 	return outputFile::addOrgChartFile(flatMode, fullMode, newFile);
 }
@@ -225,7 +227,7 @@ void CSVFile::_addHeader()
 
 	if (logs_) {
 		logs_->add(logFile::DBG, "%d colonnes afficheés sur %d", visibleIndex, columns_->size());
-	
+
 		if (false == fileInfos_->showHeader_) {
 			logs_->add(logFile::LOG, "Pas d'entete dans le fichier");
 		}
@@ -244,7 +246,7 @@ void CSVFile::_formatTelephoneNumber(string& value)
 	}
 
 	string number("");
-	
+
 	// On coupe de numéro en 5
 	for (int index = 0; index < 5; index++){
 		number += value.substr(2 * index, 2);

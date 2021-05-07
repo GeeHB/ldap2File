@@ -1,26 +1,28 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: folders.cpp
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
-//--	
+//--
 //--	PROJET	: ldap2File
-//--	
+//--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
-//--	
-//--	DESCRIPTIONS:
-//--	
+//--
+//--	DESCRIPTION:
+//--
 //--			Implémentation des classes folders et folders::folder
 //--			Dossiers de l'application
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	MODIFICATIONS:
 //--	-------------
 //--
 //--	21/07/2020 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -40,7 +42,7 @@ namespace jhbLDAPTools {
 	//-- classe folders::folder - Un dossier de l'application
 	//--
 	//---------------------------------------------------------------------------
-	
+
 	// Modification du chemin d'un dossier
 	//
 	bool folders::folder::setPath(const string& path)
@@ -49,14 +51,14 @@ namespace jhbLDAPTools {
 		if (path == path_) {
 			return false;
 		}
-		
+
 		// Mise à jour du chemin
 		path_ = path;
-	
+
 		// On s'assure que le dossier physique existe
 		return _create();
 	}
-	
+
 	// Création du dossier (s'il n'existe pas)
 	bool folders::folder::_create()
 	{
@@ -64,12 +66,12 @@ namespace jhbLDAPTools {
 			// Création du dossier
 			return sFileSystem::create_directory(path_);
 		}
-		
+
 		// Ok (le dossier existe déja)
 		return true;
 	}
 
-	
+
 	//---------------------------------------------------------------------------
 	//--
 	//-- classe folders - Liste des dossiers de l'application
@@ -88,7 +90,7 @@ namespace jhbLDAPTools {
 
 		folders_.clear();
 	}
-	
+
 	// Ajout d'un dossier
 	//
 	bool folders::add(FOLDER_TYPE type, string& path)
@@ -134,7 +136,7 @@ namespace jhbLDAPTools {
 							path = (*i)->path();
 							size_t pos(path.rfind(FILENAME_SEP));
 							if (path.npos != pos) {
-								// Le nom du sous-dossier 
+								// Le nom du sous-dossier
 								newPath = realPath;
 								newPath += path.substr(pos);
 
@@ -189,12 +191,12 @@ namespace jhbLDAPTools {
 
 		// On pointe surle premier élément
 		list<folders::folder*>::iterator it = folders_.begin();
-		
+
 		if (index) {
 			// on avance jusqu'à l'index demandé
 			advance(it, index);
 		}
-		
+
 		return (*it);
 	}
 

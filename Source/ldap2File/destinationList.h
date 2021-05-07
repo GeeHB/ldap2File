@@ -5,10 +5,12 @@
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
 //--	PROJET	: ldap2File
-//--	
+//--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
 //--		Définition de l'objet destinationList
 //--		liste des serveurs/destinations
@@ -20,7 +22,7 @@
 //--
 //--	10/01/2018 - JHB - Création - Version 18.1.1
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -49,10 +51,10 @@ public:
 	virtual ~destinationList()
 	{ dispose(); }
 
-	
+
 	// Ajout
 	bool append(fileDestination* destination);
-	
+
 	void dispose();
 	size_t size()
 	{ return destinations_.size(); }

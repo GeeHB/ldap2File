@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -36,7 +38,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -171,11 +173,11 @@ bool _checkCurrentVersion(string& error)
 	}
 
 	string version = entry.GetPrivateString(REG_LDAP2FILE_SECTION, REG_LDAP2FILE_VER_KEY, REG_LDAP2FILE_VER_DEF);
-	
+
 	if (0 == version.length()) {
 		cout << "Premier lancement de l'application" << endl;
 	}
-	
+
 	if (APP_RELEASE != version) {
 		// Mise à jour de la version
 #ifndef _DEBUG
@@ -201,7 +203,7 @@ bool _updateConfigurationFile(const char* appName)
 	}
 
 	// Dossier de l'application
-	string fullName(appName), path("");	
+	string fullName(appName), path("");
 #ifdef _DEBUG
 	fullName = "d:\\ldapTools\\ldap2File.exe";
 #endif // _DEBUG
@@ -228,21 +230,21 @@ bool _updateConfigurationFile(const char* appName)
 		cout << e.what() << endl;
 		return false;
 	}
-	
+
 	// Ma "racine"
 	pugi::xml_node paramsRoot = (*xmlConf.paramsRoot());
-	
+
 	// Dossier de l'application
 	//
 	bool update(false);
 	pugi::xml_node childNode = xmlConf.findChildNode(paramsRoot, XML_CONF_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, xmlConf.expectedOS());
-	
+
 	// Trouvé ?
 	if (!IS_EMPTY(childNode.name())) {
 		string val = childNode.first_child().value();
 #ifdef _DEBUG
 		cout << "Dossier de l'application : " << val << endl;
-#endif _DEBUG
+#endif // _DEBUG
 
 		// Le dossier doit exister !
 		if (!val.length() || !sFileSystem::exists(val)){
@@ -283,7 +285,7 @@ bool _updateConfigurationFile(const char* appName)
 	//
 	if (!IS_EMPTY(childNode.name())) {
 		string val = childNode.first_child().value();
-		
+
 #ifdef _DEBUG
 		cout << "Dossier des logs : " << val << endl;
 #endif // _DEBUG
@@ -309,19 +311,19 @@ bool _updateConfigurationFile(const char* appName)
 #else
 	}
 #endif // _DEBUG
-	
+
 	//
 	// Mise à jour du fichier
 	//
 	if (update) {
-		
+
 		// Conservation du fichier (s'il n'existe pas déja)
 		string destFile(confFile);
 		destFile += ".old";
 		if (!sFileSystem::exists(destFile)) {
 			sFileSystem::copy_file(confFile, destFile);
 		}
-		
+
 		// Sauvegarde
 		if (false == xmlConf.save()) {
 			cout << "Erreur lors de la sauvegarde du fichier '" << confFile << "'" << endl;
@@ -345,9 +347,9 @@ void _usage()
 	cout << "\n\t\t. -o:{output-file} : Le fichier généré sera renommé en {output-file] même si le fichier de commande indique une autre destination." << endl;
 	cout << "\n\t\t . -c : Suppression du fichier de commande après traitement." << endl;
 	cout << "\n\t\t.  -s : Windows uniquement = pas de MessageBox" << endl;
-	
+
 	cout << "\n\tExemples d'appels:" << endl;
-	
+
 	cout << "\n\tAnalyse et traitement des fichiers de commande du dossier c:\\my datas\\test toutes les 30 minutes:" << endl;
 	cout << "\n\t\tldap2File.exe -d:\"c:\\my datas\\test\" -f:30" << endl;
 
@@ -371,7 +373,7 @@ int main(int argc, const char* argv[]) {
 	// Nom complet de l'application
 	//
 	string fullAppName(argv[0]);
-	
+
 	// Pas de chemin
 	size_t pathPos = fullAppName.rfind(FILENAME_SEP);
 	if (fullAppName.npos == pathPos) {
@@ -381,8 +383,8 @@ int main(int argc, const char* argv[]) {
 
 #ifdef _WIN32
 	// L'extension ?
-#endif _WIN32
-	
+#endif // _WIN32
+
 	// Binaire et sa version
 	//
 	string binName(fullAppName);
@@ -399,7 +401,7 @@ int main(int argc, const char* argv[]) {
 	cout << binName << " - Version " << APP_RELEASE;
 #ifdef _DEBUG
 	cout << " - DEBUG";
-#endif |DEBUG
+#endif // |DEBUG
 	cout << endl;
 
 	cout << "Copyright © " << APP_COPYRIGHT << endl;
@@ -433,7 +435,7 @@ int main(int argc, const char* argv[]) {
 	// Vérification de la ligne de commandes
 	//
 	int retCode(0);
-	folders myFolders;		// Liste des dossiers utilisés par l'application	
+	folders myFolders;		// Liste des dossiers utilisés par l'application
 	logFile logs;
 	confFile configurationFile(&myFolders, &logs);
 	string file("");
@@ -525,9 +527,9 @@ int main(int argc, const char* argv[]) {
 
 		logs.add(logFile::LOG, "=========================================================================");
 #ifdef _DEBUG
-		logs.add(logFile::LOG, "==== %s - version %s - %s", APP_SHORT_NAME, APP_RELEASE, APP_DESC);
-#else
 		logs.add(logFile::LOG, "==== %s - version %s - DEBUG - %s", APP_SHORT_NAME, APP_RELEASE, APP_DESC);
+#else
+		logs.add(logFile::LOG, "==== %s - version %s - %s", APP_SHORT_NAME, APP_RELEASE, APP_DESC);
 #endif // _DEBUG
 		logs.add(logFile::LOG, "==== Copyright %s", APP_COPYRIGHT);
 		logs.add(logFile::LOG, "Lancement de l'application");
@@ -642,25 +644,30 @@ int main(int argc, const char* argv[]) {
 				else {
 					switch (retType) {
 					case RET_TYPE::RET_INVALID_PARAMETERS:
-						cout << " - [erreur - paramètres invalides]";
+						cout << " - [ko] - Paramètres invalides";
+						break;
+
+					case RET_TYPE::RET_FILE_TO_DELETE:
+						cout << " - [ok] - La date limite est dépassée - Le fichier doit être supprimé";
+						removeFile = true;
 						break;
 
 					case RET_TYPE::RET_NON_BLOCKING_ERROR:
-						cout << " - [erreur(s) non bloquante(s)]";
+						cout << " - [ok] - Erreur(s) non bloquante(s)";
 						filesGenerated++;	// L'erreur n'a pas empêchée la génération du fichier
 						break;
 
 					case RET_TYPE::RET_LDAP_ERROR:
-						cout << " - [erreur LDAP]";
+						cout << " - [ko] - Erreur LDAP]";
 						break;
 
 					case RET_TYPE::RET_UNABLE_TO_SAVE:
-						cout << " - [erreur de fichier]";
+						cout << " - [ko] - Erreur de fichier";
 						break;
 
 					case RET_TYPE::RET_BLOCKING_ERROR:
 					default:
-						cout << " - [erreur(s)]";
+						cout << " - [ko] - Erreur(s) bloquantes";
 						break;
 					}
 				}
@@ -669,7 +676,9 @@ int main(int argc, const char* argv[]) {
 
 				// Suppression du fichier de commandes
 				if (removeFile) {
+#ifndef _DEBUG
 					sFileSystem::remove((*(files.begin())).c_str());
+#endif // #ifndef _DEBUG
 
 					// Il ne peut pas y avoir d'analyse régulière ...
 					freq = 0;

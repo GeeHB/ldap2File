@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -20,7 +22,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -30,7 +32,6 @@
 // Implémentation de la classe
 //
 
-
 // Construction
 //
 XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs, bool loadComments)
@@ -38,14 +39,14 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs, boo
 	if (IS_EMPTY(rootName)) {
 		throw LDAPException("XMLParser - Pas de nom pour la racine");
 	}
-	
+
 	// Initialisation des paramètres
 	baseRootName_ = rootName;
 	folders_ = pFolders;
 	logs_ = logs;
 	fileName_ = "";
 	loadComments_ = loadComments;
-	
+
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 
 	// Type de système de fichier "local"
@@ -109,7 +110,7 @@ bool XMLParser::save()
 	catch (...) {
 		return false;
 	}
-	
+
 	// Ok (inutile)
 	return true;
 }
@@ -221,7 +222,7 @@ void XMLParser::_load()
 	pugi::xml_parse_result result;
 
 	try {
-		result = xmlDocument_.load_file(fileName(), options);	
+		result = xmlDocument_.load_file(fileName(), options);
 	}
 	catch (...) {
 		erreur = "Erreur inconnue lors du chargement de '";

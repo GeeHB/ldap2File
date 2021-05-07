@@ -6,11 +6,11 @@
 //--
 //--	PROJET	: xxx
 //--
-//--	DATE	: 20/12/2016
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
 //--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
 //--	Implémentation de la classe sFileSystem
 //--
@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -85,7 +85,8 @@ namespace sFileSystem {
 #ifdef _WIN32
 			return (0 != CopyFile(from.c_str(), to.c_str(), FALSE));
 #else
-			return fs::copy(from, to);
+			fs::copy(from, to);
+			return true;
 #endif // WIN32
 		}
 		catch (...) {
@@ -136,7 +137,7 @@ namespace sFileSystem {
 		CloseHandle(hFile);
 		return ((size_t)dSize);
 #else
-		return fs::file_size(fileName);;
+		return fs::file_size(path);
 #endif // WIN32
 	}
 
@@ -176,7 +177,7 @@ namespace sFileSystem {
 
 		try {
 #ifdef _WIN32
-		
+
 			return (0 != CreateDirectoryA(path.c_str(), NULL));
 #else
 			return fs::create_directory(path);
@@ -191,7 +192,7 @@ namespace sFileSystem {
 
 	// Dossier courant
 	//
-	
+
 	// Lecture
 	std::string current_path()
 	{
@@ -260,7 +261,7 @@ namespace sFileSystem {
 		if (0 == fullName.length()) {
 			return "";
 		}
-		
+
 		std::string inter = charUtils::cleanName(fullName);
 		size_t pos = inter.rfind(FILENAME_SEP);
 		return ((inter.npos == pos) ? inter : inter.substr(pos + 1));
@@ -292,7 +293,7 @@ namespace sFileSystem {
 	{
 		// La liste est vide
 		out.clear();
-		
+
 		if (fullName.length() > 0) {
 			std::string fName = charUtils::cleanName(fullName);
 			if (fName.length()) {

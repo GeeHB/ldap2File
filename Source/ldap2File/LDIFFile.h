@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -21,7 +23,7 @@
 //--	05/04/2020 - JHB - Version 20.4.6
 //--						+ Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -221,12 +223,12 @@ private:
 		bool					allowEmpty_;		// Autorisation de création d'un attribut sans valeur
 		deque<LDAPATTRIBUTE*>	attributes_;		// Liste des attributs
 	};
-	
+
 	// Nouvelle ligne vierge
 	void _newLine() {
 		// Une ligne de +
 		_incLines();
-		
+
 		// Nettoyage des attributs
 		attributesToSave_.clean();
 

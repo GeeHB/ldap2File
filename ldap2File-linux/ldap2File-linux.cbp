@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-D__LDAP_USE_ALLIER_TITLES_h__" />
 					<Add directory="/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File-linux" />
 				</Compiler>
 			</Target>
@@ -23,6 +24,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-D__LDAP_USE_ALLIER_TITLES_h__" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -298,21 +300,29 @@
 		<Unit filename="../Source/ldap2File/confFile.h" />
 		<Unit filename="../Source/ldap2File/destinationList.cpp" />
 		<Unit filename="../Source/ldap2File/destinationList.h" />
+		<Unit filename="../Source/ldap2File/folders.cpp" />
+		<Unit filename="../Source/ldap2File/folders.h" />
 		<Unit filename="../Source/ldap2File/ldap2File.cpp" />
 		<Unit filename="../Source/ldap2File/ldapBrowser.cpp" />
 		<Unit filename="../Source/ldap2File/ldapBrowser.h" />
 		<Unit filename="../Source/ldap2File/outputFile.cpp" />
 		<Unit filename="../Source/ldap2File/outputFile.h" />
-		<Unit filename="../Source/ldap2File/regExpr.cpp" />
-		<Unit filename="../Source/ldap2File/regExpr.h" />
+		<Unit filename="../Source/ldap2File/sFileSystem.cpp" />
+		<Unit filename="../Source/ldap2File/sFileSystem.h" />
+		<Unit filename="../Source/ldap2File/searchExpr.cpp" />
+		<Unit filename="../Source/ldap2File/searchExpr.h" />
 		<Unit filename="../Source/ldap2File/servicesList.cpp" />
 		<Unit filename="../Source/ldap2File/servicesList.h" />
 		<Unit filename="../Source/ldap2File/sharedConsts.h" />
 		<Unit filename="../Source/ldap2File/sharedTypes.h" />
 		<Unit filename="../Source/ldap2File/textFile.cpp" />
 		<Unit filename="../Source/ldap2File/textFile.h" />
+		<Unit filename="../Source/ldap2File/titles.cpp" />
+		<Unit filename="../Source/ldap2File/titles.h" />
 		<Unit filename="../Source/ldap2File/treeStructure.cpp" />
 		<Unit filename="../Source/ldap2File/treeStructure.h" />
+		<Unit filename="../Source/ldap2File/vCardFile.cpp" />
+		<Unit filename="../Source/ldap2File/vCardFile.h" />
 		<Unit filename="../ldap2File/currentVersion.txt" />
 		<Extensions />
 	</Project>

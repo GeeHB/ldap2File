@@ -6,10 +6,12 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
-//--	
+//--
 //--			Définition de la classe JScriptFile
 //--			Génération d'un fichier javascript
 //--
@@ -24,7 +26,7 @@
 //--					+ Ajout de toutes les colonnes (si pas reconnue, utilisation du nom du schéma)
 //--					+ Valeur par défaut des attributs
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -99,7 +101,7 @@ public:
 	virtual orgChartFile* addOrgChartFile(bool flatMode, bool fullMode, bool& newFile);
 	virtual void closeOrgChartFile();
 
-	// L'organigramme est enregistre dans un onglet sans entete 
+	// L'organigramme est enregistre dans un onglet sans entete
 	// et dont les colonnes ne sont par retaillees
 	virtual bool createOrgSheet(const char* sheetName)
 	{ return true; }
@@ -112,7 +114,7 @@ public:
 	// Saut de ligne (si le fichier est en mode texte)
 	virtual void endOfLine()
 	{ saveLine(); }
-	
+
 	// Méthodes privées
 	//
 private:
@@ -123,7 +125,7 @@ private:
 		// Construction
 		tagJSATTRIBUTE(string& attrName, string& attrValue)
 		{
-			name = attrName; 
+			name = attrName;
 			value = attrValue;
 		}
 
@@ -231,13 +233,13 @@ private:
 	// Nouvelle ligne vierge
 	void _newLine();
 
-		
+
 	// Données membres privées
 	//
 private:
 	charUtils		encoder_;		// Gestion de l'encodage des caractères
 	JSData*			line_;			// Données correspondant à une "ligne"
-	
+
 	//ofstream		file_;
 	bool			newFile_;
 	// bool			keepLine_;		// La ligne doit-être générée ?
@@ -249,7 +251,7 @@ private:
 #ifdef _GENERATE_COLORED_GROUPS_
 	deque<LPEGRP>				groups_;		// Regroupements d'agents
 #endif // _GENERATE_COLORED_GROUPS_
-	
+
 	deque<LPAGENTLINK>			replacements_;	// Qui remplace qui ?
 	deque<LPAGENTLINK>			jobs_;			// Agent plus plusieurs postes ?
 };

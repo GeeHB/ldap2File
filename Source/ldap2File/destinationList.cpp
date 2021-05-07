@@ -6,9 +6,11 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
 //--		Impleméntation de l'objet destinationList
 //--		Liste des serveurs/destinations
@@ -20,7 +22,7 @@
 //--
 //--	10/01/2018 - JHB - Création - Version 18.1.1
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -43,7 +45,7 @@ void destinationList::dispose()
 //
 bool destinationList::append(fileDestination* destination)
 {
-	if (NULL == destination || 
+	if (NULL == destination ||
 		NULL != getDestinationByName(destination->name())){	// Unique par son nom !!!
 		// Je libère le pointeur (si il existe ...)
 		if (destination){

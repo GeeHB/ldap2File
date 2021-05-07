@@ -6,7 +6,7 @@ namespace detail {
 
 EndOfCentralDirectoryBlock::EndOfCentralDirectoryBlock()
 {
-  memset(this, 0, sizeof(EndOfCentralDirectoryBlockBase));
+  memset((void*)this, 0, sizeof(EndOfCentralDirectoryBlockBase));
   Signature = SignatureConstant;
 }
 
@@ -37,7 +37,7 @@ bool EndOfCentralDirectoryBlock::Deserialize(std::istream& stream)
 void EndOfCentralDirectoryBlock::Serialize(std::ostream& stream)
 {
   CommentLength = static_cast<uint16_t>(Comment.length());
- 
+
   if (sizeof(EndOfCentralDirectoryBlockBase) == EndOfCentralDirectoryBlockBase::SIZE_IN_BYTES)
   {
     serialize<EndOfCentralDirectoryBlockBase>(stream, *this);

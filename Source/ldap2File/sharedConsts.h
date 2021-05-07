@@ -6,9 +6,11 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
 //--		Définitions communes - Constantes et includes
 //--
@@ -19,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -27,7 +29,9 @@
 #define _LDAP_2_FILE_SHARED_CONSTS_h__
 
 // Gestions spécifiques à l'Allier
+#ifndef __LDAP_USE_ALLIER_TITLES_h__
 #define __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES_h__
 
 // Gestion du scope LDAP_SCOPE_BASE lorsqu'il ne fonctionne pas
 #ifdef _WIN32
@@ -53,7 +57,7 @@
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_FULL_NAME			"ldap2File.exe"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"21.4.14"
+#define APP_RELEASE				"21.5.2"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -94,7 +98,7 @@
 
 // Expressions régulières
 //
-#define SEARCH_EXPR_LDAP			"JHB - Découpage des requêtes"
+#define SEARCH_EXPR_LDAP		"JHB - Découpage des requêtes"
 #define SEARCH_EXPR_MINIMAL		"JHB - Objets de type utilisateur"
 
 // Classes STL
@@ -178,15 +182,15 @@ using namespace jhbLDAPTools;
 
 // Quelques valeurs ...
 //
-#define STR_VACANT_POST			"Poste vacant"
-#define SERVICE_ADMINISTRATION	"Administration"	// Les agents sans service mais dans une direction
+#define STR_VACANT_POST				"Poste vacant"
+#define SERVICE_ADMINISTRATION		"Administration"	// Les agents sans service mais dans une direction
 
 // Onglets
 //
 
-#define DEF_TAB_SHORTNAME	"Annuaire"
-#define DEF_TAB_NAME		"Annuaire le %dd%-%mm%-%yyyy%"
-#define DEF_ORGTAB_NAME		"Organigramme"
+#define DEF_TAB_SHORTNAME			"Annuaire"
+#define DEF_TAB_NAME				"Annuaire le %dd%-%mm%-%yyyy%"
+#define DEF_ORGTAB_NAME				"Organigramme"
 
 // Format des noeuds dans l'organigramme hiérarchique
 //
@@ -221,7 +225,6 @@ using namespace jhbLDAPTools;
 #define TOKEN_NODE_CHILDS_PLUS		"%fils+descendants%"
 //#define TOKEN_NODE_VACANT			"%nom% (%fils%)"
 #define TOKEN_NODE_VACANT			"%nom%"
-
 
 //
 // XML
@@ -354,7 +357,7 @@ enum class FILE_TYPE { FILE_UNKNOWN_TYPE = 0, FILE_TXT = 0, FILE_CSV, FILE_XLS, 
 enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS_WINDOWS = 1, DEST_FS_MACOS = 2, DEST_FS_LINUX = 2, DEST_EMAIL, DEST_FTP, DEST_SCP };
 
 // Retours
-enum class RET_TYPE {RET_OK = 0,RET_INVALID_PARAMETERS,RET_BLOCKING_ERROR,RET_NON_BLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE };
+enum class RET_TYPE {RET_OK = 0,RET_INVALID_PARAMETERS,RET_BLOCKING_ERROR,RET_NON_BLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE, RET_FILE_TO_DELETE };
 
 //
 // Structures et objets pour l'échange de données

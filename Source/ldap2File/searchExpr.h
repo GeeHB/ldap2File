@@ -6,9 +6,11 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
 //--			Définition de la classe searchExpr
 //--			Gestion des expressions pour les recherches LDAP
@@ -22,7 +24,7 @@
 //--
 //--	05/02/2016 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -48,7 +50,7 @@
 //
 #define SEARCH_ATTR_COMP_EQUAL				"="
 #define SEARCH_ATTR_COMP_GREATER_OR_EQUAL	">="
-#define SEARCH_ATTR_COMP_LOWER_OR_EQUAL		"<=" 
+#define SEARCH_ATTR_COMP_LOWER_OR_EQUAL		"<="
 /*
 #define SEARCH_ATTR_COMP_GREATER			">"
 #define SEARCH_ATTR_COMP_LOWER				"<"
@@ -143,7 +145,7 @@ public:
 	// Ajouts d'expressions
 	bool add(searchExpr* pExpr, bool copy = false);
 	//bool add(string& name, string& value);
-	
+
 	// Ajout/remplacement d'un attribut (selon l'opérateur)
 	searchExpr::EXPRGATTR* add(string& name, string& op, string& value);
 	searchExpr::EXPRGATTR* add(const char* name, const char* op, const char* value){

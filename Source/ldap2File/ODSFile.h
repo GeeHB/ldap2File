@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -20,7 +22,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -50,12 +52,12 @@
 		#include <stdlib.h>
 		#include <crtdbg.h>
 		#endif	// _MSC_VER
-		
+
 		#include <fstream>
-		
+
 		#include "../ZipLib/ZipFile.h"
 		#include "../ZipLib/streams/memstream.h"
-		#include "../ZipLib//methods/Bzip2Method.h"		
+		#include "../ZipLib//methods/Bzip2Method.h"
 	#else
 		// Sous linux on utilise la ligne de commandes
 		#define	__USE_CMD_LINE_ZIP__
@@ -67,7 +69,7 @@
 		//
 		#define	ZIP_STR			"tar -czf"			// Tant qu'à faire on utilise tar ...
 		#define	UNZIP_STR		"unzip -d"			// ... et unzip
-	#endif _WIN32
+	#endif // _WIN32
 #endif // #ifndef __USE_ZIP_UTILS_LIB__
 
 //----------------------------------------------------------------------
@@ -171,7 +173,7 @@ private:
 			file_ = false;
 #endif // __USE_ZIP_UTILS_LIB__
 		}
-		
+
 		virtual ~zipFile()
 		{ close(); }
 

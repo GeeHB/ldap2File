@@ -1,26 +1,28 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: folders.h
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
-//--	
+//--
 //--	PROJET	: ldap2File
-//--	
+//--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
-//--	
-//--	DESCRIPTIONS:
-//--	
+//--
+//--	DESCRIPTION:
+//--
 //--			Définition des classes folders et folders::folder
 //--			Dossiers de l'application
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	MODIFICATIONS:
 //--	-------------
 //--
 //--	21/07/2020 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -45,7 +47,7 @@ namespace jhbLDAPTools {
 
 		// Type(s) de dossiers
 		enum class FOLDER_TYPE { FOLDER_APP = 0, FOLDER_LOGS, FOLDER_TEMP, FOLDER_TEMPLATES, FOLDER_OUTPUTS, FOLDER_ZIP};
-		
+
 		// Un dossiers (ou sous dossier)
 		//
 		class folder
@@ -67,7 +69,7 @@ namespace jhbLDAPTools {
 			folders::FOLDER_TYPE type()
 			{ return type_; }
 
-			
+
 			bool setPath(const string& path);
 			const char* path()
 			{ return path_.c_str();}
@@ -130,6 +132,6 @@ namespace jhbLDAPTools {
 };	//  jhbLDAPTools
 
 
-#endif __LDAP_2_FILE_FOLDERS_LIST_h__
+#endif // __LDAP_2_FILE_FOLDERS_LIST_h__
 
 // EOF

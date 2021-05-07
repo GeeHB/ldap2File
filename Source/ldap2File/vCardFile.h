@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -21,7 +23,7 @@
 //--	08/02/2021 - JHB - Version 21.2.2
 //--						+ Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -208,12 +210,12 @@ private:
 	protected:
 		deque<LDAPATTRIBUTE*>	attributes_;		// Liste des attributs
 	};
-	
+
 	// Nouvelle ligne vierge
 	void _newLine() {
 		// Une ligne de +
 		_incLines();
-		
+
 		// Nettoyage des attributs
 		attributesToSave_.clean();
 	}
@@ -225,7 +227,7 @@ private:
 			file_ << szName << VCARD_ASSIGN_OP << value << eol_;
 		}
 	}
-	
+
 	// Sauvegarde d'un attribut avec toutes ses valeurs
 	void _attribute2VCARD(LDAPATTRIBUTE*, const char* szName = NULL);
 
@@ -240,7 +242,7 @@ private:
 	// Dans le fichier XML ...
 	string						organisation_;
 	vCardUserDatas				add2All_;			// Attributs ajoutés à tous les objets
-	
+
 	bool						newFile_;
 };
 

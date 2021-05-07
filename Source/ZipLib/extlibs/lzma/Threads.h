@@ -51,6 +51,10 @@ WRes Semaphore_Create(CSemaphore *p, UInt32 initCount, UInt32 maxCount);
 WRes Semaphore_ReleaseN(CSemaphore *p, UInt32 num);
 WRes Semaphore_Release1(CSemaphore *p);
 
+#ifndef WIN32
+typedef void* CRITICAL_SECTION;
+#endif // WIN32
+
 typedef CRITICAL_SECTION CCriticalSection;
 WRes CriticalSection_Init(CCriticalSection *p);
 #define CriticalSection_Delete(p) DeleteCriticalSection(p)

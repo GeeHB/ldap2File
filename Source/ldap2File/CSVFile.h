@@ -1,24 +1,26 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: CSVFile.h
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
-//--	
+//--
 //--	PROJET	: ldap2File
-//--	
+//--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
-//--	
-//--	DESCRIPTIONS:
-//--	
+//--
+//--	DESCRIPTION:
+//--
 //--			Définition de la classe CSVFile
 //--			Génération des fichiers au format CSV (liste et organigramme)
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -94,13 +96,13 @@ public:
 	// Fermetrue du fichier
 	virtual void closeOrgChartFile()
 	{ close(); }
-	
+
 	// Méthodes privées
 	//
 private:
 
 	void _formatTelephoneNumber(string& value);
-	
+
 	void _addHeader();
 	void _emptyLine();
 
@@ -117,7 +119,7 @@ protected:
 		string	value_;
 		bool	visible_;
 	}VALUE;
-	
+
 	// Données membres privées
 	//
 protected:
@@ -127,7 +129,7 @@ protected:
 	bool		showVacant_;	// Affichage des postes vacants
 
 	size_t		colIndex_;		// Index de la valeur courante
-	
+
 	VALUE*		line_;			// Tableau des valeurs
 	size_t		values_;		// Nombre de colonnes (ie. de valeurs)
 

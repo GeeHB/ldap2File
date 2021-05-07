@@ -2,54 +2,39 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="../Source/ldap2File/XMLParser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/XMLParser.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="205" />
+			<Cursor1 position="828" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ZipLib/detail/ZipGenericExtraField.cpp" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/sharedTypes.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="252" topLine="0" />
+			<Cursor1 position="260" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/treeStructure.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/ldap2File.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="8446" topLine="337" />
+			<Cursor1 position="262" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/regExpr.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/outputFile.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7758" topLine="343" />
+			<Cursor1 position="854" topLine="295" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/ldapBrowser.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/JScriptFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="24495" topLine="807" />
+			<Cursor1 position="473" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/XMLFile.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/XMLFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3380" topLine="130" />
+			<Cursor1 position="856" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/columnList.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/titles.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="175" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../../Common/charUtils.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6873" topLine="234" />
-		</Cursor>
-	</File>
-	<File name="../Source/ldap2File/ODSFile.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1816" topLine="71" />
-		</Cursor>
-	</File>
-	<File name="../Source/ldap2File/outputFile.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4816" topLine="203" />
+			<Cursor1 position="783" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../../Common/logFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -57,69 +42,89 @@
 			<Cursor1 position="4164" topLine="149" />
 		</Cursor>
 	</File>
-	<File name="../Source/ZipLib/extlibs/bzip2/bzlib.c" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/searchExpr.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="43916" topLine="1417" />
+			<Cursor1 position="798" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ZipLib/detail/EndOfCentralDirectoryBlock.h" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/ldapBrowser.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="612" topLine="25" />
+			<Cursor1 position="894" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/sharedTypes.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/CSVFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7883" topLine="304" />
+			<Cursor1 position="486" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../../Common/charUtils.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ZipLib/extlibs/lzma/XzIn.c" open="1" top="1" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="198" topLine="0" />
+			<Cursor1 position="437" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/ODSConsts.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/sharedConsts.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2592" topLine="91" />
+			<Cursor1 position="965" topLine="3" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/servicesList.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/vCardFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4041" topLine="147" />
+			<Cursor1 position="818" topLine="12" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/XMLConsts.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/XMLFile.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1222" topLine="36" />
+			<Cursor1 position="256" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/XMLParser.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/outputFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1483" topLine="18" />
+			<Cursor1 position="259" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ZipLib/extlibs/lzma/Threads.h" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/servicesList.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="203" topLine="10" />
+			<Cursor1 position="792" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/LDAPServer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/columnList.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="212" topLine="0" />
+			<Cursor1 position="474" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ZipLib/detail/ZipCentralDirectoryFileHeader.cpp" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/folders.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="249" topLine="4" />
+			<Cursor1 position="787" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ZipLib/detail/EndOfCentralDirectoryBlock.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/treeStructure.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="185" topLine="0" />
+			<Cursor1 position="262" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../../Common/cmdLineAnalyzer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/ldapBrowser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3484" topLine="105" />
+			<Cursor1 position="260" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/sFileSystem.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="791" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/LDIFFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="257" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/titles.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="255" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/confFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="502" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../../Common/fileSystem.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -127,34 +132,209 @@
 			<Cursor1 position="6623" topLine="241" />
 		</Cursor>
 	</File>
-	<File name="../Source/ZipLib/extlibs/lzma/LzFindMt.c" open="1" top="1" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/columnList.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="13075" topLine="468" />
+			<Cursor1 position="485" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/sharedConsts.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../Common/charUtils.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="931" topLine="27" />
+			<Cursor1 position="6873" topLine="234" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/extlibs/lzma/Types.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="436" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/servicesList.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="364" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/detail/EndOfCentralDirectoryBlock.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="201" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/LDAPServer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="259" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/ODSConsts.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3550" topLine="92" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/searchExpr.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="259" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/destinationList.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="472" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/CSVFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="492" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/detail/ZipLocalFileHeader.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1777" topLine="22" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/XMLConsts.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="257" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/LDIFFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="812" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/extlibs/lzma/Threads.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1997" topLine="28" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/extlibs/lzma/XzEnc.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7637" topLine="243" />
+		</Cursor>
+	</File>
+	<File name="../../Common/charUtils.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="198" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../Source/ldap2File/textFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1824" topLine="60" />
+			<Cursor1 position="775" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/ODSFile.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/ODSFile.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="11082" topLine="481" />
+			<Cursor1 position="796" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/servicesList.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ZipLib/extlibs/lzma/Threads.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7556" topLine="323" />
+			<Cursor1 position="107" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ldap2File/XMLFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/ldap2File/treeStructure.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="288" topLine="0" />
+			<Cursor1 position="1005" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/confFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="259" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/detail/ZipGenericExtraField.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="252" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/folders.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="359" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/XMLParser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="258" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/agentTree.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="432" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/vCardFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="258" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/destinationList.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="466" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/ODSFile.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="256" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/extlibs/bzip2/bzlib.c" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="43916" topLine="1417" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/LDAPServer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="928" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../../Common/cmdLineAnalyzer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3484" topLine="105" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/agentTree.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="497" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/detail/EndOfCentralDirectoryBlock.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="612" topLine="11" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/textFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="360" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/JScriptFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="261" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/sFileSystem.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="199" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/commandFile.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="485" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/extlibs/lzma/LzFindMt.c" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="842" topLine="34" />
+		</Cursor>
+	</File>
+	<File name="../Source/ZipLib/detail/ZipCentralDirectoryFileHeader.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1917" topLine="24" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/JScriptConsts.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="428" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ldap2File/commandFile.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="491" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

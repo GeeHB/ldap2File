@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -20,7 +22,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -76,7 +78,7 @@ void commandFile::_load()
 {
 	// Chargement du fichier ...
 	XMLParser::_load();
-	
+
 	// Le "bon" fichier pour l'application ?
 	try {
 		checkProtocol(XML_FILE_NODE);
@@ -88,10 +90,14 @@ void commandFile::_load()
 
 		return;
 	}
-	
+
 	//
 	// Lecture des paramètres
 	//
+
+	// Date "limite" pour le fichier
+	string val(paramsRoot_.attribute(FILE_LIMIT_ATTR).value());
+	limit_.set(val);
 
 	// Nom de l'environnement
 	//
@@ -318,7 +324,7 @@ bool commandFile::_fileInfos(aliases& aliases, OPFI& fileInfos)
 	if (val == XML_NO) {
 		fileInfos.showHeader_ = false;
 	}
-	
+
 	// Longeur max. du nom d'un onglet
 	snode = node.child(XML_TAB_NAME_SIZE_NODE);
 	if (!IS_EMPTY(snode.name())) {
@@ -498,7 +504,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 		// Pas de dossier => dossier courant
 		//folder = sFileSystem::merge(sFileSystem::current_path(), STR_FOLDER_OUTPUTS);
 		folder = folders_->find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path();
-		
+
 		pDestination = new fileDestination(folder);
 		if (!pDestination){
 			return false;

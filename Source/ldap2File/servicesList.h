@@ -1,26 +1,28 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: servicesList.h
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
-//--	
+//--
 //--	PROJET	: ldap2File
-//--	
+//--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
-//--	
-//--	DESCRIPTIONS:
-//--	
+//--
+//--	DESCRIPTION:
+//--
 //--			Définition de la classe servicesList
 //--			Liste des services/directions/pôles
-//--	
+//--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	MODIFICATIONS:
 //--	-------------
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	29/04/2021 - JHB - Version 21.4.14
+//--	07/05/2021 - JHB - Version 21.5.2
 //--
 //---------------------------------------------------------------------------
 
@@ -51,7 +53,7 @@ public:
 		: parent_{NULL}, DN_{""}, cleanName_{""}, realName_{""}, shortName_{""}, fileName_{""}, color_{""}, site_{ "" }
 		{}
 		LDAPService(const char* DN, const char* rname, const char* cname, const char* sname = NULL, const char* fName = NULL, const char* color = NULL, const char* site = NULL);
-	
+
 		// Destruction
 		virtual ~LDAPService()
 		{}
@@ -59,7 +61,7 @@ public:
 		// Accès
 		const char* DN()
 		{ return DN_.c_str(); }
-		
+
 		const char* realName()
 		{ return realName_.c_str(); }
 		const char* cleanName()
@@ -99,21 +101,21 @@ public:
 
 		LDAPService*	parent_;
 		string			DN_;
-		
+
 		// Nom "long"
 		string			cleanName_;		// sans accents
 		string			realName_;		// "complet"
-		
+
 		// Nom court
 		string			shortName_;
 
 		// Fichier
 		string			fileName_;
-		
+
 		string			color_;			// Couleur du container (ou celle du parent ...)
 		string			site_;			// Site / bâtiment
 	};
-	
+
 	typedef LDAPService* LPLDAPSERVICE;
 
 	// Construction et destruction
@@ -148,10 +150,10 @@ public:
 	// "Profondeur" associée à un type de container
 	//
 	size_t containerDepth(const char* container)
-	{ 
+	{
 		if (IS_EMPTY(container)) return DEPTH_NONE;
 		string sContainer(container);
-		return containerDepth(sContainer); 
+		return containerDepth(sContainer);
 	}
 	size_t containerDepth(string& container);
 
@@ -173,7 +175,7 @@ protected:
 	treeStructure*			structure_;
 
 	charUtils				encoder_;
-	
+
 	// Liste
 	deque<LPLDAPSERVICE>	services_;
 };
