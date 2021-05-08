@@ -107,7 +107,7 @@ bool confFile::logInfos(LOGINFOS& dst)
 		dst.mode_ = attrValue;
 
 		// Recherche de la "bonne valeur" pour le dossier
-		pugi::xml_node subNode = findChildNode(node, XML_CONF_LOGS_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str());
+		pugi::xml_node subNode = findChildNode(node, XML_CONF_LOGS_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str(), true);
 
 		// Trouvé ?
 		if (!IS_EMPTY(subNode.name())){
@@ -705,7 +705,7 @@ void confFile::_load()
 	pugi::xml_node subNode, childNode;
 
 	// Recherche de la "bonne valeur" pour le dossier
-	childNode = findChildNode(paramsRoot_, XML_CONF_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str());
+	childNode = findChildNode(paramsRoot_, XML_CONF_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str(), false);
 
 	// Trouvée ?
 	if (!IS_EMPTY(childNode.name())) {

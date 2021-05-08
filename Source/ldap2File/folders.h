@@ -30,6 +30,7 @@
 #define __LDAP_2_FILE_FOLDERS_LIST_h__
 
 #include <commonTypes.h>
+#include "sFileSystem.h"
 
 #include <string>
 #include <list>
@@ -89,7 +90,7 @@ namespace jhbLDAPTools {
 			//
 			folders::FOLDER_TYPE	type_;		// Type de dossier
 			string					path_;		// Chemin complet
-			bool					subFolder_;	// Un sous-dossiezr ou un dossier "indépendant" ?
+			bool					subFolder_;	// Un sous-dossier ou un dossier "indépendant" ?
 		};
 
 		// Construction et destruction
@@ -117,6 +118,21 @@ namespace jhbLDAPTools {
 
 		// ... par son index
 		folders::folder* operator[] (size_t index);
+
+		// Le chemin correspond t'il à un sous-dossier ?
+		static bool isSubFolder(string& path) {
+#ifdef _WIN32
+			// Les sous-dossiers ne contiennent pas le caractère ":"
+			return (path.npos == path.find(WIN_FILENAME_PREFIX));
+#else
+			// Le nom d'un sous-dossier ne commence pas par "/"
+			return (path.find((POSIX_FILENAME_SEP) > 0);
+#endif // _WIN32
+		}
+		static bool isSubFolder(const char* sPath) {
+			string path(sPath);
+			return isSubFolder(path);
+		}
 
 		// Methodes privées
 	protected:

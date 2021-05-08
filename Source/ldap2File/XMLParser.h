@@ -172,8 +172,8 @@ public:
 	{ encoder_.toUTF8(text, false); }
 
 	// Recherche d'un noeud "fils" ayant une valeur d'attribut particulière
-	pugi::xml_node findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue);
-	pugi::xml_node findChildNode(const pugi::xml_node& parent, const char* childName, const char* attrName, const char* attrValue) {
+	pugi::xml_node findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue, bool searchDefValue);
+	pugi::xml_node findChildNode(const pugi::xml_node& parent, const char* childName, const char* attrName, const char* attrValue, bool searchDefValue) {
 		if (IS_EMPTY(childName) || IS_EMPTY(attrName) || IS_EMPTY(attrValue)) {
 			pugi::xml_node emptyNode;
 			return emptyNode;
@@ -182,7 +182,7 @@ public:
 		string sChild(childName);
 		string sAttr(attrName);
 		string sValue(attrValue);
-		return findChildNode(parent, sChild, sAttr, sValue);
+		return findChildNode(parent, sChild, sAttr, sValue, searchDefValue);
 	}
 
 	// Utilitaires
@@ -206,8 +206,10 @@ protected:
 	// Chargement du fichier XML
 	virtual void _load();
 
+	// Recherches
+	pugi::xml_node _findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue);
+
 	// Conversions
-	//
 	unsigned int _value2LinkType(string& value);
 
 	// Données membres privées

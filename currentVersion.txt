@@ -1,0 +1,333 @@
+21.5.3
+
+	TODO{
+		ajout d'un dossier temporaire => OK
+			Linux : vérification des droits en ecriture
+			Vérifier que les chemins par défaut sont tous compatibles
+			QUID d'une destination ./ service non disponible pour l'OS ?
+		Linux::zip
+			Deziper dans le dossier => créer un sous-dossier du nom du fichier
+			Suppr. le dossier en sortie
+
+		Affichage (+log) du type de système d'exploitation
+	}
+
+	* le 7 mai 2021 / MAJ de la ressource
+	+ Ajout de l'attribut ldap2File.Fichier.Limite pour la gestion d'une date de fin d'application
+		+ Si absent ou erreur => pas de limite
+		+ Date dépassée => Suppression du fichier
+	+ Corrections mineures
+		+ Logs :: Le numéro de version est suivi de "DEBUG" même en mode release
+		+ Par défaut si les dossiers n'ont pas de p"ath" complet, il s'agit d'un sous-dossier du dossier principal
+			+ pas d'OS précisé => tous les OS
+		- <Destination>/Type =>  <Destination>/Type="FileSystem> + <Destination>/OS
+	+ Compatiblité Linux des sources
+		+ Reprise des corrections et des tests de non regression
+		+ Windows OK
+		+ Linux : Pb avec les librairies "zip" => utilisation de zip en ligne de commandes
+
+21.4.14
+	* le 27 avril 2021 / MAJ de la ressource
+	+ Alias :
+		+ Validation de Windows::LibreOffice
+		+ Validation de Windows::pscp
+	+ Corrections
+		+ Erreur win32::CreateProcessA ne fonctionne pas (tjrs !) en mode (prog, cmdLine, ...). Il faut concatener : (NULL, prog + " " + cmdLine, ...)
+		+ Tokenisation du nom du fichier généré : utilisation du nom "source" (%SRC-SHORT-NAME%)
+		+ CSVFile : les colonnes vides ne sont plus crées !!!
+		+ bugs mineurs
+		+ Pas d'extension par défaut si omise dans le fichier de commandes
+		+ appel -d{folder} : le dossier doit exister !
+	+ L'entête est paramétrable : <Fichier><Format><EnteteVisible>oui/non</EnteteVisible> - Par défaut "oui"
+		+ CSV, TXT : Ok
+		+ LDIF, vCard, ODS, js : sans objet 
+
+21.4.9
+	* le 1er avril 2021
+	+ Corrections mineures
+		- bugs de regression
+		+ libération des listes de cache
+		+ logs
+			+ Plus précis
+			- bug lors de l'appel de ldap::err2str
+		+ Erreurs dans le fichier ldapTools.conf !
+	+ Ajout de la classe LDAPSources qui permet de définir un serveur source par fichier de paramètres
+		+ Mise en cache de toutes les connexions définies dans le fichier ldapTools.conf
+		+ Lecture de {param}<Fichier><Environnement ..> pour définir le nom de l'env. LDAP
+		? TODO : Généraliser la fonctionnalité à tous les paramètres de l'application (destinations, alias, ...)
+
+21.3.2
+	* le 13 mars 2021
+	+ Corrections mineures
+		- Suppression du fichier temporaire dès que possible
+	+ Ajout de logs
+
+21.2.1
+	* le 12 février 2021
+	+ ajout de la classe vCardFile pour la génération d'un fichier de carnet d'adresse au format VCARD / VCF
+	+ corrections mineures
+
+21.1.1
+	* 14 janvier 2021
+	+ "Expressions regulières"
+		+ "regExpr" devient "searchExpr" : expressions de recherches !!!
+		+ ajout des opérateurs <=, >= pour la recherche des attributs
+			+ les opérateurs < et > ne sont pas dns la normes
+			! Attention : OpenLDAP ne reconnaita aucun des 4 opérateurs : <, >, <= ou >=
+	+ Corrections mineures
+		+ Ajout de la mention "Debug" dans les log spour identfier la version du binaire
+		- Enumérateur et accès aux alias
+		- Faux doublons dans la liste des titres
+
+20.8.34
+	* 6 aout 2020
+	+ Windows : ajout d'une ressource VERSION_INFO
+	+ Affichage de l'usage si erreur ou pas de paramètres en ligne de commande
+	+ Corrections mineures
+		- Bug lors de l'appel en mode console sans dossier (ni extension sous windows)
+		+ Affichage UTF8 dans la console pour Windows (par défault en Latin 1)
+		+ Utilisation de sFilesystem pour tous les accès au système de fichier
+			+ ajout de sfileSystem::merge (avec ses 4 prototypes)
+			+ ajout de sFileSystem::is_directory
+		+ Utilisation de la classe jhbLDAPTools::folders pour TOUS les dossiers internes de l'application
+		+ Modification des affichages et des logs
+		- bug de regression sur le nbre de "lignes" générées pourlesd fichiers sans organigramme (csv, js)
+	+ Modification de XMLParser => devient la référence pour tous les accès aux fichiers XML
+		+ Vérifications plus pertinentes (existence, version du protocole, formation)
+		+ Messages d'erreur / exceptions plus explicites
+	+ Gestion du premier lancement de l'application
+		+ Windows => clé de registre pour stocker la version courante
+		+ Linux / MacOS: vérification à chaque lancement
+		+ le dossier de l'application et celui des logs doivent exister => sinon sous-dossier de dossier de l'application
+	+ pugi::XML
+		+ Gestion des codes retours => génération d'exceptions
+		+ (re)généraion des commentaires d'origine dans les fichiers XML
+
+### TODO ###
+	+ pugi::XML Utilisation des XPaths et des predicates
+	+ Génération d'exceptions par SMTPClient
+	+ Vérification & réecriture SMTPClient
+
+20.7.28
+	* 27 juillet 2020
+	+ Corrections mineures
+		- bug de regression : fichiers XLS générés dans le dossier de l'application
+	* L'espace de nom JHB_ldapTools devient jhbLDAPTools (plus cohérent avec les autres dénominations)
+	+ Création d'espace de nom sFileSystem (simple FileSystem)
+		+ remplacement de l'objet fileSystem non-portable sous linux ...
+		+ interface // std::filesystem (les noms des fonctions sont identiques)
+		+ portable !
+	+ Fichiers ODS => format zip
+		+ reprise de la classe ODSFile::zipFile
+		+ Windows : utilisation des sources de la librairies zipFile (ZitUtils fonctionne aussi en WIN32)
+		+ Linux : utilisation de tar/unzip en ligne de commande - #define __USE_CMD_LINE_ZIP__
+
+20.7.25
+	* 22 juillet 2020
+	+ Corrections mineures	
+		+ bug des logs. identifé par F.Gay
+		+ regression : tokenisation du nom de fichier de sortie
+	+ logs
+	+ Génération d'exceptions pour éviter les cas improbables
+	+ Nouvelle gestion des dossiers de l'application => création de la classe folders
+	* Ajout de l'espace de nom JHB_ldapTools
+		- titles & titles::title (titres / intitulés des postes)
+		- folders a folders::folder (modélisation des dossiers de l'application)
+
+20.7.22
+	* 20 juillet 2020
+	+ Corrections mineures
+		+ ajout d'exceptions
+		+ corrections des logs
+		+ erreurs smtp::tls (convention d'appel + paramètre XML)
+		? pas de tests possible pour les transferts par smtp en interne au CD03
+20.7.21
+	* 10 juillet 2020
+	+ maj pugiXML : version 1.10
+	+ Corrections mineures
+	+ Ajout de la récupération des titres (intitulés des postes) des agents
+		+ classes titles / title
+		+ spécifiaque à l'allier : #define __LDAP_USE_ALLIER_TITLES_h__ (sharedConsts.h)
+		+ La liste des intitulés n'est chargée que si la colonne est demandée !
+
+20.7.20
+	* 7 juillet 2020
+	+ Corrections mineures
+	+ Logs plus explicites
+		+ Message FTP plus explicites
+	+ Corrections importantes :
+		- Correction de charUtils::itoa
+		- bug ODS : un onglet ne peut contenir le caractère "/"
+	+ Possbilité de définir le nom du fichier avec des tokens
+	+ Possiblité de définir le nom des onglet (si un seul en plus de l'organigramme)
+		+ conf::<Fichier><Critere><Onglet Name="..."/>
+
+20.7.19
+	* 6 juillet 2020
+	+ Corrections
+		- Erreur sur le nombre d'agents effectivement ajoutés au fichier
+		- Plus besoin d'analyser la "structure" => tous les éléments sont dans la fiche agent
+	+ FTP : Remplacement de ns::FTPClient par jhbCURLTools::FTPClient
+	+ Nouvel espace de nom jhbCURLTools : jhbCURLTools::SMTPClient & jhbCURLTools::FTPClient & CURLException & CURLHandle
+
+20.7.18
+	* 1er juillet 2020
+	+ Inclusion de tous les sources de ZipLib dans le projet (aucun intérêt à gérer une librairie supplémentaire)
+	+ Modifications sources pour compilation MS Visual Studio
+		+ ziplib::sub_streambuf.h/li-71	 : /*std::*/min à la place de std::min (appel de la macro "c")
+		+ ZipLib/extlibs/bzip2/compress.c => bzip2-compress.c (pb de linker car 2 fichiers compress.c)
+		+ /etxlibs/lzma/CpuArch.c : 
+			+ li-7 : #include <VersionHelpers.h>
+			+ li-155 : return IsWindowsXPOrGreater();
+
+20.6.17
+	* 30 juin 2020
+	+ Version non-régressive Win32 et en chemin vers Linux
+	+ Corrections mineures
+	+ Portabilité LINUX
+		+ zip : utilisation et intégration au projet  de la librairie ZipLib (à la place de win32::ZipUtils)
+			+ Modification de l'algorithme pour le rendre portable (win32/linux) et réversible (ZipLib / ZipUtils)
+			+ Tests de non-regression Win32 OK
+		+ fileSystem
+			+ Début de la réecriture "portable"
+			+ Intégration de la librairie std::filesystem quand c'est possible
+			+ Corrections Win32
+
+20.6.16
+	* 25 juin 2020
+	+ Version intermédaire (en attendant l'intégration Linux)
+	+ Gestion des valeurs vides (ie. ne donnant pas lieu à une insertion dans le fichier) : <Vide Valeur="xxx"/>
+	+ Corrections pour Linux
+		+ Compliation sous Windows (non regression)
+		- Plus d'appel des API windows
+		+ Utilisation des classes de l'application ou des fonctions CPP
+		- Corrections ldap.h/winldap.h => LDAPServer.h
+
+20.6.15
+	* 18 juin 2020
+	+ 1er Version complète Win32
+	+ Code théroriquement portable
+	+ Corrections mineures
+		+ Correction des fichiers de configuration : Type="xyz" => OS="xyz"
+		+ Détermination du nom du dossier de travail si non précisé
+		+ Lancement des applications externes (vérification ,attente et messages d'erreur)
+	+ Modification des logs
+	+ Ajout de la classe stringTokenizer qui permet le remplacement des tokens dans <Alias> et les <Action>
+
+20.6.14
+	* 08 juin 2020
+	+ Correction de bugs mineurs
+	+ Généralisation des <Alias> à tous les noms de fichiers dépendants de l'OS
+
+20.6.13
+	* 03 juin 2020
+	+ Mise en place d'"actions" qui seront appelées et executées une fois le fichier généré et avant la prise en compte par les <destination>
+		+ attribut "destination" : permet de renommer / déplmacer ou exporter un fichier avec changement de nom
+		+ type : post-gen
+			=> Possibilité de générer au format XSLX en appelant le convertisseur de LibreOffice une fois un fichier ODS généré
+	+ Ajout de la section <Alias> dans le fichier de configuration pour les applications en ligne de commandes
+	+ Comptatibilité XLSX
+		+ Nom des onglets peut être limité en longueur (<Format><TailleOnglet>)
+		+ Génération via <Action> 
+	+ Transfert par SCP en ligne de commande
+		+ type ="SCP" 
+		+ Linux : scp	- scp fileSrc  [user@dest:]fileDest
+		+ Windows : winscp - winscp.com /command "open sftp://user:password@example.com/" "put examplefile.txt /home/user/" "exit"
+
+20.5.12
+	* 29 mai 2020 / Version intermédiaire
+	+ Contournment du bug de la fonction ldap_search_ext_s qui ne fonctionne pas avec un scope = LDAP_SCOPE_BASE
+	+ Remplacement des types "enum" par "enum class" pour borner les valeurs
+	+ Corrections mineures
+	
+20.4.11
+	* 24 avril 2020
+	+ Retrait de la date et de l'heure des commentaires dans les fichiers LDIF => modifie le hash !!!
+	+ Correction du bug de regression sur les fichiers ODS (absence d'arborescence)
+	+ L'attribut qui determine le "Manager" est un paramètre du fichier de conf (par défaut) et propre à chaque fichier de commande
+		- S'il n'est pas précisé dans le fichier de configuration ni celui de commande l'application s'arrête
+		+ s'il est précisé au niveau du fichier de commande la valeur remplacera celle par défaut
+	+ Bug lors de l'obtention de la liste des managers d'un agent
+	+ Corrections mineuers
+	+ Modification des messages d'erreurs et des logs
+
+20.4.10
+	* 21 avril 2020
+	+ Première version "complète" pour la génération des fichiers LDIF
+	+ LDIF : Possibilité d'ajouter des attributs à chaque objet avec le noeud <LDIF><Add>
+	+ LDIF : Correction du nom des attributs
+	+ LDIF : Possibilité de fusionner des attributs (<LDIF><Fusion>)
+	+ Correction de bugs
+		- Les chaines issues des fichiers XML sont déja en UTF8
+		- bugs de regression pour les formats avec organigramme : ODS et JS
+		- pb lors de la compilation 'release'
+		- Le mois dans les fichiers de logs est base 0 !
+	+ Modification de certains logs (plus précis dorénanvant)
+
+20.4.9
+	* 16 avril 2020
+	+ LDIF : modification du contenu des fichiers générés
+	+ LDIFFFile.cpp : correction du bug lors de la génération au format base64 mono-ligne 
+
+20.4.8
+	* 8 avril 2020
+	+ Ajout de la classe abstraite orgChartFile : génération des organigrammes
+	+ Corrections de bugs mineurs
+
+20.4.7
+	* 7 avril 2020
+	+ Correction de bugs (regression ?)
+		- JSFile ne génère plus le fichier de sortie !
+	+ Corrections de LDIFFile => grands ralentissements supprimés
+
+20.4.6
+	* 5 avril 2020
+	- Version lente ?
+	+ Nombreuses corrections
+		+ commandFile.cpp / .h
+		+ XMLConsts.h
+		+ JSFiles.cpp / .h
+		+ bool outFile::getOwnParameters()
+	+ Modifications des logs - ldapBrowser.cpp
+	+ Prise en compte du type "LDIF"
+		+ // "LDAP"
+		+ pas de génération d'organgiramme
+	+ Première version complète de la classe LDIFFile
+
+20.3.5
+	* 29 mars 2020
+	+ Version intermédiaire
+
+20.3.4
+	* 28 mars 2020
+	+ Version intermédiaire
+	+ Protocoles XML en version 2.1
+		+ Sources::LDAP : Serveur(s) LDAP
+		+ Sources::Photos : Serveur(s) HTTP pour les photos des agents
+	+ Ventilation des méthodes entre XMLParser et confFile
+
+20.3.3
+	* 25 mars 2020
+	+ Version intermédiaire
+	+ Protocoles XML en version 2.1
+	+ Modifications de la classe XMLParser
+		+ ajout de la classe XMLNode
+		+ méthode findNextNode
+	+ Premiers tests pour la gestion des "environnements"
+	+ HMTLFile devient JSFile
+	+ Qques corrections ...
+
+20.3.2
+	* 18 mars 2020
+	+ Version 100% fonctionelle à périmètre constant
+	+ Utilisation des API Windows pour la conversion des chaines de caractères (UTF8 <-> ISOxxx)
+	+ Compilation possible Release / Debug Win32
+	+ Split de directoryAttr.h
+		+ ./ldapAttributes.h : contient les définitions des attributs spécifiques au schéma de l'Allier
+		- /Common/directory/directroyAttr.h : restent les définitions communes et génériques
+	- Retrait du format Yealink
+
+20.3.1
+	* 11 mars 2020
+	+ Première version fonctionnelle pour l'Allier
+	+ Qques corrections ...

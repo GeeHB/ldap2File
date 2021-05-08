@@ -57,7 +57,7 @@
 #define APP_SHORT_NAME			"ldap2File"
 #define APP_FULL_NAME			"ldap2File.exe"
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"21.5.2"
+#define APP_RELEASE				"21.5.3"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -158,16 +158,6 @@ using namespace jhbLDAPTools;
 //
 // Caractères et chaines de caractères
 //
-#ifndef FILENAME_SEP
-#define WIN_FILENAME_SEP	'\\'
-#define POSIX_FILENAME_SEP	'/'
-
-#ifdef _WIN32
-#define FILENAME_SEP		WIN_FILENAME_SEP
-#else
-#define FILENAME_SEP		POSIX_FILENAME_SEP
-#endif // _WIN32
-#endif // FILENAME_SEP
 
 // Les parenthèses
 //
@@ -354,7 +344,8 @@ enum class FILE_TYPE { FILE_UNKNOWN_TYPE = 0, FILE_TXT = 0, FILE_CSV, FILE_XLS, 
 
 // Types de destinations
 //
-enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS_WINDOWS = 1, DEST_FS_MACOS = 2, DEST_FS_LINUX = 2, DEST_EMAIL, DEST_FTP, DEST_SCP };
+//enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS_WINDOWS = 1, DEST_FS_MACOS = 2, DEST_FS_LINUX = 2, DEST_EMAIL, DEST_FTP, DEST_SCP };
+enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS, DEST_EMAIL, DEST_FTP, DEST_SCP };
 
 // Retours
 enum class RET_TYPE {RET_OK = 0,RET_INVALID_PARAMETERS,RET_BLOCKING_ERROR,RET_NON_BLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE, RET_FILE_TO_DELETE };

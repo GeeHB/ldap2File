@@ -42,20 +42,27 @@
 #define OS_LINUX					"linux"
 
 // Types de destination
+/*
 #define TYPE_DEST_FS_WINDOWS		OS_WINDOWS
 #define TYPE_DEST_FS_MACOS			OS_MACOS
 #define TYPE_DEST_FS_LINUX			OS_LINUX
+*/
+#define TYPE_DEST_FS				"FileSystem"
 #define TYPE_DEST_FTP				"FTP"
 #define TYPE_DEST_EMAIL				"email"
 #define TYPE_DEST_SCP				"SCP"
 
+/*
 // Types de FS pour les systèmes d'exploitation
 #define TYPE_OS_WINDOWS				TYPE_DEST_FS_WINDOWS
 #define TYPE_OS_X					TYPE_DEST_FS_OS_X
 #define TYPE_OS_LINUX				TYPE_DEST_FS_LINUX
+*/
 
+#ifndef XML_YES
 #define XML_YES						"oui"
 #define XML_NO						"non"
+#endif // XML_YES
 
 #define XML_ADD						"Ajout"
 #define XML_ALIAS					"Alias"

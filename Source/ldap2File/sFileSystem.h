@@ -51,6 +51,8 @@
 #endif // _WIN32
 #endif // FILENAME_SEP
 
+#define WIN_FILENAME_PREFIX		':'
+
 #ifndef MAX_PATH
 #define MAX_PATH	260
 #endif // MAX_PATH

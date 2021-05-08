@@ -197,7 +197,7 @@ private:
 		{ return open(fileName.c_str());}
 		void close();
 
-		// Recherche d'un fichier
+		// Recherche d'un fichier dans l'archive
 		int findFile(const char* fileName);
 		int findFile(const string& fileName)
 		{ return findFile(fileName.c_str()); }
@@ -262,7 +262,7 @@ private:
 #ifdef __USE_ZIP_UTILS_LIB__
 		HZIP				file_;
 #else
-		bool				file_;			// Le fichier est-il un zip valide ?
+		bool				file_;			// Le fichier est-il un zip valide ? (le nom est pourri mais reste identique à la version ZIP_UTILS_LIB)
 
 	#ifdef __USE_CMD_LINE_ZIP__
 		std::string			zipTemp_;		// Le dossier temporaire dans lequel sont dezipés/zipés les fichiers

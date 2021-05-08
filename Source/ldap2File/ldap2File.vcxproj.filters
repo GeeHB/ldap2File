@@ -433,13 +433,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="currentVersion.txt">
-      <Filter>Fichiers Txt</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="ldap2File.rc">
       <Filter>Fichiers de ressources</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\currentVersion.txt">
+      <Filter>Fichiers Txt</Filter>
+    </Text>
   </ItemGroup>
 </Project>

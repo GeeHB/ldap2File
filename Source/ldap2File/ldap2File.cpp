@@ -65,7 +65,7 @@ void _getFolderContent(const string& source, list<string>& content, logFile* log
 		return;
 	}
 
-	// Le dossier doit existe
+	// Le dossier doit exister
 	if (!sFileSystem::exists(source)) {
 		cout << "Le dossier '" << source.c_str() << "' n'existe pas" << endl;
 
@@ -237,7 +237,7 @@ bool _updateConfigurationFile(const char* appName)
 	// Dossier de l'application
 	//
 	bool update(false);
-	pugi::xml_node childNode = xmlConf.findChildNode(paramsRoot, XML_CONF_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, xmlConf.expectedOS());
+	pugi::xml_node childNode = xmlConf.findChildNode(paramsRoot, XML_CONF_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, xmlConf.expectedOS(), false);
 
 	// Trouvé ?
 	if (!IS_EMPTY(childNode.name())) {
@@ -272,6 +272,7 @@ bool _updateConfigurationFile(const char* appName)
 
 	// Dossier des logs
 	//
+	string baseFolder(path);
 	path = sFileSystem::merge(path, STR_FOLDER_LOGS);
 	pugi::xml_node logNode = paramsRoot.child(XML_CONF_LOGS_NODE);
 	if (IS_EMPTY(logNode.name())) {
@@ -279,7 +280,7 @@ bool _updateConfigurationFile(const char* appName)
 		return false;
 	}
 
-	childNode = xmlConf.findChildNode(logNode, XML_CONF_LOGS_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, xmlConf.expectedOS());
+	childNode = xmlConf.findChildNode(logNode, XML_CONF_LOGS_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, xmlConf.expectedOS(), true);
 
 	// Trouvé ?
 	//
@@ -290,7 +291,12 @@ bool _updateConfigurationFile(const char* appName)
 		cout << "Dossier des logs : " << val << endl;
 #endif // _DEBUG
 
-		if (!sFileSystem::exists(val)) {
+		if (folders::isSubFolder(val)) {
+			// C'est un nom court
+			val = sFileSystem::merge(baseFolder, val);
+		}
+
+		if (!sFileSystem::exists(val) && !sFileSystem::create_directory(val)) {
 #ifdef _DEBUG
 			cout << "\t- Le dossier n'existe pas - Utilisation du dossier '" << path << "'" << endl;
 #endif // _DEBUG
@@ -499,7 +505,7 @@ int main(int argc, const char* argv[]) {
 			myFolders.add(folders::FOLDER_TYPE::FOLDER_LOGS, lInfos.folder_);
 		}
 
-		// Le dossier des logs doit exister
+		// Le dossier des logs doit exister (son a auparavant tenté de le créer s'il n'existait pas)
 		folders::folder* logFolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS);
 		if (NULL == logFolder) {
 			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée");

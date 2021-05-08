@@ -117,15 +117,40 @@ bool XMLParser::save()
 
 // Recherche d'un noeud "fils" ayant une valeur d'attribut particulière
 //
-pugi::xml_node XMLParser::findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue)
+pugi::xml_node XMLParser::findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue, bool searchDefValue)
+{
+	// On cherche la "bonne" valeur
+	pugi::xml_node found = _findChildNode(parent, childName, attrName, attrValue);
+
+	// Trouvé ?
+	if (!IS_EMPTY(found.name())){
+		return found;
+	}
+
+	if (false == searchDefValue) {
+		// On se contente de cette valeur
+		return found;
+	}
+
+	// Sinon on cherche la valeur sans l'attribut
+	string empty("");
+	return _findChildNode(parent, childName, attrName, empty);
+}
+
+// Méthode "sous" findChildNode
+pugi::xml_node XMLParser::_findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue)
 {
 	// Recherche du "noeud"
 	bool found(false);
 	pugi::xml_node childNode = parent.child(childName.c_str());
+	pugi::xml_attribute attr;
 	while (!IS_EMPTY(childNode.name()) && !found) {
-		found = (attrValue == childNode.attribute(attrName.c_str()).value());
+		attr = childNode.attribute(attrName.c_str());
 
-		// noeud suivant
+		// Je cherche une valeur d'attribut (ou rien auquel le premier vide fera l'affaire) ?
+		found = (attrValue.length() ? (attrValue == attr.value()) : IS_EMPTY(attr.value()));
+		
+		// Noeud suivant
 		if (!found) {
 			childNode = childNode.next_sibling(childName.c_str());
 		}

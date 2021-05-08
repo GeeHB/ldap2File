@@ -298,10 +298,10 @@
     <ClInclude Include="XMLParser.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="currentVersion.txt" />
+    <ResourceCompile Include="ldap2File.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ldap2File.rc" />
+    <Text Include="..\..\currentVersion.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

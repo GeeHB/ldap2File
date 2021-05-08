@@ -27,7 +27,6 @@
 //---------------------------------------------------------------------------
 
 #include "folders.h"
-#include "sFileSystem.h"
 
 //---------------------------------------------------------------------------
 //--
@@ -101,7 +100,7 @@ namespace jhbLDAPTools {
 		}
 
 		// Est ce un dossier complet ou le nom d'un sous dossier ?
-		bool sub(path.npos == path.find(FILENAME_SEP));
+		bool sub(isSubFolder(path));
 
 		// Le dossier de l'application ne peut pas être un sous-dossier
 		if (folders::FOLDER_TYPE::FOLDER_APP == type && sub) {
@@ -159,7 +158,6 @@ namespace jhbLDAPTools {
 			// Ajout à la liste
 			folders_.push_back(pFolder);
 		}
-
 
 		// Ok
 		return true;

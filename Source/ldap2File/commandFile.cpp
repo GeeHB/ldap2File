@@ -502,7 +502,6 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 	//
 	if (!fileInfos.dests_.size()){
 		// Pas de dossier => dossier courant
-		//folder = sFileSystem::merge(sFileSystem::current_path(), STR_FOLDER_OUTPUTS);
 		folder = folders_->find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path();
 
 		pDestination = new fileDestination(folder);
