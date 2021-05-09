@@ -62,6 +62,27 @@
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
 
+//
+// Système d'exploitation hôte
+//
+
+// Systèmes d'exploitation
+#define OS_WINDOWS				"Windows"
+#define OS_MACOS				"MacOS"
+#define OS_LINUX				"linux"
+
+#ifdef _WIN32
+#define CURRENT_OS				OS_WINDOWS
+#else
+#ifdef __APPLE__
+#define CURRENT_OS				OS_MACOS;
+#else
+// Sinon un linux ...
+#define CURRENT_OS				OS_LINUX;
+#endif // __APPLE__
+#endif // _WIN32
+
+
 // Ligne de commandes
 //
 
@@ -294,7 +315,7 @@ using namespace jhbLDAPTools;
 #define STR_FOLDER_TEMPLATES		"modeles"				// Modèles de documents
 #define STR_FOLDER_TEMP				"temp"					// Fichiers temporaires
 #define STR_FOLDER_LOGS				"logs"
-#define STR_FOLDER_OUTPUTS			"output files"			// Fichiers générés
+#define STR_FOLDER_OUTPUTS			"outputs"				// Fichiers générés
 
 //
 // Structure
@@ -345,7 +366,7 @@ enum class FILE_TYPE { FILE_UNKNOWN_TYPE = 0, FILE_TXT = 0, FILE_CSV, FILE_XLS, 
 // Types de destinations
 //
 //enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS_WINDOWS = 1, DEST_FS_MACOS = 2, DEST_FS_LINUX = 2, DEST_EMAIL, DEST_FTP, DEST_SCP };
-enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS, DEST_EMAIL, DEST_FTP, DEST_SCP };
+enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS = 1, DEST_FILE_SYSTEM = 1, DEST_EMAIL, DEST_FTP, DEST_SCP };
 
 // Retours
 enum class RET_TYPE {RET_OK = 0,RET_INVALID_PARAMETERS,RET_BLOCKING_ERROR,RET_NON_BLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE, RET_FILE_TO_DELETE };

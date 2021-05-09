@@ -8,8 +8,6 @@
 		Linux::zip
 			Deziper dans le dossier => créer un sous-dossier du nom du fichier
 			Suppr. le dossier en sortie
-
-		Affichage (+log) du type de système d'exploitation
 	}
 
 	* le 7 mai 2021 / MAJ de la ressource
@@ -17,6 +15,7 @@
 		+ Si absent ou erreur => pas de limite
 		+ Date dépassée => Suppression du fichier
 	+ Corrections mineures
+		+ "./output files" => "./outputs" : Plus portable et plus scriptable ...
 		+ Logs :: Le numéro de version est suivi de "DEBUG" même en mode release
 		+ Par défaut si les dossiers n'ont pas de p"ath" complet, il s'agit d'un sous-dossier du dossier principal
 			+ pas d'OS précisé => tous les OS

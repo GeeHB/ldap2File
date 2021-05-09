@@ -228,7 +228,7 @@ bool LDIFFile::create()
 	file_ << "# " << "Généré le " << std::setfill('0') << std::setw(2) << ltm->tm_mday << "/" << std::setfill('0') << std::setw(2) << ltm->tm_mon + 1 << "/" << std::setfill('0') << std::setw(4) << ltm->tm_year + 1900;
 	file_ << " à " << std::setfill('0') << std::setw(2) << ltm->tm_hour << ":" << std::setfill('0') << std::setw(2) << ltm->tm_min << ":" << std::setfill('0') << std::setw(2) << ltm->tm_sec << eol_;
 	*/
-	file_ << "# Généré avec " << APP_SHORT_NAME << " version " << APP_RELEASE << eol_;
+	file_ << "# Généré avec " << APP_SHORT_NAME << " version " << APP_RELEASE << " -- " << CURRENT_OS << eol_;
 	file_ << "# " << eol_;
 	file_ << "# " << APP_COPYRIGHT << eol_;
 

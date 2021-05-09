@@ -36,11 +36,6 @@
 
 #define TYPE_NONE					"aucun"		// Pas de type defini
 
-// Systèmes d'exploitation
-#define OS_WINDOWS					"Windows"
-#define OS_MACOS					"MacOS"
-#define OS_LINUX					"linux"
-
 // Types de destination
 /*
 #define TYPE_DEST_FS_WINDOWS		OS_WINDOWS

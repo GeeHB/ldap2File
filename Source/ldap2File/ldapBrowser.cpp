@@ -548,7 +548,7 @@ RET_TYPE ldapBrowser::_createFile()
 		}
 		else{
 			switch (destination->type()){
-			case DEST_TYPE::DEST_FS_WINDOWS:
+			case DEST_TYPE::DEST_FS:
 			case DEST_TYPE::DEST_EMAIL:
 			case DEST_TYPE::DEST_FTP:{
 				destCount++;

@@ -532,11 +532,12 @@ int main(int argc, const char* argv[]) {
 		logs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
 
 		logs.add(logFile::LOG, "=========================================================================");
+		string copyRight("==== %s - version %s / %s");
 #ifdef _DEBUG
-		logs.add(logFile::LOG, "==== %s - version %s - DEBUG - %s", APP_SHORT_NAME, APP_RELEASE, APP_DESC);
-#else
-		logs.add(logFile::LOG, "==== %s - version %s - %s", APP_SHORT_NAME, APP_RELEASE, APP_DESC);
+		copyRight += " -- DEBUG";
 #endif // _DEBUG
+		copyRight += " - %s";
+		logs.add(logFile::LOG, copyRight.c_str(), APP_SHORT_NAME, APP_RELEASE, CURRENT_OS, APP_DESC);
 		logs.add(logFile::LOG, "==== Copyright %s", APP_COPYRIGHT);
 		logs.add(logFile::LOG, "Lancement de l'application");
 		logs.add(logFile::DBG, "Logs en mode DEBUG");

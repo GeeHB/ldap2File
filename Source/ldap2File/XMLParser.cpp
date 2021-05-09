@@ -50,18 +50,9 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs, boo
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 
 	// Type de système de fichier "local"
-#ifdef _WIN32
-	expectedOS_ = OS_WINDOWS;
-	defType_ = DEST_TYPE::DEST_FS_WINDOWS;
-#else
-#ifdef __APPLE__
-	expectedOS_ = OS_MACOS;
-	defType_ = DEST_TYPE::DEST_FS_MACOS;
-#else
-	expectedOS_ = OS_LINUX;
-	defType_ = DEST_TYPE::DEST_FS_LINUX;
-#endif // __APPLE__
-#endif // _WIN32
+	//
+	defType_ = DEST_TYPE::DEST_FS;		// Par défaut un fichier
+	expectedOS_ = CURRENT_OS;
 }
 
 // Vérification de la version
@@ -164,40 +155,30 @@ pugi::xml_node XMLParser::_findChildNode(const pugi::xml_node& parent, const str
 //
 DEST_TYPE XMLParser::string2FolderType(const char* str)
 {
-	if (!IS_EMPTY(str)){
+	if (!IS_EMPTY(str)) {
 		string upper("");
 		upper = charUtils::strupr(str);
 
-		if (0 == charUtils::stricmp(TYPE_DEST_FS_LINUX, upper.c_str())){
-			return DEST_TYPE::DEST_FS_LINUX;
+		if (0 == charUtils::stricmp(TYPE_DEST_FS, upper.c_str())) {
+			return DEST_TYPE::DEST_FILE_SYSTEM;	// = DEST_FS
 		}
-		else{
-			if (0 == charUtils::stricmp(TYPE_DEST_FS_MACOS, upper.c_str())){
-				return DEST_TYPE::DEST_FS_MACOS;
+		else {
+			if (0 == charUtils::stricmp(TYPE_DEST_FTP, upper.c_str())) {
+				return DEST_TYPE::DEST_FTP;
 			}
-			else{
-				if (0 == charUtils::stricmp(TYPE_DEST_FS_WINDOWS, upper.c_str())){
-					return DEST_TYPE::DEST_FS_WINDOWS;
+			else {
+				if (0 == charUtils::stricmp(TYPE_DEST_EMAIL, upper.c_str())) {
+					return DEST_TYPE::DEST_EMAIL;
 				}
-				else{
-					if (0 == charUtils::stricmp(TYPE_DEST_FTP, upper.c_str())){
-						return DEST_TYPE::DEST_FTP;
-					}
-					else{
-						if (0 == charUtils::stricmp(TYPE_DEST_EMAIL, upper.c_str())){
-							return DEST_TYPE::DEST_EMAIL;
-						}
-						else {
-							if (0 == charUtils::stricmp(TYPE_DEST_SCP, upper.c_str())) {
-								return DEST_TYPE::DEST_SCP;
-							}
-						}
+				else {
+					if (0 == charUtils::stricmp(TYPE_DEST_SCP, upper.c_str())) {
+						return DEST_TYPE::DEST_SCP;
 					}
 				}
 			}
 		}
 	}
-
+	
 	// Autre ...
 	return DEST_TYPE::DEST_UNKNOWN;
 }
