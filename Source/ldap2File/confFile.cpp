@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -84,8 +84,9 @@ bool confFile::openCommandFile(const char* cmdFile)
 	}
 
 	// Ouverture du fichier
-	if (!(commandFile_ = new commandFile(cmdFile, folders_, logs_, false))){
-		// Pb d'allocation
+	if (!(commandFile_ = new commandFile(cmdFile, folders_, logs_, false))
+		|| !commandFile_->isValid()){
+		// Pb d'allocation ou d'initialisation
 		return false;
 	}
 
@@ -129,7 +130,7 @@ bool confFile::logInfos(LOGINFOS& dst)
 		}
 
 		// Durée
-		subNode = node.child(XML_CONF_LOGS_DAYS_NODE);
+		subNode = node.child(XML_CONF_LOGS_DURATIONNODE);
 		if (!IS_EMPTY(subNode.name())){
 			__int16 value = atoi(subNode.first_child().value());
 			dst.duration_ = value;
@@ -407,11 +408,15 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 
 	string fType(""), folder(""), name(""), value(""), aliasName("");
 	aliases::alias* palias(NULL);
-	name= destinationServer_.node()->attribute(XML_DESTINATION_NAME_ATTR).value();
+	name = destinationServer_.node()->attribute(XML_DESTINATION_NAME_ATTR).value();
 	folder = destinationServer_.node()->first_child().value();
 	fType = destinationServer_.node()->attribute(XML_DESTINATION_TYPE_ATTR).value();
+	if (0 == fType.size()) {
+		// Pas de type => FileSystem
+		fType = TYPE_DEST_FS;
+	}
 
-	if (!name.size() || !fType.size() || !folder.size()){
+	if (!name.size() && !folder.size()){
 		// Le nom et le type et le dossier sont obligatoires sinon on saute cette entrée
 		(*add) = false;
 		destinationServer_ = destinationServer_.node()->next_sibling(XML_DESTINATION_NODE);
@@ -433,6 +438,11 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 			value = destinationServer_.node()->attribute(XML_DESTINATION_FTP_PORT_ATTR).value();
 			if (value.size()){
 				ftp->port_ = atoi(value.c_str());
+			}
+		}
+		else {
+			if (logs_) {
+				logs_->add(logFile::ERR, "Impossible de créer l'objet FTP pour '%s'", name.c_str());
 			}
 		}
 
@@ -460,6 +470,10 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 			else {
 				// L'enregistrement doit-être ignoré
 				(*add) = false;
+
+				if (logs_) {
+					logs_->add(logFile::ERR, "L'alias '%s' n'existe pas", aliasName.c_str());
+				}
 			}
 		}
 		else {
@@ -487,25 +501,71 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 						mail->useTLS_ = true;
 					}
 				}
+				else {
+					if (logs_) {
+						logs_->add(logFile::ERR, "Impossible de créer l'objet mail pour %s", name);
+					}
+				}
 
 				pDestination = (fileDestination*)mail;
 			}
 			else {
-				// Copie dans un dossier ...
-				if (expectedOS_ == fType) {
-					// Est ce un chemin complet ?
-					if (folder.npos == folder.find(FILENAME_SEP)) {
-						// Non => chemin relatif au dossier courant
-						folder = sFileSystem::merge(sFileSystem::current_path(), destinationServer_.node()->first_child().value());
-					}
+				if (TYPE_DEST_FS == fType) {
+					// Quel OS ?
+					string destOS = destinationServer_.node()->attribute(XML_DESTINATION_FS_OS_ATTR).value();
 
-					// QQue soit de le cas, le dossier doit exister
-					if (!sFileSystem::exists(folder)) {
-						sFileSystem::create_directory(folder);
-					}
+					// Le bon OS ou tous les OS ?
+					if (0 == destOS.size() || expectedOS_ == destOS) {
 
-					if (NULL != (pDestination = new fileDestination(name, folder))) {
-						pDestination->setType(defType_);
+						folders::folder* pFolder(NULL);
+						
+						// Pas de chemin => dossier par défaut ...
+						if (0 == folder.size()) {
+							if (NULL != (pFolder = folders_->find(folders::FOLDER_TYPE::FOLDER_OUTPUTS))) {
+								folder = pFolder->path();
+							}
+							else {
+								folder = "";
+
+								if (logs_) {
+									logs_->add(logFile::ERR, "Impossible de récupérer le dossier des sorties : '%'", STR_FOLDER_OUTPUTS);
+								}
+							}
+						}
+						else {
+							// Est ce un chemin complet ?
+							if (folders::isSubFolder(folder)) {
+								// Non => chemin relatif au dossier de l'application
+								pFolder = folders_->find(folders::FOLDER_TYPE::FOLDER_APP);
+								if (pFolder) {
+									folder = sFileSystem::merge(pFolder->path(), destinationServer_.node()->first_child().value());
+								}
+								else {
+									folder = "";	// Erreur ...
+
+									if (logs_) {
+										logs_->add(logFile::ERR, "Impossible de récupérer le dossier parent pour '%s'", folder.c_str());
+									}
+								}
+							}
+						}
+
+						// Le dossier doit exister
+						if (folder.size()) {
+							bool exists(false);
+							if (!(exists = sFileSystem::exists(folder))) {
+								exists = sFileSystem::create_directory(folder);
+							}
+
+							if (exists && NULL != (pDestination = new fileDestination(name, folder))) {
+								pDestination->setType(defType_);
+							}
+							else {
+								if (logs_) {
+									logs_->add(logFile::ERR, exists?"Destination - Impossible de créer l'objet pour '%s'": "Destination - Le dossier %s n'existe pas", folder.c_str());
+								}
+							}
+						}
 					}
 				} // type FS
 			} // email

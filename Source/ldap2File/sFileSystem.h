@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -44,6 +44,7 @@
 #ifndef FILENAME_SEP
 #define WIN_FILENAME_SEP	'\\'
 #define POSIX_FILENAME_SEP	'/'
+#define POSIX_FILENAME_HOME	'~'
 #ifdef _WIN32
 #define FILENAME_SEP		WIN_FILENAME_SEP
 #else

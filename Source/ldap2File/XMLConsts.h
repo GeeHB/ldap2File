@@ -21,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -34,25 +34,14 @@
 //--
 //---------------------------------------------------------------------------
 
+// Version du schéma XML
+#define XML_SCHEMA_VERSION			"2.2"
+
+//
+// Définitions générales
+// 
+
 #define TYPE_NONE					"aucun"		// Pas de type defini
-
-// Types de destination
-/*
-#define TYPE_DEST_FS_WINDOWS		OS_WINDOWS
-#define TYPE_DEST_FS_MACOS			OS_MACOS
-#define TYPE_DEST_FS_LINUX			OS_LINUX
-*/
-#define TYPE_DEST_FS				"FileSystem"
-#define TYPE_DEST_FTP				"FTP"
-#define TYPE_DEST_EMAIL				"email"
-#define TYPE_DEST_SCP				"SCP"
-
-/*
-// Types de FS pour les systèmes d'exploitation
-#define TYPE_OS_WINDOWS				TYPE_DEST_FS_WINDOWS
-#define TYPE_OS_X					TYPE_DEST_FS_OS_X
-#define TYPE_OS_LINUX				TYPE_DEST_FS_LINUX
-*/
 
 #ifndef XML_YES
 #define XML_YES						"oui"
@@ -116,8 +105,8 @@
 #define XML_ROOT_LDAP2FILE_NODE		"ldap2File"
 
 #define XML_ROOT_VERSION_ATTR		"Version"	//  Version du "protocole"
-#define XML_CONF_VERSION_VAL		"2.1"
-#define XML_CMD_VERSION_VAL			"2.1"
+#define XML_CONF_VERSION_VAL		XML_SCHEMA_VERSION
+#define XML_CMD_VERSION_VAL			XML_SCHEMA_VERSION
 
 // Paramètres (conf.) de l'application,
 //
@@ -169,10 +158,10 @@
 #define XML_CONF_LOGS_FOLDER_NODE	XML_FOLDER
 
 // Durée en jours
-#define XML_CONF_LOGS_DAYS_NODE		"Jours"
+#define XML_CONF_LOGS_DURATIONNODE		"Duree"
 
-#define LOGS_DAYS_INFINITE			-1
-#define LOGS_DAYS_MIN				1
+#define LOGS_DURATION_INFINITE			-1
+#define LOGS_DURATION_MIN				1
 
 //
 // Serveur pour les images
@@ -219,17 +208,32 @@
 #define XML_DESTINATION_NAME_ATTR			XML_NAME
 #define XML_DESTINATION_TYPE_ATTR			XML_TYPE
 
+// Types de destination reconnus
+#define TYPE_DEST_FS						"FileSystem"	// Par défaut si non précisé
+#define TYPE_DEST_FTP						"FTP"
+#define TYPE_DEST_EMAIL						"email"
+#define TYPE_DEST_SCP						"SCP"
+
+// Attributs spécifiques
+//
+
+// FS
+#define XML_DESTINATION_FS_OS_ATTR			XML_OS
+
+// FTP
 #define XML_DESTINATION_FTP_USER_ATTR		XML_USER
 #define XML_DESTINATION_FTP_PWD_ATTR		XML_PWD
 #define XML_DESTINATION_FTP_SERVER_ATTR		XML_SERVER
 #define XML_DESTINATION_FTP_PORT_ATTR		XML_PORT
 
+// SCP
 #define XML_DESTINATION_SCP_USER_ATTR		XML_USER
 #define XML_DESTINATION_SCP_PWD_ATTR		XML_PWD
 #define XML_DESTINATION_SCP_ALIAS_ATTR		XML_ALIAS
 #define XML_DESTINATION_SCP_SERVER_ATTR		XML_SERVER
 #define XML_DESTINATION_SCP_PORT_ATTR		XML_PORT
 
+// Mail / SMTP
 #define XML_DESTINATION_SMTP_SERVER_ATTR	XML_SERVER
 #define XML_DESTINATION_SMTP_OBJECT_ATTR	"Objet"
 #define DEF_SMTP_OBJECT						"Export de l'annuaire LDAP"
@@ -338,12 +342,19 @@
 //
 #define XML_SEARCH_EXPR_ATTR_OPERATOR_ATTR	XML_OPERATOR	// Arithmétique et logique sur les attributs
 
+//
+//	JHB - mai 2021 !!!
+//	OpenLDAP ne reconnait pas les opérateurs de comparaison arithmétique
+//
 #define XML_COMP_OPERATOR_EQUAL				"eq"	// "==" => Implicite
 //#define XML_COMP_OPERATOR_GREATER			"gt"	// ">"
 #define XML_COMP_OPERATOR_GREATER_OR_EQUAL	"ge"	// ">="
 //#define XML_COMP_OPERATOR_LOWER				"lt"	// "<"
 #define XML_COMP_OPERATOR_LOWER_OR_EQUAL	"le"	// "<="
-#define XML_COMP_OPERATOR_AND				"AND"	// Opérateur binaires
+
+// Opérateur binaires - pleinement fonctionnels 
+//
+#define XML_COMP_OPERATOR_AND				"AND"	
 #define XML_COMP_OPERATOR_OR				"OR"
 
 //

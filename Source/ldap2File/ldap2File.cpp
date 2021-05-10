@@ -38,7 +38,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -542,7 +542,7 @@ int main(int argc, const char* argv[]) {
 		logs.add(logFile::LOG, "Lancement de l'application");
 		logs.add(logFile::DBG, "Logs en mode DEBUG");
 
-		if (LOGS_DAYS_INFINITE != lInfos.duration_) {
+		if (LOGS_DURATION_INFINITE != lInfos.duration_) {
 			logs.add(logFile::DBG, "Conservation des logs %d jours", lInfos.duration_);
 		}
 
@@ -551,6 +551,7 @@ int main(int argc, const char* argv[]) {
 		logs.add(logFile::LOG, "Fichier de configuration : %s", file.c_str());
 		logs.add(logFile::LOG, "Dossiers de l'application : ");
 		logs.add(logFile::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
+		logs.add(logFile::LOG, "\t- fichiers : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path());
 		logs.add(logFile::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
 		logs.add(logFile::LOG, "\t- temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
 	}
@@ -674,7 +675,7 @@ int main(int argc, const char* argv[]) {
 
 					case RET_TYPE::RET_BLOCKING_ERROR:
 					default:
-						cout << " - [ko] - Erreur(s) bloquantes";
+						cout << " - [ko] - Erreur(s) bloquante(s)";
 						break;
 					}
 				}

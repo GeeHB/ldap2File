@@ -22,7 +22,7 @@
 //--
 //--	10/01/2018 - JHB - Création - Version 18.1.1
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -80,6 +80,26 @@ fileDestination* destinationList::getDestinationByName(const char* name)
 
 	// non trouvée
 	return NULL;
+}
+
+// ... par son index
+//
+fileDestination* destinationList::operator[] (size_t index)
+{
+	// Index invalide
+	if (index >= size()) {
+		return NULL;
+	}
+
+	// On pointe surle premier élément
+	deque<fileDestination*>::iterator it = destinations_.begin();
+
+	if (index) {
+		// on avance jusqu'à l'index demandé
+		advance(it, index);
+	}
+
+	return (*it);
 }
 
 // EOF

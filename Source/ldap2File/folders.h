@@ -22,7 +22,7 @@
 //--
 //--	21/07/2020 - JHB - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -125,8 +125,8 @@ namespace jhbLDAPTools {
 			// Les sous-dossiers ne contiennent pas le caractère ":"
 			return (path.npos == path.find(WIN_FILENAME_PREFIX));
 #else
-			// Le nom d'un sous-dossier ne commence pas par "/"
-			return (path.find((POSIX_FILENAME_SEP) > 0);
+			// Le nom d'un sous-dossier ne commence pas par "/" ni par "~"
+			return (path.find((POSIX_FILENAME_SEP) > 0 && path.find((POSIX_FILENAME_HOME) != 0);
 #endif // _WIN32
 		}
 		static bool isSubFolder(const char* sPath) {

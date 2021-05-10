@@ -21,7 +21,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -39,10 +39,10 @@ typedef struct tagLOGINFOS
 	}
 
 	void init(){
-		fileName_ = "";		// ie nom du jour
+		fileName_ = "";		// Le nom du fichier
 		mode_ = LOGS_MODE_NORMAL;
 		folder_ = "";		// Dans le dossier par défaut (sous-dossier du dossier d'installation)
-		duration_ = LOGS_DAYS_INFINITE;
+		duration_ = LOGS_DURATION_INFINITE;
 	}
 
 	string		fileName_;

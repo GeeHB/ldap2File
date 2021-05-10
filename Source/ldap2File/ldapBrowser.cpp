@@ -23,7 +23,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -106,6 +106,24 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 		}
 	}
 
+	// Serveurs destination
+	//
+	fileDestination* destination(NULL);
+	bool add(false);
+	while (configurationFile_->nextDestinationServer(aliases_, &destination, &add)) {
+		if (add && destination) {
+			servers_.append(destination);
+		}
+	}
+
+	logs_->add(logFile::DBG, "%d destination(s)", servers_.size());
+	fileDestination* pDest(NULL);
+	for (size_t index = 0; index < servers_.size(); index++) {
+		if (NULL != (pDest = servers_[index])) {
+			logs_->add(logFile::DBG, "\t- %s", pDest->name());
+		}
+	}
+
 	// Schéma LDAP
 	columnList::COLINFOS attribute;
 	while (configurationFile_->nextLDAPAttribute(attribute)){
@@ -153,18 +171,6 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	managersCol_ = managersCol;
 	managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
 	logs_->add(logFile::LOG, "Par défaut, les encadrants sont définis par ('%s', '%s')", managersCol.c_str(), managersAttr_.c_str());
-
-	// Serveurs destination
-	//
-	fileDestination* destination(NULL);
-	bool add(false);
-	while (configurationFile_->nextDestinationServer(aliases_, &destination, &add)){
-		if (add && destination) {
-			servers_.append(destination);
-		}
-	}
-
-	logs_->add(logFile::LOG, "Serveurs destination : %d destinations possibles", servers_.size());
 
 	// Structure de l'arborescence LDAP
 	if (NULL == (struct_ = new treeStructure(logs))){
@@ -540,7 +546,7 @@ RET_TYPE ldapBrowser::_createFile()
 		// la liste des serveurs ) ?
 		if (destination && strlen(destination->name())){
 			if (NULL == servers_.getDestinationByName(destination->name())){
-				logs_->add(logFile::ERR, "Le serveur '%s' n'existe pas dans le fichier de configuration. La destination sera ignorée", destination->name());
+				logs_->add(logFile::ERR, "La destination '%s' n'existe pas dans le fichier de configuration. La destination sera ignorée", destination->name());
 			}
 			else{
 				destCount++;
@@ -900,8 +906,8 @@ RET_TYPE ldapBrowser::_createFile()
 			if (NULL != dest){
 				switch (dest->type()){
 				// Une copie de fichier
-				case DEST_TYPE::DEST_FS_WINDOWS:{
-
+				//case DEST_TYPE::DEST_FS_WINDOWS:{
+				case DEST_TYPE::DEST_FS: {
 					//  fullName = sFileSystem::merge(dest->folder(), opfi.name_);
 					string name = sFileSystem::split(file_->fileName());
 					fullName = sFileSystem::merge(dest->folder(), name);

@@ -22,7 +22,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -121,6 +121,7 @@ public:
 		:XMLParser(rootName, pFolders, logs, loadComments){
 		// Copie du nom du fichier
 		setFileName(fileName);
+		valid_ = true;
 	}
 
 	XMLParser(const char* rootName, folders* pFolders, logFile* logs, bool loadComments = false);
@@ -133,6 +134,10 @@ public:
 	// Chargement du fichier XML
 	virtual void load()
 	{ _load(); }
+
+	// Le fichier est-il valide ?
+	bool isValid()
+	{ return valid_; }
 
 	// Vérification de la version
 	void checkProtocol(const string& parametersNode);
@@ -218,6 +223,7 @@ protected:
 
 	// Fichier XML d'entrée
 	string				fileName_;
+	bool				valid_;				// Le fichier (ie. son format) est-il valide ?
 
 	string				baseRootName_;		// Nom du noeud principal
 

@@ -22,7 +22,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -41,8 +41,7 @@ commandFile::commandFile(const char* cmdFile, folders* pFolders, logFile* log, b
 
 	columnHandler_ = DATA_HANDLER::NONE;
 	currentColIndex_ = 0;
-	valid_ = false;			// Par défaut le fichier n'est pas valide
-
+	
 	_open();
 }
 
@@ -68,8 +67,7 @@ bool commandFile::_open()
 	_load();
 
 	// Ok
-	valid_ = true;
-	return true;
+	return valid_;
 }
 
 // Chargement / ouverture du fichier de commandes
@@ -121,12 +119,6 @@ void commandFile::_load()
 			string sCmdFile(includedName);
 			char sp(FILENAME_SEP);
 			if (sCmdFile.npos == sCmdFile.find(sp)){
-				/*
-				string folder(applicationFolder());
-				folder += sp;
-				folder += STR_FOLDER_TEMPLATES;
-				*/
-
 				string folder(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
 				folder += sp;
 				folder += sCmdFile;
@@ -143,12 +135,15 @@ void commandFile::_load()
 				// Si le fichier n'a pu être chargé, on n'en tient pas compte
 				if (!includedFile_->isValid()){
 					if (logs_){
-						logs_->add(logFile::ERR, "Le fichier '%s' ne sera pas utilisé", includedName);
+						logs_->add(logFile::ERR, "Le fichier '%s' ne peut pas être utilisé", includedName);
 					}
 
 					// Suppression ...
 					delete includedFile_;
 					includedFile_ = NULL;
+
+					// Le fichier de commandes ne sera pas utilisé
+					valid_ = false;
 				}
 			}
 		}
@@ -390,6 +385,10 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 		pDestination = NULL;
 		folder = snode.first_child().value();
 		fType = snode.attribute(XML_DESTINATION_TYPE_ATTR).value();
+		if (0 == fType.size()) {
+			// Pas de type => FileSystem
+			fType = TYPE_DEST_FS;
+		}
 		name = snode.attribute(XML_DESTINATION_NAME_ATTR).value();
 
 		// Si le nom est renseigné, on utilisera la "destination" associée du fichier de configuration
@@ -397,7 +396,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 			pDestination = new fileDestination(name, "");
 		}
 		else{
-			if (fType.size() && folder.size()){
+			if (fType.size() /*&& folder.size()*/){
 				// Un transfert par FTP ?
 				if (TYPE_DEST_FTP == fType){
 					FTPDestination* ftp = new FTPDestination(folder);
@@ -465,20 +464,35 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 						}
 						else {
 							// Copie dans un dossier ...
-							if (expectedOS_ == fType) {
-								// Est ce un chemin complet ?
-								if (folder.npos == folder.find(FILENAME_SEP)) {
-									// Non => chemin relatif au dossier courant
-									folder = sFileSystem::merge(sFileSystem::current_path(), snode.first_child().value());
-								}
+							if (TYPE_DEST_FS == fType){
+								// Quel OS ?
+								string destOS = snode.attribute(XML_DESTINATION_FS_OS_ATTR).value();
+								
+								// Le bon OS ou tous les OS ?
+								if (0 == destOS.size() || expectedOS_ == destOS) {
+									// Est ce un chemin complet ?
+									if (folders::isSubFolder(folder)) {
+										// Non => chemin relatif au dossier de l'application
+										folders::folder* bFolder(folders_->find(folders::FOLDER_TYPE::FOLDER_APP));
+										if (bFolder) {
+											folder = sFileSystem::merge(bFolder->path(), snode.first_child().value());
+										}
+										else {
+											folder = "";	// Erreur ...
+										}
+									}
 
-								// Qque soit de le cas, le dossier doit exister
-								if (!sFileSystem::exists(folder)) {
-									sFileSystem::create_directory(folder);
-								}
+									// Qque soit de le cas, le dossier doit exister
+									if (folder.size()) {
+										bool exists(false);
+										if (!(exists = sFileSystem::exists(folder))) {
+											exists = sFileSystem::create_directory(folder);
+										}
 
-								if (NULL != (pDestination = new fileDestination(folder))) {
-									pDestination->setType(defType_);
+										if (exists && NULL != (pDestination = new fileDestination(name, folder))) {
+											pDestination->setType(defType_);
+										}
+									}
 								}
 							} // type FS
 						} // email
@@ -683,11 +697,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 	if (!baseReg || (baseReg && !baseReg->find(STR_ATTR_OBJECT_CLASS))){
 		if (NULL != (reg = new searchExpr(cols, SEARCH_EXPR_MINIMAL, XML_LOG_OPERATOR_AND))){
 			reg->add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_TYPE_PERSON);
-			/*
-			reg->add(STR_ATTR_PRENOM, "*");
-			reg->add(STR_ATTR_NOM, "*");
-			*/
-
+			
 			if (baseReg){
 #ifdef _DEBUG
 				string currentFilter;

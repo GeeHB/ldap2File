@@ -1,3 +1,7 @@
+TODO{
+	- Compatibilité x64
+}
+
 21.5.3
 
 	TODO{
@@ -10,16 +14,20 @@
 			Suppr. le dossier en sortie
 	}
 
-	* le 7 mai 2021 / MAJ de la ressource
-	+ Ajout de l'attribut ldap2File.Fichier.Limite pour la gestion d'une date de fin d'application
-		+ Si absent ou erreur => pas de limite
-		+ Date dépassée => Suppression du fichier
+	* le 10 mai 2021 / MAJ de la ressource
+	+ Modification du schéma XML => version 2.2
+		+ Vérification : .conf + modèle (include) + fichier de commande 
+		- <Destination>/Type =>  <Destination>/Type="FileSystem> + <Destination>/OS
+		- <Logs><Jours> => <Logs><Duree>
+		+ Ajout de l'attribut <ldap2File><Fichier> Limite pour la gestion d'une date de fin d'application
+			+ Si absent ou erreur => pas de limite
+			+ Date dépassée => Suppression du fichier
 	+ Corrections mineures
 		+ "./output files" => "./outputs" : Plus portable et plus scriptable ...
+		+ Les dossiers "système" sont crées lors de leur utilisation (pas les dossiers Destination qui doivent impérativement exister)
 		+ Logs :: Le numéro de version est suivi de "DEBUG" même en mode release
-		+ Par défaut si les dossiers n'ont pas de p"ath" complet, il s'agit d'un sous-dossier du dossier principal
-			+ pas d'OS précisé => tous les OS
-		- <Destination>/Type =>  <Destination>/Type="FileSystem> + <Destination>/OS
+		+ Par défaut si les dossiers n'ont pas de "path" complet, il s'agit d'un sous-dossier du dossier principal
+			+ pas d'OS précisé => tous les OS (valable quand cela fait sens ...)
 	+ Compatiblité Linux des sources
 		+ Reprise des corrections et des tests de non regression
 		+ Windows OK

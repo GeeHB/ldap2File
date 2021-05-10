@@ -22,7 +22,7 @@
 //--
 //--	10/01/2018 - JHB - Création - Version 18.1.1
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -55,7 +55,10 @@ public:
 	// Ajout
 	bool append(fileDestination* destination);
 
+	// Libération
 	void dispose();
+	
+	// Taille
 	size_t size()
 	{ return destinations_.size(); }
 
@@ -63,6 +66,10 @@ public:
 	fileDestination* getDestinationByName(const char* name);
 	fileDestination* getDestinationByName(const string& name)
 	{ return getDestinationByName(name.c_str()); }
+
+	// ... par son index
+	//
+	fileDestination* operator[] (size_t index);
 
 	// Methodes privees
 	//

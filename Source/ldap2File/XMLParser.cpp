@@ -22,7 +22,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	07/05/2021 - JHB - Version 21.5.2
+//--	10/05/2021 - JHB - Version 21.5.3
 //--
 //---------------------------------------------------------------------------
 
@@ -59,6 +59,8 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs, boo
 //
 void XMLParser::checkProtocol(const string& parametersNode)
 {
+	valid_ = false;		// On part du principe que ça va coincer ...
+	
 	pugi::xml_node node = xmlDocument_.child(baseRootName_.c_str());
 	if (0 == parametersNode.length() || IS_EMPTY(node.name())) {
 		string msg("Le fichier '");
@@ -71,9 +73,11 @@ void XMLParser::checkProtocol(const string& parametersNode)
 	string currentVersion(node.attribute(XML_ROOT_VERSION_ATTR).value());
 	if (XML_CONF_VERSION_VAL != currentVersion) {
 		// Pas la "bonne" version
-		string msg("La version du fichier '");
+		string msg("La version du schema XML dans le fichier '");
 		msg += fileName_;
-		msg += "' n'est pas correcte. Version attendue : ";
+		msg += "' n'est pas correcte. Version du fichier : ";
+		msg += currentVersion;
+		msg += " - Version attendue : ";
 		msg += XML_CONF_VERSION_VAL;
 		throw LDAPException(msg);
 	}
@@ -89,6 +93,9 @@ void XMLParser::checkProtocol(const string& parametersNode)
 		msg += "'";;
 		throw LDAPException(msg);
 	}
+
+	// Si je suis arrivé ici c'est que tout est correct !
+	valid_ = true;
 }
 
 // Enregistrement du fichier
