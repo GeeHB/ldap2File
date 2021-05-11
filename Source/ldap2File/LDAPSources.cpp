@@ -6,6 +6,8 @@
 //--
 //--	PROJET	: ldap2File
 //--
+//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
@@ -78,7 +80,7 @@ bool LDAPSources::add(LDAPServer* server)
 bool LDAPSources::setDefaultSourceName(string& srcName)
 {
 	if (srcName.length()) {
-		
+
 		if (NULL != _findServer(srcName)) {
 			defaultSourceName_ = srcName;
 			return true;
@@ -92,15 +94,15 @@ bool LDAPSources::setDefaultSourceName(string& srcName)
 	return true;
 }
 
-// Recherche d'une source par son nom 
-// et à défaut retourne la source par défaut, si elle existe 
+// Recherche d'une source par son nom
+// et à défaut retourne la source par défaut, si elle existe
 LDAPServer* LDAPSources::findEnvironmentByName(string& envName)
 {
-	LDAPServer* server(NULL);
+	//LDAPServer* server(NULL);
 	if (envName.size()) {
 		return _findServer(envName);
 	}
-	
+
 	// Environnement par défaut
 	return (defaultSourceName_.length()?_findServer(defaultSourceName_):NULL);
 }
@@ -117,12 +119,12 @@ LDAPServer* LDAPSources::_findServer(string& serverName)
 		}
 	}
 	else {
-		// Pas de nom => on retourne le premier 
+		// Pas de nom => on retourne le premier
 		if (size()) {
 			return (*(sources_.begin()));
 		}
 	}
-	
+
 	// Non trouvé
 	return NULL;
 }

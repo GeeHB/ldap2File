@@ -1022,6 +1022,8 @@ typedef struct tagATTRNAMES
 }ATTRNAMES,* LPATTRNAMES;
 
 
+// Type de fichier à générer
+//
 class ldapFile
 {
 public:

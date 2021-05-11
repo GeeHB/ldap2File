@@ -367,7 +367,6 @@ RET_TYPE ldapBrowser::browse()
 	cols_.append(COL_NOM);
 	cols_.append(COL_ACCOUNTSTATUS);
 	cols_.append(COL_ALLIER_STATUS_NAME, COL_ALLIER_STATUS, COL_DEF_WITDH, DATA_TYPE_SINGLEVALUED_STRING, false);	// Pas de "-" dans le nom d'un attribut en js !
-
 	cols_.append(COL_DGA);
 	struct_->setAt(COL_DGA, cols_.size() - 1);
 	cols_.append(COL_DG);

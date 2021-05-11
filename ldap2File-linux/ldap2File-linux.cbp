@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/ldap2File-linux" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/ldap2File" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -16,9 +16,15 @@
 					<Add option="-D__LDAP_USE_ALLIER_TITLES_h__" />
 					<Add directory="/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File-linux" />
 				</Compiler>
+				<Linker>
+					<Add option="-lstdc++fs" />
+					<Add option="-lcurl" />
+					<Add option="-lldap" />
+					<Add option="-llber" />
+				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/ldap2File-linux" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/ldap2File" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -28,6 +34,10 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-lstdc++fs" />
+					<Add option="-lcurl" />
+					<Add option="-lldap" />
+					<Add option="-llber" />
 				</Linker>
 			</Target>
 		</Build>
@@ -44,235 +54,13 @@
 		<Unit filename="../../Common/cmdLineAnalyzer.h" />
 		<Unit filename="../../Common/fileSystem.cpp" />
 		<Unit filename="../../Common/fileSystem.h" />
+		<Unit filename="../../Common/jhbCURLTools/CURLTools.h" />
+		<Unit filename="../../Common/jhbCURLTools/FTPClient.cpp" />
+		<Unit filename="../../Common/jhbCURLTools/FTPClient.h" />
+		<Unit filename="../../Common/jhbCURLTools/SMTPClient.cpp" />
+		<Unit filename="../../Common/jhbCURLTools/SMTPClient.h" />
 		<Unit filename="../../Common/logFile.cpp" />
 		<Unit filename="../../Common/logFile.h" />
-		<Unit filename="../Source/ZipLib/ZipArchive.cpp" />
-		<Unit filename="../Source/ZipLib/ZipArchive.h" />
-		<Unit filename="../Source/ZipLib/ZipArchiveEntry.cpp" />
-		<Unit filename="../Source/ZipLib/ZipArchiveEntry.h" />
-		<Unit filename="../Source/ZipLib/ZipFile.cpp" />
-		<Unit filename="../Source/ZipLib/ZipFile.h" />
-		<Unit filename="../Source/ZipLib/compression/bzip2/bzip2_decoder.h" />
-		<Unit filename="../Source/ZipLib/compression/bzip2/bzip2_decoder_properties.h" />
-		<Unit filename="../Source/ZipLib/compression/bzip2/bzip2_encoder.h" />
-		<Unit filename="../Source/ZipLib/compression/bzip2/bzip2_encoder_properties.h" />
-		<Unit filename="../Source/ZipLib/compression/compression_interface.h" />
-		<Unit filename="../Source/ZipLib/detail/EndOfCentralDirectoryBlock.cpp" />
-		<Unit filename="../Source/ZipLib/detail/EndOfCentralDirectoryBlock.h" />
-		<Unit filename="../Source/ZipLib/detail/ZipCentralDirectoryFileHeader.cpp" />
-		<Unit filename="../Source/ZipLib/detail/ZipCentralDirectoryFileHeader.h" />
-		<Unit filename="../Source/ZipLib/detail/ZipGenericExtraField.cpp" />
-		<Unit filename="../Source/ZipLib/detail/ZipGenericExtraField.h" />
-		<Unit filename="../Source/ZipLib/detail/ZipLocalFileHeader.cpp" />
-		<Unit filename="../Source/ZipLib/detail/ZipLocalFileHeader.h" />
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/blocksort.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/bzerror.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/bzip2-compress.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/bzlib.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/bzlib.h" />
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/bzlib_private.h" />
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/crctable.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/decompress.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/huffman.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/bzip2/randtable.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7z.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zAlloc.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zAlloc.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zBuf.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zBuf.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zBuf2.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zCrc.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zCrc.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zCrcOpt.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zDec.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zFile.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zFile.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zIn.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zStream.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/7zVersion.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Alloc.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Alloc.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Bcj2.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Bcj2.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Bra.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Bra.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Bra86.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/BraIA64.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/CpuArch.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/CpuArch.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Delta.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Delta.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzFind.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzFind.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzFindMt.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzFindMt.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzHash.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Lzma2Dec.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Lzma2Dec.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Lzma2Enc.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Lzma2Enc.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Lzma86.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Lzma86Dec.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Lzma86Enc.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzmaDec.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzmaDec.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzmaEnc.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzmaEnc.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzmaLib.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/LzmaLib.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/MtCoder.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/MtCoder.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Ppmd.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Ppmd7.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Ppmd7.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Ppmd7Dec.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Ppmd7Enc.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/RotateDefs.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Sha256.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Sha256.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Threads.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Threads.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Types.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Xz.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/Xz.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/XzCrc64.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/XzCrc64.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/XzDec.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/XzEnc.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/lzma/XzEnc.h" />
-		<Unit filename="../Source/ZipLib/extlibs/lzma/XzIn.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/adler32.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/compress.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/crc32.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/crc32.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/deflate.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/deflate.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/gzguts.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/infback.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/inffast.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/inffast.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/inffixed.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/inflate.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/inflate.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/inftrees.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/inftrees.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/trees.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/trees.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/uncompr.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/zconf.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/zlib.h" />
-		<Unit filename="../Source/ZipLib/extlibs/zlib/zutil.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../Source/ZipLib/extlibs/zlib/zutil.h" />
 		<Unit filename="../Source/ldap2File/CSVFile.cpp" />
 		<Unit filename="../Source/ldap2File/CSVFile.h" />
 		<Unit filename="../Source/ldap2File/JScriptConsts.h" />
@@ -280,6 +68,8 @@
 		<Unit filename="../Source/ldap2File/JScriptFile.h" />
 		<Unit filename="../Source/ldap2File/LDAPServer.cpp" />
 		<Unit filename="../Source/ldap2File/LDAPServer.h" />
+		<Unit filename="../Source/ldap2File/LDAPSources.cpp" />
+		<Unit filename="../Source/ldap2File/LDAPSources.h" />
 		<Unit filename="../Source/ldap2File/LDIFFile.cpp" />
 		<Unit filename="../Source/ldap2File/LDIFFile.h" />
 		<Unit filename="../Source/ldap2File/ODSConsts.h" />

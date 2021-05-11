@@ -75,10 +75,10 @@
 #define CURRENT_OS				OS_WINDOWS
 #else
 #ifdef __APPLE__
-#define CURRENT_OS				OS_MACOS;
+#define CURRENT_OS				OS_MACOS
 #else
 // Sinon un linux ...
-#define CURRENT_OS				OS_LINUX;
+#define CURRENT_OS				OS_LINUX
 #endif // __APPLE__
 #endif // _WIN32
 

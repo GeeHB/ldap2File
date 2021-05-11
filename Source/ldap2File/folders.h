@@ -126,7 +126,7 @@ namespace jhbLDAPTools {
 			return (path.npos == path.find(WIN_FILENAME_PREFIX));
 #else
 			// Le nom d'un sous-dossier ne commence pas par "/" ni par "~"
-			return (path.find((POSIX_FILENAME_SEP) > 0 && path.find((POSIX_FILENAME_HOME) != 0);
+			return (path.find(POSIX_FILENAME_SEP) > 0 && path.find(POSIX_FILENAME_HOME) != 0);
 #endif // _WIN32
 		}
 		static bool isSubFolder(const char* sPath) {
