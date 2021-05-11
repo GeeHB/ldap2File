@@ -359,6 +359,30 @@ namespace sFileSystem {
 		return merge(sPath, filename);
 	}
 
+	// Changement de formalisme pour un chemin (Windows <-> Posix et inversement)
+	//
+	void check_path(std::string& path, const char valid, const char invalid)
+	{
+		if (path.size() > 0) {
+			size_t pos(0);
+			
+			// Tant que le token "invalid" est trouvé ...
+			while (path.npos != (pos = path.find(invalid, pos))) {
+				path.replace(pos, 1, 1, valid);
+				pos++;
+			}
+		}
+	}
+	void check_path(std::string& path)
+	{
+#ifdef _WIN32
+		// Posix -> Windows
+		check_path(path, WIN_FILENAME_SEP, POSIX_FILENAME_SEP);
+#else
+		// Windows -> Posix
+		check_path(path, POSIX_FILENAME_SEP, WIN_FILENAME_SEP);
+#endif // _WIN32
+	}
 }; // sFileSystem
 
 // EOF

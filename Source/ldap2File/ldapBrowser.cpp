@@ -570,7 +570,7 @@ RET_TYPE ldapBrowser::_createFile()
 
 	if (0 == destCount){
 		logs_->add(logFile::ERR, "Aucune destination valide pour le fichier de sortie. Les traitements sont annulés");
-		return RET_TYPE::RET_INVALID_PARAMETERS;
+		return RET_TYPE::RET_ERROR_NO_DESTINATION;
 	}
 
 	// Quelle sera la colonne pour les managers
@@ -637,7 +637,7 @@ RET_TYPE ldapBrowser::_createFile()
 		if (search.container().size() && NULL == (pService = services_->findContainer(sContainer, baseContainer, containerDepth))){
 			logs_->add(logFile::ERR, "'%s' ne correspond à aucun élément de structure", search.container().c_str());
 			logs_->add(logFile::ERR, "Aucun fichier ne sera généré");
-			return RET_TYPE::RET_INVALID_PARAMETERS;
+			return RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR;
 		}
 
 		// Vérification que la rupture a un sens
@@ -699,7 +699,7 @@ RET_TYPE ldapBrowser::_createFile()
 				logs_->add(logFile::ERR, "Le type %d ne correspond à aucun type de fichier pris en charge", opfi.format_);
 			}
 
-			return RET_TYPE::RET_INVALID_PARAMETERS;
+			return RET_TYPE::RET_INVALID_OUTPUT_FORMAT;
 		}
 	}
 
@@ -785,7 +785,6 @@ RET_TYPE ldapBrowser::_createFile()
 		else{
 			srvControls[0] = sortControl;
 		}
-
 	}
 
 	// Pagination

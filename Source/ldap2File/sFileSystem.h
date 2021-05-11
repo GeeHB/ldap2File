@@ -106,6 +106,11 @@ namespace sFileSystem {
 	std::string merge(const std::string& path, const char* filename);
 	std::string merge(const char* path, const char* filename);
 	std::string merge(const char* path, const std::string& filename);
+
+	// Changement de formalisme pour un chemin (Windows <-> Posix et inversement)
+	void check_path(std::string& path, const char valid, const char invalid);
+	void check_path(std::string& path);
+
 }; // sFileSystem
 
 #endif // __JHB_SIMPLE_FILE_SYSTEM_OBJECT_h__

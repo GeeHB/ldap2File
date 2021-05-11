@@ -410,6 +410,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 	aliases::alias* palias(NULL);
 	name = destinationServer_.node()->attribute(XML_DESTINATION_NAME_ATTR).value();
 	folder = destinationServer_.node()->first_child().value();
+	sFileSystem::check_path(folder);	// Conversion du nom des sous-dossiers
 	fType = destinationServer_.node()->attribute(XML_DESTINATION_TYPE_ATTR).value();
 	if (0 == fType.size()) {
 		// Pas de type => FileSystem
@@ -538,7 +539,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 								// Non => chemin relatif au dossier de l'application
 								pFolder = folders_->find(folders::FOLDER_TYPE::FOLDER_APP);
 								if (pFolder) {
-									folder = sFileSystem::merge(pFolder->path(), destinationServer_.node()->first_child().value());
+									folder = sFileSystem::merge(pFolder->path(), folder);
 								}
 								else {
 									folder = "";	// Erreur ...

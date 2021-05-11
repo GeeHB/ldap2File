@@ -384,6 +384,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 	while (!IS_EMPTY(snode.name())){
 		pDestination = NULL;
 		folder = snode.first_child().value();
+		sFileSystem::check_path(folder);			// Conversion du nom des sous-dossiers
 		fType = snode.attribute(XML_DESTINATION_TYPE_ATTR).value();
 		if (0 == fType.size()) {
 			// Pas de type => FileSystem
@@ -475,7 +476,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 										// Non => chemin relatif au dossier de l'application
 										folders::folder* bFolder(folders_->find(folders::FOLDER_TYPE::FOLDER_APP));
 										if (bFolder) {
-											folder = sFileSystem::merge(bFolder->path(), snode.first_child().value());
+											folder = sFileSystem::merge(bFolder->path(), folder);
 										}
 										else {
 											folder = "";	// Erreur ...

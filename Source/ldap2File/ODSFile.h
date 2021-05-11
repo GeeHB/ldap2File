@@ -34,19 +34,11 @@
 // Gestion de la compression ZIP
 //
 
-#ifdef __USE_CMD_LINE_ZIP__
-#undef	__USE_CMD_LINE_ZIP__
-#endif // __USE_CMD_LINE_ZIP__
-
 #ifdef _WIN32
-#ifdef __USE_ZIP_UTILS_LIB__
-	#include <./zip/ziputils/zip.h>
-	#include <./zip/ziputils/unzip.h>
-#endif // __USE_ZIP_UTILS_LIB__
-#endif // WIN32
-
-#ifndef __USE_ZIP_UTILS_LIB__
-	#ifdef _WIN32
+	#ifdef __USE_ZIP_UTILS_LIB__
+		#include <./zip/ziputils/zip.h>
+		#include <./zip/ziputils/unzip.h>
+	#else
 		#ifdef _MSC_VER
 		#define _CRTDBG_MAP_ALLOC
 		#include <stdlib.h>
@@ -58,19 +50,19 @@
 		#include "../ZipLib/ZipFile.h"
 		#include "../ZipLib/streams/memstream.h"
 		#include "../ZipLib//methods/Bzip2Method.h"
-	#else
-		// Sous linux on utilise la ligne de commandes
-		#define	__USE_CMD_LINE_ZIP__
+	#endif // __USE_ZIP_UTILS_LIB__
+#else
+	// Sous linux on utilise la ligne de commandes
+	#define	__USE_CMD_LINE_ZIP__
 
-		// Dossier temporaire pour la gestion/création des fichiers ZIP/ODS
-		#define  ZIP_TEMP_FOLDER	"tmpODS"
+	// Dossier temporaire pour la gestion/création des fichiers ZIP/ODS
+	#define  ZIP_TEMP_FOLDER	"tmpODS"
 
-		// Commandes à exécuter
-		//
-		#define	ZIP_STR			"tar -czf"			// Tant qu'à faire on utilise tar ...
-		#define	UNZIP_STR		"unzip -d"			// ... et unzip
-	#endif // _WIN32
-#endif // #ifndef __USE_ZIP_UTILS_LIB__
+	// Commandes à exécuter
+	//
+	#define	ZIP_STR			"tar -czf"			// Tant qu'à faire on utilise tar ...
+	#define	UNZIP_STR		"unzip -d"			// ... et unzip
+#endif // WIN32
 
 //----------------------------------------------------------------------
 //--

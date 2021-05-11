@@ -655,6 +655,14 @@ int main(int argc, const char* argv[]) {
 						cout << " - [ko] - Paramètres invalides";
 						break;
 
+					case RET_TYPE::RET_ERROR_NO_DESTINATION:
+						cout << " - [ko] - Pas de destination valide";
+						break;
+
+					case RET_TYPE::RET_INVALID_OUTPUT_FORMAT:
+						cout << " - [ko] - Format de fichier de sortie inconnu";
+						break;
+
 					case RET_TYPE::RET_FILE_TO_DELETE:
 						cout << " - [ok] - La date limite est dépassée - Le fichier doit être supprimé";
 						removeFile = true;
@@ -671,6 +679,10 @@ int main(int argc, const char* argv[]) {
 
 					case RET_TYPE::RET_UNABLE_TO_SAVE:
 						cout << " - [ko] - Erreur de fichier";
+						break;
+
+					case RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR:
+						cout << " - [ko] - Critère de recherche invalide";
 						break;
 
 					case RET_TYPE::RET_BLOCKING_ERROR:
