@@ -34,7 +34,7 @@
 
 // Construction
 //
-XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs, bool loadComments)
+XMLParser::XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool loadComments)
 {
 	if (IS_EMPTY(rootName)) {
 		throw LDAPException("XMLParser - Pas de nom pour la racine");
@@ -43,7 +43,7 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logFile* logs, boo
 	// Initialisation des paramètres
 	baseRootName_ = rootName;
 	folders_ = pFolders;
-	logs_ = logs;
+	logs_ = pLogs;
 	fileName_ = "";
 	loadComments_ = loadComments;
 

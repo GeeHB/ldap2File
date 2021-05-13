@@ -72,8 +72,8 @@ namespace jhbLDAPTools {
 		LPAGENTTITLE pTitle(NULL);
 		if (NULL != (pTitle = find(id)) && pTitle->label() != label) {
 			if (logs_) {
-				logs_->add(logFile::DBG, "Erreur - Impossible d'ajouter le titre '%s'. Il est déja utilisé avec l'ID '%s' pour '%s'", label.c_str(), id.c_str(), pTitle->label());
-				//logs_->add(logFile::DBG, "Erreur - Le titre id:%s est déja défini pour '%s'", id.c_str(), pTitle->label());
+				logs_->add(logs::TRACE_TYPE::DBG, "Erreur - Impossible d'ajouter le titre '%s'. Il est déja utilisé avec l'ID '%s' pour '%s'", label.c_str(), id.c_str(), pTitle->label());
+				//logs_->add(logs::TRACE_TYPE::DBG, "Erreur - Le titre id:%s est déja défini pour '%s'", id.c_str(), pTitle->label());
 			}
 
 			return false;
@@ -83,7 +83,7 @@ namespace jhbLDAPTools {
 		pTitle = new title(id, label, responsable, description);
 		if (NULL == pTitle) {
 			if (logs_) {
-				logs_->add(logFile::ERR, "Erreur d'allocation mémoire. Le titre '%s' n'a pu être ajouté", id.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Erreur d'allocation mémoire. Le titre '%s' n'a pu être ajouté", id.c_str());
 			}
 
 			return false;
@@ -92,7 +92,7 @@ namespace jhbLDAPTools {
 		// Ajout
 		titles_.push_back(pTitle);
 		if (logs_) {
-			logs_->add(logFile::DBG, "Ajout du titre id : %s - '%s'", pTitle->id(), pTitle->label());
+			logs_->add(logs::TRACE_TYPE::DBG, "Ajout du titre id : %s - '%s'", pTitle->id(), pTitle->label());
 		}
 
 

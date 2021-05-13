@@ -61,7 +61,7 @@ class agentTree
 public:
 
 	// Construction
-	agentTree(charUtils* encoder, logFile* logs, LDAPServer* lServer, const char* baseDN);
+	agentTree(charUtils* encoder, logs* pLogs, LDAPServer* lServer, const char* baseDN);
 
 	// Destruction
 	virtual ~agentTree();
@@ -135,7 +135,7 @@ private:
 private:
 
 	charUtils*			encoder_;
-	logFile*			logs_;
+	logs*				logs_;
 
 	LDAPServer*			ldapServer_;		// Connexion à LDAP
 	string				baseDN_;

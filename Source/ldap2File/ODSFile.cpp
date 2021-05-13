@@ -634,7 +634,7 @@ bool ODSFile::_initContentFile()
 	// Recherche du fichier modèle
 	if (!templateZip_.open(templateFile_)){
 		if (logs_){
-			logs_->add(logFile::ERR, "Impossible d'ouvrir le fichier '%s'. Ce n'est pas une archive valide", templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir le fichier '%s'. Ce n'est pas une archive valide", templateFile_.c_str());
 		}
 
 		return false;
@@ -650,7 +650,7 @@ bool ODSFile::_initContentFile()
 #ifdef __USE_ZIP_UTILS_LIB__
 	if (-1 == (contentIndex_ = templateZip_.findFile(shortName))){
 		if (logs_){
-			logs_->add(logFile::ERR, "Impossible de trouver le fichier de contenu dans le modèle '%s'", templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le fichier de contenu dans le modèle '%s'", templateFile_.c_str());
 		}
 
 		return false;
@@ -660,7 +660,7 @@ bool ODSFile::_initContentFile()
 	ODSFile::zipFile::ZIPELEMENT ze;
 	if (!templateZip_.extractFile(contentIndex_, contentFile_, &ze)){
 		if (logs_){
-			logs_->add(logFile::ERR, "Impossible d'extraire le fichier de contenu dans le modèle '%s'", templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'extraire le fichier de contenu dans le modèle '%s'", templateFile_.c_str());
 		}
 
 		return false;
@@ -668,7 +668,7 @@ bool ODSFile::_initContentFile()
 #else
 	if (-1 == templateZip_.findFile(shortName)) {
 		if (logs_) {
-			logs_->add(logFile::ERR, "Impossible de trouver le fichier '%s' dans le modèle '%s'", shortName.c_str(), templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le fichier '%s' dans le modèle '%s'", shortName.c_str(), templateFile_.c_str());
 		}
 
 		return false;
@@ -676,7 +676,7 @@ bool ODSFile::_initContentFile()
 	else {
 		if (false == templateZip_.extractFile(shortName, contentFile_)) {
 			if (logs_) {
-				logs_->add(logFile::ERR, "Impossible d'extraire le fichier '%s' dans le modèle '%s'", shortName.c_str(), templateFile_.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'extraire le fichier '%s' dans le modèle '%s'", shortName.c_str(), templateFile_.c_str());
 			}
 
 			return false;
@@ -732,7 +732,7 @@ bool ODSFile::_openContentFile()
 	docRoot_ = XMLContentFile_.child(ODS_FILE_ROOT_NODE);
 	if (IS_EMPTY(docRoot_.name())){
 		if (logs_){
-			logs_->add(logFile::ERR, "Le modèle '%s' n'est pas au bon format", templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Le modèle '%s' n'est pas au bon format", templateFile_.c_str());
 		}
 		return false;
 	}
@@ -744,7 +744,7 @@ bool ODSFile::_openContentFile()
 	sheetsRoot_ = docRoot_.child(ODS_BODY_NODE);
 	if (IS_EMPTY(sheetsRoot_.name())){
 		if (logs_){
-			logs_->add(logFile::ERR, "Le modèle '%s' n'est pas au bon format", templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Le modèle '%s' n'est pas au bon format", templateFile_.c_str());
 		}
 		return false;
 	}
@@ -871,7 +871,7 @@ bool ODSFile::_endContentFile()
 						hFile = CreateFile(tempFile, FILE_ALL_ACCESS, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 						if (INVALID_HANDLE_VALUE == hFile){
 							if (logs_){
-								logs_->add(logFile::ERR, "Impossible de créer un fichier de taille nulle");
+								logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer un fichier de taille nulle");
 							}
 
 							cont = false;
@@ -915,7 +915,7 @@ bool ODSFile::_endContentFile()
 	string newName(fileName());
 	if (false == sFileSystem::copy_file(templateFile_, newName)) {
 		if (logs_) {
-			logs_->add(logFile::ERR, "Pas de génération du fichier ODS : Impossible de copier le fichier %s", templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Pas de génération du fichier ODS : Impossible de copier le fichier %s", templateFile_.c_str());
 		}
 	}
 	else {
@@ -931,7 +931,7 @@ bool ODSFile::_endContentFile()
 			sFileSystem::remove(newName);
 
 			if (logs_) {
-				logs_->add(logFile::ERR, "Impossible d'ouvrir la copie du fichier modèle %s", newName.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir la copie du fichier modèle %s", newName.c_str());
 			}
 		}
 		else {
@@ -940,7 +940,7 @@ bool ODSFile::_endContentFile()
 				// 3 - Insertion du "nouveau" contenu
 				if (false == (destZip_.addFile(contentFile_, shortName))) {
 					if (logs_) {
-						logs_->add(logFile::ERR, "Impossible d'ajouter le fichier de contenu '%s' au fichier ods destination", shortName.c_str());
+						logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ajouter le fichier de contenu '%s' au fichier ods destination", shortName.c_str());
 					}
 				}
 				else {
@@ -950,7 +950,7 @@ bool ODSFile::_endContentFile()
 			}
 			else {
 				if (logs_) {
-					logs_->add(logFile::ERR, "Impossible de supprimer le contenu du fichieer modèle");
+					logs_->add(logs::TRACE_TYPE::ERR, "Impossible de supprimer le contenu du fichieer modèle");
 				}
 			}
 		}

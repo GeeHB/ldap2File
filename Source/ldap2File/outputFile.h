@@ -183,7 +183,7 @@ public:
 	//	retourne un booléen (conitniuer les traitements ?)
 	virtual bool getOwnParameters(){
 #ifdef _WIN32
-		logs_->add(logFile::DBG, _T("Pas de paramètres supplémentaires dans le fichier XML"));
+		logs_->add(logs::TRACE_TYPE::DBG, _T("Pas de paramètres supplémentaires dans le fichier XML"));
 #endif // ifdef _WIN32
 		return true;		// Pas de param => on continue
 	}
@@ -360,7 +360,7 @@ private:
 	//
 protected:
 	folders*		folders_;			// Dossiers de l'application
-	logFile*		logs_;				// Fichier de logs
+	logs*		logs_;				// Fichier de logs
 
 	confFile*		configurationFile_;
 

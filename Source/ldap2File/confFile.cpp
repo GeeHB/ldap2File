@@ -33,7 +33,7 @@
 
 // Constructions
 //
-confFile::confFile(const char* confFile, folders* pFolders, logFile* log)
+confFile::confFile(const char* confFile, folders* pFolders, logs* log)
 	:XMLParser(confFile, pFolders, log)
 {
 	// Intialisation des données membres
@@ -43,7 +43,7 @@ confFile::confFile(const char* confFile, folders* pFolders, logFile* log)
 	_open();
 }
 
-confFile::confFile(folders* pFolders, logFile* log)
+confFile::confFile(folders* pFolders, logs* log)
 	:XMLParser(XML_ROOT_LDAPTOOLS_NODE, pFolders, log)
 {
 	// Intialisation des données membres
@@ -443,7 +443,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 		}
 		else {
 			if (logs_) {
-				logs_->add(logFile::ERR, "Impossible de créer l'objet FTP pour '%s'", name.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer l'objet FTP pour '%s'", name.c_str());
 			}
 		}
 
@@ -473,7 +473,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 				(*add) = false;
 
 				if (logs_) {
-					logs_->add(logFile::ERR, "L'alias '%s' n'existe pas", aliasName.c_str());
+					logs_->add(logs::TRACE_TYPE::ERR, "L'alias '%s' n'existe pas", aliasName.c_str());
 				}
 			}
 		}
@@ -504,7 +504,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 				}
 				else {
 					if (logs_) {
-						logs_->add(logFile::ERR, "Impossible de créer l'objet mail pour %s", name);
+						logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer l'objet mail pour %s", name);
 					}
 				}
 
@@ -529,7 +529,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 								folder = "";
 
 								if (logs_) {
-									logs_->add(logFile::ERR, "Impossible de récupérer le dossier des sorties : '%'", STR_FOLDER_OUTPUTS);
+									logs_->add(logs::TRACE_TYPE::ERR, "Impossible de récupérer le dossier des sorties : '%'", STR_FOLDER_OUTPUTS);
 								}
 							}
 						}
@@ -545,7 +545,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 									folder = "";	// Erreur ...
 
 									if (logs_) {
-										logs_->add(logFile::ERR, "Impossible de récupérer le dossier parent pour '%s'", folder.c_str());
+										logs_->add(logs::TRACE_TYPE::ERR, "Impossible de récupérer le dossier parent pour '%s'", folder.c_str());
 									}
 								}
 							}
@@ -563,7 +563,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 							}
 							else {
 								if (logs_) {
-									logs_->add(logFile::ERR, exists?"Destination - Impossible de créer l'objet pour '%s'": "Destination - Le dossier %s n'existe pas", folder.c_str());
+									logs_->add(logs::TRACE_TYPE::ERR, exists?"Destination - Impossible de créer l'objet pour '%s'": "Destination - Le dossier %s n'existe pas", folder.c_str());
 								}
 							}
 						}
@@ -752,7 +752,7 @@ void confFile::_load()
 	}
 	catch (LDAPException& e) {
 		if (logs_) {
-			logs_->add(logFile::ERR, e.what());
+			logs_->add(logs::TRACE_TYPE::ERR, e.what());
 		}
 	}
 

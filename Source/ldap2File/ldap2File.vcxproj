@@ -166,7 +166,6 @@
     <ClCompile Include="..\..\..\Common\charUtils.cpp" />
     <ClCompile Include="..\..\..\Common\jhbCURLTools\FTPClient.cpp" />
     <ClCompile Include="..\..\..\Common\jhbCURLTools\SMTPClient.cpp" />
-    <ClCompile Include="..\..\..\Common\logFile.cpp" />
     <ClCompile Include="..\..\..\Common\RegEntry.cpp" />
     <ClCompile Include="..\ZipLib\detail\EndOfCentralDirectoryBlock.cpp" />
     <ClCompile Include="..\ZipLib\detail\ZipCentralDirectoryFileHeader.cpp" />
@@ -243,6 +242,7 @@
     <ClCompile Include="LDAPServer.cpp" />
     <ClCompile Include="LDAPSources.cpp" />
     <ClCompile Include="LDIFFile.cpp" />
+    <ClCompile Include="logs.cpp" />
     <ClCompile Include="ODSFile.cpp" />
     <ClCompile Include="outputFile.cpp" />
     <ClCompile Include="searchExpr.cpp" />
@@ -260,7 +260,6 @@
     <ClInclude Include="..\..\..\Common\jhbCURLTools\CURLTools.h" />
     <ClInclude Include="..\..\..\Common\jhbCURLTools\FTPClient.h" />
     <ClInclude Include="..\..\..\Common\jhbCURLTools\SMTPClient.h" />
-    <ClInclude Include="..\..\..\Common\logFile.h" />
     <ClInclude Include="..\..\..\Common\RegEntry.h" />
     <ClInclude Include="..\..\..\Common\SMTP\cSMTPClient.h" />
     <ClInclude Include="..\ZipLib\ZipArchive.h" />
@@ -280,6 +279,7 @@
     <ClInclude Include="LDAPServer.h" />
     <ClInclude Include="LDAPSources.h" />
     <ClInclude Include="LDIFFile.h" />
+    <ClInclude Include="logs.h" />
     <ClInclude Include="ODSConsts.h" />
     <ClInclude Include="ODSFile.h" />
     <ClInclude Include="outputFile.h" />

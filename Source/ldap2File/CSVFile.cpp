@@ -135,9 +135,9 @@ bool CSVFile::getOwnParameters()
 	}
 
 	if (logs_){
-		logs_->add(logFile::LOG, "Paramètres CSV :");
-		logs_->add(logFile::LOG, "\t- Séparateur de colonnes : \'%s\'", sepCols_.c_str());
-		logs_->add(logFile::LOG, "\t- Séparateur de valeurs : \'%s\'", sepValues_.c_str());
+		logs_->add(logs::TRACE_TYPE::LOG, "Paramètres CSV :");
+		logs_->add(logs::TRACE_TYPE::LOG, "\t- Séparateur de colonnes : \'%s\'", sepCols_.c_str());
+		logs_->add(logs::TRACE_TYPE::LOG, "\t- Séparateur de valeurs : \'%s\'", sepValues_.c_str());
 	}
 
 	return true;
@@ -226,10 +226,10 @@ void CSVFile::_addHeader()
 	}
 
 	if (logs_) {
-		logs_->add(logFile::DBG, "%d colonnes afficheés sur %d", visibleIndex, columns_->size());
+		logs_->add(logs::TRACE_TYPE::DBG, "%d colonnes afficheés sur %d", visibleIndex, columns_->size());
 
 		if (false == fileInfos_->showHeader_) {
-			logs_->add(logFile::LOG, "Pas d'entete dans le fichier");
+			logs_->add(logs::TRACE_TYPE::LOG, "Pas d'entete dans le fichier");
 		}
 	}
 

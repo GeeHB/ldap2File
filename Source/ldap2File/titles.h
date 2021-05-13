@@ -103,8 +103,8 @@ namespace jhbLDAPTools {
 
 		// Construction et destruction
 		//
-		titles(logFile* logs)
-		{ logs_ = logs; }
+		titles(logs* pLogs)
+		{ logs_ = pLogs; }
 		virtual ~titles()
 		{ clear(); }
 
@@ -136,7 +136,7 @@ namespace jhbLDAPTools {
 		//
 	protected:
 
-		logFile* logs_;
+		logs*					logs_;
 
 		// Liste
 		deque<LPAGENTTITLE>		titles_;

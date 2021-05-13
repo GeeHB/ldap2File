@@ -164,7 +164,7 @@ bool textFile::close()
 
 	if (file_.fail()){
 		if (logs_){
-			logs_->add(logFile::ERR, "Erreur lors de l'écriture dans le fichier");
+			logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'écriture dans le fichier");
 		}
 
 		writen = false;
@@ -172,7 +172,7 @@ bool textFile::close()
 
 	if (file_.fail()) {
 		if (logs_) {
-			logs_->add(logFile::ERR, "Erreur lors de l'écriture dans le fichier");
+			logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'écriture dans le fichier");
 		}
 
 		writen = false;
@@ -215,7 +215,7 @@ bool textFile::_open()
 	file_.open(fileName_.c_str(), std::ofstream::out | std::ofstream::trunc);
 	if (!file_.is_open()){
 		if (logs_){
-			logs_->add(logFile::ERR, "Impossible d'ouvrir le fichier '%s'", fileName_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir le fichier '%s'", fileName_.c_str());
 		}
 
 		return false;

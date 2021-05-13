@@ -85,7 +85,7 @@ outputFile::~outputFile()
 {
 	// Suppression du fichier
 	if (fileName_.size()){
-		logs_->add(logFile::DBG, "Suppression du fichier temporaire : '%s'", fileName_.c_str());
+		logs_->add(logs::TRACE_TYPE::DBG, "Suppression du fichier temporaire : '%s'", fileName_.c_str());
 		sFileSystem::remove(fileName_);
 	}
 }

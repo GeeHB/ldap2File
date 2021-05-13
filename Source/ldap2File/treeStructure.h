@@ -45,7 +45,7 @@ public:
 
 	// Construction et destruction
 	//
-	treeStructure(logFile* logs);
+	treeStructure(logs* pLogs);
 	virtual ~treeStructure()
 	{ clear(); }
 
@@ -156,7 +156,7 @@ protected:
 	//
 protected:
 
-	logFile*				logs_;
+	logs*				logs_;
 
 	deque<LPTREEELEMENT>	elements_;	// Liste des éléments de structure
 	size_t					cols_;		// Nombre de colonnes associées

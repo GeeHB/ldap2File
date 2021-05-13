@@ -99,10 +99,10 @@ const char* servicesList::LDAPService::site()
 
 // Construction
 //
-servicesList::servicesList(logFile* logs, treeStructure* structure)
+servicesList::servicesList(logs* pLogs, treeStructure* structure)
 {
 	// Copie des valeurs
-	logs_ = logs;
+	logs_ = pLogs;
 	structure_ = structure;
 
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
@@ -143,8 +143,8 @@ bool servicesList::add(const char* dn, string& name, string& shortName, string&f
 	LPLDAPSERVICE service(NULL);
 	if (NULL != (service = _findContainerByDN(dn))){
 		if (logs_){
-			logs_->add(logFile::ERR, "Le service '%s' est déja défini avec le DN : '%s'", name.c_str(), service->DN());
-			logs_->add(logFile::ERR, "Le container '%s' ne sera pas pris en compte", dn);
+			logs_->add(logs::TRACE_TYPE::ERR, "Le service '%s' est déja défini avec le DN : '%s'", name.c_str(), service->DN());
+			logs_->add(logs::TRACE_TYPE::ERR, "Le container '%s' ne sera pas pris en compte", dn);
 		}
 
 		return false;
@@ -155,7 +155,7 @@ bool servicesList::add(const char* dn, string& name, string& shortName, string&f
 	service = new LDAPService(dn, name.c_str(), sName.c_str(), shortName.c_str(), fileName.c_str(), bkColor.c_str(), site.c_str());
 	if (NULL == service){
 		if (logs_){
-			logs_->add(logFile::ERR, "Impossible d'allouer de la mémoire pour le service '%s'", name.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour le service '%s'", name.c_str());
 		}
 
 		return false;
@@ -182,7 +182,7 @@ bool servicesList::add(const char* dn, string& name, string& shortName, string&f
 	}
 
 	if (logs_){
-		logs_->add(logFile::DBG, "Ajout de '%s', DN '%s'", service->realName(), service->DN());
+		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de '%s', DN '%s'", service->realName(), service->DN());
 	}
 
 	// Ok

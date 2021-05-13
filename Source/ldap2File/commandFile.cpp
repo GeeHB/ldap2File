@@ -31,7 +31,7 @@
 
 // Construction
 //
-commandFile::commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded)
+commandFile::commandFile(const char* cmdFile, folders* pFolders, logs* log, bool isIncluded)
 	: XMLParser(cmdFile, XML_ROOT_LDAP2FILE_NODE, pFolders, log)
 {
 	// Intialisation des données membres
@@ -41,7 +41,7 @@ commandFile::commandFile(const char* cmdFile, folders* pFolders, logFile* log, b
 
 	columnHandler_ = DATA_HANDLER::NONE;
 	currentColIndex_ = 0;
-	
+
 	_open();
 }
 
@@ -83,7 +83,7 @@ void commandFile::_load()
 	}
 	catch (LDAPException& e) {
 		if (logs_) {
-			logs_->add(logFile::ERR, e.what());
+			logs_->add(logs::TRACE_TYPE::ERR, e.what());
 		}
 
 		return;
@@ -112,7 +112,7 @@ void commandFile::_load()
 		const char* includedName = node.first_child().value();
 		if (!IS_EMPTY(includedName)){
 			if (logs_){
-				logs_->add(logFile::LOG, "Fichier de configuration '%s' <= '%s' à inclure", fileName(), includedName);
+				logs_->add(logs::TRACE_TYPE::LOG, "Fichier de configuration '%s' <= '%s' à inclure", fileName(), includedName);
 			}
 
 			// Si aucun chemin est précisé, le fichier est dans le dossier des templates
@@ -128,14 +128,14 @@ void commandFile::_load()
 			// Création du gestionnaire fichier
 			if (NULL == (includedFile_ = new commandFile(sCmdFile.c_str(), folders_, logs_, true))){
 				if (logs_){
-					logs_->add(logFile::ERR, "Impossible d'allouer de la mémoire pour le fichier à inclure");
+					logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour le fichier à inclure");
 				}
 			}
 			else{
 				// Si le fichier n'a pu être chargé, on n'en tient pas compte
 				if (!includedFile_->isValid()){
 					if (logs_){
-						logs_->add(logFile::ERR, "Le fichier '%s' ne peut pas être utilisé", includedName);
+						logs_->add(logs::TRACE_TYPE::ERR, "Le fichier '%s' ne peut pas être utilisé", includedName);
 					}
 
 					// Suppression ...
@@ -468,7 +468,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 							if (TYPE_DEST_FS == fType){
 								// Quel OS ?
 								string destOS = snode.attribute(XML_DESTINATION_FS_OS_ATTR).value();
-								
+
 								// Le bon OS ou tous les OS ?
 								if (0 == destOS.size() || expectedOS_ == destOS) {
 									// Est ce un chemin complet ?
@@ -698,7 +698,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 	if (!baseReg || (baseReg && !baseReg->find(STR_ATTR_OBJECT_CLASS))){
 		if (NULL != (reg = new searchExpr(cols, SEARCH_EXPR_MINIMAL, XML_LOG_OPERATOR_AND))){
 			reg->add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_TYPE_PERSON);
-			
+
 			if (baseReg){
 #ifdef _DEBUG
 				string currentFilter;

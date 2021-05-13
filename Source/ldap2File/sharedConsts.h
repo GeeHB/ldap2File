@@ -55,7 +55,16 @@
 // Mon application
 //
 #define APP_SHORT_NAME			"ldap2File"
-#define APP_FULL_NAME			"ldap2File.exe"
+#define APP_FULL_NAME_WIN		"ldap2File.exe"
+
+#ifndef APP_FULL_NAME
+#ifdef WIN32
+#define	APP_FULL_NAME			APP_FULL_NAME_WIN
+#else
+#define APP_FULL_NAME			APP_SHORT_NAME
+#endif WIN32
+#endif // APP_FULL_NAME
+
 #define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
 #define APP_RELEASE				"21.5.3"
 
@@ -152,7 +161,7 @@ using namespace jhbLDAPTools;
 #endif // MAX_PATH
 #endif // _WIN32
 
-#include <logFile.h>
+#include "logs.h"		// Version non partagée ...
 
 // Définitions perso.
 //

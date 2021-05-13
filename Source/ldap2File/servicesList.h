@@ -120,7 +120,7 @@ public:
 
 	// Construction et destruction
 	//
-	servicesList(logFile* logs, treeStructure* structure);
+	servicesList(logs* pLogs, treeStructure* structure);
 	virtual ~servicesList()
 	{ clear(); }
 
@@ -171,7 +171,7 @@ protected:
 	//
 protected:
 
-	logFile*				logs_;
+	logs*				logs_;
 	treeStructure*			structure_;
 
 	charUtils				encoder_;

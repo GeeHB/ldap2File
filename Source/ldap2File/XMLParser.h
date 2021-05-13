@@ -117,14 +117,14 @@ public:
 
 	// Constructeurs
 	//
-	XMLParser(const char* fileName, const char* rootName, folders* pFolders, logFile* logs, bool loadComments = false)
-		:XMLParser(rootName, pFolders, logs, loadComments){
+	XMLParser(const char* fileName, const char* rootName, folders* pFolders, logs* pLogs, bool loadComments = false)
+		:XMLParser(rootName, pFolders, pLogs, loadComments){
 		// Copie du nom du fichier
 		setFileName(fileName);
 		valid_ = true;
 	}
 
-	XMLParser(const char* rootName, folders* pFolders, logFile* logs, bool loadComments = false);
+	XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool loadComments = false);
 
 	// Destruction
 	//
@@ -166,7 +166,7 @@ public:
 	{ return folders_; }
 
 	// Logs
-	logFile* getLogs()
+	logs* getLogs()
 	{ return logs_; }
 
 	// Encodage
@@ -241,7 +241,7 @@ protected:
 	folders*			folders_;
 
 	// Logs
-	logFile*			logs_;
+	logs*			logs_;
 };
 
 #endif /* __LDAP_2_FILE_XML_PARSER_h__ */

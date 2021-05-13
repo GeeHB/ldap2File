@@ -86,7 +86,7 @@ bool LDIFFile::getOwnParameters()
 	else {
 		// Le paramètre "ou" est obligatoire
 		if (logs_) {
-			logs_->add(logFile::ERR, "Le paramètre \"%s\" est obligatoire", XML_OWN_LDIF_USERS_NODE);
+			logs_->add(logs::TRACE_TYPE::ERR, "Le paramètre \"%s\" est obligatoire", XML_OWN_LDIF_USERS_NODE);
 		}
 		return false;
 	}
@@ -104,7 +104,7 @@ bool LDIFFile::getOwnParameters()
 
 	if (0 == shortUsersOU_.length()) {
 		if (logs_) {
-			logs_->add(logFile::ERR, "Le paramètre \"%s\" est mal formé", XML_OWN_LDIF_USERS_NODE);
+			logs_->add(logs::TRACE_TYPE::ERR, "Le paramètre \"%s\" est mal formé", XML_OWN_LDIF_USERS_NODE);
 		}
 		return false;
 	}
@@ -194,10 +194,10 @@ bool LDIFFile::getOwnParameters()
 	}
 
 	if (logs_) {
-		logs_->add(logFile::LOG, "LDIF - OU : \'%s\' - %d attribut(s) obligatoire(s)", usersOU_.c_str(), mandatories_.size());
-		logs_->add(logFile::LOG, "\t- %d attribut(s) ajouté(s)", add2All_.size());
-		logs_->add(logFile::LOG, "\t- %d exclusion(s)", exclusions_.size());
-		logs_->add(logFile::LOG, "\t- %d fusion(s)", attributesToSave_.size());
+		logs_->add(logs::TRACE_TYPE::LOG, "LDIF - OU : \'%s\' - %d attribut(s) obligatoire(s)", usersOU_.c_str(), mandatories_.size());
+		logs_->add(logs::TRACE_TYPE::LOG, "\t- %d attribut(s) ajouté(s)", add2All_.size());
+		logs_->add(logs::TRACE_TYPE::LOG, "\t- %d exclusion(s)", exclusions_.size());
+		logs_->add(logs::TRACE_TYPE::LOG, "\t- %d fusion(s)", attributesToSave_.size());
 	}
 
 	// Terminé
@@ -259,7 +259,7 @@ bool LDIFFile::saveLine(bool header, LPAGENTINFOS agent)
 	if (NULL == (pAttr = attributesToSave_.findAttribute(STR_ATTR_UID))
 		|| !pAttr->size()) {
 		if (logs_) {
-			logs_->add(logFile::ERR, "L'attribut obligatoire \"uid\" est absent pour %s %s", agent->prenom().c_str(), agent->nom().c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "L'attribut obligatoire \"uid\" est absent pour %s %s", agent->prenom().c_str(), agent->nom().c_str());
 		}
 		return false;
 	}
@@ -277,7 +277,7 @@ bool LDIFFile::saveLine(bool header, LPAGENTINFOS agent)
 		if ((*i).size()) {
 			if (NULL == (pAttr = attributesToSave_.findAttribute((*i)))) {
 				if (logs_) {
-					logs_->add(logFile::ERR, "L'attribut obligatoire \"%s\" est absent pour %s %s", (*i).c_str(), agent->prenom().c_str(), agent->nom().c_str());
+					logs_->add(logs::TRACE_TYPE::ERR, "L'attribut obligatoire \"%s\" est absent pour %s %s", (*i).c_str(), agent->prenom().c_str(), agent->nom().c_str());
 				}
 				return false;
 			}
@@ -412,7 +412,7 @@ bool LDIFFile::close()
 
 	if (file_.fail()){
 		if (logs_){
-			logs_->add(logFile::ERR, "Erreur lors de l'écriture dans le fichier");
+			logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'écriture dans le fichier");
 		}
 
 			writen = false;

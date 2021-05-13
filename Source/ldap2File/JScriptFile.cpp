@@ -103,17 +103,17 @@ bool JScriptFile::init()
 	// Serveur d'images
 	if (false == configurationFile_->imagesServer(photoServer_)) {
 		if (logs_) {
-			logs_->add(logFile::ERR, "Pas de serveur d'images");
+			logs_->add(logs::TRACE_TYPE::ERR, "Pas de serveur d'images");
 		}
 
 		return false;
 	}
 
 	if (0 == photoServer_.environment_.length()) {
-		logs_->add(logFile::LOG, "Serveur d'images - Pas d'environnement particulier");
+		logs_->add(logs::TRACE_TYPE::LOG, "Serveur d'images - Pas d'environnement particulier");
 	}
 	else {
-		logs_->add(logFile::LOG, "Serveur d'images -  environnement \'%s\'", photoServer_.environment_.c_str());
+		logs_->add(logs::TRACE_TYPE::LOG, "Serveur d'images -  environnement \'%s\'", photoServer_.environment_.c_str());
 	}
 
 	// Création d'une ligne vierge
@@ -329,7 +329,7 @@ orgChartFile* JScriptFile::addOrgChartFile(bool flatMode, bool fullMode, bool& n
 	file_.open(fileName_.c_str(), std::ofstream::out | std::ofstream::trunc);
 	if (!file_.is_open()){
 		if (logs_){
-			logs_->add(logFile::ERR, "Impossible d'ouvrir le fichier d'organigramme '%s'", fileName_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir le fichier d'organigramme '%s'", fileName_.c_str());
 		}
 
 		return NULL;

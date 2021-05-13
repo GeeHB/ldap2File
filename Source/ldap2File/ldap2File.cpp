@@ -59,7 +59,7 @@
 
 // Lecture du contenu d'un dossier
 //
-void _getFolderContent(const string& source, list<string>& content, logFile* logs)
+void _getFolderContent(const string& source, list<string>& content, logs* pLogs)
 {
 	if (!source.size()){
 		return;
@@ -69,16 +69,16 @@ void _getFolderContent(const string& source, list<string>& content, logFile* log
 	if (!sFileSystem::exists(source)) {
 		cout << "Le dossier '" << source.c_str() << "' n'existe pas" << endl;
 
-		if (logs) {
-			logs->add(logFile::ERR, "Le dossier '%s' n'existe pas", source.c_str());
+		if (pLogs) {
+			pLogs->add(logs::TRACE_TYPE::ERR, "Le dossier '%s' n'existe pas", source.c_str());
 		}
 
 		return;
 	}
 
 	cout << "Parcours du dossier '" << source.c_str() << "'" << endl;
-	if (logs) {
-		logs->add(logFile::LOG, "Parcours du dossier '%s'", source.c_str());
+	if (pLogs) {
+		pLogs->add(logs::TRACE_TYPE::LOG, "Parcours du dossier '%s'", source.c_str());
 	}
 
 	// La liste est vide
@@ -125,8 +125,8 @@ void _getFolderContent(const string& source, list<string>& content, logFile* log
 #endif // _WIN32
 
 	cout << content.size() << " fichier(s) à analyser" << endl;
-	if (logs) {
-		logs->add(logFile::LOG, "%d fichier(s) à analyser", content.size());
+	if (pLogs) {
+		pLogs->add(logs::TRACE_TYPE::LOG, "%d fichier(s) à analyser", content.size());
 	}
 }
 
@@ -357,13 +357,13 @@ void _usage()
 	cout << "\n\tExemples d'appels:" << endl;
 
 	cout << "\n\tAnalyse et traitement des fichiers de commande du dossier c:\\my datas\\test toutes les 30 minutes:" << endl;
-	cout << "\n\t\tldap2File.exe -d:\"c:\\my datas\\test\" -f:30" << endl;
+	cout << "\n\t\t" << APP_FULL_NAME << " -d:\"c:\\my datas\\test\" -f:30" << endl;
 
 	cout << "\n\tTraitement du fichier '~/ldap2Files/datas/dsun.xml'; le dossier de l'application étant '/shared/cmdFiles" << endl;
-	cout << "\n\t\tldap2File -base /shared/cmdFiles ~/ldap2Files/datas/dsun.xml" << endl;
+	cout << "\n\t\t" << APP_FULL_NAME << " -base /shared/cmdFiles ~/ldap2Files/datas/dsun.xml" << endl;
 
 	cout << "\n\tTraitement des 5 fichiers passes en ligne de commande ! " << endl;
-	cout << "\n\t\tldap2File.exe  file1.xml file2.xml file3.xml file4.xml file5.xml" << endl;
+	cout << "\n\t\t" << APP_FULL_NAME  << " file1.xml file2.xml file3.xml file4.xml file5.xml" << endl;
 }
 
 // Point d'entrée du programme
@@ -442,8 +442,8 @@ int main(int argc, const char* argv[]) {
 	//
 	int retCode(0);
 	folders myFolders;		// Liste des dossiers utilisés par l'application
-	logFile logs;
-	confFile configurationFile(&myFolders, &logs);
+	logs myLogs;
+	confFile configurationFile(&myFolders, &myLogs);
 	string file("");
 
 	try {
@@ -513,7 +513,6 @@ int main(int argc, const char* argv[]) {
 
 		//cout << "Binaire : " << argv[0] << endl;
 		cout << "Binaire : " << fullAppName << endl;
-
 		cout << "Dossiers de l'application : " << endl;
 		cout << "\t - app : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path() << endl;
 		cout << "\t - logs : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS)->path() << endl;
@@ -522,46 +521,40 @@ int main(int argc, const char* argv[]) {
 
 		// Initialisation du fichier de logs
 		//
-#ifdef _WIN32
-		logs.init(logFolder->path(), (lInfos.mode_ == LOGS_MODE_DEBUG) ? TRACE_LOGMODE_LIB__DEBUG : TRACE_LOGMODE_LIB__LOG);
-		if (lInfos.fileName_.size()) {
-			logs.setFileName(lInfos.fileName_.c_str());
-		}
-#endif // _WIN32
+		myLogs.init(((LOGS_MODE_DEBUG == lInfos.mode_) ? logs::TRACE_TYPE::DBG : logs::TRACE_TYPE::LOG), logFolder->path(), lInfos.fileName_.c_str());
+		myLogs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
 
-		logs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
-
-		logs.add(logFile::LOG, "=========================================================================");
+		myLogs.add(logs::TRACE_TYPE::LOG, "=========================================================================");
 		string copyRight("==== %s - version %s / %s");
 #ifdef _DEBUG
 		copyRight += " -- DEBUG";
 #endif // _DEBUG
 		copyRight += " - %s";
-		logs.add(logFile::LOG, copyRight.c_str(), APP_SHORT_NAME, APP_RELEASE, CURRENT_OS, APP_DESC);
-		logs.add(logFile::LOG, "==== Copyright %s", APP_COPYRIGHT);
-		logs.add(logFile::LOG, "Lancement de l'application");
-		logs.add(logFile::DBG, "Logs en mode DEBUG");
+		myLogs.add(logs::TRACE_TYPE::LOG, copyRight.c_str(), APP_SHORT_NAME, APP_RELEASE, CURRENT_OS, APP_DESC);
+		myLogs.add(logs::TRACE_TYPE::LOG, "==== Copyright %s", APP_COPYRIGHT);
+		myLogs.add(logs::TRACE_TYPE::LOG, "Lancement de l'application");
+		myLogs.add(logs::TRACE_TYPE::DBG, "Logs en mode DEBUG");
 
 		if (LOGS_DURATION_INFINITE != lInfos.duration_) {
-			logs.add(logFile::DBG, "Conservation des logs %d jours", lInfos.duration_);
+			myLogs.add(logs::TRACE_TYPE::DBG, "Conservation des logs %d jours", lInfos.duration_);
 		}
 
-		//logs.add(logFile::LOG, "Binaire : %s", argv[0]);
-		logs.add(logFile::LOG, "Binaire : %s", fullAppName.c_str());
-		logs.add(logFile::LOG, "Fichier de configuration : %s", file.c_str());
-		logs.add(logFile::LOG, "Dossiers de l'application : ");
-		logs.add(logFile::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
-		logs.add(logFile::LOG, "\t- fichiers : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path());
-		logs.add(logFile::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
-		logs.add(logFile::LOG, "\t- temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
+		//myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", argv[0]);
+		myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", fullAppName.c_str());
+		myLogs.add(logs::TRACE_TYPE::LOG, "Fichier de configuration : %s", file.c_str());
+		myLogs.add(logs::TRACE_TYPE::LOG, "Dossiers de l'application : ");
+		myLogs.add(logs::TRACE_TYPE::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
+		myLogs.add(logs::TRACE_TYPE::LOG, "\t- fichiers : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path());
+		myLogs.add(logs::TRACE_TYPE::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
+		myLogs.add(logs::TRACE_TYPE::LOG, "\t- temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
 	}
 	catch (LDAPException& e) {
-		logs.add(logFile::ERR, "Erreur : %s", e.what());
+		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur : %s", e.what());
 		retCode = 1;
 	}
 	catch (...) {
 		// Erreur inconnue
-		logs.add(logFile::ERR, "Erreur inconnue");
+		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur inconnue");
 		retCode = 1;
 	}
 
@@ -620,13 +613,13 @@ int main(int argc, const char* argv[]) {
 
 		// Analyse d'un dossier
 		if (remoteFolder.size()) {
-			_getFolderContent(remoteFolder, files, &logs);
+			_getFolderContent(remoteFolder, files, &myLogs);
 		}
 		else {
 			// Si un seul fichier, c'est peut être un dossier ...
 			if (1 == files.size() && sFileSystem::is_directory(*files.begin())) {
 					remoteFolder = (*files.begin());
-					_getFolderContent(remoteFolder, files, &logs);
+					_getFolderContent(remoteFolder, files, &myLogs);
 			}
 		}
 
@@ -635,7 +628,7 @@ int main(int argc, const char* argv[]) {
 		// Analyse des fichiers de commandes
 		//
 		DWORD currentLaunchTime(0);
-		ldapBrowser requester(&logs, &configurationFile);
+		ldapBrowser requester(&myLogs, &configurationFile);
 		RET_TYPE retType(RET_TYPE::RET_OK);
 		while (!done) {
 			currentLaunchTime = _getTickCount();
@@ -709,7 +702,7 @@ int main(int argc, const char* argv[]) {
 				// On attend un peu
 				_now();
 				cout << "Sleep " << (freq / 60000) << " min" << endl;
-				logs.add(logFile::LOG, "Sleep %d min.", freq / 60000);
+				myLogs.add(logs::TRACE_TYPE::LOG, "Sleep %d min.", freq / 60000);
 
 				int duration = _getTickCount() - currentLaunchTime;	// Durée des traitements précédents
 				duration = (duration > freq ? freq : freq - duration);
@@ -721,7 +714,7 @@ int main(int argc, const char* argv[]) {
 
 				// Analyse du dossier ?
 				if (remoteFolder.size()) {
-					_getFolderContent(remoteFolder, files, &logs);
+					_getFolderContent(remoteFolder, files, &myLogs);
 					done = (0 == files.size());
 				}
 			}
@@ -731,12 +724,12 @@ int main(int argc, const char* argv[]) {
 		}
 	}
 	catch (LDAPException& e) {
-		logs.add(logFile::ERR, "Erreur : %s", e.what());
+		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur : %s", e.what());
 		retCode = 1;
 	}
 	catch (...) {
 		// Erreur inconnue
-		logs.add(logFile::ERR, "Erreur inconnue");
+		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur inconnue");
 		retCode = 1;
 	}
 
@@ -753,9 +746,9 @@ int main(int argc, const char* argv[]) {
 #endif // _WIN32
 
 	// Fin
-	logs.add(logFile::LOG, "%d / %d fichier(s) crée(s)", filesGenerated, files.size());
-	logs.add(logFile::LOG, "Fermeture de l'application");
-	logs.add(logFile::LOG, "=========================================================================");
+	myLogs.add(logs::TRACE_TYPE::LOG, "%d / %d fichier(s) crée(s)", filesGenerated, files.size());
+	myLogs.add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
+	myLogs.add(logs::TRACE_TYPE::LOG, "=========================================================================");
 
 	return retCode;
 }

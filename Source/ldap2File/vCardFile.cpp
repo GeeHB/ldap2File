@@ -116,7 +116,7 @@ bool vCardFile::getOwnParameters()
 
 
 	if (logs_) {
-		logs_->add(logFile::LOG, "VCARD - %d attribut(s) ajouté(s)", add2All_.size());
+		logs_->add(logs::TRACE_TYPE::LOG, "VCARD - %d attribut(s) ajouté(s)", add2All_.size());
 	}
 
 	// Terminé
@@ -362,7 +362,7 @@ bool vCardFile::close()
 
 	if (file_.fail()){
 		if (logs_){
-			logs_->add(logFile::ERR, "VCARD - Erreur lors de l'écriture dans le fichier");
+			logs_->add(logs::TRACE_TYPE::ERR, "VCARD - Erreur lors de l'écriture dans le fichier");
 		}
 
 			writen = false;

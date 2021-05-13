@@ -45,9 +45,9 @@
 
 // Construction
 //
-ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
+ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 {
-	if (!configurationFile || !logs){
+	if (!configurationFile || !pLogs){
 		throw LDAPException("Erreur d'initialisation");
 	}
 
@@ -57,7 +57,7 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	agents_ = NULL;
 	file_ = NULL;
 	orgFile_ = NULL;
-	logs_ = logs;
+	logs_ = pLogs;
 	cmdLineFile_ = NULL;
 	managersCol_ = managersAttr_ = "";
 	ldapServer_ = NULL;
@@ -71,11 +71,11 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	while (configurationFile_->nextLDAPServer(&myServer)) {
 		ldapSources_+=myServer;
 	}
-	logs_->add(logFile::LOG, "%d serveur(s) LDAP identifié(s)", ldapSources_.size());
+	logs_->add(logs::TRACE_TYPE::LOG, "%d serveur(s) LDAP identifié(s)", ldapSources_.size());
 	for (size_t index = 0; index < ldapSources_.size(); index++) {
 		myServer= ldapSources_[index];
 		if (myServer) {
-			logs_->add(logFile::DBG, "\t- Environement : %s", myServer->environment());
+			logs_->add(logs::TRACE_TYPE::DBG, "\t- Environement : %s", myServer->environment());
 		}
 	}
 
@@ -89,20 +89,20 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	}
 
 	if (envName.size()) {
-		logs_->add(logFile::LOG, "Environnement par défaut : %s", envName.c_str());
+		logs_->add(logs::TRACE_TYPE::LOG, "Environnement par défaut : %s", envName.c_str());
 	}
 	else {
-		logs_->add(logFile::LOG, "Pas d'environnement par défaut");
+		logs_->add(logs::TRACE_TYPE::LOG, "Pas d'environnement par défaut");
 	}
 
 	// Alias
 	configurationFile_->appAliases(aliases_);
-	logs_->add(logFile::LOG, "%d alias(es) défini(s)", aliases_.size());
+	logs_->add(logs::TRACE_TYPE::LOG, "%d alias(es) défini(s)", aliases_.size());
 	aliases::alias* palias(NULL);
 	for (size_t index = 0; index < aliases_.size(); index++) {
 		palias = aliases_[index];
 		if (palias) {
-			logs_->add(logFile::DBG, "\t- %s -> %s", palias->name(), palias->application());
+			logs_->add(logs::TRACE_TYPE::DBG, "\t- %s -> %s", palias->name(), palias->application());
 		}
 	}
 
@@ -116,11 +116,11 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 		}
 	}
 
-	logs_->add(logFile::DBG, "%d destination(s)", servers_.size());
+	logs_->add(logs::TRACE_TYPE::DBG, "%d destination(s)", servers_.size());
 	fileDestination* pDest(NULL);
 	for (size_t index = 0; index < servers_.size(); index++) {
 		if (NULL != (pDest = servers_[index])) {
-			logs_->add(logFile::DBG, "\t- %s", pDest->name());
+			logs_->add(logs::TRACE_TYPE::DBG, "\t- %s", pDest->name());
 		}
 	}
 
@@ -134,14 +134,14 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 				std::string essai("Schema - la colonne '%s' correspond à l'attribut '%s'");
 				encoder_.fromUTF8(essai);
 #endif // _DEBUG
-				logs_->add(logFile::DBG, "Schema - la colonne '%s' correspond à l'attribut '%s'", attribute.name_.c_str(), attribute.ldapAttr_.c_str());
+				logs_->add(logs::TRACE_TYPE::DBG, "Schema - la colonne '%s' correspond à l'attribut '%s'", attribute.name_.c_str(), attribute.ldapAttr_.c_str());
 			}
 			else{
-				logs_->add(logFile::ERR, "Schema - Impossible d'ajouter la colonne '%s'", attribute.name_.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Schema - Impossible d'ajouter la colonne '%s'", attribute.name_.c_str());
 			}
 		}
 		else{
-			logs_->add(logFile::ERR, "Schema - Le nom de colonne '%s' ne peut être utilisé. Il est réservé", attribute.name_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Schema - Le nom de colonne '%s' ne peut être utilisé. Il est réservé", attribute.name_.c_str());
 		}
 	}
 
@@ -150,7 +150,7 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 		throw LDAPException("Aucun attribut n'a été défini dans le schéma");
 	}
 
-	logs_->add(logFile::LOG, "Schema - %d attributs reconnus", cols_.attributes());
+	logs_->add(logs::TRACE_TYPE::LOG, "Schema - %d attributs reconnus", cols_.attributes());
 
 	// On s'assure que la colonne "manager" existe
 	string managersCol = configurationFile_->managersCol();
@@ -170,16 +170,16 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	// Colonne par défaut !
 	managersCol_ = managersCol;
 	managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
-	logs_->add(logFile::LOG, "Par défaut, les encadrants sont définis par ('%s', '%s')", managersCol.c_str(), managersAttr_.c_str());
+	logs_->add(logs::TRACE_TYPE::LOG, "Par défaut, les encadrants sont définis par ('%s', '%s')", managersCol.c_str(), managersAttr_.c_str());
 
 	// Structure de l'arborescence LDAP
-	if (NULL == (struct_ = new treeStructure(logs))){
+	if (NULL == (struct_ = new treeStructure(logs_))){
 		// Fin du processus
 		throw LDAPException("Impossible de créer la liste des éléments de struture");
 	}
 
 	// Liste des services
-	if (NULL == (services_ = new servicesList(logs, struct_))){
+	if (NULL == (services_ = new servicesList(logs_, struct_))){
 		// Fin du processus
 		throw LDAPException("Impossible de créer la liste des services");
 	}
@@ -190,18 +190,18 @@ ldapBrowser::ldapBrowser(logFile* logs, confFile* configurationFile)
 	while (configurationFile_->nextStructElement(element)){
 		// Un élément de plus pour modéliser l'arborescence
 		if (struct_->add(element)){
-			logs_->add(logFile::DBG, "Structure - Ajout de '%s' pour la profondeur %d", element.type_.c_str(), element.depth_);
+			logs_->add(logs::TRACE_TYPE::DBG, "Structure - Ajout de '%s' pour la profondeur %d", element.type_.c_str(), element.depth_);
 
 			// Les éléments sont automatiquement ajoutés au schéma
 			value = encoder_.upString(element.type_, true);
 			cols_.extendSchema(value);
 		}
 		else{
-			logs_->add(logFile::ERR, "Structure - Impossible d'ajouter l'élément '%s'", element.type_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Structure - Impossible d'ajouter l'élément '%s'", element.type_.c_str());
 		}
 	}
 
-	logs_->add(logFile::LOG, "Structure - L'arborescence est définie par %d élement(s)", struct_->size());
+	logs_->add(logs::TRACE_TYPE::LOG, "Structure - L'arborescence est définie par %d élement(s)", struct_->size());
 }
 
 // Destruction
@@ -239,26 +239,26 @@ RET_TYPE ldapBrowser::browse()
 	commandFile* cmdFile(NULL);
 	if (NULL == (cmdFile = configurationFile_->cmdFile())) {
 		// ???
-		logs_->add(logFile::ERR, "Pas de fichier de commande");
+		logs_->add(logs::TRACE_TYPE::ERR, "Pas de fichier de commande");
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
 
-	logs_->add(logFile::LOG, "Ouverture du fichier de configuration '%s'", cmdFile->fileName());
+	logs_->add(logs::TRACE_TYPE::LOG, "Ouverture du fichier de configuration '%s'", cmdFile->fileName());
 
 	// Limite d'utilisation du fichier
 	commandFile::date* pLimit(cmdFile->limit());
-	if (pLimit) {
+	if (pLimit && pLimit->isSet()) {
 		if (pLimit->isOver()) {
-			logs_->add(logFile::LOG, "La date limite du fichier '%s' est dépassée. Le fichier doit être supprimé.", pLimit->value().c_str());
+			logs_->add(logs::TRACE_TYPE::LOG, "La date limite du fichier '%s' est dépassée. Le fichier doit être supprimé.", pLimit->value().c_str());
 			// Sortie
 			return RET_TYPE::RET_FILE_TO_DELETE;
 		}
 		else {
-			logs_->add(logFile::LOG, "La date limite du fichier '%s' n'est pas dépassée", pLimit->value().c_str());
+			logs_->add(logs::TRACE_TYPE::LOG, "La date limite du fichier '%s' n'est pas dépassée", pLimit->value().c_str());
 		}
 	}
 	else {
-		logs_->add(logFile::DBG, "Pas de limite d'utilisation pour le fichier");
+		logs_->add(logs::TRACE_TYPE::DBG, "Pas de limite d'utilisation pour le fichier");
 	}
 
 	// Connexion LDAP
@@ -266,24 +266,24 @@ RET_TYPE ldapBrowser::browse()
 	string envName(cmdFile->environment());
 	//bool findOne(false);
 	if (!envName.size()) {
-		logs_->add(logFile::LOG, "Pas de nom d'environnement");
+		logs_->add(logs::TRACE_TYPE::LOG, "Pas de nom d'environnement");
 
 		// Utilisation de l'env. par défaut
 		envName = configurationFile_->environment();
 		//findOne = true;
 	}
 	else {
-		logs_->add(logFile::DBG, "Environnement LDAP demandé '%s'", envName.c_str());
+		logs_->add(logs::TRACE_TYPE::DBG, "Environnement LDAP demandé '%s'", envName.c_str());
 	}
 
 	// Cet environnement existe t'il (ou un autre) ?
 	LDAPServer* newServer(envName.length()?ldapSources_.findEnvironmentByName(envName): ldapSources_[0]);
 	if (NULL == newServer) {
-		logs_->add(logFile::ERR, "L'environnement '%s' n'existe pas ou il n'y a pas d'environnement par défaut", envName.c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "L'environnement '%s' n'existe pas ou il n'y a pas d'environnement par défaut", envName.c_str());
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
 
-	logs_->add(logFile::LOG, "Utilisation de l'environnement '%s'", newServer->name());
+	logs_->add(logs::TRACE_TYPE::LOG, "Utilisation de l'environnement '%s'", newServer->name());
 
 	// Nouvelle connexion ou besoin de reinitialiser ?
 	/*
@@ -306,20 +306,20 @@ RET_TYPE ldapBrowser::browse()
 		if (logs_) {
 			// Paramètres de la connexion
 			//
-			logs_->add(logFile::LOG, "Serveur LDAP :");
+			logs_->add(logs::TRACE_TYPE::LOG, "Serveur LDAP :");
 			if (0 == env.length()) {
-				logs_->add(logFile::LOG, "\t- Pas d'environnement particulier");
+				logs_->add(logs::TRACE_TYPE::LOG, "\t- Pas d'environnement particulier");
 			}
 			else {
-				logs_->add(logFile::LOG, "\t- Environnement : %s", env.c_str());
+				logs_->add(logs::TRACE_TYPE::LOG, "\t- Environnement : %s", env.c_str());
 			}
 
-			logs_->add(logFile::LOG, "\t- Host : %s - Port : %d", ldapServer_->host(), ldapServer_->port());
-			logs_->add(logFile::LOG, "\t- DN : %s", ldapServer_->baseDN());
+			logs_->add(logs::TRACE_TYPE::LOG, "\t- Host : %s - Port : %d", ldapServer_->host(), ldapServer_->port());
+			logs_->add(logs::TRACE_TYPE::LOG, "\t- DN : %s", ldapServer_->baseDN());
 			if (charUtils::stricmp(ldapServer_->baseDN(), ldapServer_->usersDN())) {
-				logs_->add(logFile::LOG, "\t- Base des utilisateurs : %s", ldapServer_->usersDN());
+				logs_->add(logs::TRACE_TYPE::LOG, "\t- Base des utilisateurs : %s", ldapServer_->usersDN());
 			}
-			logs_->add(logFile::LOG, "\t- Compte : %s", strlen(ldapServer_->user()) ? ldapServer_->user() : "anonyme");
+			logs_->add(logs::TRACE_TYPE::LOG, "\t- Compte : %s", strlen(ldapServer_->user()) ? ldapServer_->user() : "anonyme");
 		}
 
 		// Connexion à LDAP
@@ -337,10 +337,10 @@ RET_TYPE ldapBrowser::browse()
 	while (cmdFile->nextColumn(column)){
 		// Ajout à ma liste
 		if (!cols_.append(column)){
-			logs_->add(logFile::ERR, "La colonne '%s' n'a pas été ajoutée à l'entête du fichier - %s", column.name_.c_str(), cols_.getLastError().c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "La colonne '%s' n'a pas été ajoutée à l'entête du fichier - %s", column.name_.c_str(), cols_.getLastError().c_str());
 		}
 		else{
-			logs_->add(logFile::DBG, "Ajout de la colonne '%s' pour l'attribut '%s'", column.name_.c_str(), column.ldapAttr_.c_str());
+			logs_->add(logs::TRACE_TYPE::DBG, "Ajout de la colonne '%s' pour l'attribut '%s'", column.name_.c_str(), column.ldapAttr_.c_str());
 
 			// Association à la structure
 			struct_->setAt(column.ldapAttr_, cols_.size() - 1);
@@ -353,12 +353,12 @@ RET_TYPE ldapBrowser::browse()
 
 	// Pas de colonne(s) => pas de fichier généré
 	if (0 == cols_.size()){
-		logs_->add(logFile::ERR, "Aucune colonne du schéma n'a été demandée => pas de fichier à générer");
+		logs_->add(logs::TRACE_TYPE::ERR, "Aucune colonne du schéma n'a été demandée => pas de fichier à générer");
 		return RET_TYPE::RET_BLOCKING_ERROR;
 	}
 
 	// Liste des colonnes demandées
-	logs_->add(logFile::LOG, "%d colonne(s) demandée(s)", cols_.size());
+	logs_->add(logs::TRACE_TYPE::LOG, "%d colonne(s) demandée(s)", cols_.size());
 
 	// Dans tous les cas, il faut l'ID de l'agent, son prénom, son nom, le statut du compte et la DGA
 	//
@@ -396,7 +396,7 @@ RET_TYPE ldapBrowser::browse()
 	// Arborescence et/ou managers
 	if (cols_.npos != colManager){
 		if (NULL == (agents_ = new agentTree(&encoder_, logs_, ldapServer_, ldapServer_->usersDN()))){
-			logs_->add(logFile::ERR, "Pas d'onglet 'arborescence' - Impossible d'allouer de la mémoire");
+			logs_->add(logs::TRACE_TYPE::ERR, "Pas d'onglet 'arborescence' - Impossible d'allouer de la mémoire");
 		}
 		else{
 			// Informations pour les requêtes sur les managers
@@ -415,7 +415,7 @@ void ldapBrowser::_dispose(bool freeLDAP)
 {
 	// (de)connexion LDAP
 	if (freeLDAP && ldapServer_) {
-		logs_->add(logFile::DBG, "Fermeture de la connexion LDAP '%s'", ldapServer_->name());
+		logs_->add(logs::TRACE_TYPE::DBG, "Fermeture de la connexion LDAP '%s'", ldapServer_->name());
 		ldapServer_->disConnect();
 
 		// Suppression du contenu des listes
@@ -465,7 +465,7 @@ bool ldapBrowser::_initLDAP()
 	// Initialisation de la connexion LDAP
 	//
 	if (NULL == ldapServer_->open()){
-		logs_->add(logFile::ERR, "Impossible de trouver le serveur");
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le serveur");
 		return false;
 	}
 
@@ -473,7 +473,7 @@ bool ldapBrowser::_initLDAP()
 	//
 	ULONG retCode;
 	if (LDAP_SUCCESS != (retCode = ldapServer_->connect())){
-		logs_->add(logFile::ERR, "Impossible de se connecter au serveur LDAP. Erreur %d / '%s'", retCode, ldapServer_->err2string(retCode).c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible de se connecter au serveur LDAP. Erreur %d / '%s'", retCode, ldapServer_->err2string(retCode).c_str());
 		ldapServer_->disConnect();
 		return false;
 	}
@@ -482,26 +482,26 @@ bool ldapBrowser::_initLDAP()
 	//
 	ULONG version(LDAP_VERSION3);
 	if (LDAP_SUCCESS != ldapServer_->setOption(LDAP_OPT_PROTOCOL_VERSION, (void*)&version)){
-		logs_->add(logFile::ERR, "Le serveur n'est pas compatible LDAP V%d", LDAP_VERSION3);
+		logs_->add(logs::TRACE_TYPE::ERR, "Le serveur n'est pas compatible LDAP V%d", LDAP_VERSION3);
 		return false;
 	}
 
 	// Bind "anonyme" ou nommé
 	//
 	if (LDAP_SUCCESS != ldapServer_->simpleBindS()){
-		logs_->add(logFile::ERR, "Impossible de se ""lier"" au serveur");
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible de se ""lier"" au serveur");
 		return false;
 	}
 
-	logs_->add(logFile::LOG, "Connecté avec succès au service LDAP");
+	logs_->add(logs::TRACE_TYPE::LOG, "Connecté avec succès au service LDAP");
 
 	// Nbre d'enregistrements
 	ULONG sizeLimit(0);
 	if (LDAP_SUCCESS == ldapServer_->getOption(LDAP_OPT_SIZELIMIT, (void*)&sizeLimit) && 0 != sizeLimit){
-		logs_->add(logFile::LOG, "Le serveur limite le nombre d'enregistrements à %d", sizeLimit);
+		logs_->add(logs::TRACE_TYPE::LOG, "Le serveur limite le nombre d'enregistrements à %d", sizeLimit);
 	}
 	else{
-		logs_->add(logFile::LOG, "Impossible de lire le nombre maximal d'enregistrement ... (500 ?)");
+		logs_->add(logs::TRACE_TYPE::LOG, "Impossible de lire le nombre maximal d'enregistrement ... (500 ?)");
 	}
 
 	// Récupération des services
@@ -509,7 +509,7 @@ bool ldapBrowser::_initLDAP()
 		return false;
 	}
 
-	logs_->add(logFile::LOG, "%d ""services et directions"" récupérés", services_->size());
+	logs_->add(logs::TRACE_TYPE::LOG, "%d ""services et directions"" récupérés", services_->size());
 
 	// OK
 	return true;
@@ -522,7 +522,7 @@ RET_TYPE ldapBrowser::_createFile()
 	commandFile* cmdFile(NULL);
 	if (NULL == (cmdFile = configurationFile_->cmdFile())){
 		// ???
-		logs_->add(logFile::ERR, "Pas de fichier de commande");
+		logs_->add(logs::TRACE_TYPE::ERR, "Pas de fichier de commande");
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
 
@@ -530,7 +530,7 @@ RET_TYPE ldapBrowser::_createFile()
 	//
 	OPFI opfi;
 	if (!cmdFile->outputFileInfos(aliases_, opfi)){
-		logs_->add(logFile::ERR, "Les informations sur le fichier à générer sont invalides");
+		logs_->add(logs::TRACE_TYPE::ERR, "Les informations sur le fichier à générer sont invalides");
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
 
@@ -545,7 +545,7 @@ RET_TYPE ldapBrowser::_createFile()
 		// la liste des serveurs ) ?
 		if (destination && strlen(destination->name())){
 			if (NULL == servers_.getDestinationByName(destination->name())){
-				logs_->add(logFile::ERR, "La destination '%s' n'existe pas dans le fichier de configuration. La destination sera ignorée", destination->name());
+				logs_->add(logs::TRACE_TYPE::ERR, "La destination '%s' n'existe pas dans le fichier de configuration. La destination sera ignorée", destination->name());
 			}
 			else{
 				destCount++;
@@ -568,7 +568,7 @@ RET_TYPE ldapBrowser::_createFile()
 	}
 
 	if (0 == destCount){
-		logs_->add(logFile::ERR, "Aucune destination valide pour le fichier de sortie. Les traitements sont annulés");
+		logs_->add(logs::TRACE_TYPE::ERR, "Aucune destination valide pour le fichier de sortie. Les traitements sont annulés");
 		return RET_TYPE::RET_ERROR_NO_DESTINATION;
 	}
 
@@ -577,7 +577,7 @@ RET_TYPE ldapBrowser::_createFile()
 		// Elle doit exister !!!
 		size_t index;
 		if (cols_.npos == (index = cols_.getShemaAttributeByName(opfi.managersCol_.c_str()))) {
-			logs_->add(logFile::ERR, "Encadrants : La colonne '%s' n'existe pas dans le fichier '%s'", opfi.managersCol_.c_str(), cmdFile->fileName());
+			logs_->add(logs::TRACE_TYPE::ERR, "Encadrants : La colonne '%s' n'existe pas dans le fichier '%s'", opfi.managersCol_.c_str(), cmdFile->fileName());
 
 			// On continue avec la valeur par défaut
 		}
@@ -589,17 +589,17 @@ RET_TYPE ldapBrowser::_createFile()
 			managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
 		}
 
-		logs_->add(logFile::LOG, "Les encadrants sont modélisés par ('%s', '%s')" , managersCol_.c_str(), managersAttr_.c_str());
+		logs_->add(logs::TRACE_TYPE::LOG, "Les encadrants sont modélisés par ('%s', '%s')" , managersCol_.c_str(), managersAttr_.c_str());
 	}
 
 	// Liste des colonnes demandées
-	logs_->add(logFile::LOG, "%d colonnes à créer", cols_.size());
+	logs_->add(logs::TRACE_TYPE::LOG, "%d colonnes à créer", cols_.size());
 
 	// Attributs recherchés
 	//
 	PCHAR* pAttributes = (PCHAR*)malloc((1+cols_.size())*sizeof(PCHAR));
 	if (NULL == pAttributes){
-		logs_->add(logFile::ERR, "Impossible d'allouer de la mémoire pour la liste des attributs");
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour la liste des attributs");
 		return RET_TYPE::RET_BLOCKING_ERROR;
 	}
 
@@ -628,14 +628,14 @@ RET_TYPE ldapBrowser::_createFile()
 	if (cmdFile->searchCriteria(&cols_, search)){
 		// Le critère de rupture est-il valide ?
 		if (search.tabType().size() && SIZE_MAX == struct_->depthByType(search.tabType().c_str())){
-			logs_->add(logFile::ERR, "'%s' ne correspond à aucun type de la structure. Il n'y aura pas de rupture.", search.tabType().c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "'%s' ne correspond à aucun type de la structure. Il n'y aura pas de rupture.", search.tabType().c_str());
 			search.setTabType("");
 		}
 
 		string sContainer(search.container());
 		if (search.container().size() && NULL == (pService = services_->findContainer(sContainer, baseContainer, containerDepth))){
-			logs_->add(logFile::ERR, "'%s' ne correspond à aucun élément de structure", search.container().c_str());
-			logs_->add(logFile::ERR, "Aucun fichier ne sera généré");
+			logs_->add(logs::TRACE_TYPE::ERR, "'%s' ne correspond à aucun élément de structure", search.container().c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Aucun fichier ne sera généré");
 			return RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR;
 		}
 
@@ -692,10 +692,10 @@ RET_TYPE ldapBrowser::_createFile()
 		// Les autres ...
 		default: {
 			if (opfi.formatName_.length()) {
-				logs_->add(logFile::ERR, "Le type \"%s\" ne correspond à aucun type de fichier pris en charge", opfi.formatName_.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Le type \"%s\" ne correspond à aucun type de fichier pris en charge", opfi.formatName_.c_str());
 			}
 			else {
-				logs_->add(logFile::ERR, "Le type %d ne correspond à aucun type de fichier pris en charge", opfi.format_);
+				logs_->add(logs::TRACE_TYPE::ERR, "Le type %d ne correspond à aucun type de fichier pris en charge", opfi.format_);
 			}
 
 			return RET_TYPE::RET_INVALID_OUTPUT_FORMAT;
@@ -703,21 +703,21 @@ RET_TYPE ldapBrowser::_createFile()
 	}
 
 	if (NULL == file_) {
-		logs_->add(logFile::ERR, "Impossible de créer le générateur de fichier");
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer le générateur de fichier");
 		return RET_TYPE::RET_BLOCKING_ERROR;
 	}
 
-	logs_->add(logFile::LOG, "Demande de création d'un fichier au format '%s' : '%s'", file_->fileExtension(), file_->fileName());
+	logs_->add(logs::TRACE_TYPE::LOG, "Demande de création d'un fichier au format '%s' : '%s'", file_->fileExtension(), file_->fileName());
 
 	// Lecture des paramètres spécifiques au format du fichier destination
 	if (false == file_->getOwnParameters()) {
-		logs_->add(logFile::ERR, "Erreur dans les paramètres étendus du fichier XML");
+		logs_->add(logs::TRACE_TYPE::ERR, "Erreur dans les paramètres étendus du fichier XML");
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
 
 	// Initialisation du fichier (création des entetes)
 	if (!file_->create()) {
-		logs_->add(logFile::ERR, "Erreur lors de l'initialisation du fichier de sortie");
+		logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'initialisation du fichier de sortie");
 		return RET_TYPE::RET_BLOCKING_ERROR;
 	}
 
@@ -731,11 +731,11 @@ RET_TYPE ldapBrowser::_createFile()
 			newName = pService->fileName();
 		}
 		else{
-			logs_->add(logFile::ERR, "Pas de nom pour le fichier de sortie");
+			logs_->add(logs::TRACE_TYPE::ERR, "Pas de nom pour le fichier de sortie");
 		}
 
 		file_->rename(newName.size()?newName: XML_DEF_OUTPUT_FILENAME);
-		logs_->add(logFile::LOG, "Nom du fichier de sortie : %s", file_->fileName(false));
+		logs_->add(logs::TRACE_TYPE::LOG, "Nom du fichier de sortie : %s", file_->fileName(false));
 	}
 	*/
 
@@ -744,7 +744,7 @@ RET_TYPE ldapBrowser::_createFile()
 	LDAPControl* srvControls[3] = { NULL, NULL, NULL };		// Tous mes "contrôles"
 	LDAPControl* sortControl(NULL), * pageControl(NULL);
 	if (search.sorted()){
-		logs_->add(logFile::LOG, "Tri alphabétique des résultâts");
+		logs_->add(logs::TRACE_TYPE::LOG, "Tri alphabétique des résultâts");
 
 		LDAPSortKey sortName, sortFirstName;
 		LDAPSortKey* sortKey[3];
@@ -778,7 +778,7 @@ RET_TYPE ldapBrowser::_createFile()
 
 		// Création du "contrôle" car le tri sera effectué par le serveur
 		if (LDAP_SUCCESS != ldapServer_->createSortControl(sortKey, 0, &sortControl)){
-			logs_->add(logFile::ERR, "Impossible de créer le contrôle pour le tri");
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer le contrôle pour le tri");
 			search.setSorted(false);	// !!!
 		}
 		else{
@@ -800,8 +800,8 @@ RET_TYPE ldapBrowser::_createFile()
 	//
 	if (DEPTH_NONE != depth){
 		// Plusieurs requetes => plusieurs onglets
-		logs_->add(logFile::LOG, "Recherche de tous les agents dépendants de '%s'", search.container().c_str());
-		logs_->add(logFile::LOG, "Onglet(s) par '%s'", search.tabType().c_str());
+		logs_->add(logs::TRACE_TYPE::LOG, "Recherche de tous les agents dépendants de '%s'", search.container().c_str());
+		logs_->add(logs::TRACE_TYPE::LOG, "Onglet(s) par '%s'", search.tabType().c_str());
 
 		deque<servicesList::LPLDAPSERVICE> services;
 		string sContainer(search.container());
@@ -832,12 +832,12 @@ RET_TYPE ldapBrowser::_createFile()
 				// Execution de la requete sur son DN
 				treeSearch = search.container() != (*it)->realName();
 				agents = _simpleLDAPRequest(pAttributes, search, (*it)->DN(),treeSearch,  srvControls, sortControl);
-				logs_->add(logFile::DBG, "Ajout de l'onglet '%s' avec %d agent(s)", (*it)->realName(), agents);
+				logs_->add(logs::TRACE_TYPE::DBG, "Ajout de l'onglet '%s' avec %d agent(s)", (*it)->realName(), agents);
 				agentsCount += agents;
 			}
 		}
 		else{
-			logs_->add(logFile::LOG, "Pas de sous-container pour '%s'", search.container().c_str());
+			logs_->add(logs::TRACE_TYPE::LOG, "Pas de sous-container pour '%s'", search.container().c_str());
 		}
 	}
 	else{
@@ -846,10 +846,10 @@ RET_TYPE ldapBrowser::_createFile()
 
 		// Juste une requête avec l'onglet renommé à la demande
 		agentsCount = _simpleLDAPRequest(pAttributes, search, baseContainer.size() ? baseContainer.c_str() : ldapServer_->usersDN(), true, /*search.sorted ? srvControls : NULL*/srvControls, sortControl);
-		logs_->add(logFile::DBG, "Ajout de l'onglet '%s' avec %d agent(s)", tabName.c_str(), agentsCount);
+		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de l'onglet '%s' avec %d agent(s)", tabName.c_str(), agentsCount);
 	}
 
-	logs_->add(logFile::LOG, "%d agent(s) ajouté(s) dans le fichier", agentsCount);
+	logs_->add(logs::TRACE_TYPE::LOG, "%d agent(s) ajouté(s) dans le fichier", agentsCount);
 
 	// Dès lors que tous les agents ont été listés,
 	// la mise à jour des liens pour les agents sur plusieurs postes est possible
@@ -868,11 +868,11 @@ RET_TYPE ldapBrowser::_createFile()
 	//
 	//RET_TYPE done(RET_TYPE::RET_OK);
 	if (!file_->close()){
-		logs_->add(logFile::ERR, "Le fichier temporaire n'a pu être sauvegardé");
+		logs_->add(logs::TRACE_TYPE::ERR, "Le fichier temporaire n'a pu être sauvegardé");
 		//done = RET_TYPE::RET_UNABLE_TO_SAVE;
 	}
 	else{
-		logs_->add(logFile::DBG, "Fichier temporaire enregistré avec succès");
+		logs_->add(logs::TRACE_TYPE::DBG, "Fichier temporaire enregistré avec succès");
 
 		// Y a t'il des traitements "postgen" ?
 		_handlePostGenActions(opfi);
@@ -890,10 +890,10 @@ RET_TYPE ldapBrowser::_createFile()
 			if (destination && strlen(destination->name())){
 				if (NULL == (dest = servers_.getDestinationByName(destination->name()))){
 					// A priori ce cas a été détecté ...
-					logs_->add(logFile::ERR, "La destination '%s' n'est pas définie", destination->name());
+					logs_->add(logs::TRACE_TYPE::ERR, "La destination '%s' n'est pas définie", destination->name());
 				}
 				else{
-					logs_->add(logFile::DBG, "Utilisation de la destination '%s'", destination->name());
+					logs_->add(logs::TRACE_TYPE::DBG, "Utilisation de la destination '%s'", destination->name());
 				}
 			}
 			else{
@@ -912,10 +912,10 @@ RET_TYPE ldapBrowser::_createFile()
 
 					if (!sFileSystem::copy_file(file_->fileName(), fullName.c_str())){
 						atLeastOneError = true;
-						logs_->add(logFile::ERR, "Impossible de créer le fichier '%s'", fullName.c_str());
+						logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer le fichier '%s'", fullName.c_str());
 					}
 					else{
-						logs_->add(logFile::LOG, "Le fichier destination a été crée avec succès : '%s'", fullName.c_str());
+						logs_->add(logs::TRACE_TYPE::LOG, "Le fichier destination a été crée avec succès : '%s'", fullName.c_str());
 					}
 					break;
 				}
@@ -965,7 +965,7 @@ RET_TYPE ldapBrowser::_createFile()
 
 	// Plus besoin du fichier temporaire
 	if (file_) {
-		logs_->add(logFile::DBG, "Suppression du fichier temporaire '%s'", file_->fileName());
+		logs_->add(logs::TRACE_TYPE::DBG, "Suppression du fichier temporaire '%s'", file_->fileName());
 		delete file_;
 		file_ = NULL;
 	}
@@ -1023,17 +1023,17 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		if (NULL == titles_) {
 #ifdef __LDAP_USE_ALLIER_TITLES_h__
 			if (NULL == (titles_ = new jhbLDAPTools::titles(logs_))) {
-				logs_->add(logFile::ERR, "Impossible de créer la liste des postes => pas d'intitulés");
+				logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer la liste des postes => pas d'intitulés");
 				colPoste = cols_.npos;
 			}
 			else {
 #ifdef __LDAP_USE_ALLIER_TITLES_h__
 				// Récupération des intitulés de poste
 				if (!_getTitles()) {
-					logs_->add(logFile::ERR, "Erreur de la récupération des intitulés de poste");
+					logs_->add(logs::TRACE_TYPE::ERR, "Erreur de la récupération des intitulés de poste");
 				}
 				else {
-					logs_->add(logFile::LOG, "%d intitulés de poste récupérés", titles_->size());
+					logs_->add(logs::TRACE_TYPE::LOG, "%d intitulés de poste récupérés", titles_->size());
 				}
 #endif // __LDAP_USE_ALLIER_TITLES_h__
 
@@ -1071,7 +1071,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	// Recherche alpha
 	searchExpr* psearchExpr(sCriterium.searchExpression());
 
-	logs_->add(logFile::DBG, "La requète LDAP sera scindée");
+	logs_->add(logs::TRACE_TYPE::DBG, "La requète LDAP sera scindée");
 	searchExpr* fullReg(NULL);
 
 	{
@@ -1132,7 +1132,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		}
 
 		if (fullReg){
-			logs_->add(logFile::DBG, "Critères de recherche : %s", currentFilter.c_str());
+			logs_->add(logs::TRACE_TYPE::DBG, "Critères de recherche : %s", currentFilter.c_str());
 		}
 #endif // CUT_LDAP_REQUEST
 
@@ -1163,7 +1163,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 				ldapServer_->msgFree(searchResult);
 			}
 
-			logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de l'execution de la requête", retCode, ldapServer_->err2string(retCode).c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d '%s' lors de l'execution de la requête", retCode, ldapServer_->err2string(retCode).c_str());
 #ifdef CUT_LDAP_REQUEST
 			todo = false;
 #endif // CUT_LDAP_REQUEST
@@ -1179,7 +1179,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 				ULONG retCode(ldapServer_->parseResult(searchResult, &errorCode, NULL, NULL, NULL, &returnedControls, 0));
 				if ((LDAP_SUCCESS != retCode) || (LDAP_SUCCESS != errorCode)){
 					ULONG code = (LDAP_SUCCESS != retCode) ? retCode : errorCode;
-					logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors du parse de la réponse", code, ldapServer_->err2string(code).c_str());
+					logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d '%s' lors du parse de la réponse", code, ldapServer_->err2string(code).c_str());
 				}
 				else{
 					// Parse du contrôle de tri
@@ -1188,7 +1188,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 						retCode = ldapServer_->parseSortControl(*returnedControls, &errorCode, &attrInError);
 
 						if ((LDAP_SUCCESS != retCode) || (LDAP_SUCCESS != errorCode)){
-							logs_->add(logFile::ERR, "Erreur LDAP %d lors du tri de la réponse. L'attribut '%s' a causé l'erreur", (LDAP_SUCCESS != retCode) ? retCode : errorCode, attrInError);
+							logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d lors du tri de la réponse. L'attribut '%s' a causé l'erreur", (LDAP_SUCCESS != retCode) ? retCode : errorCode, attrInError);
 						}
 
 						ldapServer_->controlsFree(returnedControls);
@@ -1620,7 +1620,7 @@ bool ldapBrowser::_getServices()
 			ldapServer_->msgFree(searchResult);
 		}
 
-		logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des services", retCode, ldapServer_->err2string(retCode).c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d '%s' lors de la lecture des services", retCode, ldapServer_->err2string(retCode).c_str());
 		return false;
 	}
 
@@ -1633,7 +1633,7 @@ bool ldapBrowser::_getServices()
 
 	ULONG svcCount(ldapServer_->countEntries(searchResult));
 	if (logs_){
-		logs_->add(logFile::DBG, "%d service(s) dans l'annuaire", svcCount);
+		logs_->add(logs::TRACE_TYPE::DBG, "%d service(s) dans l'annuaire", svcCount);
 	}
 
 	string description(""), bkColor(""), shortName(""), fileName(""), site("");
@@ -1787,7 +1787,7 @@ bool ldapBrowser::_getTitles()
 				ldapServer_->msgFree(searchResult);
 			}
 
-			logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des libéllés de postes", retCode, ldapServer_->err2string(retCode).c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d '%s' lors de la lecture des libéllés de postes", retCode, ldapServer_->err2string(retCode).c_str());
 			return false;
 		}
 
@@ -1891,7 +1891,7 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 	size_t len(strlen(LDAP_PREFIX_UID));
 	userDN = userDN.substr(len, pos - len);
 
-	logs_->add(logFile::DBG, "Recherche des groupes pour '%s'", userDN.c_str());
+	logs_->add(logs::TRACE_TYPE::DBG, "Recherche des groupes pour '%s'", userDN.c_str());
 
 	// Attributs et filtre de recherche
 	//
@@ -1917,7 +1917,7 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 			ldapServer_->msgFree(searchResult);
 		}
 
-		logs_->add(logFile::ERR, "Erreur LDAP %d '%s' lors de la lecture des groupes pour '%s'", retCode, ldapServer_->err2string(retCode).c_str(), userDN.c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d '%s' lors de la lecture des groupes pour '%s'", retCode, ldapServer_->err2string(retCode).c_str(), userDN.c_str());
 		return false;
 	}
 
@@ -1991,7 +1991,7 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 		}
 		else{
 			if (SIZE_MAX == primaryGroup){
-				logs_->add(logFile::ERR, "Impossible de trouver le groupe primaire '%s' pour '%s'", gID, userDN.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le groupe primaire '%s' pour '%s'", gID, userDN.c_str());
 			}
 
 			// Pas besoin de changer l'ordre
@@ -2029,15 +2029,15 @@ void ldapBrowser::_generateOrgChart()
 	orgFile_ = NULL;
 	if (NULL == (orgFile_ = file_->addOrgChartFile(orgChart_.flat_, orgChart_.full_, newFile))){
 		if (!newFile && !orgFile_){
-			logs_->add(logFile::LOG, "Pas de génération d'organigramme");
+			logs_->add(logs::TRACE_TYPE::LOG, "Pas de génération d'organigramme");
 		}
 		return;
 	}
 
-	logs_->add(logFile::LOG, "Génération de l'organigramme");
+	logs_->add(logs::TRACE_TYPE::LOG, "Génération de l'organigramme");
 
 	if (!orgFile_->createOrgSheet(orgChart_.sheetName_)){
-		logs_->add(logFile::ERR, "Impossible d'ajouter un onglet");
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ajouter un onglet");
 	}
 
 	// On passe en mode non formaté
@@ -2077,7 +2077,7 @@ void ldapBrowser::_generateFlatOrgChart(orgChartFile* orgFile)
 		// Ajout de la racine
 		if ((agent->dn() != NO_AGENT_DN)		// Pas la peine d'afficher les erreurs si il n'y en a pas
 			|| (agent->dn() == NO_AGENT_DN && NULL != agent->firstChild())){
-			logs_->add(logFile::DBG, "Ajout de la racine '%s'", agent->display(orgChart_.nodeFormat_).c_str());
+			logs_->add(logs::TRACE_TYPE::DBG, "Ajout de la racine '%s'", agent->display(orgChart_.nodeFormat_).c_str());
 			_addOrgRoot(orgFile, ascendants, agent);
 
 			// Saut de ligne final
@@ -2157,11 +2157,11 @@ const bool ldapBrowser::_SMTPTransfer(mailDestination* mailDest)
 	// Envoi
 	CURLcode ret(CURLE_OK);
 	if (CURLE_OK != (ret = mail.send(mailDest->smtpServer(), mailDest->smtpPort(), mailDest->smtpUser(), mailDest->smtpPwd(), mailDest->useTLS()))) {
-		logs_->add(logFile::ERR, "Impossible d'envoyer le mail à '%s'. Erreur : %d", mailDest->folder(), ret);
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'envoyer le mail à '%s'. Erreur : %d", mailDest->folder(), ret);
 		return false;
 	}
 
-	logs_->add(logFile::LOG, "Envoi du fichier par mail à '%s'", mailDest->folder());
+	logs_->add(logs::TRACE_TYPE::LOG, "Envoi du fichier par mail à '%s'", mailDest->folder());
 	return true;
 }
 
@@ -2191,12 +2191,12 @@ const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
 		jhbCURLTools::FTPClient::FTPFILEINFO fi;
 		if (ftpClient.Info(destName, fi)){
 			ftpClient.RemoveFile(destName);
-			logs_->add(logFile::DBG, "\t - Suppression sur le serveur de l'ancien fichier '%s'", destName.c_str());
+			logs_->add(logs::TRACE_TYPE::DBG, "\t - Suppression sur le serveur de l'ancien fichier '%s'", destName.c_str());
 		}
 		*/
 
 		// Transfert du fichier
-		logs_->add(logFile::DBG, "\t - Transfert du fichier '%s' par FTP vers '%s'", file_->fileName(false), ftpDest->name());
+		logs_->add(logs::TRACE_TYPE::DBG, "\t - Transfert du fichier '%s' par FTP vers '%s'", file_->fileName(false), ftpDest->name());
 
 		ftpClient.UploadFile(file_->fileName(true), destName);
 
@@ -2204,17 +2204,17 @@ const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
 		ftpClient.CleanupSession();
 	}
 	catch (jhbCURLTools::CURLException& e) {
-		logs_->add(logFile::ERR, e.what());
+		logs_->add(logs::TRACE_TYPE::ERR, e.what());
 		return false;
 	}
 	catch (...) {
 		// Erreur inconnue
-		logs_->add(logFile::ERR, "Transfert FTP - Erreur inconnue");
+		logs_->add(logs::TRACE_TYPE::ERR, "Transfert FTP - Erreur inconnue");
 		return false;
 	}
 
 	// Transféré avec succès
-	logs_->add(logFile::LOG, "Transfert FTP '%s' effectué avec succès", ftpDest->name());
+	logs_->add(logs::TRACE_TYPE::LOG, "Transfert FTP '%s' effectué avec succès", ftpDest->name());
 	return true;
 }
 
@@ -2228,7 +2228,7 @@ const bool ldapBrowser::_SCPTransfer(SCPDestination* scpDest)
 	}
 
 	if (0 == strlen(alias->application())) {
-		logs_->add(logFile::ERR, "Transfert SCP '%s' - Pas d'application dans l'Alias '%s'", scpDest->name(), alias->name());
+		logs_->add(logs::TRACE_TYPE::ERR, "Transfert SCP '%s' - Pas d'application dans l'Alias '%s'", scpDest->name(), alias->name());
 		return false;
 	}
 
@@ -2248,7 +2248,7 @@ const bool ldapBrowser::_SCPTransfer(SCPDestination* scpDest)
 	// Serveur
 	value = scpDest->server();
 	if (0 == value.length()) {
-		logs_->add(logFile::ERR, "Transfert SCP '%s' - Pas de serveur", scpDest->name());
+		logs_->add(logs::TRACE_TYPE::ERR, "Transfert SCP '%s' - Pas de serveur", scpDest->name());
 		return false;
 	}
 	alias->addToken(TOKEN_SERVER_NAME, value.c_str());
@@ -2256,7 +2256,7 @@ const bool ldapBrowser::_SCPTransfer(SCPDestination* scpDest)
 	// Login
 	value = scpDest->user();
 	if (0 == value.length()) {
-		logs_->add(logFile::ERR, "Transfert SCP '%s' - Pas de nom de compte", scpDest->name());
+		logs_->add(logs::TRACE_TYPE::ERR, "Transfert SCP '%s' - Pas de nom de compte", scpDest->name());
 		return false;
 	}
 	alias->addToken(TOKEN_USER_NAME, value.c_str());
@@ -2274,15 +2274,15 @@ const bool ldapBrowser::_SCPTransfer(SCPDestination* scpDest)
 	// Exécution de la commande ...
 	//
 	value = alias->application();
-	logs_->add(logFile::LOG, "\t- Application : %s", value.c_str());
-	logs_->add(logFile::LOG, "\t- Commande : %s", logCmd.c_str());
+	logs_->add(logs::TRACE_TYPE::LOG, "\t- Application : %s", value.c_str());
+	logs_->add(logs::TRACE_TYPE::LOG, "\t- Commande : %s", logCmd.c_str());
 
 	string message("");
 	if (_exec(alias->application(), command, message)) {
-		logs_->add(logFile::LOG, "Transfert SCP '%s' effectué avec succès", scpDest->name());
+		logs_->add(logs::TRACE_TYPE::LOG, "Transfert SCP '%s' effectué avec succès", scpDest->name());
 	}
 	else {
-		logs_->add(logFile::ERR, "Transfert SCP '%s' - Erreur : %s", scpDest->name(), message.c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Transfert SCP '%s' - Erreur : %s", scpDest->name(), message.c_str());
 	}
 
 	// Transféré avec succès
@@ -2317,13 +2317,13 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 	for (size_t index = 0; index < opfi.actions_.size(); index++) {
 		if (NULL != (action = opfi.actions_[index])) {
 			if (fileActions::ACTION_TYPE::ACTION_POST_GEN == action->type()) {
-				logs_->add(logFile::LOG, "Action postgen '%s'", action->name());
+				logs_->add(logs::TRACE_TYPE::LOG, "Action postgen '%s'", action->name());
 #ifdef _DEBUG
-				logs_->add(logFile::LOG, "\t- Application : %s", action->application());
-				logs_->add(logFile::LOG, "\t- Paramètres : %s", action->parameters());
+				logs_->add(logs::TRACE_TYPE::LOG, "\t- Application : %s", action->application());
+				logs_->add(logs::TRACE_TYPE::LOG, "\t- Paramètres : %s", action->parameters());
 #else
-				logs_->add(logFile::DBG, "\t- Application : %s", action->application());
-				logs_->add(logFile::DBG, "\t- Paramètres : %s", action->parameters());
+				logs_->add(logs::TRACE_TYPE::DBG, "\t- Application : %s", action->application());
+				logs_->add(logs::TRACE_TYPE::DBG, "\t- Paramètres : %s", action->parameters());
 #endif // _DEBUG
 
 				// On se positionne dans le dossier temporaire (là ou se trouve le fichier source)
@@ -2348,27 +2348,27 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 							opfi.name_ = sFileSystem::split(output);	// le nom court
 
 #ifdef _DEBUG
-							logs_->add(logFile::LOG, "\t- Renomamge du fichier de sortie en : %s", output.c_str());
+							logs_->add(logs::TRACE_TYPE::LOG, "\t- Renomamge du fichier de sortie en : %s", output.c_str());
 #else
-							logs_->add(logFile::DBG, "\t- Renommage du fichier de sortie en : %s", output.c_str());
+							logs_->add(logs::TRACE_TYPE::DBG, "\t- Renommage du fichier de sortie en : %s", output.c_str());
 #endif // _DEBUG
 						}
 						else {
 							done = false;
-							logs_->add(logFile::ERR, "\t- Le fichier %s est introuvable", output.c_str());
+							logs_->add(logs::TRACE_TYPE::ERR, "\t- Le fichier %s est introuvable", output.c_str());
 						}
 					}
 
 					if (done) {
-						logs_->add(logFile::LOG, "\t- Terminée avec succès");
+						logs_->add(logs::TRACE_TYPE::LOG, "\t- Terminée avec succès");
 					}
 				}
 				else {
-					logs_->add(logFile::ERR, "Action postgen pour '%s' - %s", action->name(), errorMessage.c_str());
+					logs_->add(logs::TRACE_TYPE::ERR, "Action postgen pour '%s' - %s", action->name(), errorMessage.c_str());
 				}
 			}
 			else {
-				logs_->add(logFile::ERR, "Action postgen pour '%s' - Format invalide pour la commande", action->name());
+				logs_->add(logs::TRACE_TYPE::ERR, "Action postgen pour '%s' - Format invalide pour la commande", action->name());
 			}
 		} // action!= NULL
 	} // for

@@ -54,7 +54,7 @@ public:
 
 	// Construction et destruction
 	//
-	ldapBrowser(logFile* logs = NULL, confFile* configurationFile = NULL);
+	ldapBrowser(logs* pLogs = NULL, confFile* configurationFile = NULL);
 	virtual ~ldapBrowser();
 
 
@@ -123,7 +123,7 @@ protected:
 	LDAPServer*				ldapServer_;
 
 	// Logs
-	logFile*				logs_;
+	logs*				logs_;
 
 	servicesList*			services_;			// Services dans l'annuaire
 #ifdef __LDAP_USE_ALLIER_TITLES_h__

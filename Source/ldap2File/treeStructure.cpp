@@ -39,10 +39,10 @@
 
 // Construction
 //
-treeStructure::treeStructure(logFile* logs)
+treeStructure::treeStructure(logs* pLogs)
 {
 	// Initialisation des données membres
-	logs_ = logs;
+	logs_ = pLogs;
 	cols_ = 0;
 }
 
@@ -78,7 +78,7 @@ bool treeStructure::add(string& type, string& name, size_t depth)
 	// Les éléments sont uniques par leur type
 	if (NULL != (element = _findElementByType(type)))
 	{
-		logs_->add(logFile::ERR, "Il existe déjà un élément de structure de type '%s'", type.c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Il existe déjà un élément de structure de type '%s'", type.c_str());
 		return false;
 	}
 
@@ -88,21 +88,21 @@ bool treeStructure::add(string& type, string& name, size_t depth)
 	// Les éléments sont uniques par leur nom
 	if (NULL != (element = _findElementByName(cName)))
 	{
-		logs_->add(logFile::ERR, "Il existe déjà un élément de structure de nom '%s'", cName.c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Il existe déjà un élément de structure de nom '%s'", cName.c_str());
 		return false;
 	}
 
 	// Création d'un objet
 	if (NULL == (element = new TREEELEMENT(type, cName, depth)))
 	{
-		logs_->add(logFile::ERR, "Impossible d'allouer de la mémoire pour l'élément de struture '%s'", type.c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour l'élément de struture '%s'", type.c_str());
 		return false;
 	}
 
 	// Ajout à la liste mémoire
 	if (_add(element))
 	{
-		logs_->add(logFile::DBG, "Ajout de l'élément de structure '%s' - '%s' - profondeur : %d", type.c_str(), cName.c_str(), depth);
+		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de l'élément de structure '%s' - '%s' - profondeur : %d", type.c_str(), cName.c_str(), depth);
 		return true;
 	}
 

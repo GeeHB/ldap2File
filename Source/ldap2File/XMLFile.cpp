@@ -118,7 +118,7 @@ bool XMLFile::init(){
 		// Le fichier template existe t'il ?
 		if (!sFileSystem::exists(templateFile_)){
 			if (logs_){
-				logs_->add(logFile::ERR, "Le modèle '%s' n'existe pas", templateFile_.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Le modèle '%s' n'existe pas", templateFile_.c_str());
 			}
 
 			return false;

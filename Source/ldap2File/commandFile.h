@@ -85,6 +85,10 @@ public:
 			}
 		}
 
+		bool isSet() {
+			return sDate_.size() > 0;
+		}
+
 		// Dépassée ?
 		bool isOver() {
 			return isOver_;
@@ -212,7 +216,7 @@ public:
 
 	// Construction et destruction
 	//
-	commandFile(const char* cmdFile, folders* pFolders, logFile* log, bool isIncluded = false);
+	commandFile(const char* cmdFile, folders* pFolders, logs* log, bool isIncluded = false);
 	virtual ~commandFile();
 
 	// Accès aux données

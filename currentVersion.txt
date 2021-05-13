@@ -1,5 +1,5 @@
 TODO{
-	- Compatibilité x64
+	- Compatibilité Windows x64
 }
 
 21.5.3
@@ -25,13 +25,15 @@ TODO{
 	+ Corrections mineures
 		+ "./output files" => "./outputs" : Plus portable et plus scriptable ...
 		+ Les dossiers "système" sont crées lors de leur utilisation (pas les dossiers Destination qui doivent impérativement exister)
+		+ Messages et sorties en mode console
 		+ Logs :: Le numéro de version est suivi de "DEBUG" même en mode release
 		+ Par défaut si les dossiers n'ont pas de "path" complet, il s'agit d'un sous-dossier du dossier principal
 			+ pas d'OS précisé => tous les OS (valable quand cela fait sens ...)
+	+ Common/logFile => jhbLDAPTools::logs : Plus pratique et plus portable (et enfin en cpp!!!) ...
 	+ Compatiblité Linux des sources
 		+ Reprise des corrections et des tests de non regression
-		+ Windows OK
-		+ Linux : Pb avec les librairies "zip" => utilisation de zip en ligne de commandes
+		+ Windows - OK
+		+ Linux x64 (Fedora 33) - OK
 
 21.4.14
 	* le 27 avril 2021 / MAJ de la ressource

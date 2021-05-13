@@ -45,8 +45,8 @@ public:
 
 	// Constructions et destruction
 	//
-	confFile(folders* pFolders, logFile* log = NULL);
-	confFile(const char* confFile, folders* pFolders, logFile* log = NULL);
+	confFile(folders* pFolders, logs* log = NULL);
+	confFile(const char* confFile, folders* pFolders, logs* log = NULL);
 	virtual ~confFile();
 
 	// Ouverture d'un fichier

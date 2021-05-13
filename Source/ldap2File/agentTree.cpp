@@ -41,9 +41,9 @@
 
 // Construction
 //
-agentTree::agentTree(charUtils* encoder, logFile* logs, LDAPServer* lServer, const char * baseDN)
+agentTree::agentTree(charUtils* encoder, logs* pLogs, LDAPServer* lServer, const char * baseDN)
 {
-	if (!encoder || !logs || !lServer){
+	if (!encoder || !pLogs || !lServer){
 		// Fin du processus
 		throw LDAPException("Erreur lors de l'initialisation du gestionnaire d'organigramme");
 	}
@@ -51,7 +51,7 @@ agentTree::agentTree(charUtils* encoder, logFile* logs, LDAPServer* lServer, con
 	// Initialisation des données membres
 	//
 	encoder_ = encoder;
-	logs_ = logs;
+	logs_ = pLogs;
 	ldapServer_ = lServer;
 	baseDN_ = baseDN;
 
@@ -95,7 +95,7 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, s
 			dnAgent != agent->dn()) {
 
 			if (logs_){
-				logs_->add(logFile::ERR, "Au moins deux agents ont (uidNumber = %d) : %s et %s", uid, dnAgent.c_str(), agent->dn().c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Au moins deux agents ont (uidNumber = %d) : %s et %s", uid, dnAgent.c_str(), agent->dn().c_str());
 			}
 
 			return NULL;
@@ -129,7 +129,7 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, s
 		}
 		else{
 			if (logs_){
-				logs_->add(logFile::ERR, "Le manager de '%s' n'existe pas", dnAgent.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Le manager de '%s' n'existe pas", dnAgent.c_str());
 			}
 		}
 	}
@@ -350,7 +350,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 		}
 
 		if (logs_){
-			logs_->add(logFile::ERR, "Erreur LDAP %d lors de la recherche d'un manager : '%s'", retCode, ldapServer_->err2string(retCode));
+			logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d lors de la recherche d'un manager : '%s'", retCode, ldapServer_->err2string(retCode));
 		}
 		return NULL;
 	}
@@ -376,7 +376,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 		agent = NULL;
 
 		if (logs_){
-			logs_->add(logFile::ERR, "Il n'y a pas d'agent dont le DN est :'%s'", dnAgent);
+			logs_->add(logs::TRACE_TYPE::ERR, "Il n'y a pas d'agent dont le DN est :'%s'", dnAgent);
 		}
 	}
 	else{
