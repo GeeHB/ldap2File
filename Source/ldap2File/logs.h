@@ -16,7 +16,9 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	12/05/20Z1 - JHB - Création
+//--	12/05/2021 - JHB - Création
+//--
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -39,6 +41,15 @@ using namespace std;
 	#include <syslog.h>
 #endif // _WIN32
 
+// Niveaux de logs
+//
+#define LOG_LEVEL_MIN		"Minimal"		// Le moins verbeux
+#define LOG_LEVEL_LOG		LOG_TYPE_MIN
+#define LOG_LEVEL_NORMAL	"Normal"
+#define LOG_LEVEL_DEBUG		"Debug"			// Tous les messages 
+
+#define LOG_LEVEL_ERROR		"Erreur"		// Que les messages d'erreur
+
 //---------------------------------------------------------------------------
 //--
 //-- Définition de la classe
@@ -54,7 +65,7 @@ namespace jhbLDAPTools {
 	public:
 
 		// Type de trace
-		enum class TRACE_TYPE { INVISIBLE = -1, INV = -1, DBG = 0, FULL = 1, NORMAL = 2, LOG = 3, ERR = 0xFFFF };
+		enum class TRACE_TYPE { INVISIBLE = -1, INV = -1, DBG = 0/*, FULL = 1*/, NORMAL = 2, LOG = 3, MIN = 3, ERR = 0xFFFF };
 		
 		// Construction & destruction
 		//
@@ -68,8 +79,10 @@ namespace jhbLDAPTools {
 		virtual ~logs(){}
 
 		// Initialisation
-		void init(TRACE_TYPE logMode = logs::TRACE_TYPE::LOG, const char* sFolder = NULL, const char* sFileName = NULL);
-
+		void init(const char* sMode, const char* sFolder = NULL, const char* sFileName = NULL)
+		{ init(_str2Type(sMode), sFolder, sFileName); }
+		void init(TRACE_TYPE logMode, const char* sFolder = NULL, const char* sFileName = NULL);
+		
 		// Nom du fichier
 		const char* fileName()
 		{ return fileName_.c_str(); }
@@ -84,6 +97,9 @@ namespace jhbLDAPTools {
 		// Méthodes privées
 		//
 	protected:
+
+		// Type de logs
+		TRACE_TYPE _str2Type(const char* sType);
 
 		// Génération du nom du fichier
 		string _genFileName();

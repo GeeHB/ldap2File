@@ -230,6 +230,7 @@
     <ClCompile Include="..\ZipLib\ZipArchiveEntry.cpp" />
     <ClCompile Include="..\ZipLib\ZipFile.cpp" />
     <ClCompile Include="agentTree.cpp" />
+    <ClCompile Include="aliases.cpp" />
     <ClCompile Include="columnList.cpp" />
     <ClCompile Include="commandFile.cpp" />
     <ClCompile Include="confFile.cpp" />
@@ -266,6 +267,7 @@
     <ClInclude Include="..\ZipLib\ZipArchiveEntry.h" />
     <ClInclude Include="..\ZipLib\ZipFile.h" />
     <ClInclude Include="agentTree.h" />
+    <ClInclude Include="aliases.h" />
     <ClInclude Include="columnList.h" />
     <ClInclude Include="commandFile.h" />
     <ClInclude Include="confFile.h" />

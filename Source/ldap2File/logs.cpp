@@ -2,21 +2,23 @@
 //--
 //--	FICHIER	: logs.cpp
 //--
-//--	AUTEUR	: JÈrÙme Henry-BarnaudiËre - JHB
+//--	AUTEUR	: J√©r√¥me Henry-Barnaudi√®re - JHB
 //--
 //---------------------------------------------------------------------------
 //--
 //--	DESCRIPTION:
 //--
-//--		ImplÈmentation de la classe jhbLDAPTools::logs
-//--		Gestion simplifiÈe d'un fichier de journalisation
+//--		Impl√©mentation de la classe jhbLDAPTools::logs
+//--		Gestion simplifi√©e d'un fichier de journalisation
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	12/05/20Z1 - JHB - CrÈation
+//--	12/05/2021 - JHB - Cr√©ation
+//--
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -40,7 +42,7 @@
 // Prefixe pour les lignes
 //
 #define PREFIX_DBG			"DBG"
-#define PREFIX_FULL			"FULL"
+//#define PREFIX_FULL			"FULL"
 #define PREFIX_TRC			"TRC"
 #define PREFIX_LOG			"LOG"
 #define PREFIX_ERR			"ERR"
@@ -52,6 +54,7 @@ namespace jhbLDAPTools {
 	void logs::init(TRACE_TYPE logMode, const char* sFolder, const char* sFileName)
 	{
 #ifdef _WIN32
+		// Il faudra mettre les logs au format Windows (et oui, tjrs pas UTF8 !!!)
 		encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 #endif // _WIN32
 
@@ -74,28 +77,29 @@ namespace jhbLDAPTools {
 		}
 	}
 
-	// Nom gÈnÈrÈ "dynamiquement"
+	// Nom g√©n√©r√© "dynamiquement"
 	//
 	string logs::_genFileName()
 	{
 		// Pas de dossier  => dossier courant
 		string folder(folder_.size()?folder_:sFileSystem::current_path());
 
-		// Pas de nom de fichier => gÈnÈration en fonciton de la date du jour
+		// Pas de nom de fichier => g√©n√©ration en fonciton de la date du jour
 		//
 		if (0 == fileName_.size()) {
-			// RÈcupÈration de la date et de l'heure
+			// R√©cup√©ration de la date et de l'heure
 			time_t now = time(0);
 			tm* ltm = localtime(&now);
 
 			// Nom court
 			char fileName[MAX_PATH + 1];
-			sprintf_s(fileName, MAX_PATH, _T("%02d%s"), ltm->tm_mday, TRACE_EXTENSION);
+			//sprintf_s(fileName, MAX_PATH, _T("%02d%s"), ltm->tm_mday, TRACE_EXTENSION);
+			snprintf(fileName, MAX_PATH, _T("%02d%s"), ltm->tm_mday, TRACE_EXTENSION);
 
 			return sFileSystem::merge(folder.c_str(), fileName);
 		}
 
-		// GÈnÈration
+		// G√©n√©ration
 		return sFileSystem::merge(folder.c_str(), fileName_);
 	}
 
@@ -103,12 +107,12 @@ namespace jhbLDAPTools {
 	//
 	void logs::add(TRACE_TYPE eType, const char* sFormat, ...)
 	{
-		// Quelque chose ‡ afficher ?
+		// Quelque chose √† afficher ?
 		if (eType < logMode_) {
 			// Sous le "seuil"
 			return;
 		}
-		
+
 		// Date et de l'heure
 		//
 		time_t now = time(0);
@@ -116,14 +120,16 @@ namespace jhbLDAPTools {
 
 		char sDate[MAX_LINE_LENGTH + 1];
 		sDate[0] = EOS;
-		sprintf_s(sDate, MAX_LINE_LENGTH, "%02d/%02d/%04d-%02d:%02d:%02d", ltm->tm_mday, ltm->tm_mon + 1, 1900 + ltm->tm_year, ltm->tm_hour, ltm->tm_min, ltm->tm_sec);
-		
-		// GÈnÈration de la ligne en fonction des arguments
+		//sprintf_s(sDate, MAX_LINE_LENGTH, "%02d/%02d/%04d-%02d:%02d:%02d", ltm->tm_mday, ltm->tm_mon + 1, 1900 + ltm->tm_year, ltm->tm_hour, ltm->tm_min, ltm->tm_sec);
+        snprintf(sDate, MAX_LINE_LENGTH, "%02d/%02d/%04d-%02d:%02d:%02d", ltm->tm_mday, ltm->tm_mon + 1, 1900 + ltm->tm_year, ltm->tm_hour, ltm->tm_min, ltm->tm_sec);
+
+		// G√©n√©ration de la ligne en fonction des arguments
 		//
 		char sLine[MAX_LINE_LENGTH + 1];
 		va_list	arg;
 		va_start(arg, sFormat);
-		_vsnprintf_s(sLine, MAX_LINE_LENGTH, sFormat, arg);
+		//_vsnprintf_s(sLine, MAX_LINE_LENGTH, sFormat, arg);
+		vsnprintf(sLine, MAX_LINE_LENGTH, sFormat, arg);
 		va_end(arg);
 
 		string line(sLine);
@@ -141,13 +147,40 @@ namespace jhbLDAPTools {
 				// Le fichier est ouvert en ecriture
 				oFile << _linePrefix(eType) << " " << sDate << " " << line << endl;
 
-				// Fin de l'opÈration
+				// Fin de l'op√©ration
 				oFile.close();
 			}
 		}
 		catch (...) {
 			return;
 		}
+	}
+
+	// Type de logs
+	//
+	logs::TRACE_TYPE logs::_str2Type(const char* sType)
+	{
+		if (!IS_EMPTY(sType)) {
+			string cType(sType);
+			if (LOG_LEVEL_MIN == cType) {
+				return TRACE_TYPE::LOG;
+			}
+
+			if (LOG_LEVEL_NORMAL == cType) {
+				return TRACE_TYPE::NORMAL;
+			}
+
+			if (LOG_LEVEL_DEBUG == cType) {
+				return TRACE_TYPE::DBG;
+			}
+			
+			if (LOG_LEVEL_ERROR == cType) {
+				return TRACE_TYPE::ERR;
+			}
+		}
+
+		// Par d√©faut ...
+		return TRACE_TYPE::LOG;
 	}
 
 	// Prefixe de la ligne
@@ -157,10 +190,10 @@ namespace jhbLDAPTools {
 		switch (logType) {
 		case TRACE_TYPE::DBG:
 			return PREFIX_DBG;
-
+		/*
 		case TRACE_TYPE::FULL:
 			return PREFIX_FULL;
-
+		*/
 		case TRACE_TYPE::NORMAL:
 			return PREFIX_TRC;
 
@@ -170,7 +203,7 @@ namespace jhbLDAPTools {
 		case TRACE_TYPE::ERR:
 			return PREFIX_ERR;
 
-		// Pas de prefixe 
+		// Pas de prefixe
 		case TRACE_TYPE::INV:
 		default:
 				return "";

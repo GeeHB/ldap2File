@@ -22,7 +22,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -31,6 +31,8 @@
 
 #include "sharedConsts.h"
 #include "sharedTypes.h"
+
+#include "aliases.h"
 
 #include "columnList.h"
 #include "XMLParser.h"

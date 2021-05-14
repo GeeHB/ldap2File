@@ -22,7 +22,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -188,67 +188,6 @@ bool servicesList::add(const char* dn, string& name, string& shortName, string&f
 	// Ok
 	return true;
 }
-
-/*
-// Containers d'un agent
-//
-void servicesList::containers(const char* userDN, string* equipe, string& service, string& direction, string& pole)
-{
-	// Initialisations des variables
-	service = direction = pole = "";
-	if (equipe)
-	{
-		(*equipe) = "";
-	}
-
-	if (IS_EMPTY(userDN))
-	{
-		return;
-	}
-
-	// Recherche de l'équipe ou du pôle ?
-	LPLDAPSERVICE svc;
-	if (equipe)
-	{
-		svc = _getContainerOf(userDN, STR_EQUIPE);
-		svc = (svc ? svc : _getContainerOf(userDN, STR_POLE));
-		svc = (svc ? svc : _getContainerOf(userDN, STR_SECTEUR));
-		if (svc)
-		{
-			(*equipe) = svc->realName();
-		}
-	}
-
-	// Recherche du service
-	if (NULL != (svc = _getContainerOf(userDN, STR_SERVICE)))
-	{
-		// J'ai le service ...
-		service = svc->realName();
-
-		// Recherche de la direction
-		if (NULL != (svc = _getContainerOf(svc->DN())))
-		{
-			// J'ai la direction ...
-			direction = svc->realName();
-
-			// Recherche de la DGA
-			if (NULL != (svc = _getContainerOf(svc->DN())))
-			{
-				// J'ai la DGA ...
-				pole = svc->realName();
-			}
-		}
-	}
-
-	// Cas des DG et DGA
-	//
-	if (encoder_.equalWithoutAccents(service.substr(0, strlen(STR_DGA)), STR_DGA) ||
-		encoder_.equalWithoutAccents(service, STR_DGS))
-	{
-		pole = direction = service;
-	}
-}
-*/
 
 servicesList::LPLDAPSERVICE servicesList::userContainers(const char* userDN)
 {

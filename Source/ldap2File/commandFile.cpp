@@ -22,7 +22,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -227,7 +227,9 @@ bool commandFile::nextColumn(columnList::COLINFOS& col)
 
 	// Le nom affiché
 	col.name_ = xmlColumn_.first_child().value();
+#ifdef _WIN32
 	encoder_.fromUTF8(col.name_);
+#endif // _WIN32
 	if (!col.name_.size()){
 		return false;
 	}
@@ -305,13 +307,17 @@ bool commandFile::_fileInfos(aliases& aliases, OPFI& fileInfos)
 	if (!fileInfos.name_.size()){
 		fileInfos.name_ = DEF_OUTPUT_FILENAME;	// Par défaut
 	}
+#ifdef _WIN32
 	else{
 		encoder_.fromUTF8(fileInfos.name_);
 	}
+#endif // #ifdef _WIN32
 
 	// Le template à utiliser
 	fileInfos.templateFile_ = node.attribute(XML_FORMAT_TEMPLATE_ATTR).value();
+#ifdef _WIN32
 	encoder_.fromUTF8(fileInfos.templateFile_);
+#endif // #ifdef _WIN32
 
 	// Affichage de la ligne d'entête ?
 	snode = node.child(XML_FORMAT_SHOW_HEADER_NODE);
@@ -579,7 +585,9 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 	string sValue;
 	if (0 == strcmp(child.name(), XML_RESEARCH_CRITERIUM_NODE)){
 		sValue = child.first_child().value();
+#ifdef _WIN32
 		encoder_.fromUTF8(sValue);
+#endif // #ifdef _WIN32
 		search.setContainer(sValue);
 	}
 
@@ -613,18 +621,26 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 
 	while (!IS_EMPTY(child.name())){
 		description = child.attribute(XML_SEARCH_EXPR_DESC_ATTR).value();
+#ifdef _WIN32
 		encoder_.fromUTF8(description);
+#endif // #ifdef _WIN32
 		op = child.attribute(XML_SEARCH_EXPR_LOG_OPERATOR_ATTR).value();
+#ifdef _WIN32
 		encoder_.fromUTF8(op);
+#endif // #ifdef _WIN32
 
 		if (NULL != (reg = new searchExpr(cols, description, op))){
 			// Lecture de ses "attributs" ...
 			pugi::xml_node sChild = child.child(XML_SEARCH_EXPR_ATTRIBUTE_NODE);
 			while (!IS_EMPTY(sChild.name())){
 				val = sChild.first_child().value();
+#ifdef _WIN32
 				encoder_.fromUTF8(val);
+#endif // #ifdef _WIN32
 				nom = sChild.attribute(XML_SEARCH_EXPR_NAME_ATTR).value();
+#ifdef _WIN32
 				encoder_.fromUTF8(nom);
+#endif // #ifdef _WIN32
 				if (val.size() && nom.size()){
 					// Ajout de l'attribut
 					if (NULL != (newExpr = reg->add(nom.c_str(), SEARCH_ATTR_COMP_EQUAL, val.c_str()))){
@@ -644,7 +660,9 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 			sChild = child.child(XML_SEARCH_EXPR_NODE);
 			while (!IS_EMPTY(sChild.name())){
 				val = sChild.first_child().value();
+#ifdef _WIN32
 				encoder_.fromUTF8(val);
+#endif // #ifdef _WIN32
 				if (val.size()){
 					// L'expression existe t'elle ?
 					searchExpr* found(NULL);
@@ -784,7 +802,9 @@ bool commandFile::orgChart(ORGCHART& oChart)
 	if (!IS_EMPTY(child.name())){
 		value = child.first_child().value();
 		if (value.size()){
+#ifdef _WIN32
 			encoder_.fromUTF8(value);
+#endif // #ifdef _WIN32
 			oChart.sheetName_ = value;
 		}
 	}

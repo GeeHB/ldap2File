@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 //--
-//--	FICHIER	: sharedConts.h
+//--	FICHIER	: sharedConsts.h
 //--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
@@ -21,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -62,11 +62,11 @@
 #define	APP_FULL_NAME			APP_FULL_NAME_WIN
 #else
 #define APP_FULL_NAME			APP_SHORT_NAME
-#endif WIN32
+#endif // WIN32
 #endif // APP_FULL_NAME
 
-#define APP_DESC				"Utilitaire d'export de l'Annuaire LDAP"
-#define APP_RELEASE				"21.5.3"
+#define APP_DESC				"Utilitaire d'export des annuaires LDAP et OpenLDAP"
+#define APP_RELEASE				"21.5.4"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -78,7 +78,7 @@
 // Systèmes d'exploitation
 #define OS_WINDOWS				"Windows"
 #define OS_MACOS				"MacOS"
-#define OS_LINUX				"linux"
+#define OS_LINUX				"Linux"
 
 #ifdef _WIN32
 #define CURRENT_OS				OS_WINDOWS

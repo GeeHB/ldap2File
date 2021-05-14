@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -223,66 +223,6 @@ bool confFile::nextLDAPServer(LDAPServer** pDest)
 	(*pDest) = dst;		// Retour du pointeur
 	return true;
 }
-
-// Recherche du serveur pour l'environement sélectionné
-/*
-bool confFile::ldapServer(LDAPServer& dst)
-{
-	dst.init(LDAPServer::LDAP_ACCESS_MODE::LDAP_READ);
-
-	XMLParser::XMLNode baseNode(&paramsRoot_, XML_CONF_LDAP_NODE);
-	std::string env("");
-	pugi::xml_node firstNode = _findFirstNode(&baseNode, XML_CONF_LDAP_SOURCES_NODE, XML_CONF_ENV_NODE, &env);
-
-	// Rien trouvé ?
-	if (IS_EMPTY(firstNode.name())) {
-		return false;
-	}
-
-	// Environnement
-	dst.setEnvironment(env.c_str());
-
-	// Adresse du serveur
-	dst.setHost(firstNode.attribute(XML_CONF_LDAP_HOST_ATTR).value());
-
-	// Port d'écoute
-	string attrValue(firstNode.attribute(XML_CONF_LDAP_PORT_ATTR).value());
-	if (attrValue.size()){
-		__int16 value = atoi(attrValue.c_str());
-		dst.setPort(!value ? LDAP_DEF_PORT : value);
-	}
-
-	// Base DN
-	pugi::xml_node subNode = firstNode.child(XML_CONF_LDAP_BASE_NODE);
-	if (!IS_EMPTY(subNode.name())){
-		dst.setBaseDN(subNode.first_child().value());
-	}
-
-	// Base des comptes utilisateurs
-	subNode = firstNode.child(XML_CONF_LDAP_USERS_DN_NODE);
-	dst.setUsersDN(IS_EMPTY(subNode.name()) ? dst.baseDN() : subNode.first_child().value());
-
-	// Compte et mot de passe
-	subNode = firstNode.child(XML_CONF_LDAP_ACCOUNT_NODE);
-	if (!IS_EMPTY(subNode.name())){
-		dst.setUser(subNode.first_child().value());
-
-		if (charUtils::stricmp(dst.user(), ACCOUNT_ANONYMOUS)){
-			dst.setPwd(subNode.attribute(XML_CONF_LDAP_PWD_ATTR).value());
-		}
-	}
-
-	// Valeurs "vides"
-	subNode = firstNode.child(XML_CONF_LDAP_EMPTY_VAL_NODE);
-	while (!IS_EMPTY(subNode.name())) {
-		dst.addEmptyVal(subNode.attribute(XML_CONF_LDAP_EMPTY_VAL_ATTR).value());
-		subNode = subNode.next_sibling(XML_CONF_LDAP_EMPTY_VAL_NODE);
-	}
-
-	// OK
-	return true;
-}
-*/
 
 // Serveur pour les images
 //
@@ -519,7 +459,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 					if (0 == destOS.size() || expectedOS_ == destOS) {
 
 						folders::folder* pFolder(NULL);
-						
+
 						// Pas de chemin => dossier par défaut ...
 						if (0 == folder.size()) {
 							if (NULL != (pFolder = folders_->find(folders::FOLDER_TYPE::FOLDER_OUTPUTS))) {
@@ -713,8 +653,10 @@ bool confFile::nextStructElement(TREEELEMENT& element)
 	}
 
 	// Sans accents
+#ifdef _WIN32
 	encoder_.fromUTF8(element.startWith_);
 	element.startWith_ = encoder_.removeAccents(element.startWith_);
+#endif // #ifdef _WIN32
 
 	// Définition suivante
 	structureElement_ = structureElement_.node()->next_sibling(XML_STRUCTURE_LEVEL_NODE);

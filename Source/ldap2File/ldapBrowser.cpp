@@ -23,7 +23,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -75,11 +75,11 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 	for (size_t index = 0; index < ldapSources_.size(); index++) {
 		myServer= ldapSources_[index];
 		if (myServer) {
-			logs_->add(logs::TRACE_TYPE::DBG, "\t- Environement : %s", myServer->environment());
+			logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Environnement : %s", myServer->environment());
 		}
 	}
 
-	// Environement par défaut
+	// Environnement par défaut
 	string envName(configurationFile_->environment());
 	if (false == ldapSources_.setDefaultSourceName(envName)) {
 		string error("Erreur de paramètre. L'environnement'");
@@ -102,7 +102,7 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 	for (size_t index = 0; index < aliases_.size(); index++) {
 		palias = aliases_[index];
 		if (palias) {
-			logs_->add(logs::TRACE_TYPE::DBG, "\t- %s -> %s", palias->name(), palias->application());
+			logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s -> %s", palias->name(), palias->application());
 		}
 	}
 
@@ -116,11 +116,11 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 		}
 	}
 
-	logs_->add(logs::TRACE_TYPE::DBG, "%d destination(s)", servers_.size());
+	logs_->add(logs::TRACE_TYPE::LOG, "%d destination(s)", servers_.size());
 	fileDestination* pDest(NULL);
 	for (size_t index = 0; index < servers_.size(); index++) {
 		if (NULL != (pDest = servers_[index])) {
-			logs_->add(logs::TRACE_TYPE::DBG, "\t- %s", pDest->name());
+			logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s", pDest->name());
 		}
 	}
 
@@ -264,17 +264,14 @@ RET_TYPE ldapBrowser::browse()
 	// Connexion LDAP
 	//
 	string envName(cmdFile->environment());
-	//bool findOne(false);
 	if (!envName.size()) {
-		logs_->add(logs::TRACE_TYPE::LOG, "Pas de nom d'environnement");
+		logs_->add(logs::TRACE_TYPE::DBG, "Pas de nom d'environnement dans le fichier");
 
 		// Utilisation de l'env. par défaut
 		envName = configurationFile_->environment();
-		//findOne = true;
 	}
-	else {
-		logs_->add(logs::TRACE_TYPE::DBG, "Environnement LDAP demandé '%s'", envName.c_str());
-	}
+
+	logs_->add(logs::TRACE_TYPE::NORMAL, "Utilisation de l'environnement LDAP '%s'", envName.c_str());
 
 	// Cet environnement existe t'il (ou un autre) ?
 	LDAPServer* newServer(envName.length()?ldapSources_.findEnvironmentByName(envName): ldapSources_[0]);
@@ -286,12 +283,6 @@ RET_TYPE ldapBrowser::browse()
 	logs_->add(logs::TRACE_TYPE::LOG, "Utilisation de l'environnement '%s'", newServer->name());
 
 	// Nouvelle connexion ou besoin de reinitialiser ?
-	/*
-	bool ldapChanged(true);
-	if (newServer == ldapServer_) {
-		// Même pointeur, mais suis-je connecté ?
-		ldapChanged = (false == newServer->connected());
-	}*/
 	bool ldapChanged((newServer != ldapServer_) || (false == newServer->connected()));
 
 	// Libération des paramètres précédents
@@ -314,12 +305,12 @@ RET_TYPE ldapBrowser::browse()
 				logs_->add(logs::TRACE_TYPE::LOG, "\t- Environnement : %s", env.c_str());
 			}
 
-			logs_->add(logs::TRACE_TYPE::LOG, "\t- Host : %s - Port : %d", ldapServer_->host(), ldapServer_->port());
-			logs_->add(logs::TRACE_TYPE::LOG, "\t- DN : %s", ldapServer_->baseDN());
+			logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Host : %s - Port : %d", ldapServer_->host(), ldapServer_->port());
+			logs_->add(logs::TRACE_TYPE::NORMAL, "\t- DN : %s", ldapServer_->baseDN());
 			if (charUtils::stricmp(ldapServer_->baseDN(), ldapServer_->usersDN())) {
-				logs_->add(logs::TRACE_TYPE::LOG, "\t- Base des utilisateurs : %s", ldapServer_->usersDN());
+				logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Base des utilisateurs : %s", ldapServer_->usersDN());
 			}
-			logs_->add(logs::TRACE_TYPE::LOG, "\t- Compte : %s", strlen(ldapServer_->user()) ? ldapServer_->user() : "anonyme");
+			logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Compte : %s", strlen(ldapServer_->user()) ? ldapServer_->user() : "anonyme");
 		}
 
 		// Connexion à LDAP
@@ -2317,55 +2308,56 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 	for (size_t index = 0; index < opfi.actions_.size(); index++) {
 		if (NULL != (action = opfi.actions_[index])) {
 			if (fileActions::ACTION_TYPE::ACTION_POST_GEN == action->type()) {
-				logs_->add(logs::TRACE_TYPE::LOG, "Action postgen '%s'", action->name());
-#ifdef _DEBUG
-				logs_->add(logs::TRACE_TYPE::LOG, "\t- Application : %s", action->application());
-				logs_->add(logs::TRACE_TYPE::LOG, "\t- Paramètres : %s", action->parameters());
-#else
-				logs_->add(logs::TRACE_TYPE::DBG, "\t- Application : %s", action->application());
-				logs_->add(logs::TRACE_TYPE::DBG, "\t- Paramètres : %s", action->parameters());
-#endif // _DEBUG
-
-				// On se positionne dans le dossier temporaire (là ou se trouve le fichier source)
-				sFileSystem::current_path(configurationFile_->getFolders()->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
-
-				// Exécution ...
-				if (true == (launched = _exec(action->application(), action->parameters(), errorMessage))) {
-
-					bool done(true);
-
-					// Y a t'il eu génération d'un fichier ?
-					output = action->outputFilename();
-					if (0 != output.size()) {
-						if (sFileSystem::exists(output)) {
-
-							// Suppression de la "source"
-							sFileSystem::remove(srcFile);
-
-							// On remplace le nom du fichier "source" par celui généré
-							//
-							file_->setFileName(output);				// dans le "fichier" le nom complet
-							opfi.name_ = sFileSystem::split(output);	// le nom court
-
-#ifdef _DEBUG
-							logs_->add(logs::TRACE_TYPE::LOG, "\t- Renomamge du fichier de sortie en : %s", output.c_str());
-#else
-							logs_->add(logs::TRACE_TYPE::DBG, "\t- Renommage du fichier de sortie en : %s", output.c_str());
-#endif // _DEBUG
-						}
-						else {
-							done = false;
-							logs_->add(logs::TRACE_TYPE::ERR, "\t- Le fichier %s est introuvable", output.c_str());
-						}
-					}
-
-					if (done) {
-						logs_->add(logs::TRACE_TYPE::LOG, "\t- Terminée avec succès");
-					}
+				// L'application doit exister
+				if (false == action->exists()) {
+					logs_->add(logs::TRACE_TYPE::ERR, "Action postgen '%s' - Erreur d'accès : %s n'existe pas.", action->name(), action->application());
 				}
 				else {
-					logs_->add(logs::TRACE_TYPE::ERR, "Action postgen pour '%s' - %s", action->name(), errorMessage.c_str());
-				}
+					logs_->add(logs::TRACE_TYPE::LOG, "Action postgen '%s'", action->name());
+					logs_->add(logs::TRACE_TYPE::DBG, "\t- Application : %s", action->application());
+					logs_->add(logs::TRACE_TYPE::DBG, "\t- Paramètres : %s", action->parameters());
+
+					// On se positionne dans le dossier temporaire (là ou se trouve le fichier source)
+					sFileSystem::current_path(configurationFile_->getFolders()->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
+
+					// Exécution ...
+					if (true == (launched = _exec(action->application(), action->parameters(), errorMessage))) {
+
+						bool done(true);
+
+						// Y a t'il eu génération d'un fichier ?
+						output = action->outputFilename();
+						if (0 != output.size()) {
+							if (sFileSystem::exists(output)) {
+
+								// Suppression de la "source"
+								sFileSystem::remove(srcFile);
+
+								// On remplace le nom du fichier "source" par celui généré
+								//
+								file_->setFileName(output);					// dans le "fichier" le nom complet
+								opfi.name_ = sFileSystem::split(output);	// le nom court
+
+#ifdef _DEBUG
+								logs_->add(logs::TRACE_TYPE::LOG, "\t- Renomamge du fichier de sortie en : %s", output.c_str());
+#else
+								logs_->add(logs::TRACE_TYPE::DBG, "\t- Renommage du fichier de sortie en : %s", output.c_str());
+#endif // _DEBUG
+							}
+							else {
+								done = false;
+								logs_->add(logs::TRACE_TYPE::ERR, "\t- Le fichier %s est introuvable", output.c_str());
+							}
+						}
+
+						if (done) {
+							logs_->add(logs::TRACE_TYPE::LOG, "\t- Terminée avec succès");
+						}
+					}
+					else {
+						logs_->add(logs::TRACE_TYPE::ERR, "Action postgen pour '%s' - %s", action->name(), errorMessage.c_str());
+					}
+				} // if (!exists())
 			}
 			else {
 				logs_->add(logs::TRACE_TYPE::ERR, "Action postgen pour '%s' - Format invalide pour la commande", action->name());

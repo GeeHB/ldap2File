@@ -21,7 +21,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -40,9 +40,9 @@ typedef struct tagLOGINFOS
 
 	void init(){
 		fileName_ = "";		// Le nom du fichier
-		mode_ = LOGS_MODE_NORMAL;
+		mode_ = LOG_LEVEL_NORMAL;
 		folder_ = "";		// Dans le dossier par défaut (sous-dossier du dossier d'installation)
-		duration_ = LOGS_DURATION_INFINITE;
+		duration_ = LOG_DURATION_INFINITE;
 	}
 
 	string		fileName_;
@@ -386,162 +386,6 @@ protected:
 	list<LPSINGLEITEM>	items_;
 };
 
-// aliases - Liste des alias
-//		Une alias est un nom qui pointe vers une application
-//		L'alias permet de ne plus dépendre du système d'exploitation
-//
-class aliases
-{
-	// Définitions publiques
-public:
-	// Un alias ...
-	class alias : public stringTokenizer
-	{
-		// Méthodes publiques
-	public:
-
-		// Construction
-		alias(string& name, string& app, string& command) {
-			name_ = name;
-			application_ = app;
-			command_ = command;
-		}
-
-		// Destruction
-		virtual ~alias(){}
-
-		// Acccès
-		const char* application() {
-			return application_.c_str();
-		}
-		void setApplication(string& app) {
-			if (app.length()) {
-				application_ = app;
-			}
-		}
-		const char* name() {
-			return name_.c_str();
-		}
-		const char* command() {
-			return command_.c_str();
-		}
-		void setCommand(string& command) {
-			command_ = command;
-		}
-
-		// Données membres privées
-	protected:
-		string name_;
-		string application_;		// Le binaire
-		string command_;			// La ligne de commande associée (peut être vide)
-	};
-
-	// Méthodes publiques
-public:
-
-	// Construction
-	aliases() {}
-
-	// Destruction
-	virtual ~aliases() {
-		_clear();
-	}
-
-	// Ajout
-	bool add(string& name, string& app, string& command) {
-		if (0 == name.size() || 0 == app.size()) {
-			return false;
-		}
-
-		alias* pAlias(NULL);
-		if (NULL == (pAlias = find(name))) {
-			pAlias = new alias(name, app, command);
-			if (NULL == pAlias) {
-				return false;
-			}
-
-			// Ajout
-			aliases_.push_back(pAlias);
-		}
-		else {
-			// Existe => on remplace l'application ...
-			pAlias->setApplication(app);
-
-			// ... et la commande
-			pAlias->setCommand(command);
-		}
-
-		// Ajouté ou modifié
-		return true;
-	}
-
-	// Recherche
-	aliases::alias* find(string& name) {
-
-		for (list<alias*>::iterator i = aliases_.begin(); i != aliases_.end(); i++) {
-			if ((*i) && (*i)->name() == name) {
-				// Trouvé
-				return (*i);
-			}
-		}
-
-		// Non trouvé
-		return NULL;
-	}
-	aliases::alias* find(const char* name) {
-		if (IS_EMPTY(name)) {
-			return NULL;
-		}
-		string sName(name);
-		return find(sName);
-	}
-
-	// Taille
-	size_t size() {
-		return aliases_.size();
-	}
-
-	// Accès
-	alias* operator[](size_t index) {
-
-		if (index < size()) {
-			list<alias*>::iterator it = aliases_.begin();
-			for (size_t i = 0; i < index; i++) it++;
-			return (*it);
-		}
-
-		// Non trouvé
-		return NULL;
-	}
-
-	// Nettoyage
-	void init() {
-		_clear();
-	}
-
-	// Méthodes privées
-protected:
-
-	void _clear() {
-		// Suppression des alias
-		for (list<alias*>::iterator i = aliases_.begin(); i != aliases_.end(); i++) {
-			if ((*i)) {
-				delete (*i);
-			}
-		}
-
-		aliases_.clear();
-	}
-
-
-	// Données membres privées
-protected:
-
-	// les alias ...
-	list<alias*> aliases_;
-};
-
-
 // fileActions - Liste des actions liées à la création d'un fichier
 //
 class fileActions
@@ -597,6 +441,10 @@ public:
 		const char* outputFilename() {
 			return output_.c_str();
 		}
+
+		// Le binaire existe t'il ?
+		bool exists()
+		{ return sFileSystem::exists(application_); }
 
 		// Méthodes privées
 		//
@@ -886,39 +734,6 @@ public:
 
 		return (fullDest.size() > 0);
 	}
-};
-
-// Transfert via SCP
-//	c'est un FTP avec un alias associé à une commande
-//
-class SCPDestination : public FTPDestination
-{
-public:
-	// Construction et destruction
-	SCPDestination(string& folder, aliases::alias* alias)
-		:FTPDestination(folder)
-	{init(); alias_ = alias;}
-
-	SCPDestination(string& name, string& folder, aliases::alias* alias)
-		:FTPDestination(name, folder)
-	{ init(); alias_ = alias; }
-	virtual ~SCPDestination()
-	{}
-
-	// Initialisation des données membres
-	virtual void init() {
-		type_ = DEST_TYPE::DEST_SCP;
-		alias_ = NULL;
-		port_ = 22;		// port par défaut de SFTP
-	}
-
-	// Accès
-	aliases::alias* alias()
-	{ return alias_; }
-
-	// Données membres privées
-protected:
-	aliases::alias* alias_;		// Alias vers une commande (ou rien ...)
 };
 
 // Information(s) sur un fichier de sortie

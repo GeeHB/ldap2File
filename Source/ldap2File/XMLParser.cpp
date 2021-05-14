@@ -22,7 +22,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -47,7 +47,9 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool 
 	fileName_ = "";
 	loadComments_ = loadComments;
 
+#ifdef _WIN32
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
+#endif // #ifdef _WIN32
 
 	// Type de système de fichier "local"
 	//
@@ -60,7 +62,7 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool 
 void XMLParser::checkProtocol(const string& parametersNode)
 {
 	valid_ = false;		// On part du principe que ça va coincer ...
-	
+
 	pugi::xml_node node = xmlDocument_.child(baseRootName_.c_str());
 	if (0 == parametersNode.length() || IS_EMPTY(node.name())) {
 		string msg("Le fichier '");
@@ -147,7 +149,7 @@ pugi::xml_node XMLParser::_findChildNode(const pugi::xml_node& parent, const str
 
 		// Je cherche une valeur d'attribut (ou rien auquel le premier vide fera l'affaire) ?
 		found = (attrValue.length() ? (attrValue == attr.value()) : IS_EMPTY(attr.value()));
-		
+
 		// Noeud suivant
 		if (!found) {
 			childNode = childNode.next_sibling(childName.c_str());
@@ -185,7 +187,7 @@ DEST_TYPE XMLParser::string2FolderType(const char* str)
 			}
 		}
 	}
-	
+
 	// Autre ...
 	return DEST_TYPE::DEST_UNKNOWN;
 }

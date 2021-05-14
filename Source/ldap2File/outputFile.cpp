@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -252,7 +252,7 @@ string outputFile::tokenize(commandFile* cmdFile, const char* source, const char
 		done = true;
 	}
 #else
-	if (!localtime_r(&rawTime, &tInfo)) {
+	if (NULL != localtime_r(&rawTime, &tInfo)) {
 		done = true;
 	}
 #endif // _WIN32

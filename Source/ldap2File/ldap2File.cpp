@@ -38,7 +38,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -521,21 +521,21 @@ int main(int argc, const char* argv[]) {
 
 		// Initialisation du fichier de logs
 		//
-		myLogs.init(((LOGS_MODE_DEBUG == lInfos.mode_) ? logs::TRACE_TYPE::DBG : logs::TRACE_TYPE::LOG), logFolder->path(), lInfos.fileName_.c_str());
+		//myLogs.init(((LOGS_MODE_DEBUG == lInfos.mode_) ? logs::TRACE_TYPE::DBG : logs::TRACE_TYPE::LOG), logFolder->path(), lInfos.fileName_.c_str());
+		myLogs.init(lInfos.mode_.c_str(), logFolder->path(), lInfos.fileName_.c_str());
 		myLogs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
 
-		myLogs.add(logs::TRACE_TYPE::LOG, "=========================================================================");
-		string copyRight("==== %s - version %s / %s");
+		myLogs.add(logs::TRACE_TYPE::LOG, "-----------------------------------------------------------------------------------------------------------------------");
+		string copyRight("---- %s - version %s pour %s");
 #ifdef _DEBUG
 		copyRight += " -- DEBUG";
 #endif // _DEBUG
 		copyRight += " - %s";
 		myLogs.add(logs::TRACE_TYPE::LOG, copyRight.c_str(), APP_SHORT_NAME, APP_RELEASE, CURRENT_OS, APP_DESC);
-		myLogs.add(logs::TRACE_TYPE::LOG, "==== Copyright %s", APP_COPYRIGHT);
+		myLogs.add(logs::TRACE_TYPE::LOG, "---- Copyright %s", APP_COPYRIGHT);
 		myLogs.add(logs::TRACE_TYPE::LOG, "Lancement de l'application");
-		myLogs.add(logs::TRACE_TYPE::DBG, "Logs en mode DEBUG");
 
-		if (LOGS_DURATION_INFINITE != lInfos.duration_) {
+		if (LOG_DURATION_INFINITE != lInfos.duration_) {
 			myLogs.add(logs::TRACE_TYPE::DBG, "Conservation des logs %d jours", lInfos.duration_);
 		}
 
@@ -748,7 +748,7 @@ int main(int argc, const char* argv[]) {
 	// Fin
 	myLogs.add(logs::TRACE_TYPE::LOG, "%d / %d fichier(s) crée(s)", filesGenerated, files.size());
 	myLogs.add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
-	myLogs.add(logs::TRACE_TYPE::LOG, "=========================================================================");
+	myLogs.add(logs::TRACE_TYPE::LOG, "-----------------------------------------------------------------------------------------------------------------------");
 
 	return retCode;
 }

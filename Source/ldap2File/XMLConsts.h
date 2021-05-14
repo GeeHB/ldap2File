@@ -21,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -146,8 +146,6 @@
 #define XML_CONF_LOGS_NODE			"Logs"
 
 #define XML_CONF_LOGS_MODE_ATTR		"Mode"
-#define LOGS_MODE_DEBUG				"Debug"
-#define LOGS_MODE_NORMAL			"Normal"
 
 /*
 #define XML_CONF_LOGS_ROTATE_ATTR	"Rotation")
@@ -160,8 +158,8 @@
 // Durée en jours
 #define XML_CONF_LOGS_DURATIONNODE		"Duree"
 
-#define LOGS_DURATION_INFINITE			-1
-#define LOGS_DURATION_MIN				1
+#define LOG_DURATION_INFINITE			-1
+#define LOG_DURATION_MIN				1
 
 //
 // Serveur pour les images

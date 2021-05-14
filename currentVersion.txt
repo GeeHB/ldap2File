@@ -2,7 +2,7 @@ TODO{
 	- Compatibilité Windows x64
 }
 
-21.5.3
+21.5.4
 
 	TODO{
 		ajout d'un dossier temporaire => OK
@@ -14,7 +14,7 @@ TODO{
 			Suppr. le dossier en sortie
 	}
 
-	* le 10 mai 2021 / MAJ de la ressource
+	* le 14 mai 2021 / MAJ de la ressource
 	+ Modification du schéma XML => version 2.2
 		+ Vérification : .conf + modèle (include) + fichier de commande 
 		- <Destination>/Type =>  <Destination>/Type="FileSystem> + <Destination>/OS
@@ -23,6 +23,7 @@ TODO{
 			+ Si absent ou erreur => pas de limite
 			+ Date dépassée => Suppression du fichier
 	+ Corrections mineures
+		+ Modifications / corrections des logs (ajout du niveau "normal" moyennement verbeux et du niveau "Minimal", comme son nom l'indique minimaliste)
 		+ "./output files" => "./outputs" : Plus portable et plus scriptable ...
 		+ Les dossiers "système" sont crées lors de leur utilisation (pas les dossiers Destination qui doivent impérativement exister)
 		+ Messages et sorties en mode console
@@ -30,10 +31,10 @@ TODO{
 		+ Par défaut si les dossiers n'ont pas de "path" complet, il s'agit d'un sous-dossier du dossier principal
 			+ pas d'OS précisé => tous les OS (valable quand cela fait sens ...)
 	+ Common/logFile => jhbLDAPTools::logs : Plus pratique et plus portable (et enfin en cpp!!!) ...
-	+ Compatiblité Linux des sources
+	+ Compatiblité Linux
 		+ Reprise des corrections et des tests de non regression
 		+ Windows - OK
-		+ Linux x64 (Fedora 33) - OK
+		+ Linux x64 (Fedora 33) - génération CSV / TXT ok
 
 21.4.14
 	* le 27 avril 2021 / MAJ de la ressource

@@ -22,7 +22,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	10/05/2021 - JHB - Version 21.5.3
+//--	14/05/2021 - JHB - Version 21.5.4
 //--
 //---------------------------------------------------------------------------
 
@@ -169,12 +169,14 @@ public:
 	logs* getLogs()
 	{ return logs_; }
 
+#ifdef _WIN32
 	// Encodage
 	//
 	void fromUTF8(string& text)
 	{ encoder_.fromUTF8(text); }
 	void toUTF8(string& text)
 	{ encoder_.toUTF8(text, false); }
+#endif // _WIN32
 
 	// Recherche d'un noeud "fils" ayant une valeur d'attribut particulière
 	pugi::xml_node findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue, bool searchDefValue);
@@ -232,7 +234,9 @@ protected:
 
 	bool				loadComments_;		// Chargement des commentaires
 
+#ifdef _WIN32
 	charUtils			encoder_;			// Formatage des chaines accentuees
+#endif // _WIN32
 
 	string				expectedOS_;		// Type de système de fichier "local"
 	DEST_TYPE			defType_;
