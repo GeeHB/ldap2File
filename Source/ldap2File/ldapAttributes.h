@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 //--	
-//--	FICHIER	:	ldapAttributes.h
+//--	FICHIER	: ldapAttributes.h
 //--	
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
@@ -23,7 +23,7 @@
 //--
 //---------------------------------------------------------------------------
 
-#include <./directory/directoryAttr.h>
+#include "./directory/directoryAttr.h"
 
 #ifndef __ALLIER_LDAP_ATTRIBUTES_h__
 #define __ALLIER_LDAP_ATTRIBUTES_h__

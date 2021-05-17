@@ -16,23 +16,11 @@
     <Filter Include="Fichiers Txt">
       <UniqueIdentifier>{098b9ce0-b68f-424f-993e-235ee4ce6948}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Common">
-      <UniqueIdentifier>{cf4516fd-216d-416c-b9b4-06132b8d59dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\Common">
-      <UniqueIdentifier>{3d673195-912e-45d9-a0cb-946ece996c0e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fichiers sources\ZipFile">
       <UniqueIdentifier>{0a006497-79f9-4d0b-a030-dc3efa0ab334}</UniqueIdentifier>
     </Filter>
     <Filter Include="Fichiers d%27en-tête\ZipFile">
       <UniqueIdentifier>{94f581af-2fe9-4dbd-a3d0-1e6785430a6f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\Common\CURLTools">
-      <UniqueIdentifier>{69450b02-4b50-4c32-bf45-a58c115596f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers sources\Common\CURLTools">
-      <UniqueIdentifier>{6ff4b8e3-5bd9-49e3-8bca-f828aa2578c8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,9 +77,6 @@
     </ClCompile>
     <ClCompile Include="LDAPServer.cpp">
       <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\charUtils.cpp">
-      <Filter>Fichiers sources\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\ZipLib\extlibs\bzip2\blocksort.c">
       <Filter>Fichiers sources\ZipFile</Filter>
@@ -279,12 +264,6 @@
     <ClCompile Include="..\ZipLib\extlibs\bzip2\bzip2-compress.c">
       <Filter>Fichiers sources\ZipFile</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\jhbCURLTools\FTPClient.cpp">
-      <Filter>Fichiers sources\Common\CURLTools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\jhbCURLTools\SMTPClient.cpp">
-      <Filter>Fichiers sources\Common\CURLTools</Filter>
-    </ClCompile>
     <ClCompile Include="titles.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -293,9 +272,6 @@
     </ClCompile>
     <ClCompile Include="sFileSystem.cpp">
       <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\RegEntry.cpp">
-      <Filter>Fichiers sources\Common</Filter>
     </ClCompile>
     <ClCompile Include="searchExpr.cpp">
       <Filter>Fichiers sources</Filter>
@@ -310,6 +286,21 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="aliases.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\charUtils.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\cmdLineAnalyzer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\RegEntry.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\CURLTools\FTPClient.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\CURLTools\SMTPClient.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -383,12 +374,6 @@
     <ClInclude Include="LDAPServer.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\charUtils.h">
-      <Filter>Fichiers d%27en-tête\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\SMTP\cSMTPClient.h">
-      <Filter>Fichiers d%27en-tête\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\ZipLib\ZipArchive.h">
       <Filter>Fichiers d%27en-tête\ZipFile</Filter>
     </ClInclude>
@@ -398,15 +383,6 @@
     <ClInclude Include="..\ZipLib\ZipFile.h">
       <Filter>Fichiers d%27en-tête\ZipFile</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Common\jhbCURLTools\FTPClient.h">
-      <Filter>Fichiers d%27en-tête\Common\CURLTools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\jhbCURLTools\CURLTools.h">
-      <Filter>Fichiers d%27en-tête\Common\CURLTools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\jhbCURLTools\SMTPClient.h">
-      <Filter>Fichiers d%27en-tête\Common\CURLTools</Filter>
-    </ClInclude>
     <ClInclude Include="titles.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -415,9 +391,6 @@
     </ClInclude>
     <ClInclude Include="sFileSystem.h">
       <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\RegEntry.h">
-      <Filter>Fichiers d%27en-tête\Common</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Fichiers d%27en-tête</Filter>
@@ -435,6 +408,21 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="aliases.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\charUtils.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\cmdLineAnalyzer.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\commonTypes.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\CURLTools\FTPClient.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\CURLTools\SMTPClient.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

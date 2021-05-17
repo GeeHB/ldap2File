@@ -29,9 +29,9 @@
 #ifndef __LDAP_2_FILE_XML_PARSER_h__
 #define __LDAP_2_FILE_XML_PARSER_h__
 
-#include <./xml/pugixml.hpp>
+#include "./xml/pugixml.hpp"
 #define PUGIXML_HEADER_ONLY
-#include <./xml/pugixml.cpp>
+#include "./xml/pugixml.cpp"
 
 #include <charUtils.h>
 #include "sFileSystem.h"
@@ -248,6 +248,6 @@ protected:
 	logs*			logs_;
 };
 
-#endif /* __LDAP_2_FILE_XML_PARSER_h__ */
+#endif // __LDAP_2_FILE_XML_PARSER_h__
 
 // EOF

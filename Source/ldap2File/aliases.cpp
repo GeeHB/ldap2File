@@ -14,8 +14,7 @@
 //--
 //--		Implémentation des objets :
 //--					- alias
-//						- aliases (liste d'alias)
-//--					- SCPDestination (basée sur les alias)
+//--					- aliases (liste d'alias)
 //--
 //--		pour la gestion des pointeurs/liens vers des applications
 //--
@@ -40,7 +39,7 @@
 		
 // Ajout d'un alias
 //
-bool aliases::add(string& name, string& app, string& command)
+bool aliases::add(std::string& name, std::string& app, std::string& command)
 {
 	if (0 == name.size() || 0 == app.size()) {
 		return false;
@@ -70,10 +69,10 @@ bool aliases::add(string& name, string& app, string& command)
 
 // Recherche d'un alias par son nom
 //
-aliases::alias* aliases::find(string& name)
+aliases::alias* aliases::find(std::string& name)
 {
 
-	for (list<alias*>::iterator i = aliases_.begin(); i != aliases_.end(); i++) {
+	for (std::list<alias*>::iterator i = aliases_.begin(); i != aliases_.end(); i++) {
 		if ((*i) && (*i)->name() == name) {
 			// Trouvé
 			return (*i);
@@ -89,7 +88,7 @@ aliases::alias* aliases::find(string& name)
 aliases::alias* aliases::operator[](size_t index)
 {
 	if (index < size()) {
-		list<alias*>::iterator it = aliases_.begin();
+		std::list<alias*>::iterator it = aliases_.begin();
 		for (size_t i = 0; i < index; i++) it++;
 		return (*it);
 	}
@@ -103,7 +102,7 @@ aliases::alias* aliases::operator[](size_t index)
 void aliases::_clear() 
 {
 	// Suppression des alias
-	for (list<alias*>::iterator i = aliases_.begin(); i != aliases_.end(); i++) {
+	for (std::list<alias*>::iterator i = aliases_.begin(); i != aliases_.end(); i++) {
 		if ((*i)) {
 			delete (*i);
 		}

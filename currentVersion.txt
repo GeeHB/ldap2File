@@ -15,6 +15,10 @@ TODO{
 	}
 
 	* le 14 mai 2021 / MAJ de la ressource
+	+ Changement d'organisation des sources :
+		./Source/ldap2File/ : sources de l'application
+		./Source/ZipLib : Librairie pour la gestion des zip (ODS) utilisée sous Windows
+		./Source/Common : fichiers communs utilisés (aussi) par l'application.
 	+ Modification du schéma XML => version 2.2
 		+ Vérification : .conf + modèle (include) + fichier de commande 
 		- <Destination>/Type =>  <Destination>/Type="FileSystem> + <Destination>/OS
@@ -23,6 +27,7 @@ TODO{
 			+ Si absent ou erreur => pas de limite
 			+ Date dépassée => Suppression du fichier
 	+ Corrections mineures
+		+ Simplification de la gesiton de la ligne de commandes par ldap2File.cpp
 		+ Modifications / corrections des logs (ajout du niveau "normal" moyennement verbeux et du niveau "Minimal", comme son nom l'indique minimaliste)
 		+ "./output files" => "./outputs" : Plus portable et plus scriptable ...
 		+ Les dossiers "système" sont crées lors de leur utilisation (pas les dossiers Destination qui doivent impérativement exister)

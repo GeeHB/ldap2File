@@ -54,13 +54,15 @@ namespace jhbLDAPTools {
 	void logs::init(TRACE_TYPE logMode, const char* sFolder, const char* sFileName)
 	{
 #ifdef _WIN32
-		// Il faudra mettre les logs au format Windows (et oui, tjrs pas UTF8 !!!)
+		// Il faudra mettre les logs au format Windows (et oui, tjrs pas en UTF8 !!!)
 		encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 #endif // _WIN32
 
 		logMode_ = logMode;
 		folder_ = IS_EMPTY(sFolder)?"":sFolder;
 		fileName_ = IS_EMPTY(sFileName)?"":sFileName;
+
+		valid_ = (sFolder || sFileName);
 	}
 
 	// Suppression si trop gros ...
@@ -108,7 +110,7 @@ namespace jhbLDAPTools {
 	void logs::add(TRACE_TYPE eType, const char* sFormat, ...)
 	{
 		// Quelque chose à afficher ?
-		if (eType < logMode_) {
+		if (!valid_ || eType < logMode_) {
 			// Sous le "seuil"
 			return;
 		}
@@ -173,7 +175,7 @@ namespace jhbLDAPTools {
 			if (LOG_LEVEL_DEBUG == cType) {
 				return TRACE_TYPE::DBG;
 			}
-			
+
 			if (LOG_LEVEL_ERROR == cType) {
 				return TRACE_TYPE::ERR;
 			}

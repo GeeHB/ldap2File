@@ -14,8 +14,7 @@
 //--
 //--		Définition des objets :
 //--					- alias
-//						- aliases (liste d'alias)
-//--					- SCPDestination (basée sur les alias)
+//	--					- aliases (liste d'alias)
 //--
 //--		pour la gestion des pointeurs/liens vers des applications
 //--
@@ -31,9 +30,9 @@
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_ALIAS_h__
-#define __LDAP_2_FILE_ALIAS_h_
+#define __LDAP_2_FILE_ALIAS_h__
 
-#include "sharedConsts.h"
+#include "stringTokenizer.h"
 
 //--------------------------------------------------------------------------
 //--
@@ -56,7 +55,7 @@ public:
 	public:
 
 		// Construction
-		alias(string& name, string& app, string& command) {
+		alias(std::string& name, std::string& app, std::string& command) {
 			name_ = name;
 			application_ = app;
 			command_ = command;
@@ -69,7 +68,7 @@ public:
 		const char* application() {
 			return application_.c_str();
 		}
-		void setApplication(string& app) {
+		void setApplication(std::string& app) {
 			if (app.length()) {
 				application_ = app;
 			}
@@ -80,7 +79,7 @@ public:
 		const char* command() {
 			return command_.c_str();
 		}
-		void setCommand(string& command) {
+		void setCommand(std::string& command) {
 			command_ = command;
 		}
 
@@ -90,9 +89,9 @@ public:
 
 		// Données membres privées
 	protected:
-		string name_;
-		string application_;		// Le binaire
-		string command_;			// La ligne de commande associée (peut être vide)
+		std::string name_;
+		std::string application_;		// Le binaire
+		std::string command_;			// La ligne de commande associée (peut être vide)
 	};
 
 	// Méthodes publiques
@@ -108,15 +107,15 @@ public:
 	}
 
 	// Ajout
-	bool add(string& name, string& app, string& command);
+	bool add(std::string& name, std::string& app, std::string& command);
 
 	// Recherche
-	aliases::alias* find(string& name);
+	aliases::alias* find(std::string& name);
 	aliases::alias* find(const char* name) {
 		if (IS_EMPTY(name)) {
 			return NULL;
 		}
-		string sName(name);
+		std::string sName(name);
 		return find(sName);
 	}
 
@@ -142,46 +141,7 @@ protected:
 protected:
 
 	// les alias ...
-	list<alias*> aliases_;
-};
-
-// Transfert via SCP
-//	c'est un FTP avec un alias associé à une commande
-//
-class SCPDestination : public FTPDestination
-{
-public:
-	// Construction et destruction
-	SCPDestination(string& folder, aliases::alias* alias)
-		:FTPDestination(folder)
-	{
-		init(); alias_ = alias;
-	}
-
-	SCPDestination(string& name, string& folder, aliases::alias* alias)
-		:FTPDestination(name, folder)
-	{
-		init(); alias_ = alias;
-	}
-	virtual ~SCPDestination()
-	{}
-
-	// Initialisation des données membres
-	virtual void init() {
-		type_ = DEST_TYPE::DEST_SCP;
-		alias_ = NULL;
-		port_ = 22;		// port par défaut de SFTP
-	}
-
-	// Accès
-	aliases::alias* alias()
-	{
-		return alias_;
-	}
-
-	// Données membres privées
-protected:
-	aliases::alias* alias_;		// Alias vers une commande (ou rien ...)
+	std::list<alias*> aliases_;
 };
 
 #endif // __LDAP_2_FILE_ALIAS_h_

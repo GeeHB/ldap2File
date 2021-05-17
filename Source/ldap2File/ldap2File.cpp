@@ -54,14 +54,396 @@
 #endif // _WIN32
 
 //
+// Prototypes
+//
+bool _checkCurrentVersion(string& error);
+void _getFolderContent(const string& source, list<string>& content, logs* pLogs);
+int _getTickCount();
+void _now();
+bool _updateConfigurationFile(string path);
+void _usage();
+
+//
 // Fonctions
 //
+
+// Point d'entrée du programme
+//
+int main(int argc, const char* argv[]) {
+
+#ifdef _WIN32
+	// On bascule la console en UTF8 !!!
+	// tout au moins on essaye ...
+	SetConsoleOutputCP(CP_UTF8);
+	setvbuf(stdout, nullptr, _IOFBF, 1000);
+#endif // _WIN32
+
+	// Nom complet de l'application
+	//
+	string fullAppName(argv[0]);
+
+	// Dossier de l'application
+    //
+    string appPath("");
+	string binName(sFileSystem::split(fullAppName, appPath));
+    if (0 == appPath.length() || "." == appPath) {
+        appPath = sFileSystem::current_path();
+    }
+
+	// Binaire et sa version
+	//
+	cout << binName << " - Version " << APP_RELEASE << " pour " << CURRENT_OS;
+#ifdef _DEBUG
+	cout << " - DEBUG";
+#endif // |DEBUG
+	cout << endl;
+	cout << "Copyright © " << APP_COPYRIGHT << endl;
+
+	// Paramètres de la ligne de commandes
+	//
+	if (argc < 2) {
+		_usage();
+		return 1;
+	}
+
+#ifdef _WIN32
+	bool verbose(true);
+#endif // _WIN32
+
+	// Vérification de la ligne de commandes
+	//
+	int retCode(0);
+	folders myFolders;		// Liste des dossiers utilisés par l'application
+	logs myLogs;
+	confFile configurationFile(&myFolders, &myLogs);
+	string file("");
+
+	try {
+		// Dossier "de base" de l'application
+		//
+		string folder("");
+
+		// Passé en ligne de commande ?
+		for (int index = 1; 0 == folder.size() && index < argc; index++) {
+			if (argv[index] == strstr(argv[index], CMD_LINE_BASE_FOLDER)) {
+				folder = argv[index] + strlen(CMD_LINE_BASE_FOLDER);
+			}
+		}
+
+		if (0 == folder.size()) {
+/*#ifdef _DEBUG
+			folder = FOLDER_APP_DEFAULT;
+#else*/
+			folder = appPath;
+//#endif // _DEBUG
+		}
+
+		// Quelques vérifications
+		//
+		string error("");
+        if (false == _checkCurrentVersion(error)) {
+            if (error.length()) {
+                cout << error;
+                return 1;
+            }
+
+            // Mise à jour du fichier de configuration
+            if (false == _updateConfigurationFile(folder)) {
+                return 1;
+            }
+        }
+
+		// Ajout du dossier de l'application ...
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_APP, folder);
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_LOGS, STR_FOLDER_LOGS);				// sous dossier des logs
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_TEMPLATES, STR_FOLDER_TEMPLATES);	// sous dossier des modèles
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_TEMP, STR_FOLDER_TEMP);				// fichiers temporaires
+		myFolders.add(folders::FOLDER_TYPE::FOLDER_OUTPUTS, STR_FOLDER_OUTPUTS);		// pour les fichiers générés
+
+		file = sFileSystem::merge(folder, XML_CONF_FILE);
+
+		// Ouverture du fichier de configuration
+		//
+		if (!configurationFile.open(file.c_str())) {
+			// Une "petite" erreur ...
+			return 1;
+		}
+	}
+	catch (LDAPException& e) {
+		cout << "Erreur : " << e.what() << endl;
+		return 1;
+	}
+	catch (...) {
+		// Erreur inconnue
+		cout << "Erreur inconnue lors de l'initialisation" << endl;
+		return 1;
+	}
+
+	try{
+		// Informations sur les logs ...
+		LOGINFOS lInfos;
+		configurationFile.logInfos(lInfos);
+
+		if (lInfos.folder_.size()) {
+			// Mise à jour de dossier de logs
+			myFolders.add(folders::FOLDER_TYPE::FOLDER_LOGS, lInfos.folder_);
+		}
+
+		// Le dossier des logs doit exister (son a auparavant tenté de le créer s'il n'existait pas)
+		folders::folder* logFolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS);
+		if (NULL == logFolder) {
+			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée");
+		}
+
+		cout << "Programme : " << fullAppName << endl;
+		cout << "Dossiers de l'application : " << endl;
+		cout << "\t - racine : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path() << endl;
+		cout << "\t - logs : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS)->path() << endl;
+		cout << "\t - modèles : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path() << endl;
+		cout << "\t - temporaires : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path() << endl;
+
+		// Initialisation du fichier de logs
+		//
+		//myLogs.init(((LOGS_MODE_DEBUG == lInfos.mode_) ? logs::TRACE_TYPE::DBG : logs::TRACE_TYPE::LOG), logFolder->path(), lInfos.fileName_.c_str());
+		myLogs.init(lInfos.mode_.c_str(), logFolder->path(), lInfos.fileName_.c_str());
+		myLogs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
+
+		myLogs.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
+		string copyRight("---- %s - version %s pour %s");
+#ifdef _DEBUG
+		copyRight += " -- DEBUG";
+#endif // _DEBUG
+		copyRight += " - %s";
+		myLogs.add(logs::TRACE_TYPE::LOG, copyRight.c_str(), APP_SHORT_NAME, APP_RELEASE, CURRENT_OS, APP_DESC);
+		myLogs.add(logs::TRACE_TYPE::LOG, "---- Copyright %s", APP_COPYRIGHT);
+		myLogs.add(logs::TRACE_TYPE::LOG, "Lancement de l'application");
+
+		if (LOG_DURATION_INFINITE != lInfos.duration_) {
+			myLogs.add(logs::TRACE_TYPE::NORMAL, "Conservation des logs %d jours", lInfos.duration_);
+		}
+
+		//myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", argv[0]);
+		myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", fullAppName.c_str());
+		myLogs.add(logs::TRACE_TYPE::LOG, "Fichier de configuration : %s", file.c_str());
+		myLogs.add(logs::TRACE_TYPE::LOG, "Dossiers de l'application : ");
+		myLogs.add(logs::TRACE_TYPE::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
+		myLogs.add(logs::TRACE_TYPE::LOG, "\t- fichiers : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path());
+		myLogs.add(logs::TRACE_TYPE::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
+		myLogs.add(logs::TRACE_TYPE::LOG, "\t- temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
+	}
+	catch (LDAPException& e) {
+		cout << "Erreur : " << e.what() << endl;
+		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur : %s", e.what());
+		retCode = 1;
+	}
+	catch (...) {
+		// Erreur inconnue
+		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur inconnue");
+		retCode = 1;
+	}
+
+	list<string> files;
+	size_t filesGenerated(0);
+
+	try {
+		int freq(0);
+		bool removeFile(false);
+		string remoteFolder("");
+
+		//
+		// Les fichiers à analyser sont soit passés en ligne de commande soit contenus dans un dossier
+		//
+
+		// Récupération de tous les noms de fichier en ligne de commande
+		//
+		for (int index = 1; index < argc; index++) {
+
+#ifdef _WIN32
+			if (argv[index] == strstr(argv[index], CMD_NO_VERBOSE)) {
+				// Pas d'affichages
+				verbose = false;
+			}
+			else {
+#endif // _WIN32
+				if (argv[index] == strstr(argv[index], CMD_REMOVE_FILE)) {
+					// Suppression du ou des fichier(s)
+					removeFile = true;
+				}
+				else {
+					if (argv[index] == strstr(argv[index], CMD_LINE_FREQ)) {
+						// Analyse régulière
+						freq = atoi(argv[index] + strlen(CMD_LINE_FREQ)) * 60000;
+					}
+					else {
+						if (argv[index] == strstr(argv[index], CMD_LINE_DIR)) {
+							// Analyse d'un dossier complet
+							remoteFolder = argv[index] + strlen(CMD_LINE_DIR);
+						}
+						else {
+							if (argv[index] == strstr(argv[index], CMD_LINE_BASE_FOLDER)) {
+								// Déja lu ...
+							}
+							else {
+								// Un fichier ...
+								files.push_back(argv[index]);
+							}
+						}
+					}
+				}
+			}
+#ifdef _WIN32
+		}
+#endif // _WIN32
+
+		// Analyse d'un dossier
+		if (remoteFolder.size()) {
+			_getFolderContent(remoteFolder, files, &myLogs);
+		}
+		else {
+			// Si un seul fichier, c'est peut être un dossier ...
+			if (1 == files.size() && sFileSystem::is_directory(*files.begin())) {
+					remoteFolder = (*files.begin());
+					_getFolderContent(remoteFolder, files, &myLogs);
+			}
+		}
+
+		bool done(0 == files.size());
+
+		// Analyse des fichiers de commandes
+		//
+		int currentLaunchTime(0);
+		ldapBrowser requester(&myLogs, &configurationFile);
+		RET_TYPE retType(RET_TYPE::RET_OK);
+		while (!done) {
+			currentLaunchTime = _getTickCount();
+
+			for (list<string>::iterator it = files.begin(); it != files.end(); it++) {
+				// Génération du fichier en question
+				_now();
+				cout << "[" << binName << "] " << (*it);
+				cout.flush();
+				if (configurationFile.openCommandFile((*it).c_str()) &&
+					RET_TYPE::RET_OK == (retType = requester.browse())) {
+					cout << " - [ok]";
+					filesGenerated++;
+				}
+				else {
+					cout << " - [ko] - ";
+					switch (retType) {
+					case RET_TYPE::RET_INVALID_PARAMETERS:
+						cout << "Paramètres invalides";
+						break;
+
+					case RET_TYPE::RET_ERROR_NO_DESTINATION:
+						cout << "Pas de destination valide";
+						break;
+
+					case RET_TYPE::RET_INVALID_OUTPUT_FORMAT:
+						cout << "Format de fichier de sortie inconnu";
+						break;
+
+					case RET_TYPE::RET_FILE_TO_DELETE:
+						cout << "La date limite est dépassée - Le fichier doit être supprimé";
+						removeFile = true;
+						break;
+
+					case RET_TYPE::RET_NON_BLOCKING_ERROR:
+						cout << "Erreur(s) non bloquante(s)";
+						filesGenerated++;	// L'erreur n'a pas empêchée la génération du fichier
+						break;
+
+					case RET_TYPE::RET_LDAP_ERROR:
+						cout << "Erreur LDAP";
+						break;
+
+					case RET_TYPE::RET_UNABLE_TO_SAVE:
+						cout << "Erreur de fichier";
+						break;
+
+					case RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR:
+						cout << "Critère de recherche invalide";
+						break;
+
+					case RET_TYPE::RET_BLOCKING_ERROR:
+					default:
+						cout << "Erreur(s) bloquante(s)";
+						break;
+					}
+				}
+
+				cout << endl;
+
+				// Suppression du fichier de commandes
+				if (removeFile) {
+#ifndef _DEBUG
+					sFileSystem::remove((*(files.begin())).c_str());
+#endif // #ifndef _DEBUG
+
+					// Il ne peut pas y avoir d'analyse régulière ...
+					freq = 0;
+				}
+			}
+
+			if (freq) {
+				// On attend un peu
+				_now();
+				cout << "Sleep " << (freq / 60000) << " min" << endl;
+				myLogs.add(logs::TRACE_TYPE::LOG, "Sleep %d min.", freq / 60000);
+
+				int duration = _getTickCount() - currentLaunchTime;	// Durée des traitements précédents
+				duration = (duration > freq ? freq : freq - duration);
+#ifdef _WIN32
+				Sleep(duration);
+#else
+				sleep(duration);
+#endif //#ifdef _WIN32
+
+				// Analyse du dossier ?
+				if (remoteFolder.size()) {
+					_getFolderContent(remoteFolder, files, &myLogs);
+					done = (0 == files.size());
+				}
+			}
+			else {
+				done = true;
+			}
+		}
+	}
+	catch (LDAPException& e) {
+		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur : %s", e.what());
+		retCode = 1;
+	}
+	catch (...) {
+		// Erreur inconnue
+		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur inconnue");
+		retCode = 1;
+	}
+
+
+#ifdef _WIN32
+	if (verbose) {
+		char message[200];
+		sprintf_s(message, 199, "%d fichier(s) genere(s)", filesGenerated);
+
+		MessageBox(NULL, message, APP_SHORT_NAME, MB_ICONINFORMATION);
+	}
+#else
+	cout << filesGenerated << " fichier" << (filesGenerated > 1 ? "s " : " ") << "crée" << (filesGenerated > 1 ? "s" : " ") << endl;
+#endif // _WIN32
+
+	// Fin
+	myLogs.add(logs::TRACE_TYPE::LOG, "%d / %d fichier(s) crée(s)", filesGenerated, files.size());
+	myLogs.add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
+	myLogs.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
+
+	return retCode;
+}
 
 // Lecture du contenu d'un dossier
 //
 void _getFolderContent(const string& source, list<string>& content, logs* pLogs)
 {
-	if (!source.size()){
+	if (!source.size()) {
 		return;
 	}
 
@@ -92,10 +474,10 @@ void _getFolderContent(const string& source, list<string>& content, logs* pLogs)
 	DWORD dwError(0);
 
 	sDir += "\\*.*";
-	if (INVALID_HANDLE_VALUE != (hFind = FindFirstFile(sDir.c_str(), &wfd))){
-		do{
+	if (INVALID_HANDLE_VALUE != (hFind = FindFirstFile(sDir.c_str(), &wfd))) {
+		do {
 			if ((wfd.dwFileAttributes == FILE_ATTRIBUTE_NORMAL) || (wfd.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
-				|| (wfd.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)){
+				|| (wfd.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)) {
 				sDir = source;
 				sDir += "\\";
 				sDir += wfd.cFileName;
@@ -110,9 +492,9 @@ void _getFolderContent(const string& source, list<string>& content, logs* pLogs)
 	struct dirent *dir;
 	string fullName;
 	d = opendir(source.c_str());
-	if (d){
-		while ((dir = readdir(d)) != NULL){
-			if (dir->d_type == DT_REG){
+	if (d) {
+		while ((dir = readdir(d)) != NULL) {
+			if (dir->d_type == DT_REG) {
 				fullName = source;
 				fullName += "/";
 				fullName += dir->d_name;
@@ -193,28 +575,10 @@ bool _checkCurrentVersion(string& error)
 	return valid;
 }
 
-// Mise à jour des fichiers de configuration
+// Mise à jour du fichier de configuration
 //
-bool _updateConfigurationFile(const char* appName)
+bool _updateConfigurationFile(string path)
 {
-	if (IS_EMPTY(appName)) {
-		cout << "Erreur - Paramètres invalides lors de l'appel de -updateConfigurationFile" << endl;
-		return false;
-	}
-
-	// Dossier de l'application
-	string fullName(appName), path("");
-#ifdef _DEBUG
-	fullName = "d:\\ldapTools\\ldap2File.exe";
-#endif // _DEBUG
-
-	fullName = sFileSystem::split(fullName, path);
-
-	if (0 == path.length()) {
-		cout << "Erreur - Pas de nom de dossier dans le nom de l'application" << endl;
-		return false;
-	}
-
 	// Fichier de configuration
 	string confFile = sFileSystem::merge(path, XML_CONF_FILE);
 	XMLParser xmlConf(confFile.c_str(), XML_ROOT_LDAPTOOLS_NODE, NULL, NULL, true);
@@ -247,7 +611,7 @@ bool _updateConfigurationFile(const char* appName)
 #endif // _DEBUG
 
 		// Le dossier doit exister !
-		if (!val.length() || !sFileSystem::exists(val)){
+		if (!val.length() || !sFileSystem::exists(val)) {
 
 #ifdef _DEBUG
 			cout << "\t- Le dossier n'existe pas,  mise à jour avec '" << path << "'" << endl;
@@ -312,10 +676,10 @@ bool _updateConfigurationFile(const char* appName)
 	}
 	else {
 		// Il n'existe pas => rien à faire
-		cout << "\t- Pas de dossier précisé => rien à faire" << endl;
+		cout << "\t- Pas de dossier précisé pour les logs => rien à faire" << endl;
 	}
 #else
-	}
+}
 #endif // _DEBUG
 
 	//
@@ -363,394 +727,7 @@ void _usage()
 	cout << "\n\t\t" << APP_FULL_NAME << " -base /shared/cmdFiles ~/ldap2Files/datas/dsun.xml" << endl;
 
 	cout << "\n\tTraitement des 5 fichiers passes en ligne de commande ! " << endl;
-	cout << "\n\t\t" << APP_FULL_NAME  << " file1.xml file2.xml file3.xml file4.xml file5.xml" << endl;
-}
-
-// Point d'entrée du programme
-//
-int main(int argc, const char* argv[]) {
-
-#ifdef _WIN32
-	// On bascule la console en UTF8 !!!
-	SetConsoleOutputCP(CP_UTF8);
-	setvbuf(stdout, nullptr, _IOFBF, 1000);
-#endif // _WIN32
-
-	// Nom complet de l'application
-	//
-	string fullAppName(argv[0]);
-
-	// Pas de chemin
-	size_t pathPos = fullAppName.rfind(FILENAME_SEP);
-	if (fullAppName.npos == pathPos) {
-		string path = sFileSystem::current_path();
-		fullAppName = sFileSystem::merge(path, fullAppName);
-	}
-
-#ifdef _WIN32
-	// L'extension ?
-#endif // _WIN32
-
-	// Binaire et sa version
-	//
-	string binName(fullAppName);
-	char sep(FILENAME_SEP);
-	size_t pos(0);
-	if (binName.npos != (pos = binName.rfind(sep))) {
-		binName = binName.substr(pos + 1);
-	}
-
-	if (binName.npos != (pos = binName.rfind("."))) {
-		binName = binName.substr(0, pos);
-	}
-
-	cout << binName << " - Version " << APP_RELEASE;
-#ifdef _DEBUG
-	cout << " - DEBUG";
-#endif // |DEBUG
-	cout << endl;
-
-	cout << "Copyright © " << APP_COPYRIGHT << endl;
-
-	// Paramètres de la ligne de commandes
-	//
-	if (argc < 2) {
-		_usage();
-		return 1;
-	}
-
-	string error("");
-	if (false == _checkCurrentVersion(error)) {
-		if (error.length()) {
-			cout << error;
-			return 1;
-		}
-
-		// Mise à jour du fichier de configuration
-		if (false == _updateConfigurationFile(fullAppName.c_str())) {
-			return 1;
-		}
-	}
-
-	// Lancement de l'application
-	//
-#ifdef _WIN32
-	bool verbose(true);
-#endif // _WIN32
-
-	// Vérification de la ligne de commandes
-	//
-	int retCode(0);
-	folders myFolders;		// Liste des dossiers utilisés par l'application
-	logs myLogs;
-	confFile configurationFile(&myFolders, &myLogs);
-	string file("");
-
-	try {
-		// Dossier "de base" de l'application
-		//
-		string folder;
-
-		// Passé en ligne de commande ?
-		for (int index = 1; 0 == folder.size() && index < argc; index++) {
-			if (argv[index] == strstr(argv[index], CMD_LINE_BASE_FOLDER)) {
-				folder = argv[index] + strlen(CMD_LINE_BASE_FOLDER);
-			}
-		}
-
-		if (0 == folder.size()) {
-/*#ifdef _DEBUG
-			folder = FOLDER_APP_DEFAULT;
-#else*/
-			//folder = argv[0];
-			folder = fullAppName;
-			size_t pos(folder.rfind(FILENAME_SEP));
-			folder.resize(pos);
-//#endif // _DEBUG
-		}
-
-		// Ajout du dossier de l'application ...
-		myFolders.add(folders::FOLDER_TYPE::FOLDER_APP, folder);
-		myFolders.add(folders::FOLDER_TYPE::FOLDER_LOGS, STR_FOLDER_LOGS);				// sous dossier des logs
-		myFolders.add(folders::FOLDER_TYPE::FOLDER_TEMPLATES, STR_FOLDER_TEMPLATES);	// sous dossier des modèles
-		myFolders.add(folders::FOLDER_TYPE::FOLDER_TEMP, STR_FOLDER_TEMP);				// fichiers temporaires
-		myFolders.add(folders::FOLDER_TYPE::FOLDER_OUTPUTS, STR_FOLDER_OUTPUTS);		// pour les fichiers générés
-
-		file = sFileSystem::merge(folder, XML_CONF_FILE);
-
-		// Ouverture du fichier de configuration
-		//
-		if (!configurationFile.open(file.c_str())) {
-			// Une "petite" erreur ...
-			return 1;
-		}
-	}
-	catch (LDAPException& e) {
-		cout << "Erreur : " << e.what() << endl;
-		return 1;
-	}
-	catch (...) {
-		// Erreur inconnue
-		cout << "Erreur inconnue lors de l'initialisation" << endl;
-		return 1;
-	}
-
-	try{
-		// Informations sur les logs ...
-		LOGINFOS lInfos;
-		configurationFile.logInfos(lInfos);
-
-		if (lInfos.folder_.size()) {
-			// Mise à jour de dossier de logs
-			myFolders.add(folders::FOLDER_TYPE::FOLDER_LOGS, lInfos.folder_);
-		}
-
-		// Le dossier des logs doit exister (son a auparavant tenté de le créer s'il n'existait pas)
-		folders::folder* logFolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS);
-		if (NULL == logFolder) {
-			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée");
-		}
-
-		//cout << "Binaire : " << argv[0] << endl;
-		cout << "Binaire : " << fullAppName << endl;
-		cout << "Dossiers de l'application : " << endl;
-		cout << "\t - app : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path() << endl;
-		cout << "\t - logs : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS)->path() << endl;
-		cout << "\t - templates : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path() << endl;
-		cout << "\t - temporaires : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path() << endl;
-
-		// Initialisation du fichier de logs
-		//
-		//myLogs.init(((LOGS_MODE_DEBUG == lInfos.mode_) ? logs::TRACE_TYPE::DBG : logs::TRACE_TYPE::LOG), logFolder->path(), lInfos.fileName_.c_str());
-		myLogs.init(lInfos.mode_.c_str(), logFolder->path(), lInfos.fileName_.c_str());
-		myLogs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
-
-		myLogs.add(logs::TRACE_TYPE::LOG, "-----------------------------------------------------------------------------------------------------------------------");
-		string copyRight("---- %s - version %s pour %s");
-#ifdef _DEBUG
-		copyRight += " -- DEBUG";
-#endif // _DEBUG
-		copyRight += " - %s";
-		myLogs.add(logs::TRACE_TYPE::LOG, copyRight.c_str(), APP_SHORT_NAME, APP_RELEASE, CURRENT_OS, APP_DESC);
-		myLogs.add(logs::TRACE_TYPE::LOG, "---- Copyright %s", APP_COPYRIGHT);
-		myLogs.add(logs::TRACE_TYPE::LOG, "Lancement de l'application");
-
-		if (LOG_DURATION_INFINITE != lInfos.duration_) {
-			myLogs.add(logs::TRACE_TYPE::DBG, "Conservation des logs %d jours", lInfos.duration_);
-		}
-
-		//myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", argv[0]);
-		myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", fullAppName.c_str());
-		myLogs.add(logs::TRACE_TYPE::LOG, "Fichier de configuration : %s", file.c_str());
-		myLogs.add(logs::TRACE_TYPE::LOG, "Dossiers de l'application : ");
-		myLogs.add(logs::TRACE_TYPE::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
-		myLogs.add(logs::TRACE_TYPE::LOG, "\t- fichiers : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path());
-		myLogs.add(logs::TRACE_TYPE::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
-		myLogs.add(logs::TRACE_TYPE::LOG, "\t- temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
-	}
-	catch (LDAPException& e) {
-		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur : %s", e.what());
-		retCode = 1;
-	}
-	catch (...) {
-		// Erreur inconnue
-		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur inconnue");
-		retCode = 1;
-	}
-
-	list<string> files;
-	size_t filesGenerated(0);
-
-	try {
-		int freq(0);
-		bool removeFile(false);
-		string remoteFolder("");
-
-		//
-		// Les fichiers à analyser sont soit passés en ligne de commande soit contenus dans un dossier
-		//
-
-		// Récupération de tous les noms de fichier en ligne de commande
-		//
-		for (int index = 1; index < argc; index++) {
-
-#ifdef _WIN32
-			if (argv[index] == strstr(argv[index], CMD_NO_VERBOSE)) {
-				// Pas d'affichages
-				verbose = false;
-			}
-			else {
-#endif // _WIN32
-				if (argv[index] == strstr(argv[index], CMD_REMOVE_FILE)) {
-					// Suppression du ou des fichier(s)
-					removeFile = true;
-				}
-				else {
-					if (argv[index] == strstr(argv[index], CMD_LINE_FREQ)) {
-						// Analyse régulière
-						freq = atoi(argv[index] + strlen(CMD_LINE_FREQ)) * 60000;
-					}
-					else {
-						if (argv[index] == strstr(argv[index], CMD_LINE_DIR)) {
-							// Analyse d'un dossier complet
-							remoteFolder = argv[index] + strlen(CMD_LINE_DIR);
-						}
-						else {
-							if (argv[index] == strstr(argv[index], CMD_LINE_BASE_FOLDER)) {
-								// Déja lu ...
-							}
-							else {
-								// Un fichier ...
-								files.push_back(argv[index]);
-							}
-						}
-					}
-				}
-			}
-#ifdef _WIN32
-		}
-#endif // _WIN32
-
-		// Analyse d'un dossier
-		if (remoteFolder.size()) {
-			_getFolderContent(remoteFolder, files, &myLogs);
-		}
-		else {
-			// Si un seul fichier, c'est peut être un dossier ...
-			if (1 == files.size() && sFileSystem::is_directory(*files.begin())) {
-					remoteFolder = (*files.begin());
-					_getFolderContent(remoteFolder, files, &myLogs);
-			}
-		}
-
-		bool done(0 == files.size());
-
-		// Analyse des fichiers de commandes
-		//
-		DWORD currentLaunchTime(0);
-		ldapBrowser requester(&myLogs, &configurationFile);
-		RET_TYPE retType(RET_TYPE::RET_OK);
-		while (!done) {
-			currentLaunchTime = _getTickCount();
-
-			for (list<string>::iterator it = files.begin(); it != files.end(); it++) {
-				// Génération du fichier en question
-				_now();
-				cout << "[" << binName << "] " << (*it);
-				if (configurationFile.openCommandFile((*it).c_str()) &&
-					RET_TYPE::RET_OK == (retType = requester.browse())) {
-					cout << " - [ok]";
-					filesGenerated++;
-				}
-				else {
-					switch (retType) {
-					case RET_TYPE::RET_INVALID_PARAMETERS:
-						cout << " - [ko] - Paramètres invalides";
-						break;
-
-					case RET_TYPE::RET_ERROR_NO_DESTINATION:
-						cout << " - [ko] - Pas de destination valide";
-						break;
-
-					case RET_TYPE::RET_INVALID_OUTPUT_FORMAT:
-						cout << " - [ko] - Format de fichier de sortie inconnu";
-						break;
-
-					case RET_TYPE::RET_FILE_TO_DELETE:
-						cout << " - [ok] - La date limite est dépassée - Le fichier doit être supprimé";
-						removeFile = true;
-						break;
-
-					case RET_TYPE::RET_NON_BLOCKING_ERROR:
-						cout << " - [ok] - Erreur(s) non bloquante(s)";
-						filesGenerated++;	// L'erreur n'a pas empêchée la génération du fichier
-						break;
-
-					case RET_TYPE::RET_LDAP_ERROR:
-						cout << " - [ko] - Erreur LDAP]";
-						break;
-
-					case RET_TYPE::RET_UNABLE_TO_SAVE:
-						cout << " - [ko] - Erreur de fichier";
-						break;
-
-					case RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR:
-						cout << " - [ko] - Critère de recherche invalide";
-						break;
-
-					case RET_TYPE::RET_BLOCKING_ERROR:
-					default:
-						cout << " - [ko] - Erreur(s) bloquante(s)";
-						break;
-					}
-				}
-
-				cout << endl;
-
-				// Suppression du fichier de commandes
-				if (removeFile) {
-#ifndef _DEBUG
-					sFileSystem::remove((*(files.begin())).c_str());
-#endif // #ifndef _DEBUG
-
-					// Il ne peut pas y avoir d'analyse régulière ...
-					freq = 0;
-				}
-			}
-
-			if (freq) {
-				// On attend un peu
-				_now();
-				cout << "Sleep " << (freq / 60000) << " min" << endl;
-				myLogs.add(logs::TRACE_TYPE::LOG, "Sleep %d min.", freq / 60000);
-
-				int duration = _getTickCount() - currentLaunchTime;	// Durée des traitements précédents
-				duration = (duration > freq ? freq : freq - duration);
-#ifdef _WIN32
-				Sleep(duration);
-#else
-				sleep(duration);
-#endif //#ifdef _WIN32
-
-				// Analyse du dossier ?
-				if (remoteFolder.size()) {
-					_getFolderContent(remoteFolder, files, &myLogs);
-					done = (0 == files.size());
-				}
-			}
-			else {
-				done = true;
-			}
-		}
-	}
-	catch (LDAPException& e) {
-		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur : %s", e.what());
-		retCode = 1;
-	}
-	catch (...) {
-		// Erreur inconnue
-		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur inconnue");
-		retCode = 1;
-	}
-
-
-#ifdef _WIN32
-	if (verbose) {
-		char message[200];
-		sprintf_s(message, 199, "%d fichier(s) genere(s)", filesGenerated);
-
-		MessageBox(NULL, message, APP_SHORT_NAME, MB_ICONINFORMATION);
-	}
-#else
-	cout << filesGenerated << " fichier" << (filesGenerated > 1 ? "s " : " ") << "crée" << (filesGenerated > 1 ? "s" : " ");
-#endif // _WIN32
-
-	// Fin
-	myLogs.add(logs::TRACE_TYPE::LOG, "%d / %d fichier(s) crée(s)", filesGenerated, files.size());
-	myLogs.add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
-	myLogs.add(logs::TRACE_TYPE::LOG, "-----------------------------------------------------------------------------------------------------------------------");
-
-	return retCode;
+	cout << "\n\t\t" << APP_FULL_NAME << " file1.xml file2.xml file3.xml file4.xml file5.xml" << endl;
 }
 
 // EOF

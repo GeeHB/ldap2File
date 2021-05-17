@@ -85,6 +85,11 @@ namespace sFileSystem {
 #ifdef _WIN32
 			return (0 != CopyFile(from.c_str(), to.c_str(), FALSE));
 #else
+			// Effacement si le fichier existe
+			if (fs::exists(to)){
+                fs::remove(to);
+			}
+
 			fs::copy(from, to);
 			return true;
 #endif // WIN32
@@ -365,7 +370,7 @@ namespace sFileSystem {
 	{
 		if (path.size() > 0) {
 			size_t pos(0);
-			
+
 			// Tant que le token "invalid" est trouvé ...
 			while (path.npos != (pos = path.find(invalid, pos))) {
 				path.replace(pos, 1, 1, valid);

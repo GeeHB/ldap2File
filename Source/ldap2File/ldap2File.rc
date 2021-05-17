@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 21,5,4,0
- PRODUCTVERSION 21,5,4,0
+ FILEVERSION 21,5,5,0
+ PRODUCTVERSION 21,5,5,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -68,13 +68,13 @@ BEGIN
         BLOCK "040c04b0"
         BEGIN
             VALUE "CompanyName", "Conseil départemental de l'Allier"
-            VALUE "FileDescription", "Utilitaire d'interrogation de l'Annuaire LDAP"
-            VALUE "FileVersion", "21.5.4.0"
+            VALUE "FileDescription", "Utilitaire d'export des annuaires LDAP et OpenLDAP"
+            VALUE "FileVersion", "21.5.5.0"
             VALUE "InternalName", "ldap2Fil.exe"
             VALUE "LegalCopyright", "Copyright (C) mai 2021 - DSUN - Conseil départemental de l'Allier"
             VALUE "OriginalFilename", "ldap2Fil.exe"
             VALUE "ProductName", "ldap2File.exe"
-            VALUE "ProductVersion", "21.5.4.0"
+            VALUE "ProductVersion", "21.5.5.0"
         END
     END
     BLOCK "VarFileInfo"

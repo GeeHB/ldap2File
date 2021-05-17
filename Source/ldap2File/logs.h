@@ -46,7 +46,7 @@ using namespace std;
 #define LOG_LEVEL_MIN		"Minimal"		// Le moins verbeux
 #define LOG_LEVEL_LOG		LOG_TYPE_MIN
 #define LOG_LEVEL_NORMAL	"Normal"
-#define LOG_LEVEL_DEBUG		"Debug"			// Tous les messages 
+#define LOG_LEVEL_DEBUG		"Debug"			// Tous les messages
 
 #define LOG_LEVEL_ERROR		"Erreur"		// Que les messages d'erreur
 
@@ -66,7 +66,7 @@ namespace jhbLDAPTools {
 
 		// Type de trace
 		enum class TRACE_TYPE { INVISIBLE = -1, INV = -1, DBG = 0/*, FULL = 1*/, NORMAL = 2, LOG = 3, MIN = 3, ERR = 0xFFFF };
-		
+
 		// Construction & destruction
 		//
 		logs(TRACE_TYPE logMode = logs::TRACE_TYPE::LOG, const char* sFolder = NULL, const char* sFileName= NULL)
@@ -75,6 +75,7 @@ namespace jhbLDAPTools {
 			logMode_ = other.logMode_;
 			folder_ = other.folder_;
 			fileName_ = other.fileName_;
+			valid_ = other.valid_;
 		}
 		virtual ~logs(){}
 
@@ -82,7 +83,11 @@ namespace jhbLDAPTools {
 		void init(const char* sMode, const char* sFolder = NULL, const char* sFileName = NULL)
 		{ init(_str2Type(sMode), sFolder, sFileName); }
 		void init(TRACE_TYPE logMode, const char* sFolder = NULL, const char* sFileName = NULL);
-		
+
+		// Le fichier est-il valide ?
+		bool valid()
+		{ return valid_; }
+
 		// Nom du fichier
 		const char* fileName()
 		{ return fileName_.c_str(); }
@@ -106,13 +111,15 @@ namespace jhbLDAPTools {
 
 		// Prefixe de la ligne
 		const char* _linePrefix(TRACE_TYPE logType);
-		
+
 		// Données membres
-		//	
+		//
 	protected:
 		TRACE_TYPE	logMode_;
 		string		folder_;
 		string		fileName_;		// Nom du fichier (si non dynamique)
+
+		bool        valid_;
 
 #ifdef _WIN32
 		charUtils	encoder_;

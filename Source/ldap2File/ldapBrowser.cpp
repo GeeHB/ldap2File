@@ -40,8 +40,8 @@
 #include "sFileSystem.h"
 
 // Outils CURL
-#include <FTPClient.h>
-#include <SMTPClient.h>
+#include "./CURLTools/FTPClient.h"
+#include "./CURLTools/SMTPClient.h"
 
 // Construction
 //
@@ -1700,8 +1700,7 @@ bool ldapBrowser::_getServices()
 
 	// Libérations
 	//
-	if (pBer)
-	{
+	if (pBer){
 		ber_free(pBer, 0);
 	}
 

@@ -11,11 +11,12 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/home/jhb/Nextcloud/ldapTools/CD03/tous" />
+				<Option parameters="/home/jhb/Nextcloud/ldapTools/CD03/Allier-LDIF.xml" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D__LDAP_USE_ALLIER_TITLES_h__" />
 					<Add directory="/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File-linux" />
+					<Add directory="../Source/Common" />
 				</Compiler>
 				<Linker>
 					<Add option="-lstdc++fs" />
@@ -33,6 +34,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-D__LDAP_USE_ALLIER_TITLES_h__" />
+					<Add directory="../Source/Common" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -51,17 +53,10 @@
 			<Add directory="../Source" />
 			<Add directory="../../Common/jhbCURLTools" />
 		</Compiler>
-		<Unit filename="../../Common/charUtils.cpp" />
-		<Unit filename="../../Common/charUtils.h" />
-		<Unit filename="../../Common/cmdLineAnalyzer.h" />
-		<Unit filename="../../Common/fileSystem.cpp" />
-		<Unit filename="../../Common/fileSystem.h" />
-		<Unit filename="../../Common/jhbCURLTools/CURLTools.h" />
-		<Unit filename="../../Common/jhbCURLTools/FTPClient.cpp" />
-		<Unit filename="../../Common/jhbCURLTools/FTPClient.h" />
-		<Unit filename="../../Common/jhbCURLTools/SMTPClient.cpp" />
-		<Unit filename="../../Common/jhbCURLTools/SMTPClient.h" />
-		<Unit filename="../../Common/logFile.h" />
+		<Unit filename="../Source/Common/CURLTools/FTPClient.cpp" />
+		<Unit filename="../Source/Common/CURLTools/SMTPClient.cpp" />
+		<Unit filename="../Source/Common/charUtils.cpp" />
+		<Unit filename="../Source/Common/cmdLineAnalyzer.cpp" />
 		<Unit filename="../Source/ldap2File/CSVFile.cpp" />
 		<Unit filename="../Source/ldap2File/CSVFile.h" />
 		<Unit filename="../Source/ldap2File/JScriptConsts.h" />

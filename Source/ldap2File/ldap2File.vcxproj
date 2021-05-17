@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\dev\cpp\Common\jhbCURLTools;D:\dev\cpp\Common;$(IncludePath)</IncludePath>
+    <IncludePath>D:\dev\cpp\ldap2File\Source\Common;$(IncludePath)</IncludePath>
     <LibraryPath>D:\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
     <OutDir>D:\dev\cpp\ldap2File\Bin\x86\Debug\</OutDir>
   </PropertyGroup>
@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\dev\cpp\Common;D:\dev\cpp\Common\zip;D:\dev\cpp\Common\jhbCURLTools;$(IncludePath)</IncludePath>
+    <IncludePath>D:\dev\cpp\ldap2File\Source\Common;$(IncludePath)</IncludePath>
     <LibraryPath>D:\dev\cpp\Common\curl\lib\I386;$(LibraryPath)</LibraryPath>
     <OutDir>D:\dev\cpp\ldap2File\Bin\x86\Release\</OutDir>
   </PropertyGroup>
@@ -163,10 +163,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Common\charUtils.cpp" />
-    <ClCompile Include="..\..\..\Common\jhbCURLTools\FTPClient.cpp" />
-    <ClCompile Include="..\..\..\Common\jhbCURLTools\SMTPClient.cpp" />
-    <ClCompile Include="..\..\..\Common\RegEntry.cpp" />
+    <ClCompile Include="..\Common\charUtils.cpp" />
+    <ClCompile Include="..\Common\cmdLineAnalyzer.cpp" />
+    <ClCompile Include="..\Common\CURLTools\FTPClient.cpp" />
+    <ClCompile Include="..\Common\CURLTools\SMTPClient.cpp" />
+    <ClCompile Include="..\Common\RegEntry.cpp" />
     <ClCompile Include="..\ZipLib\detail\EndOfCentralDirectoryBlock.cpp" />
     <ClCompile Include="..\ZipLib\detail\ZipCentralDirectoryFileHeader.cpp" />
     <ClCompile Include="..\ZipLib\detail\ZipGenericExtraField.cpp" />
@@ -257,12 +258,11 @@
     <ClCompile Include="XMLParser.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Common\charUtils.h" />
-    <ClInclude Include="..\..\..\Common\jhbCURLTools\CURLTools.h" />
-    <ClInclude Include="..\..\..\Common\jhbCURLTools\FTPClient.h" />
-    <ClInclude Include="..\..\..\Common\jhbCURLTools\SMTPClient.h" />
-    <ClInclude Include="..\..\..\Common\RegEntry.h" />
-    <ClInclude Include="..\..\..\Common\SMTP\cSMTPClient.h" />
+    <ClInclude Include="..\Common\charUtils.h" />
+    <ClInclude Include="..\Common\cmdLineAnalyzer.h" />
+    <ClInclude Include="..\Common\commonTypes.h" />
+    <ClInclude Include="..\Common\CURLTools\FTPClient.h" />
+    <ClInclude Include="..\Common\CURLTools\SMTPClient.h" />
     <ClInclude Include="..\ZipLib\ZipArchive.h" />
     <ClInclude Include="..\ZipLib\ZipArchiveEntry.h" />
     <ClInclude Include="..\ZipLib\ZipFile.h" />
