@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -22,7 +22,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	14/05/2021 - JHB - Version 21.5.4
+//--	18/05/2021 - JHB - Version 21.5.5
 //--
 //---------------------------------------------------------------------------
 
@@ -33,24 +33,18 @@
 
 // Gestion de la compression ZIP
 //
-
 #ifdef _WIN32
-	#ifdef __USE_ZIP_UTILS_LIB__
-		#include <./zip/ziputils/zip.h>
-		#include <./zip/ziputils/unzip.h>
-	#else
-		#ifdef _MSC_VER
-		#define _CRTDBG_MAP_ALLOC
-		#include <stdlib.h>
-		#include <crtdbg.h>
-		#endif	// _MSC_VER
+	#ifdef _MSC_VER
+	#define _CRTDBG_MAP_ALLOC
+	#include <stdlib.h>
+	#include <crtdbg.h>
+	#endif	// _MSC_VER
 
-		#include <fstream>
+	#include <fstream>
 
-		#include "../ZipLib/ZipFile.h"
-		#include "../ZipLib/streams/memstream.h"
-		#include "../ZipLib//methods/Bzip2Method.h"
-	#endif // __USE_ZIP_UTILS_LIB__
+	#include "../ZipLib/ZipFile.h"
+	#include "../ZipLib/streams/memstream.h"
+	#include "../ZipLib//methods/Bzip2Method.h"
 #else
 	// Sous linux on utilise la ligne de commandes
 	#define	__USE_CMD_LINE_ZIP__
@@ -58,11 +52,9 @@
 	// Dossier temporaire pour la gestion/création des fichiers ZIP/ODS
 	#define  ZIP_TEMP_FOLDER	"tmpODS"
 
-	// Commandes à exécuter
-	//
-	#define	ZIP_STR			"tar -czf"			// Tant qu'à faire on utilise tar ...
-	#define	UNZIP_STR		"unzip -d"			// ... et unzip
-#endif // WIN32
+	// Utilisation d'alias pour pointer vers les utilitaires en ligne de commande
+	#include "aliases.h"
+#endif // _WIN32
 
 //----------------------------------------------------------------------
 //--
@@ -88,6 +80,12 @@ public:
 
 	// Destruction
 	virtual ~ODSFile();
+
+#ifdef __USE_CMD_LINE_ZIP__
+	void setAliases(aliases::alias* pzip, aliases::alias* punzip) {
+		destZip_.setAliases(pzip, punzip);
+	}
+#endif // __USE_CMD_LINE_ZIP__
 
 	// Création / initialisation(s)
 	virtual bool create();
@@ -128,7 +126,9 @@ public:
 	{ return createOrgSheet(sheetName.c_str()); }
 	virtual bool createOrgSheet(const char* sheetName){
 		string validName(sheetName);
+#ifdef _WIN32
 		encoder_.toUTF8(validName, false);
+#endif // _WIN32
 		return _createSheet(validName.c_str(), false, false);
 	}
 
@@ -158,30 +158,32 @@ private:
 	public:
 		// Construction et destruction
 		zipFile(){
-			zipPath_ = "";
-#ifdef __USE_ZIP_UTILS_LIB__
-			file_ = NULL;
-#else
+			srcPath_ = "";
 			file_ = false;
-#endif // __USE_ZIP_UTILS_LIB__
 		}
 
 		virtual ~zipFile()
 		{ close(); }
 
 #ifdef __USE_CMD_LINE_ZIP__
-		void setTempFolder(const string& zipFolder) {
-			setTempFolder(zipFolder.c_str());
+		// Dossier temporaire (dans lequel sera décompressée l'archive
+		bool setTempFolder(const string& zipFolder, string& msg) {
+			return setTempFolder(zipFolder.c_str(), msg);
 		}
-		void setTempFolder(const char* zipFolder){
-			// Pas de dossier temp => on se positionne dans le dossier courant
-			zipFolder = ((IS_EMPTY(zipFolder)) ? "." : zipFolder);
+		bool setTempFolder(const char* zipFolder, string& msg);
+
+		const char* tempFolder()
+		{ return tempFolder_.c_str(); }
+
+		void setAliases(aliases::alias* pzip, aliases::alias* punzip) {
+			zipAlias_ = pzip;
+			unzipAlias_ = punzip;
 		}
 #endif // __USE_CMD_LINE_ZIP__
 
 
 		const char* name()
-		{ return zipPath_.c_str(); }
+		{ return srcPath_.c_str(); }
 
 		// Gestion de fichier
 		bool open(const char* fileName);
@@ -194,72 +196,35 @@ private:
 		int findFile(const string& fileName)
 		{ return findFile(fileName.c_str()); }
 
-#ifdef __USE_ZIP_UTILS_LIB__
-		// Informations sur un fichier
-		typedef struct tagZIPELEMENT
-		{
-			tagZIPELEMENT()
-			{ init(); }
-			void init(){
-				index_ = -1;
-				shortName_ = "";
-				folder_ = false;
-				size_ = 0;
-			}
-
-			int		index_;			// Index dans l'archive
-			string	shortName_;		// Nom dans l'archive
-			bool	folder_;		// Est-ce un dossier ?
-			long	size_;			// Taille en octets (hors compression)
-		}ZIPELEMENT, *LPZIPELEMENT;
-#endif // __USE_ZIP_UTILS_LIB__
-
 		// Extraction d'un fichier particulier
-#ifdef __USE_ZIP_UTILS_LIB__
-		// Par son index
-		bool extractFile(int index, const char* destFile, const LPZIPELEMENT ze = NULL);
-		bool extractFile(int index, string& destFile, const LPZIPELEMENT ze = NULL)
-		{ return extractFile(index, destFile.c_str(), ze); }
-#endif // __USE_ZIP_UTILS_LIB__
-
-		// Ou par son nom dans l'archive
+		bool extractFile(const string& fileName, const string& destFile);
 		bool extractFile(const char* fileName, const char* destFile);
-
-#ifndef __USE_ZIP_UTILS_LIB__
-		bool extractFile(const string& srcName, const string& destFile);
-#endif // ifndef __USE_ZIP_UTILS_LIB__
 
 		// Ajouts
 		bool addFile(const string& srcFile, const string& destName);
 		bool addFile(const char* srcFile, const char* destName);
 
-#ifndef __USE_ZIP_UTILS_LIB__
-		bool addFolder(const char* folderName);
-#endif // __USE_ZIP_UTILS_LIB__
-
-#ifndef __USE_ZIP_UTILS_LIB__
 		// Suppression
 		bool removeFile(const string& entryName);
-#endif // ndef __USE_ZIP_UTILS_LIB__
 
-	// Méthodes privées
-	protected:
 #ifdef __USE_CMD_LINE_ZIP__
-		std::string  _tempPath(const std::string& source)
-		{ return sFileSystem::merge(zipTemp_, source); }
-#endif // #ifdef __USE_CMD_LINE_ZIP__
+        // Accès à un fichier
+        string _tempPath(const string& file)
+        { return sFileSystem::merge(tempFolder_, file); }
+#endif // __USE_CMD_LINE_ZIP__
 
+	// Données membres privées
 	private:
-		string	zipPath_;					// Chemin complet vers l'archive
-#ifdef __USE_ZIP_UTILS_LIB__
-		HZIP				file_;
-#else
+		string	            srcPath_;		// Chemin complet vers l'archive
+
 		bool				file_;			// Le fichier est-il un zip valide ? (le nom est pourri mais reste identique à la version ZIP_UTILS_LIB)
 
-	#ifdef __USE_CMD_LINE_ZIP__
-		std::string			zipTemp_;		// Le dossier temporaire dans lequel sont dezipés/zipés les fichiers
-	#endif // #ifdef __USE_CMD_LINE_ZIP__
-#endif // __USE_ZIP_UTILS_LIB__
+#ifdef __USE_CMD_LINE_ZIP__
+		aliases::alias*		zipAlias_;      // Lien vers les commandes de l'OS
+		aliases::alias*		unzipAlias_;
+
+		std::string			tempFolder_;	// Le dossier temporaire dans lequel sont dezipés/zipés les fichiers
+#endif // #ifdef __USE_CMD_LINE_ZIP__
 	};
 
 	// Données membres privées
@@ -271,8 +236,7 @@ private:
 	int				contentIndex_;			// Index du fichier de contenu dans le modele
 	string			tempFolder_;			// Le dossier temporaire de l'application
 
-	// Mes fichiers Zip
-	zipFile			templateZip_;
+	// Le fichier "ODS" zip destination
 	zipFile			destZip_;
 };
 

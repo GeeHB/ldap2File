@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	14/05/2021 - JHB - Version 21.5.4
+//--	18/05/2021 - JHB - Version 21.5.5
 //--
 //---------------------------------------------------------------------------
 
@@ -78,8 +78,9 @@ XMLFile::XMLFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 {
 	contentFile_ = "";
 	indentXML_ = indentXML;
+#ifdef _WIN32
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
-
+#endif // _WIN32
 	// La ligne est vide
 	line_ = NULL;
 	values_ = 0;
@@ -159,7 +160,9 @@ bool XMLFile::addAt(size_t colIndex, string& value)
 
 	// Copie de la valeur dans la matrice mémoire
 	line_[colIndex]._value = value;
+#ifdef _WIN32
 	encoder_.toUTF8(line_[colIndex]._value, false);
+#endif // _WIN32
 	line_[colIndex]._next = NULL;		// Une seule valeur (pour l'instant)
 
 	// Fait
@@ -206,7 +209,10 @@ bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 	while ((++value) != values.end()){
 		// Encodage
 		validValue = (*value);
+
+#ifdef _WIN32
 		encoder_.toUTF8(validValue, false);
+#endif // _WIN32
 
 		// Création de la nouvelle cellule
 		if (NULL != (next = new XMLCELL(validValue))){

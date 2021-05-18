@@ -6,7 +6,7 @@
 //--
 //--	DATE	: 11/05/2021
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--

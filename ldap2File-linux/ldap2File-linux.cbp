@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/home/jhb/Nextcloud/ldapTools/CD03/Allier-LDIF.xml" />
+				<Option parameters="/home/jhb/Nextcloud/ldapTools/CD03/ods/DSUN-ODS.xml" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D__LDAP_USE_ALLIER_TITLES_h__" />
@@ -113,7 +113,7 @@
 		<Unit filename="../Source/ldap2File/treeStructure.h" />
 		<Unit filename="../Source/ldap2File/vCardFile.cpp" />
 		<Unit filename="../Source/ldap2File/vCardFile.h" />
-		<Unit filename="../ldap2File/currentVersion.txt" />
+		<Unit filename="../currentVersion.txt" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

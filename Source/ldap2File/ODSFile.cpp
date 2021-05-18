@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -22,7 +22,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	14/05/2021 - JHB - Version 21.5.4
+//--	18/05/2021 - JHB - Version 21.5.5
 //--
 //---------------------------------------------------------------------------
 
@@ -37,12 +37,38 @@
 //--
 //----------------------------------------------------------------------
 
+// BUG éditeur Code::Blocks ...
+#ifndef _WIN32
+#ifndef __USE_CMD_LINE_ZIP__
+#define __USE_CMD_LINE_ZIP__
+#endif // __USE_CMD_LINE_ZIP__
+#endif // _WIN32
 
 //----------------------------------------------------------------------
 //--
 //-- Implémentation de la classe zipFile
 //--
 //----------------------------------------------------------------------
+
+#ifdef __USE_CMD_LINE_ZIP__
+bool ODSFile::zipFile::setTempFolder(const char* szFolder, string& msg)
+{
+	// Pas de dossier temp => on se positionne dans le dossier courant
+	string zipFolder((IS_EMPTY(szFolder)) ? "." : szFolder);
+	tempFolder_ = sFileSystem::merge(zipFolder, ZIP_TEMP_FOLDER);
+
+	// Si le dosssier existe, on le supprime
+	if (sFileSystem::is_directory(tempFolder_)) {
+		if (false == sFileSystem::remove_all(tempFolder_)) {
+			msg =  "Génération ODS - Impossible de vider l'ancien dossier temporaire '" + tempFolder_ + "'";
+			return false;
+		}
+	}
+
+	// Ok
+	return true;
+}
+#endif // __USE_CMD_LINE_ZIP__
 
 // Ouverture d'un fichier existant
 //
@@ -53,74 +79,56 @@ bool ODSFile::zipFile::open(const char* fileName)
 	}
 
 	// Déja un fichier ouvert ?
-	if (file_ && zipPath_ != fileName) {
+	if (file_ && srcPath_ != fileName) {
 		close();
 	}
 
-	zipPath_ = "";
+	srcPath_ = "";
 
-#ifdef __USE_ZIP_UTILS_LIB__
-	// Tentative d'ouverture
-	if (NULL == (file_ = OpenZip(fileName, NULL))){
+#ifdef __USE_CMD_LINE_ZIP__
+
+	// Le fichier source doit exister
+	if (false == sFileSystem::exists(fileName)){
+		return false;
+	}
+
+	// On tente de décompresser le fichier
+	string cmd(unzipAlias_->application());
+	cmd += " -qq ";         // Mode très silencieux
+	cmd += fileName;
+	cmd += " -d ";
+	cmd += tempFolder_;
+	std::system(cmd.c_str());
+
+	// La decompression a t'elle eu lieu ?
+	if (false == sFileSystem::is_directory(tempFolder_)) {
 		return false;
 	}
 #else
-	#ifdef __USE_CMD_LINE_ZIP__
+	// On n'utilise plus l'objet ZipArchive qui ne fonctionne pas en modification
+	// En remplacement, on utilise les api ZipFile::
+	// auquel cas, file_ n'est plus un pointeur mais un booléen qui indique si le fichier est une archive zip valide ou non
 
-		// Si le dossier existe on le supprime
-		std::string cmd("");
-		if (sFileSystem::exists(zipTemp_)){
-			cmd = "rm -rf ";
-			cmd += zipTemp_;
-			std::system(cmd.c_str());
-		}
+	string sFile(fileName);
+	//if (NULL == (file_ = ZipFile::Open(sFile))) {
+	ZipArchive::Ptr zFile(NULL);
+	try {
+		zFile = ZipFile::Open(sFile);
+	}
+	catch (...) {
+		// Une erreur ...
+		zFile = NULL;
+	}
 
-		// Le fichier doit exister
-		if (false == sFileSystem::exists(fileName)){
-			return false;
-		}
-
-		// On tente de décompresser le fichier
-		cmd = UNZIP_STR;
-		cmd += " ";
-		cmd += zipTemp_;
-		cmd += " ";
-		cmd += fileName;
-		std::system(cmd.c_str());
-
-		// La decompression a t'elle eu lieu ?
-		if (false == sFileSystem::exists(zipTemp_)) {
-			return false;
-		}
-	#else
-
-		// On n'utilise plius l'objet ZipArchive qui ne fonctionne pas en modification
-		// En remplacement, on utilise les api ZipFile::
-		// auquel cas, file_ n'est plus un pointeur mais un booléen qui indique si le fichier est une archive zip valide ou non
-
-		string sFile(fileName);
-		//if (NULL == (file_ = ZipFile::Open(sFile))) {
-		ZipArchive::Ptr zFile(NULL);
-		try {
-			zFile = ZipFile::Open(sFile);
-		}
-		catch (...) {
-			// Une erreur ...
-			zFile = NULL;
-		}
-
-		if (NULL == zFile){
-			file_ = false;
-			return false;
-		}
-
-		// Ok
-		file_ = true;
-	#endif // __USE_CMD_LINE_ZIP__
-#endif // __USE_ZIP_UTILS_LIB__
+	if (NULL == zFile){
+		file_ = false;
+		return false;
+	}
+#endif // __USE_CMD_LINE_ZIP__
 
 	// Fichier "ouvert"
-	zipPath_ = fileName;
+	file_ = true;
+	srcPath_ = fileName;
 	return true;
 }
 
@@ -129,39 +137,35 @@ bool ODSFile::zipFile::open(const char* fileName)
 void ODSFile::zipFile::close()
 {
 	if (file_) {
-#ifdef __USE_ZIP_UTILS_LIB__
-		// Fermeture du fichier
-		CloseZip(file_);
-#else
-	#ifdef __USE_CMD_LINE_ZIP__
+#ifdef __USE_CMD_LINE_ZIP__
+
 		// Quelque chose à compresser ?
-		if (false == sFileSystem::exists(zipTemp_)) {
+		if (false == sFileSystem::is_directory(tempFolder_)) {
 			return;
 		}
 
+		// Suppression de l'ancienne source
+		sFileSystem::remove(srcPath_);
+
 		// Compression du dossier
-		//
-		std::string cmd(ZIP_STR);
-		cmd += " ";
-		cmd += zipPath_;
-		cmd += " ";
-		cmd += zipTemp_;
-
+		std::string cmd("cd ");
+		cmd += tempFolder_;             // On se positionne dans le dossier
+		cmd += ";";
+		cmd += zipAlias_->application();
+		cmd += " -qr ";
+		cmd += srcPath_;
+		cmd += " *";
 		std::system(cmd.c_str());
-
-		// puis suppression du dossier
-		cmd = "rm -rf ";
-		cmd += zipTemp_;
-		std::system(cmd.c_str());
-	#else
-		// Pas de méthode close
-	#endif  // #__USE_CMD_LINE_ZIP__
-#endif // __USE_ZIP_UTILS_LIB__
+#endif  // #__USE_CMD_LINE_ZIP__
 	}
 
-	//file_ = NULL;
+#ifdef __USE_CMD_LINE_ZIP__
+	    // Dans tous les cas, suppression du dossier
+        sFileSystem::remove_all(tempFolder_);
+#endif  // #__USE_CMD_LINE_ZIP__
+
 	file_ = false;
-	zipPath_ = "";
+	srcPath_ = "";
 }
 
 // Recherche dans l'archive d'un fichier par son nom
@@ -174,26 +178,18 @@ int ODSFile::zipFile::findFile(const char* fileName)
 		return -1;
 	}
 
-#ifdef __USE_ZIP_UTILS_LIB__
-	int index(-1);
-	ZIPENTRY ze;
-	ZRESULT res = FindZipItem(file_, fileName, false, &index, &ze);
-	return (ZR_OK == res ? index : -1);
+#ifdef __USE_CMD_LINE_ZIP__
+	// Le fichier doit exister dans le dossier (pâs besoin d'aller dans les sous-dossiers)
+	string path(_tempPath(fileName));
+	return (sFileSystem::exists(path)?1:-1);
 #else
-	#ifdef __USE_CMD_LINE_ZIP__
-		// Le fichier doit exister dans le dossier (pâs besoin d'aller dans les sous-dossiers)
-		string path(_tempPath(fileName));
-		return (sFileSystem::exists(path)?1:-1);
-	#else
+	//ZipArchiveEntry::Ptr pentry = file_->GetEntry(fileName);
 
-		//ZipArchiveEntry::Ptr pentry = file_->GetEntry(fileName);
-
-		// Retourne 1 si trouvé, -1 sinon (pas d'accès à l'index)
-		//return ((pentry && !pentry->IsDirectory())?1:-1);
-		string sFile(fileName);
-		return (ZipFile::IsInArchive(zipPath_, sFile) ? 1 : -1);
-	#endif // #ifdef __USE_CMD_LINE_ZIP__
-#endif	//  __USE_ZIP_UTILS_LIB__
+	// Retourne 1 si trouvé, -1 sinon (pas d'accès à l'index)
+	//return ((pentry && !pentry->IsDirectory())?1:-1);
+	string sFile(fileName);
+	return (ZipFile::IsInArchive(srcPath_, sFile) ? 1 : -1);
+#endif // #ifdef __USE_CMD_LINE_ZIP__
 }
 
 // Extraction d'un fichier particulier
@@ -207,78 +203,14 @@ bool ODSFile::zipFile::extractFile(const char* fileName, const char* destFile)
 		return false;
 	}
 
-#ifdef __USE_ZIP_UTILS_LIB__
-	// Le fichier est-il dans l'archive ?
-	int index = findFile(fileName);
-	if (-1 == index){
-		return false;
-	}
-
-	// Il existe => tentative d'extraction
-	return (ZR_OK == UnzipItem(file_, index, destFile));
-#else
-	string fName(fileName), dFile(destFile);
-	return extractFile(fName, dFile);
-#endif // __USE_ZIP_UTILS_LIB__
+	return extractFile(fileName, destFile);
 }
 
-#ifdef __USE_ZIP_UTILS_LIB__
-// // à partir de son index dans l'archive
-//
-bool ODSFile::zipFile::extractFile(int index, const char* destFile, const LPZIPELEMENT ze)
-{
-	// Vérification des paramètres
-	if (!file_ || -1 == index || IS_EMPTY(destFile)) {
-		return false;
-	}
-
-	// Le fichier est-il dans l'archive ?
-	ZIPENTRY zipE;
-	ZRESULT res = GetZipItem(file_, index, &zipE);
-	if (ZR_OK != res){
-		// Impossible de trouver le fichier
-		return false;
-	}
-
-	// Il existe
-	// est-ce un dossier ?
-	bool folder = (zipE.name[strlen(zipE.name) - 1] == POSIX_FILENAME_SEP && 0 == zipE.unc_size);
-
-	// Faut-il retourner des informations dans la structure ?
-	if (ze){
-		ze->init();
-		ze->index_ = index;
-		ze->shortName_ = zipE.name;
-		ze->size_ = zipE.unc_size;
-		ze->folder_ = folder;
-	}
-
-	// Est ce un dossier ?
-	if (!folder){
-		// Si le fichier n'a pas une taille nulle je le lis
-		if (zipE.unc_size){
-			ZRESULT ret(ZR_OK);
-			ret = UnzipItem(file_, index, destFile);
-			if (ZR_OK != ret){
-				/*
-				TCHAR message[5000];
-				FormatZipMessage(ret, message, 2500);
-				*/
-				return false;
-			}
-			return (ZR_OK == (ret = UnzipItem(file_, index, destFile)));
-		}
-	}
-
-	// Pas d'erreur (fichier vide, fichier "normal" ou dossier)
-	return true;
-}
-#else
 // ... à partir de son nom
 //
 bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile)
 {
-	if ((0 == zipPath_.length() || 0 == srcName.length() || 0 == destFile.length())
+	if ((0 == srcPath_.length() || 0 == srcName.length() || 0 == destFile.length())
 		&& (-1 != findFile(srcName))) {
 		// Paramètres invalides (ou fichier non encore ouvert)
 		return false;
@@ -291,7 +223,7 @@ bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile
 	sFileSystem::copy_file(srcFile, destFile);
 #else
 	try {
-		ZipFile::ExtractFile(zipPath_, srcName, destFile);
+		ZipFile::ExtractFile(srcPath_, srcName, destFile);
 	}
 	catch (...) {
 		// Une erreur lors de l'extraction
@@ -307,8 +239,6 @@ bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile
 
 	return false;
 }
-
-#endif	//  __USE_ZIP_UTILS_LIB__
 
 // Ajout d'un fichier à l'archive
 //
@@ -330,16 +260,13 @@ bool ODSFile::zipFile::addFile(const string& srcFile, const string& destName)
 		return false;
 	}
 
-#ifdef __USE_ZIP_UTILS_LIB__
-	return (ZR_OK == ZipAdd(file_, destName.c_str(), srcFile.c_str()));
-#else
 #ifdef __USE_CMD_LINE_ZIP__
 	std::string destFile(_tempPath(destName));
 	return sFileSystem::copy_file(srcFile, destFile);
 #else
 	//ZipArchiveEntry::Ptr newEntry(file_->CreateEntry(srcFile));
 	try {
-		ZipFile::AddFile(zipPath_, srcFile, destName);
+		ZipFile::AddFile(srcPath_, srcFile, destName);
 	}
 	catch (...) {
 		// Une erreur ...
@@ -347,34 +274,15 @@ bool ODSFile::zipFile::addFile(const string& srcFile, const string& destName)
 	}
 
 	// Ajouté ?
-	return ZipFile::IsInArchive(zipPath_, destName);
+	return ZipFile::IsInArchive(srcPath_, destName);
 #endif // #ifdef __USE_CMD_LINE_ZIP__
-
-	//return false;
-#endif // __USE_ZIP_UTILS_LIB__
 }
-
-// Ajout d'un dossier
-//
-#ifdef __USE_ZIP_UTILS_LIB__
-bool ODSFile::zipFile::addFolder(const char* folderName)
-{
-	// Vérification du paramètre
-	if (!file_ || IS_EMPTY(folderName)) {
-		return false;
-	}
-
-	return (ZR_OK == ZipAddFolder(file_, folderName));
-}
-#endif // __USE_ZIP_UTILS_LIB__
-
-#ifndef __USE_ZIP_UTILS_LIB__
 
 // Suppression de l'archive
 //
 bool ODSFile::zipFile::removeFile(const string& entryName)
 {
-	if (!file_ || 0 == zipPath_.length() || 0 == entryName.length()) {
+	if (!file_ || 0 == srcPath_.length() || 0 == entryName.length()) {
 		// Paramètres invalides (ou fichier non encore ouvert)
 		return false;
 	}
@@ -382,12 +290,11 @@ bool ODSFile::zipFile::removeFile(const string& entryName)
 	// Retrait
 	//
 #ifdef __USE_CMD_LINE_ZIP__
-	// Suppression du fichier dans le dissier
 	string fileName(_tempPath(entryName));
-	return sFileSystem::remove(fileName);
+	return sFileSystem::remove(fileName);       // Suppression du fichier dans le dossier
 #else
 	try {
-		ZipFile::RemoveEntry(zipPath_, entryName);
+		ZipFile::RemoveEntry(srcPath_, entryName);
 	}
 	catch (...) {
 		// Une erreur lors du retrait
@@ -399,7 +306,6 @@ bool ODSFile::zipFile::removeFile(const string& entryName)
 	// Existe t'il encore ?
 	return (-1 == findFile(entryName.c_str()));
 }
-#endif // #ifndef __USE_ZIP_UTILS_LIB__
 
 //----------------------------------------------------------------------
 //--
@@ -419,6 +325,11 @@ ODSFile::ODSFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 	alternateRowCol_ = false;
 	contentIndex_ = -1;
 	tempFolder_ = "";
+
+#ifdef __USE_CMD_LINE_ZIP__
+	// zipAlias_ = unzipAlias_ = NULL;
+#endif // __USE_CMD_LINE_ZIP__
+
 }
 
 // Destruction
@@ -623,66 +534,89 @@ void ODSFile::_addHeader()
 //
 bool ODSFile::_initContentFile()
 {
+
+	//
+	// Algo 3 - final (ouf !!!!)
+	//
+	// Cette fois nous allons agir en 3 étapes :
+	//	1 - Copie du fichier de référence dans le fichier destination (on travaille avec les fichiers ODS)
+	//		& extraction du fichier de contenu "vierge"
+	//		::_initContentFile
+	//
+	//  2 - Génération du fichier de contenu à partir de la source "vierge"
+	//		::_openContentFile et autre méthodes
+	//
+	//	3 - Retrait du fichier de contenu (du fichier destination)
+	//		::_endOfContentFile
+	//
+	//  4 - Insertion du "nouveau" fichier de contenu
+	//		::_endContentFile
+	//
+	//	5 - Enregistrement et fermeture du zip
+	//		::_endOfContentFile
+	//
+	//	Plus simple et plus portable ...
+	//
+
 #ifndef _GEN_DOC_
 
 #ifdef __USE_CMD_LINE_ZIP__
 	// Le dossier zip temporaire est un sous-dossier du dossier temp
 	//
-	templateZip_.setTempFolder(sFileSystem::merge(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path(), ZIP_TEMP_FOLDER));
+	string msg("");
+	if (false == destZip_.setTempFolder(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path(), msg)) {
+		if (logs_) {
+			logs_->add(logs::TRACE_TYPE::ERR, msg.c_str());
+		}
+		return false;
+	}
 #endif // __USE_CMD_LINE_ZIP__
 
-	// Recherche du fichier modèle
-	if (!templateZip_.open(templateFile_)){
-		if (logs_){
-			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir le fichier '%s'. Ce n'est pas une archive valide", templateFile_.c_str());
+
+	// 1 - Copie du fichier de référence
+	string newName(fileName());
+	if (false == sFileSystem::copy_file(templateFile_, newName)) {
+		if (logs_) {
+			logs_->add(logs::TRACE_TYPE::ERR, "Pas de génération du fichier ODS : Impossible de copier le fichier %s", templateFile_.c_str());
 		}
 
 		return false;
 	}
 
-	// Extraction du fichier "contenu" modèle
+	// Ouverture du zip
+	if (false == (destZip_.open(newName))) {
+		if (logs_) {
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir la copie du fichier modèle %s", newName.c_str());
+		}
+
+		// Suppression du fichier
+		sFileSystem::remove(newName);
+
+		return false;
+	}
+
+	// 2 - Extraction du fichier "contenu" modèle
 	//
 
-	// son index
+	// son "index"
 	string shortName;
 	defaultContentFileName(shortName);
 
-#ifdef __USE_ZIP_UTILS_LIB__
-	if (-1 == (contentIndex_ = templateZip_.findFile(shortName))){
-		if (logs_){
-			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le fichier de contenu dans le modèle '%s'", templateFile_.c_str());
-		}
-
-		return false;
-	}
-
-	// Extraction
-	ODSFile::zipFile::ZIPELEMENT ze;
-	if (!templateZip_.extractFile(contentIndex_, contentFile_, &ze)){
-		if (logs_){
-			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'extraire le fichier de contenu dans le modèle '%s'", templateFile_.c_str());
-		}
-
-		return false;
-	}
-#else
-	if (-1 == templateZip_.findFile(shortName)) {
+	if (-1 == destZip_.findFile(shortName)) {
 		if (logs_) {
 			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le fichier '%s' dans le modèle '%s'", shortName.c_str(), templateFile_.c_str());
 		}
 
 		return false;
 	}
-	else {
-		if (false == templateZip_.extractFile(shortName, contentFile_)) {
-			if (logs_) {
-				logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'extraire le fichier '%s' dans le modèle '%s'", shortName.c_str(), templateFile_.c_str());
-			}
 
-			return false;
+	if (false == destZip_.extractFile(shortName, contentFile_)) {
+		if (logs_) {
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'extraire le fichier '%s' dans le modèle '%s'", shortName.c_str(), templateFile_.c_str());
 		}
+
+		return false;
 	}
-#endif // __USE_ZIP_UTILS_LIB__
 
 	// Extrait avec succès
 #endif // _GEN_DOC_
@@ -809,162 +743,40 @@ bool ODSFile::_openContentFile()
 //
 bool ODSFile::_endContentFile()
 {
-	bool created(false);
+	bool created(false);	// Pas enocre crée ...
 
 	// Nom du fichier de contenu dans la source ods
 	string shortName;
 	defaultContentFileName(shortName);
 
-#ifdef __USE_ZIP_UTILS_LIB__
-
-	// Nom du fichier destination
-	char tempFile[MAX_PATH + 1];
-#ifdef _WIN32
-	GetTempFileName(tempFolder_.c_str(), "ODS", GetTickCount(), tempFile);
-#endif
-
-	//
-	//	Algo 1
-	//
-	// Il faut remplacer le fichier de contenu par celui
-	// que nous venons de creer
-	// Pour cela nous allons creer un nouveau fichier à partir du modele
-	// à l'exception du fichier contenu
-
-	// Création du fichier destination
-	if (!destZip_.create(fileName())) {
-		return false;
-	}
-
-	// Parcours de tous les fichiers dans l'archive modèle
-	int index(0);
-	bool cont = true;
-	ODSFile::zipFile::ZIPELEMENT ze;
-	while (cont){
-		if (index == contentIndex_){
-			// Ajout du fichier généré
-			destZip_.addFile(contentFile_.c_str(), shortName.c_str());
-		}
-		else{
-			// sinon on extrait le fichier
-			if (true == (cont = templateZip_.extractFile(index, tempFile, &ze))){
-				// ... et on l'ajoute tel quel à la nouvelle archive
-				if (ze.folder_){
-					destZip_.addFolder(ze.shortName_.c_str());
-				}
-				else{
-					// A t'il une taille nulle ?
-					if (!ze.size_){
-						// Je vais donc le creer vide
-#ifdef _WIN32
-						// existe t'il déja ?
-						HANDLE hFile = CreateFile(tempFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-						if (INVALID_HANDLE_VALUE != hFile){
-							// oui
-							CloseHandle(hFile);
-
-							// => on le supprime
-							DeleteFile(tempFile);
-						}
-
-						// Je le (re)cree
-						hFile = CreateFile(tempFile, FILE_ALL_ACCESS, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-						if (INVALID_HANDLE_VALUE == hFile){
-							if (logs_){
-								logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer un fichier de taille nulle");
-							}
-
-							cont = false;
-						}
-						else{
-							CloseHandle(hFile);
-						}
-#endif // _WIN32
-					}
-
-					if (cont){
-						// Je l'ajoute à l'archive
-						//destZip_.addFile(tempFile, ze.shortName_.c_str());
-						destZip_.addFile(tempFile, ze.shortName_.c_str());
-
-						// puis je le supprime
-#ifdef _WIN32
-						DeleteFile(tempFile);
-#endif // _WIN32
-					}
-				}
-			}
-		}
-
-		// fichier suivant
-		index++;
-	}
-#else
-	//
-	// Algo 2
-	//
-	// Cette fois nous allons agir en 3 étapes :
-	//	1 - Copie du fichier de référence dans le fichier destination
-	//	2 - Retrait du fichier de contenu (du fichier destination)
-	//  3 - Insertion du "nouveau" fichier de contenu
-	//
-	//	Plus simple et plus portable ...
-	//
-
-	// 1 - Copie du fichier de référence
-	string newName(fileName());
-	if (false == sFileSystem::copy_file(templateFile_, newName)) {
-		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Pas de génération du fichier ODS : Impossible de copier le fichier %s", templateFile_.c_str());
-		}
-	}
-	else {
-
-#ifdef __USE_CMD_LINE_ZIP__
-		// Le dossier zip temporaire est un sous-dossier du dossier temp
-		destZip_.setTempFolder(sFileSystem::merge(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path(), ZIP_TEMP_FOLDER));
-#endif // __USE_CMD_LINE_ZIP__
-
-		// Ouverture du zip
-		if (false == (destZip_.open(newName))) {
-			// Suppression du fichier
-			sFileSystem::remove(newName);
-
+	// 3 - Retrait du fichier de contenu
+	if (true == (destZip_.removeFile(shortName))) {
+		// 3 - Insertion du "nouveau" contenu
+		if (false == (destZip_.addFile(contentFile_, shortName))) {
 			if (logs_) {
-				logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir la copie du fichier modèle %s", newName.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ajouter le fichier de contenu '%s' au fichier ods destination", shortName.c_str());
 			}
 		}
 		else {
-			// 2 - Retrait du fichier de contenu
-			if (true == (destZip_.removeFile(shortName))) {
-				// 3 - Insertion du "nouveau" contenu
-				if (false == (destZip_.addFile(contentFile_, shortName))) {
-					if (logs_) {
-						logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ajouter le fichier de contenu '%s' au fichier ods destination", shortName.c_str());
-					}
-				}
-				else {
-					// Ouf!!!
-					created = true;
-				}
-			}
-			else {
-				if (logs_) {
-					logs_->add(logs::TRACE_TYPE::ERR, "Impossible de supprimer le contenu du fichieer modèle");
-				}
-			}
+			// Ouf!!!
+			created = true;
 		}
 	}
-
-#endif // __USE_ZIP_UTILS_LIB__
+	else {
+		if (logs_) {
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de supprimer le contenu du fichier modèle");
+		}
+	}
 
 	// Je n'ai plus besoin du fichier de contenu
 #ifndef _DEBUG
 	sFileSystem::remove(contentFile_);
 #endif // _DEBUG
 
-	// Ok
+	// 5 - fermeture (et compression si besoin)
 	destZip_.close();
+
+	// Terminé avec succés (ou pas)
 	return created;
 }
 
@@ -993,10 +805,11 @@ bool ODSFile::addSheet(string& sheetName, bool withHeader, bool firstSheet)
 		validName.replace(pos, 1, "-");
 	}
 
+#ifdef _WIN32
 	encoder_.toUTF8(validName, false);
-	return _createSheet(validName.c_str(), withHeader);
+#endif // _WIN32
 
-	//return _createSheet(sheetName.c_str(), withHeader);
+	return _createSheet(validName.c_str(), withHeader);
 }
 
 // Création d'un onglet

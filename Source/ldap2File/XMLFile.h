@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	14/05/2021 - JHB - Version 21.5.4
+//--	18/05/2021 - JHB - Version 21.5.5
 //--
 //---------------------------------------------------------------------------
 
@@ -150,7 +150,9 @@ protected:
 	// Données membres privées
 	//
 protected:
+#ifdef _WIN32
 	charUtils			encoder_;		// Gestion de l'encodage des caracteres
+#endif // _WIN32
 
 	size_t				colIndex_;		// Index de la valeur courante
 

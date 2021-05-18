@@ -2,25 +2,23 @@ TODO{
 	- Compatibilité Windows x64
 }
 
-21.5.4
+21.5.5
+
+	BUGS:
+		- Plus de rupture par service !
 
 	TODO{
-		ajout d'un dossier temporaire => OK
-			Linux : vérification des droits en ecriture
-			Vérifier que les chemins par défaut sont tous compatibles
-			QUID d'une destination ./ service non disponible pour l'OS ?
-		Linux::zip
-			Deziper dans le dossier => créer un sous-dossier du nom du fichier
-			Suppr. le dossier en sortie
+		Linux : vérification des droits en ecriture
+		Utilisation de la commande de l'alias (avec tokenisation)
 	}
 
-	* le 14 mai 2021 / MAJ de la ressource
+	* le 18 mai 2021 / MAJ de la ressource
 	+ Changement d'organisation des sources :
-		./Source/ldap2File/ : sources de l'application
-		./Source/ZipLib : Librairie pour la gestion des zip (ODS) utilisée sous Windows
-		./Source/Common : fichiers communs utilisés (aussi) par l'application.
+		./Source/ldap2File : sources de l'application
+		./Source/ZipLib : Librairie pour la gestion des zip/ODS utilisée sous Windows
+		./Source/Common : fichiers communs utilisés (aussi) par l'application
 	+ Modification du schéma XML => version 2.2
-		+ Vérification : .conf + modèle (include) + fichier de commande 
+		+ Vérification : .conf + modèle (include) + fichier de commande
 		- <Destination>/Type =>  <Destination>/Type="FileSystem> + <Destination>/OS
 		- <Logs><Jours> => <Logs><Duree>
 		+ Ajout de l'attribut <ldap2File><Fichier> Limite pour la gestion d'une date de fin d'application
@@ -38,8 +36,9 @@ TODO{
 	+ Common/logFile => jhbLDAPTools::logs : Plus pratique et plus portable (et enfin en cpp!!!) ...
 	+ Compatiblité Linux
 		+ Reprise des corrections et des tests de non regression
+		+ Nouvel algo pour la gestion des fichiers ODS / ZIP
 		+ Windows - OK
-		+ Linux x64 (Fedora 33) - génération CSV / TXT ok
+		+ Linux x64 (Fedora >= 33) - génération CSV / TXT ok
 
 21.4.14
 	* le 27 avril 2021 / MAJ de la ressource
@@ -55,7 +54,7 @@ TODO{
 		+ appel -d{folder} : le dossier doit exister !
 	+ L'entête est paramétrable : <Fichier><Format><EnteteVisible>oui/non</EnteteVisible> - Par défaut "oui"
 		+ CSV, TXT : Ok
-		+ LDIF, vCard, ODS, js : sans objet 
+		+ LDIF, vCard, ODS, js : sans objet
 
 21.4.9
 	* le 1er avril 2021
@@ -139,7 +138,7 @@ TODO{
 
 20.7.25
 	* 22 juillet 2020
-	+ Corrections mineures	
+	+ Corrections mineures
 		+ bug des logs. identifé par F.Gay
 		+ regression : tokenisation du nom de fichier de sortie
 	+ logs
@@ -191,7 +190,7 @@ TODO{
 	+ Modifications sources pour compilation MS Visual Studio
 		+ ziplib::sub_streambuf.h/li-71	 : /*std::*/min à la place de std::min (appel de la macro "c")
 		+ ZipLib/extlibs/bzip2/compress.c => bzip2-compress.c (pb de linker car 2 fichiers compress.c)
-		+ /etxlibs/lzma/CpuArch.c : 
+		+ /etxlibs/lzma/CpuArch.c :
 			+ li-7 : #include <VersionHelpers.h>
 			+ li-155 : return IsWindowsXPOrGreater();
 
@@ -243,9 +242,9 @@ TODO{
 	+ Ajout de la section <Alias> dans le fichier de configuration pour les applications en ligne de commandes
 	+ Comptatibilité XLSX
 		+ Nom des onglets peut être limité en longueur (<Format><TailleOnglet>)
-		+ Génération via <Action> 
+		+ Génération via <Action>
 	+ Transfert par SCP en ligne de commande
-		+ type ="SCP" 
+		+ type ="SCP"
 		+ Linux : scp	- scp fileSrc  [user@dest:]fileDest
 		+ Windows : winscp - winscp.com /command "open sftp://user:password@example.com/" "put examplefile.txt /home/user/" "exit"
 
@@ -254,7 +253,7 @@ TODO{
 	+ Contournment du bug de la fonction ldap_search_ext_s qui ne fonctionne pas avec un scope = LDAP_SCOPE_BASE
 	+ Remplacement des types "enum" par "enum class" pour borner les valeurs
 	+ Corrections mineures
-	
+
 20.4.11
 	* 24 avril 2020
 	+ Retrait de la date et de l'heure des commentaires dans les fichiers LDIF => modifie le hash !!!
@@ -282,7 +281,7 @@ TODO{
 20.4.9
 	* 16 avril 2020
 	+ LDIF : modification du contenu des fichiers générés
-	+ LDIFFFile.cpp : correction du bug lors de la génération au format base64 mono-ligne 
+	+ LDIFFFile.cpp : correction du bug lors de la génération au format base64 mono-ligne
 
 20.4.8
 	* 8 avril 2020

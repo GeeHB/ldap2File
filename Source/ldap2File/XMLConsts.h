@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -21,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	14/05/2021 - JHB - Version 21.5.4
+//--	18/05/2021 - JHB - Version 21.5.5
 //--
 //---------------------------------------------------------------------------
 
@@ -292,6 +292,11 @@
 #define XML_FORMAT_ALIAS_NODE			XML_ALIAS
 
 #define XML_ALIAS_NAME_ATTR				XML_NAME
+#ifndef _WIN32
+#define ALIAS_NAME_ZIP					"ZIP"				// Noms réservés pour les alias
+#define ALIAS_NAME_UNZIP				"UNZIP"				// utilisés sous Linux pour générer les fichiers ODS
+#endif //_WIN32
+
 #define XML_ALIAS_OS_ATTR				XML_OS
 #define XML_ALIAS_APPLICATION_ATTR		"Application"
 //#define XML_ALIAS_COMMAND_ATTR		"Commande"

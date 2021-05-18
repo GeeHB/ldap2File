@@ -7,7 +7,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -23,7 +23,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	14/05/2021 - JHB - Version 21.5.4
+//--	18/05/2021 - JHB - Version 21.5.5
 //--
 //---------------------------------------------------------------------------
 
@@ -33,7 +33,6 @@
 #include "CSVFile.h"
 #include "ODSFile.h"
 #include "JScriptFile.h"
-//#include "YealinkFile.h"
 #include "LDIFFile.h"
 #include "vCardFile.h"
 
@@ -42,6 +41,14 @@
 // Outils CURL
 #include "./CURLTools/FTPClient.h"
 #include "./CURLTools/SMTPClient.h"
+
+// Ne sert à rien cas __USE_CMD_LINE_ZIP__ est défini dans ODSFile.h
+// bug Code::Blocks
+#ifndef _WIN32
+#ifndef __USE_CMD_LINE_ZIP__
+#define __USE_CMD_LINE_ZIP__
+#endif // __USE_CMD_LINE_ZIP__
+#endif // _WIN32
 
 // Construction
 //
@@ -659,6 +666,35 @@ RET_TYPE ldapBrowser::_createFile()
 		// Les fichiers ODS
 		case FILE_TYPE::FILE_ODS: {
 			file_ = (outputFile*)new ODSFile(&opfi, &cols_, configurationFile_);
+#ifdef __USE_CMD_LINE_ZIP__
+			if (file_) {
+                // Recherche des alias sur zip/unzip
+				aliases::alias *aZip(aliases_.find(ALIAS_NAME_ZIP)), *aUnzip(aliases_.find(ALIAS_NAME_UNZIP));
+				if (NULL == aZip || NULL == aUnzip) {
+					logs_->add(logs::TRACE_TYPE::ERR, "Les alias '%s' et '%s' doivent être définis dans le fichier de configuration.", ALIAS_NAME_ZIP, ALIAS_NAME_UNZIP);
+					return RET_TYPE::RET_INVALID_PARAMETERS;
+				}
+
+				// Ils doivent pointer sur des objets existants.
+				if (false == aZip->exists()) {
+					logs_->add(logs::TRACE_TYPE::ERR, "La commande de l'alias '%s' n'existe pas", ALIAS_NAME_ZIP);
+					return RET_TYPE::RET_INVALID_PARAMETERS;
+				}
+
+				if (false == aUnzip->exists()) {
+					logs_->add(logs::TRACE_TYPE::ERR, "La commande de l'alias '%s' n'existe pas", ALIAS_NAME_UNZIP);
+					return RET_TYPE::RET_INVALID_PARAMETERS;
+				}
+
+				logs_->add(logs::TRACE_TYPE::NORMAL, "2 alias définis pour la gestion des fichiers ODS:");
+				logs_->add(logs::TRACE_TYPE::NORMAL, "\t- '%s' -  App : %s - Commande : %s", ALIAS_NAME_ZIP, aZip->application(), aZip->command());
+				logs_->add(logs::TRACE_TYPE::NORMAL, "\t- '%s' - App : %s - Commande : %s", ALIAS_NAME_UNZIP, aUnzip->application(), aZip->command());
+
+				// On passe les pointeurs
+				((ODSFile*)file_)->setAliases(aZip, aUnzip);
+			}
+#endif // __USE_CMD_LINE_ZIP__
+
 			break;
 		}
 
@@ -752,7 +788,7 @@ RET_TYPE ldapBrowser::_createFile()
 		sortFirstName.sk_reverseorder = FALSE;
 #else
         string nom(STR_ATTR_NOM);
-        sortName.attributeType = (char*)nom.c_str();		// Par nom
+        sortName.attributeType = (char*)nom.c_str();	        	// Par nom
 		string ruleN("1.2.826.0.1.3344810.2.3");
 		sortName.orderingRule = (char*)ruleN.c_str();
 		sortName.reverseOrder = 0;
@@ -884,7 +920,7 @@ RET_TYPE ldapBrowser::_createFile()
 					logs_->add(logs::TRACE_TYPE::ERR, "La destination '%s' n'est pas définie", destination->name());
 				}
 				else{
-					logs_->add(logs::TRACE_TYPE::DBG, "Utilisation de la destination '%s'", destination->name());
+					logs_->add(logs::TRACE_TYPE::NORMAL, "Utilisation de la destination '%s'", destination->name());
 				}
 			}
 			else{
@@ -1046,16 +1082,14 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	BerElement* pBer(NULL);
 	PCHAR pAttribute(NULL);
 	PCHAR* pValue(NULL);
-	std::string u8Value;
+	string u8Value;
 	LDAPMessage* searchResult(NULL);
 	ULONG retCode(LDAP_SUCCESS);
 	unsigned int allierStatus(ALLIER_STATUS_EMPTY);
 	deque<string> otherDNs;
 
 	// Nombre d'agents
-	ULONG totalAgents(0);
-	ULONG agentsFound(0);
-	ULONG agentsAdded(0);
+	ULONG totalAgents(0), agentsFound(0), agentsAdded(0);
 
 	string currentFilter;
 #ifdef CUT_LDAP_REQUEST
@@ -1881,7 +1915,7 @@ bool ldapBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 	size_t len(strlen(LDAP_PREFIX_UID));
 	userDN = userDN.substr(len, pos - len);
 
-	logs_->add(logs::TRACE_TYPE::DBG, "Recherche des groupes pour '%s'", userDN.c_str());
+	logs_->add(logs::TRACE_TYPE::NORMAL, "Recherche des groupes pour '%s'", userDN.c_str());
 
 	// Attributs et filtre de recherche
 	//
@@ -2104,11 +2138,6 @@ void ldapBrowser::_addOrgLeaf(orgChartFile* orgFile, orgChartFile::treeCursor& a
 	if (agent->isAgent()){
 		orgFile->add2Chart(agent);
 	}
-#ifdef _DEBUG
-	else{
-		int i(3);
-	}
-#endif // _DEBUG
 
 	// puis mes fils ...
 	//
@@ -2186,7 +2215,7 @@ const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
 		*/
 
 		// Transfert du fichier
-		logs_->add(logs::TRACE_TYPE::DBG, "\t - Transfert du fichier '%s' par FTP vers '%s'", file_->fileName(false), ftpDest->name());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t - Transfert du fichier '%s' par FTP vers '%s'", file_->fileName(false), ftpDest->name());
 
 		ftpClient.UploadFile(file_->fileName(true), destName);
 
@@ -2264,8 +2293,8 @@ const bool ldapBrowser::_SCPTransfer(SCPDestination* scpDest)
 	// Exécution de la commande ...
 	//
 	value = alias->application();
-	logs_->add(logs::TRACE_TYPE::LOG, "\t- Application : %s", value.c_str());
-	logs_->add(logs::TRACE_TYPE::LOG, "\t- Commande : %s", logCmd.c_str());
+	logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Application : %s", value.c_str());
+	logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Commande : %s", logCmd.c_str());
 
 	string message("");
 	if (_exec(alias->application(), command, message)) {
@@ -2313,8 +2342,8 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 				}
 				else {
 					logs_->add(logs::TRACE_TYPE::LOG, "Action postgen '%s'", action->name());
-					logs_->add(logs::TRACE_TYPE::DBG, "\t- Application : %s", action->application());
-					logs_->add(logs::TRACE_TYPE::DBG, "\t- Paramètres : %s", action->parameters());
+					logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Application : %s", action->application());
+					logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Paramètres : %s", action->parameters());
 
 					// On se positionne dans le dossier temporaire (là ou se trouve le fichier source)
 					sFileSystem::current_path(configurationFile_->getFolders()->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
@@ -2425,6 +2454,8 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 		errorMessage += " - : ";
 		errorMessage += errStr;
 	}
+#else
+	// Lancement de la commande
 #endif // _WIN32
 
 	// Ok ?

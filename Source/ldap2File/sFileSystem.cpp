@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: xxx
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	14/05/2021 - JHB - Version 21.5.4
+//--	18/05/2021 - JHB - Version 21.5.5
 //--
 //---------------------------------------------------------------------------
 
@@ -192,6 +192,28 @@ namespace sFileSystem {
 			// Une erreur
 			return false;
 		}
+	}
+
+	// Suppression
+	//
+	std::uintmax_t remove_all(const std::string& path)
+	{
+#ifdef _WIN32
+        // Pas implémentée pour l'instant ...
+		return 0;
+#else
+		if (0 == path.length()) {
+			return false;
+		}
+
+		try {
+			return fs::remove_all(path);
+		}
+		catch (...){
+			// Une erreur
+			return 0;
+        }
+#endif // _WIN32
 	}
 
 

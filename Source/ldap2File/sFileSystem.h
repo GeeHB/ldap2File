@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: xxx
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 33)
+//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -23,7 +23,7 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	14/05/2021 - JHB - Version 21.5.4
+//--	18/05/2021 - JHB - Version 21.5.5
 //--
 //---------------------------------------------------------------------------
 
@@ -95,6 +95,9 @@ namespace sFileSystem {
 	// Dossier courant
 	std::string current_path();
 	void current_path(std::string path);
+
+	// Suppression
+	std::uintmax_t remove_all(const std::string& path);
 
 	// Extraction du nom de fichier (ou d'un sous-dossier)
 	std::string split(const std::string& fullName);
