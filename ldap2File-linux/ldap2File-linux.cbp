@@ -105,6 +105,7 @@
 		<Unit filename="../Source/ldap2File/servicesList.h" />
 		<Unit filename="../Source/ldap2File/sharedConsts.h" />
 		<Unit filename="../Source/ldap2File/sharedTypes.h" />
+		<Unit filename="../Source/ldap2File/stringTokenizer.h" />
 		<Unit filename="../Source/ldap2File/textFile.cpp" />
 		<Unit filename="../Source/ldap2File/textFile.h" />
 		<Unit filename="../Source/ldap2File/titles.cpp" />

@@ -38,7 +38,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.5
+//--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
 
@@ -204,7 +204,6 @@ int main(int argc, const char* argv[]) {
 
 		// Initialisation du fichier de logs
 		//
-		//myLogs.init(((LOGS_MODE_DEBUG == lInfos.mode_) ? logs::TRACE_TYPE::DBG : logs::TRACE_TYPE::LOG), logFolder->path(), lInfos.fileName_.c_str());
 		myLogs.init(lInfos.mode_.c_str(), logFolder->path(), lInfos.fileName_.c_str());
 		myLogs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
 

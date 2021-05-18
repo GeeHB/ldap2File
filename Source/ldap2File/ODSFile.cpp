@@ -22,7 +22,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.5
+//--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
 
@@ -92,13 +92,20 @@ bool ODSFile::zipFile::open(const char* fileName)
 		return false;
 	}
 
-	// On tente de décompresser le fichier
-	string cmd(unzipAlias_->application());
-	cmd += " -qq ";         // Mode très silencieux
-	cmd += fileName;
-	cmd += " -d ";
-	cmd += tempFolder_;
-	std::system(cmd.c_str());
+	// Décompression du fichier source
+	//
+
+	// Génération de la ligne de commandes à partir des tokens
+	string cmdLine(unzipAlias_->application());      // Application
+	cmdLine+=" ";
+	cmdLine+=unzipAlias_->command();                 // Ligne de commandes
+	unzipAlias_->addToken(TOKEN_SRC_FILENAME, fileName);
+	unzipAlias_->addToken(TOKEN_DEST_FOLDER, tempFolder_.c_str());
+    unzipAlias_->replace(cmdLine);                   // remplacment(s)
+
+	// Execution de la ligne de commandes
+	//std::system(cmd.c_str());
+	std::system(cmdLine.c_str());
 
 	// La decompression a t'elle eu lieu ?
 	if (false == sFileSystem::is_directory(tempFolder_)) {
@@ -148,14 +155,21 @@ void ODSFile::zipFile::close()
 		sFileSystem::remove(srcPath_);
 
 		// Compression du dossier
-		std::string cmd("cd ");
-		cmd += tempFolder_;             // On se positionne dans le dossier
-		cmd += ";";
-		cmd += zipAlias_->application();
-		cmd += " -qr ";
-		cmd += srcPath_;
-		cmd += " *";
-		std::system(cmd.c_str());
+		//
+
+		// Génération de la ligne de commandes à partir des tokens
+        string cmdLine("cd ");
+        cmdLine += tempFolder_;                     // On se positionne dans le dossier
+		cmdLine += ";";
+        cmdLine += zipAlias_->application();        // Application
+        cmdLine+=" ";
+        cmdLine+=zipAlias_->command();              // Ligne de commandes
+        zipAlias_->addToken(TOKEN_DEST_NAME, srcPath_.c_str());
+        zipAlias_->addToken(TOKEN_DEST_FOLDER, tempFolder_.c_str());
+        zipAlias_->replace(cmdLine);                // remplacment(s)
+
+        // Execution
+		std::system(cmdLine.c_str());
 #endif  // #__USE_CMD_LINE_ZIP__
 	}
 

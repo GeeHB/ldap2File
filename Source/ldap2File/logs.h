@@ -18,7 +18,7 @@
 //--
 //--	12/05/2021 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.5
+//--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
 
@@ -34,21 +34,20 @@ using namespace std;
 		#include <charUtils.h>
 	#endif // _UNICODE_LOGS
 #else
-	#define _T(sz)	sz
-	// Version LINUX / UNIX
-	#include <stdio.h>
-	#include <unistd.h>
-	#include <syslog.h>
+#include <unistd.h>         // sleep
 #endif // _WIN32
 
 // Niveaux de logs
 //
-#define LOG_LEVEL_MIN		"Minimal"		// Le moins verbeux
-#define LOG_LEVEL_LOG		LOG_TYPE_MIN
-#define LOG_LEVEL_NORMAL	"Normal"
-#define LOG_LEVEL_DEBUG		"Debug"			// Tous les messages
+#define LOG_LEVEL_MIN			"Minimal"		// Le moins verbeux (LOGS)
+#define LOG_LEVEL_SHORT_MIN		"Min"
 
-#define LOG_LEVEL_ERROR		"Erreur"		// Que les messages d'erreur
+#define LOG_LEVEL_NORMAL		"Normal"		// TRC
+
+#define LOG_LEVEL_FULL			"Full"
+#define LOG_LEVEL_DEBUG			"Debug"			// Tous les messages (DBG)
+
+#define LOG_LEVEL_ERROR			"Erreur"		// Que les messages d'erreur (ERR)
 
 //---------------------------------------------------------------------------
 //--
@@ -65,7 +64,7 @@ namespace jhbLDAPTools {
 	public:
 
 		// Type de trace
-		enum class TRACE_TYPE { INVISIBLE = -1, INV = -1, DBG = 0/*, FULL = 1*/, NORMAL = 2, LOG = 3, MIN = 3, ERR = 0xFFFF };
+		enum class TRACE_TYPE { INVISIBLE = -1, INV = -1, DBG = 0, FULL = 0 /*1*/, NORMAL = 2, LOG = 3, MIN = 3, ERR = 0xFFFF };
 
 		// Construction & destruction
 		//
@@ -126,7 +125,7 @@ namespace jhbLDAPTools {
 #endif // _WIN32
 
 	};
-};	// namespace
+};	// namespace jhbLDAPTools
 
 #endif	// #ifndef __SIMPLIFIED_LOG_FILES_JHB_h__
 

@@ -18,7 +18,7 @@
 //--
 //--	12/05/2021 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.5
+//--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
 
@@ -136,7 +136,7 @@ namespace jhbLDAPTools {
 
 		string line(sLine);
 #ifdef _WIN32
-		// Conversion en ASCII (aie !!!)
+		// Sous Windows, on convertit en ASCII/ISO_8859_15 (aie !!!)
 		encoder_.fromUTF8(line);
 #endif // _WIN32
 
@@ -164,7 +164,8 @@ namespace jhbLDAPTools {
 	{
 		if (!IS_EMPTY(sType)) {
 			string cType(sType);
-			if (LOG_LEVEL_MIN == cType) {
+			if (LOG_LEVEL_SHORT_MIN == cType ||
+				LOG_LEVEL_MIN == cType) {
 				return TRACE_TYPE::LOG;
 			}
 
@@ -172,7 +173,8 @@ namespace jhbLDAPTools {
 				return TRACE_TYPE::NORMAL;
 			}
 
-			if (LOG_LEVEL_DEBUG == cType) {
+			if (LOG_LEVEL_DEBUG == cType ||
+				LOG_LEVEL_FULL == cType) {
 				return TRACE_TYPE::DBG;
 			}
 
@@ -191,6 +193,7 @@ namespace jhbLDAPTools {
 	{
 		switch (logType) {
 		case TRACE_TYPE::DBG:
+		//== TRACE_TYPE::FULL:
 			return PREFIX_DBG;
 		/*
 		case TRACE_TYPE::FULL:

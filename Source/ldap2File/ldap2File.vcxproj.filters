@@ -425,6 +425,9 @@
     <ClInclude Include="..\Common\CURLTools\SMTPClient.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="stringTokenizer.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ldap2File.rc">

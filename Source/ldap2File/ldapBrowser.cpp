@@ -23,7 +23,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.5
+//--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
 
@@ -42,8 +42,8 @@
 #include "./CURLTools/FTPClient.h"
 #include "./CURLTools/SMTPClient.h"
 
-// Ne sert à rien cas __USE_CMD_LINE_ZIP__ est défini dans ODSFile.h
-// bug Code::Blocks
+// Ne sert à rien car __USE_CMD_LINE_ZIP__ est défini dans ODSFile.h
+// bug editeur de Code::Blocks
 #ifndef _WIN32
 #ifndef __USE_CMD_LINE_ZIP__
 #define __USE_CMD_LINE_ZIP__
@@ -426,10 +426,6 @@ void ldapBrowser::_dispose(bool freeLDAP)
 			titles_->clear();
 		}
 #endif // #ifdef __LDAP_USE_ALLIER_TITLES_h__
-
-		if (struct_) {
-			struct_->clear();
-		}
 	}
 
 	// Arborescence
@@ -451,9 +447,6 @@ void ldapBrowser::_dispose(bool freeLDAP)
 
 	// Effacement des colonnes
 	cols_.empty();
-	if (struct_){
-		struct_->clear();
-	}
 }
 
 // Initialisation de la connexion LDAP
@@ -463,7 +456,7 @@ bool ldapBrowser::_initLDAP()
 	// Initialisation de la connexion LDAP
 	//
 	if (NULL == ldapServer_->open()){
-		logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le serveur");
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le serveur LDAP");
 		return false;
 	}
 
@@ -491,7 +484,7 @@ bool ldapBrowser::_initLDAP()
 		return false;
 	}
 
-	logs_->add(logs::TRACE_TYPE::LOG, "Connecté avec succès au service LDAP");
+	logs_->add(logs::TRACE_TYPE::LOG, "Connecté avec succès au serveur LDAP");
 
 	// Nbre d'enregistrements
 	ULONG sizeLimit(0);
@@ -626,13 +619,13 @@ RET_TYPE ldapBrowser::_createFile()
 	if (cmdFile->searchCriteria(&cols_, search)){
 		// Le critère de rupture est-il valide ?
 		if (search.tabType().size() && SIZE_MAX == struct_->depthByType(search.tabType().c_str())){
-			logs_->add(logs::TRACE_TYPE::ERR, "'%s' ne correspond à aucun type de la structure. Il n'y aura pas de rupture.", search.tabType().c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "La valeur '%s' ne correspond à aucun type de la structure. Il n'y aura pas de rupture.", search.tabType().c_str());
 			search.setTabType("");
 		}
 
 		string sContainer(search.container());
 		if (search.container().size() && NULL == (pService = services_->findContainer(sContainer, baseContainer, containerDepth))){
-			logs_->add(logs::TRACE_TYPE::ERR, "'%s' ne correspond à aucun élément de structure", search.container().c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Le critère '%s' ne correspond à aucun élément de structure", search.container().c_str());
 			logs_->add(logs::TRACE_TYPE::ERR, "Aucun fichier ne sera généré");
 			return RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR;
 		}
@@ -2272,6 +2265,10 @@ const bool ldapBrowser::_SCPTransfer(SCPDestination* scpDest)
 	}
 	alias->addToken(TOKEN_SERVER_NAME, value.c_str());
 
+	// Le fichier destination
+	string destName(sFileSystem::merge(scpDest->folder(), scpDest->name()));
+	alias->addToken(TOKEN_DEST_NAME, destName.c_str());
+
 	// Login
 	value = scpDest->user();
 	if (0 == value.length()) {
@@ -2288,6 +2285,8 @@ const bool ldapBrowser::_SCPTransfer(SCPDestination* scpDest)
 
 	// ... pour de vrai
 	alias->addToken(TOKEN_USER_PWD, scpDest->pwd());
+
+	// Génération
 	alias->replace(command);
 
 	// Exécution de la commande ...

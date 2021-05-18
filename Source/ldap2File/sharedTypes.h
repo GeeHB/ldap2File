@@ -21,7 +21,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.5
+//--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
 
@@ -30,6 +30,8 @@
 
 #include <charUtils.h>
 #include "aliases.h"
+
+using namespace std;
 
 // Fichier de Logs
 //

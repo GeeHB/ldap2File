@@ -1,17 +1,9 @@
 TODO{
 	- Compatibilité Windows x64
+	- Linux : vérifier en écriture et/ou lecture pour les dossiers de l'application'
 }
 
-21.5.5
-
-	BUGS:
-		- Plus de rupture par service !
-
-	TODO{
-		Linux : vérification des droits en ecriture
-		Utilisation de la commande de l'alias (avec tokenisation)
-	}
-
+21.5.6
 	* le 18 mai 2021 / MAJ de la ressource
 	+ Changement d'organisation des sources :
 		./Source/ldap2File : sources de l'application
@@ -29,16 +21,16 @@ TODO{
 		+ Modifications / corrections des logs (ajout du niveau "normal" moyennement verbeux et du niveau "Minimal", comme son nom l'indique minimaliste)
 		+ "./output files" => "./outputs" : Plus portable et plus scriptable ...
 		+ Les dossiers "système" sont crées lors de leur utilisation (pas les dossiers Destination qui doivent impérativement exister)
-		+ Messages et sorties en mode console
+		+ Correction des messages et sorties en mode console
 		+ Logs :: Le numéro de version est suivi de "DEBUG" même en mode release
 		+ Par défaut si les dossiers n'ont pas de "path" complet, il s'agit d'un sous-dossier du dossier principal
 			+ pas d'OS précisé => tous les OS (valable quand cela fait sens ...)
-	+ Common/logFile => jhbLDAPTools::logs : Plus pratique et plus portable (et enfin en cpp!!!) ...
+	+ Common/logFile => jhbLDAPTools::logs : Plus pratique et plus portable (et enfin en "vrai" cpp!!!) ...
 	+ Compatiblité Linux
 		+ Reprise des corrections et des tests de non regression
 		+ Nouvel algo pour la gestion des fichiers ODS / ZIP
 		+ Windows - OK
-		+ Linux x64 (Fedora >= 33) - génération CSV / TXT ok
+		+ Linux x64 (Fedora >= 33) - OK
 
 21.4.14
 	* le 27 avril 2021 / MAJ de la ressource

@@ -21,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.5
+//--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@
 #endif // APP_FULL_NAME
 
 #define APP_DESC				"Utilitaire d'export des annuaires LDAP et OpenLDAP"
-#define APP_RELEASE				"21.5.5"
+#define APP_RELEASE				"21.5.6"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -222,7 +222,8 @@ using namespace jhbLDAPTools;
 
 // Alias et lignes de commandes
 #define TOKEN_TEMP_FILENAME			"%TEMP-NAME%"
-#define TOKEN_DEST_SHORTNAME		"%DEST-NAME%"
+#define TOKEN_DEST_SHORTNAME		"%DEST-SHORT-NAME%"
+#define TOKEN_DEST_NAME		        "%DEST-NAME%"
 #define TOKEN_DEST_FOLDER			"%DEST-FOLDER%"
 #define TOKEN_SRC_FILENAME			"%SRC-NAME%"
 #define TOKEN_SRC_SHORT_FILENAME	"%SRC-SHORT-NAME%"		// Sans nom ni extension

@@ -291,6 +291,7 @@
     <ClInclude Include="sFileSystem.h" />
     <ClInclude Include="sharedConsts.h" />
     <ClInclude Include="sharedTypes.h" />
+    <ClInclude Include="stringTokenizer.h" />
     <ClInclude Include="textFile.h" />
     <ClInclude Include="titles.h" />
     <ClInclude Include="treeStructure.h" />

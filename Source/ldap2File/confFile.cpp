@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.5
+//--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
 
@@ -107,33 +107,33 @@ bool confFile::logInfos(LOGINFOS& dst)
 		string attrValue(node.attribute(XML_CONF_LOGS_MODE_ATTR).value());
 		dst.mode_ = attrValue;
 
-		// Recherche de la "bonne valeur" pour le dossier
-		pugi::xml_node subNode = findChildNode(node, XML_CONF_LOGS_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str(), true);
-
-		// Trouvé ?
-		if (!IS_EMPTY(subNode.name())){
-			dst.folder_ = subNode.first_child().value();
-		}
-
-		// Le dossier doit exister !
-		if (!sFileSystem::exists(dst.folder_)){
-			if (!sFileSystem::create_directory(dst.folder_)){
-				// Problématique ...
-				return false;
-			}
-		}
-
 		// Nom du fichier
-		subNode = node.child(XML_CONF_LOGS_FILE_NODE);
-		if (!IS_EMPTY(subNode.name())){
+		pugi::xml_node subNode = node.child(XML_CONF_LOGS_FILE_NODE);
+		if (!IS_EMPTY(subNode.name())) {
 			dst.fileName_ = subNode.first_child().value();
 		}
 
 		// Durée
 		subNode = node.child(XML_CONF_LOGS_DURATIONNODE);
-		if (!IS_EMPTY(subNode.name())){
+		if (!IS_EMPTY(subNode.name())) {
 			__int16 value = atoi(subNode.first_child().value());
 			dst.duration_ = value;
+		}
+
+		// Recherche de la "bonne valeur" pour le nom du sdossier
+		subNode = findChildNode(node, XML_CONF_LOGS_FOLDER_NODE, XML_CONF_FOLDER_OS_ATTR, expectedOS_.c_str(), true);
+
+		// Trouvé ?
+		if (!IS_EMPTY(subNode.name())) {
+			dst.folder_ = subNode.first_child().value();
+
+			// Le dossier doit exister !
+			if (!sFileSystem::exists(dst.folder_)) {
+				if (!sFileSystem::create_directory(dst.folder_)) {
+					// Problématique ...
+					return false;
+				}
+			}
 		}
 	}
 

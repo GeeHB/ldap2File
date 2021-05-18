@@ -12,8 +12,8 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Définition de l'objet stringTokenizer pour le remplacement de "token" dans une 
-//--		chaine de caractères
+//--		Définition de l'objet stringTokenizer pour le remplacement de "token"
+//--		dans une chane de caractères
 //--
 //---------------------------------------------------------------------------
 //--
@@ -22,7 +22,7 @@
 //--
 //--	17/05/2021 - JHB - Création
 //--
-//--	14/05/2021 - JHB - Version 21.5.4
+//--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@
 #include "charUtils.h"
 
 // stringTokenizer
-//	Classe de base pour le remplacement dans les chaînes de caractère
+//	Classe de base pour le remplacement dans les chaînes de caractères
 //
 class stringTokenizer
 {
