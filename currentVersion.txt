@@ -1,9 +1,37 @@
 TODO{
 	- Compatibilité Windows x64
-	- Linux : vérifier en écriture et/ou lecture pour les dossiers de l'application'
+	- Linux : vérifier en écriture et/ou lecture pour les dossiers de l'application : std::filesystem::status(xxx).permissions()
+	- charUtils : la majorité des méthodes devraient être "static"
 }
 
-21.5.6
+BUG{
+
+}
+
+21.5.7 - RC2
+	* le 27 mai 2021 / MAJ de la ressource
+	+ Compatibilité Win32 / Fedora >= 32 / CentOS 7 / CentOS 8
+	+ Corrections / modifications des sources
+	    + Modification des définitions en haut des fichiers ".h"
+	    + Normalisation des noms dans les #define globaux
+	+ Corrections mineures
+	    + std::filesystem n'existe pas pour Windows ni pour les version anciennes de cpp < std::iso cpp11
+	        + écriture de sFileSystem pour CentOS7 et les "vieux" OS
+        + Corrections mineures des sources ( => 0 warnings)
+	    + MaJ des paramètres des IDE (Code::Bocks et VisualStudio 2017) : #defines, récpertoires includes
+	    + Linux :
+	        + Tout doit être en UTF8 (pas de conversion en ISO_8859_15)
+	        + Gestion des noms de fichier accentués et avec ' ' (même s'il faut les éviter ...)
+	        + erreur dans la génération des fichiers LDIF (si valeur en UTF8 -> encodage en Base64)
+	    + charUtils.cpp - changement des prototypes erratiques et ajout du prefixe "convert_"
+		+ UTF8 : bug lors de la simplication des noms d'onglet trop longs (il était possible de "couper" entre le car et son CP) => méthode charUtils::utf8_realIndex
+    + Windows : simplification de l'algo pour la génération des fichiers VCARD
+    + Linux : Lancement des applications en "postgen"
+    + Gestion des chemins relatifs (./xx/yyy)
+    + git : Ajout de tous les sources (oublis dus à la version Windows de git ?)
+    + Tests de non regression sur tous les formats et avec tous les fichiers
+
+21.5.6 - RC1
 	* le 18 mai 2021 / MAJ de la ressource
 	+ Changement d'organisation des sources :
 		./Source/ldap2File : sources de l'application
@@ -11,13 +39,13 @@ TODO{
 		./Source/Common : fichiers communs utilisés (aussi) par l'application
 	+ Modification du schéma XML => version 2.2
 		+ Vérification : .conf + modèle (include) + fichier de commande
-		- <Destination>/Type =>  <Destination>/Type="FileSystem> + <Destination>/OS
+		- <Destination ... Type="monOS" =>  <Destination ... Type="FileSystem" OS="monOS">
 		- <Logs><Jours> => <Logs><Duree>
-		+ Ajout de l'attribut <ldap2File><Fichier> Limite pour la gestion d'une date de fin d'application
+		+ Ajout de l'attribut <ldap2File><Fichier Limite="dd/mm/yyyy" pour la gestion d'une date de fin d'application
 			+ Si absent ou erreur => pas de limite
 			+ Date dépassée => Suppression du fichier
 	+ Corrections mineures
-		+ Simplification de la gesiton de la ligne de commandes par ldap2File.cpp
+		+ Simplification de la gestion de la ligne de commandes par ldap2File.cpp
 		+ Modifications / corrections des logs (ajout du niveau "normal" moyennement verbeux et du niveau "Minimal", comme son nom l'indique minimaliste)
 		+ "./output files" => "./outputs" : Plus portable et plus scriptable ...
 		+ Les dossiers "système" sont crées lors de leur utilisation (pas les dossiers Destination qui doivent impérativement exister)
@@ -25,6 +53,7 @@ TODO{
 		+ Logs :: Le numéro de version est suivi de "DEBUG" même en mode release
 		+ Par défaut si les dossiers n'ont pas de "path" complet, il s'agit d'un sous-dossier du dossier principal
 			+ pas d'OS précisé => tous les OS (valable quand cela fait sens ...)
+        + Regression : plus de gestion des ruptures (par service ou direction)
 	+ Common/logFile => jhbLDAPTools::logs : Plus pratique et plus portable (et enfin en "vrai" cpp!!!) ...
 	+ Compatiblité Linux
 		+ Reprise des corrections et des tests de non regression
@@ -153,7 +182,7 @@ TODO{
 	+ Corrections mineures
 	+ Ajout de la récupération des titres (intitulés des postes) des agents
 		+ classes titles / title
-		+ spécifiaque à l'allier : #define __LDAP_USE_ALLIER_TITLES_h__ (sharedConsts.h)
+		+ spécifiaque à l'allier : #define __LDAP_USE_ALLIER_TITLES__ (sharedConsts.h + paramètres projets dans l'IDE)
 		+ La liste des intitulés n'est chargée que si la colonne est demandée !
 
 20.7.20

@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
 //--
 //--	FICHIER	: charUtils.cpp
 //--
@@ -7,15 +6,15 @@
 //--
 //--	PROJET	:
 //--
-//--	DATE	: 05/04/2020
+//--	DATE	: 19/05/2021
 //--
 //--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
 //--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
-//--		Gestion des chaines de caracteres
+//--		Gestion des chaines de caractères (fonctions, encodage)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -47,10 +46,11 @@
 //--
 //--	05/04/2020 - JHB - Version 20.4.6 - Corrections
 //--
-//---------------------------------------------------------------------------
+//--	19/05/2021 - JHB - Version 21.5.7 - Corrections & modification de prototypes
+//--
 //---------------------------------------------------------------------------
 
-#include <charUtils.h>
+#include "charUtils.h"
 
 //---------------------------------------------------------------------------
 //--
@@ -67,7 +67,7 @@
 
 // Construction
 //
-void charUtils::sourceFormat(SOURCE_FORMAT source, bool quotedPrintable/*, bool extendedLatin*/)
+void charUtils::sourceFormat(SOURCE_FORMAT source, bool quotedPrintable)
 {
 	// Déja fait ?
 	if (initialized_){
@@ -75,7 +75,6 @@ void charUtils::sourceFormat(SOURCE_FORMAT source, bool quotedPrintable/*, bool 
 	}
 
 	format_ = source;
-	//extendedLatin_ = extendedLatin;
 
 	// Les données sont été correctement initialisées
 	initialized_ = true;
@@ -112,22 +111,12 @@ std::string charUtils::eol(FORMAT_EOL eType)
 
 // UTF8 => char*
 //
-bool charUtils::fromUTF8(std::string& source)
+bool charUtils::convert_fromUTF8(std::string& source)
 {
-	//bool change(false);
-#ifdef _DEBUG
-	const char* szText = source.c_str();
-#endif // #ifdef _DEBUG
-
-	std::string out = _UTF8toISO8859_1(source);
-
 #ifdef _WIN32
-	std::string next = _win32_UTF8toISO8859_1(source);
-
-	if (next != out) {
-		int i(3);
-		i++;
-	}
+	std::string out = _win32_UTF8toISO8859_1(source);
+#else
+	std::string out = _UTF8toISO8859_1(source);
 #endif // #ifdef _WIN32
 
 	source = out;
@@ -136,18 +125,16 @@ bool charUtils::fromUTF8(std::string& source)
 
 // vers UTF8
 //
-bool charUtils::toUTF8(std::string& source, bool MIMEEncode)
+
+// Conversion en UTF8 + encodage MIME (pour les mails)
+//
+bool charUtils::convert_toUTF8(std::string& source, bool MIMEEncode)
 {
 	// Conversion
-	std::string out = _ISO8859_1toUTF8(source);
-
 #ifdef _WIN32
-	std::string next = _win32_ISO8859_1toUTF8(source);
-
-	if (next != out) {
-		int i(3);
-		i++;
-	}
+	std::string out = _win32_ISO8859_1toUTF8(source);
+#else
+	std::string out = _ISO8859_1toUTF8(source);
 #endif // #ifdef _WIN32
 
 	// En hexa ?
@@ -176,13 +163,13 @@ std::string charUtils::toUTF8(const char* value, size_t len)
 	if (len && value){
 		source = value;
 		source.resize(len);
-		toUTF8(source, false);
+		convert_toUTF8(source, false);
 	}
 
 	return source;
 }
 
-// La chaine est-elle déja en UTF8 ?
+// La chaine est-elle codée en UTF8 ?
 //
 bool charUtils::isValidUTF8(const char* source)
 {
@@ -240,6 +227,87 @@ bool charUtils::isValidUTF8(const char* source)
 	}
 
 	return true;
+}
+/*
+bool charUtils::utf8_check_is_valid(const std::string& string)
+{
+    int c,i,ix,n,j;
+    for (i=0, ix=string.length(); i < ix; i++)
+    {
+        c = (unsigned char) string[i];
+        //if (c==0x09 || c==0x0a || c==0x0d || (0x20 <= c && c <= 0x7e) ) n = 0; // is_printable_ascii
+        if (0x00 <= c && c <= 0x7f) n=0; // 0bbbbbbb
+        else if ((c & 0xE0) == 0xC0) n=1; // 110bbbbb
+        else if ( c==0xed && i<(ix-1) && ((unsigned char)string[i+1] & 0xa0)==0xa0) return false; //U+d800 to U+dfff
+        else if ((c & 0xF0) == 0xE0) n=2; // 1110bbbb
+        else if ((c & 0xF8) == 0xF0) n=3; // 11110bbb
+        //else if (($c & 0xFC) == 0xF8) n=4; // 111110bb //byte 5, unnecessary in 4 byte UTF-8
+        //else if (($c & 0xFE) == 0xFC) n=5; // 1111110b //byte 6, unnecessary in 4 byte UTF-8
+        else return false;
+        for (j=0; j<n && i<ix; j++) { // n bytes matching 10bbbbbb follow ?
+            if ((++i == ix) || (( (unsigned char)string[i] & 0xC0) != 0x80))
+                return false;
+        }
+    }
+    return true;
+}
+*/
+
+// ... réciproquement la chaine est-elle purement ASCII (ie sur 7bits) ?
+//
+bool charUtils::isPureASCII(const char* str)
+{
+    if (!IS_EMPTY(str)){
+        const unsigned char* car = (const unsigned char*)str;
+        while (*car != 0x00) {
+             if (*car > 127){
+                // Un seul caractère étendu suffit !!!
+                return false;
+            }
+
+            // Caractère suivant
+            car++;
+        }
+
+    }
+
+    // Oui ...
+    return true;
+}
+
+// Accès à un caractère par son index
+//      retourne l'index reèl dans la chaîne
+//
+size_t charUtils::utf8_realIndex(const std::string& source, size_t index)
+{
+    size_t maxIndex(source.length());
+
+    // Index trop grand => on retourne le dernier car.
+    size_t searchIndex(maxIndex<=index?maxIndex-1:index);
+
+#ifdef _WIN32
+    // en ASCII pas de changement d'index
+    return searchIndex;
+#else
+
+    // Parcours de la chaine
+    size_t curIndex(0);
+    const unsigned char* car = (const unsigned char*)source.c_str();
+    while (*car != 0x00 && searchIndex) {
+         if (*car > 127){
+            // On saute le 2nd car.
+            curIndex++;
+            car++;
+        }
+
+        // Caractère suivant
+        curIndex++;
+        car++;
+        searchIndex--;
+    }
+
+    return curIndex;
+#endif // _WIN32
 }
 
 //
@@ -406,7 +474,7 @@ std::string charUtils::toMIMEUTF8(const std::string& source, const MIME_ENCODE m
 	std::string out(""), in(source);
 
 	// Quelque chose a été fait ?
-	if (toUTF8(in, true)){
+	if (convert_toUTF8(in, true)){
 		// Oui => on génère la chaine complète
 		//
 		if (mEncode == MIME_ENCODE::BASE64){
@@ -421,9 +489,6 @@ std::string charUtils::toMIMEUTF8(const std::string& source, const MIME_ENCODE m
 		bool quoted(false);
 		const char* chaine = in.c_str();
 		while (!quoted && *chaine){
-#ifdef _DEBUG
-			unsigned char value = (*chaine);
-#endif // _DEBUG
 			quoted = (!isalnum((unsigned char)*chaine) && NULL == strchr(RFC5322_ATOM, *chaine));
 			chaine++;
 		}
@@ -632,14 +697,15 @@ std::string charUtils::strupr(const char* source)
 	return out;
 }
 
-// La chaine est modifiée ...
 char* charUtils::strupr(char* source)
 {
-	char* car = source;
-	for (; *car; ++car){
-		*car = toupper((unsigned char)*car);
-		car++;
-	}
+	if (!IS_EMPTY(source)){
+        char* car = source;
+        for (; *car; ++car){
+            *car = toupper((unsigned char)*car);
+            car++;
+        }
+    }
 
 	return source;
 }
@@ -649,22 +715,26 @@ char* charUtils::strupr(char* source)
 std::string charUtils::strlwr(const char* source)
 {
 	std::string out("");
-	const char* car = source;
-	while (*car){
-		out+=tolower((unsigned char)*car);
-		car++;
-	}
+	if (!IS_EMPTY(source)){
+        const char* car = source;
+        while (*car){
+            out+=tolower((unsigned char)*car);
+            car++;
+        }
+    }
 
 	return out;
 }
 
 char* charUtils::strlwr(char* source)
 {
-	char* car = source;
-	for (; *car; ++car){
-		*car = tolower((unsigned char)*car);
-		car++;
-	}
+	if (!IS_EMPTY(source)){
+        char* car(source);
+        for (; *car; ++car){
+            *car = tolower((unsigned char)*car);
+            car++;
+        }
+    }
 
 	return source;
 }
@@ -870,23 +940,19 @@ std::string charUtils::_UTF8toISO8859_1(const std::string& str)
 std::string charUtils::_win32_UTF8Convert(const std::string& str, UINT from, UINT to)
 {
 	// Rien à faire ...
-	if (0 == str.length()) {
-		return "";
+	if (0 == str.length() ||
+		from == to) {
+		return str;
 	}
-
-	size_t size(0);
 
 	// Dans un premier temps on convertit en WCHAR
 	//
 	wchar_t* wBuffer(NULL);
-	int wBuffLen;
-
-	size = 1 + str.length();
-	wBuffLen = (int)(sizeof(wchar_t) * size);
+	size_t size(1 + str.length());
+	int wBuffLen((int)(sizeof(wchar_t) * size));
 	if (NULL != (wBuffer = (wchar_t*)malloc(wBuffLen))) {
 		if (0 == MultiByteToWideChar(from, 0, (LPCCH)str.c_str(), -1, wBuffer, wBuffLen)) {
 			// Erreur lors de la conversion
-			free(wBuffer);
 			return "";
 		}
 	}
@@ -930,11 +996,16 @@ std::string charUtils::shorten(const std::string& source, const size_t max)
 		return source;
 	}
 
-	size_t leftLen((max - 3) / 2);
-	size_t rightLen(max - leftLen - 3);
-	std::string newStr(source.substr(0, leftLen));
+	// Nb de car. à prendre de la gauche
+	size_t leftIndex(utf8_realIndex(source, (max - 3) / 2));
+
+	// Index du 2nd pointeur, pour la partie droite
+	size_t rightIndex(utf8_realIndex(source, len - max + leftIndex + 2));
+
+	std::string newStr(source.substr(0, leftIndex));
 	newStr += "...";
-	newStr += source.substr(len - rightLen);
+	newStr += source.substr(rightIndex);
+
 	return newStr;
 }
 

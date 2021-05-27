@@ -38,7 +38,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@
 // Prototypes
 //
 bool _checkCurrentVersion(string& error);
-void _getFolderContent(const string& source, list<string>& content, logs* pLogs);
+bool _getFolderContent(const string& source, list<string>& content, logs* pLogs);
 int _getTickCount();
 void _now();
 bool _updateConfigurationFile(string path);
@@ -256,7 +256,6 @@ int main(int argc, const char* argv[]) {
 		// Récupération de tous les noms de fichier en ligne de commande
 		//
 		for (int index = 1; index < argc; index++) {
-
 #ifdef _WIN32
 			if (argv[index] == strstr(argv[index], CMD_NO_VERBOSE)) {
 				// Pas d'affichages
@@ -284,7 +283,7 @@ int main(int argc, const char* argv[]) {
 							}
 							else {
 								// Un fichier ...
-								files.push_back(argv[index]);
+								files.push_back(sFileSystem::complete(argv[index]));
 							}
 						}
 					}
@@ -296,7 +295,11 @@ int main(int argc, const char* argv[]) {
 
 		// Analyse d'un dossier
 		if (remoteFolder.size()) {
-			_getFolderContent(remoteFolder, files, &myLogs);
+			if (false == _getFolderContent(remoteFolder, files, &myLogs)){
+			    myLogs.add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
+	            myLogs.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
+			    return 1;
+			}
 		}
 		else {
 			// Si un seul fichier, c'est peut être un dossier ...
@@ -312,15 +315,23 @@ int main(int argc, const char* argv[]) {
 		//
 		int currentLaunchTime(0);
 		ldapBrowser requester(&myLogs, &configurationFile);
-		RET_TYPE retType(RET_TYPE::RET_OK);
+		RET_TYPE retType(RET_TYPE::RET_INVALID_FILE);
+		std::string shortName("");
 		while (!done) {
 			currentLaunchTime = _getTickCount();
 
 			for (list<string>::iterator it = files.begin(); it != files.end(); it++) {
-				// Génération du fichier en question
-				_now();
-				cout << "[" << binName << "] " << (*it);
+
+                _now();
+
+				// Affichage du nom court du fichier
+				cout << sFileSystem::split((*it));
 				cout.flush();
+
+				// Par défaut le fichier n'est pas bon ...
+				retType = RET_TYPE::RET_INVALID_FILE;
+
+				// Génération du fichier en question
 				if (configurationFile.openCommandFile((*it).c_str()) &&
 					RET_TYPE::RET_OK == (retType = requester.browse())) {
 					cout << " - [ok]";
@@ -329,6 +340,10 @@ int main(int argc, const char* argv[]) {
 				else {
 					cout << " - [ko] - ";
 					switch (retType) {
+					case RET_TYPE::RET_INVALID_FILE:
+					    cout << "Le fichier n'existe pas ou est vide";
+					    break;
+
 					case RET_TYPE::RET_INVALID_PARAMETERS:
 						cout << "Paramètres invalides";
 						break;
@@ -409,12 +424,12 @@ int main(int argc, const char* argv[]) {
 		}
 	}
 	catch (LDAPException& e) {
-		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur : %s", e.what());
+		myLogs.add(logs::TRACE_TYPE::ERR, "\nErreur : %s", e.what());
 		retCode = 1;
 	}
 	catch (...) {
 		// Erreur inconnue
-		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur inconnue");
+		myLogs.add(logs::TRACE_TYPE::ERR, "\nErreur inconnue");
 		retCode = 1;
 	}
 
@@ -440,11 +455,14 @@ int main(int argc, const char* argv[]) {
 
 // Lecture du contenu d'un dossier
 //
-void _getFolderContent(const string& source, list<string>& content, logs* pLogs)
+bool _getFolderContent(const string& srcPath, list<string>& content, logs* pLogs)
 {
-	if (!source.size()) {
-		return;
+	if (!srcPath.size()) {
+		return false;
 	}
+
+	// Remplacement ?
+	std::string source(sFileSystem::complete(srcPath));
 
 	// Le dossier doit exister
 	if (!sFileSystem::exists(source)) {
@@ -454,7 +472,7 @@ void _getFolderContent(const string& source, list<string>& content, logs* pLogs)
 			pLogs->add(logs::TRACE_TYPE::ERR, "Le dossier '%s' n'existe pas", source.c_str());
 		}
 
-		return;
+		return false;
 	}
 
 	cout << "Parcours du dossier '" << source.c_str() << "'" << endl;
@@ -509,6 +527,8 @@ void _getFolderContent(const string& source, list<string>& content, logs* pLogs)
 	if (pLogs) {
 		pLogs->add(logs::TRACE_TYPE::LOG, "%d fichier(s) à analyser", content.size());
 	}
+
+	return true;
 }
 
 // Heure locale
@@ -708,25 +728,25 @@ bool _updateConfigurationFile(string path)
 //
 void _usage()
 {
-	cout << "\n\t" << APP_FULL_NAME << " {files or folder} [-base:{folder}] [-d:{folder}] [-f:{freq}] [-o:{output filename}] [-c] [-s]" << endl;
-	cout << "\n\t\t. {files or folder} : Listes des fichiers de commande à traiter. Lorsqu'un seul nom est fourni, et qu'il s'agit d'un dossier, tout le contenu du dossier sera traité (identique à -d:{folder})" << endl;
-	cout << "\n\t\t. -base:{folder} : Le dossier 'folder' est considéré comme le dossier de l'application. Par défaut, le dossier de l'application est celui dans lequel se trouve le binaire." << endl;
-	cout << "\n\t\t. -d:{folder} : Analyse de tous les fichiers de commandes contenus dans le dossier {folder}" << endl;
-	cout << "\n\t\t. -f:{freq} : Analyse périodique des fichiers et des dossiers. Freq est la fréquence d'analyse en minutes" << endl;
-	cout << "\n\t\t. -o:{output-file} : Le fichier généré sera renommé en {output-file] même si le fichier de commande indique une autre destination." << endl;
-	cout << "\n\t\t . -c : Suppression du fichier de commande après traitement." << endl;
-	cout << "\n\t\t.  -s : Windows uniquement = pas de MessageBox" << endl;
+	cout << "\n" << APP_FULL_NAME << " {files or folder} [-base:{folder}] [-d:{folder}] [-f:{freq}] [-o:{output filename}] [-c] [-s]" << endl;
+	cout << "\n\t {files or folder} : Listes des fichiers de commande à traiter. Lorsqu'un seul nom est fourni, et qu'il s'agit d'un dossier, tout le contenu du dossier sera traité (identique à -d:{folder})" << endl;
+	cout << "\n\t -base:{folder} : Le dossier 'folder' est considéré comme le dossier de l'application. Par défaut, le dossier de l'application est celui dans lequel se trouve le binaire." << endl;
+	cout << "\n\t -d:{folder} : Analyse de tous les fichiers de commandes contenus dans le dossier {folder}" << endl;
+	cout << "\n\t -f:{freq} : Analyse périodique des fichiers et des dossiers. Freq est la fréquence d'analyse en minutes" << endl;
+	cout << "\n\t -o:{output-file} : Le fichier généré sera renommé en {output-file] même si le fichier de commande indique une autre destination" << endl;
+	cout << "\n\t -c : Suppression du fichier de commande après traitements" << endl;
+	cout << "\n\t -s : Windows uniquement = pas de MessageBox" << endl;
 
-	cout << "\n\tExemples d'appels:" << endl;
+	cout << "\nExemples d'appels:" << endl;
 
-	cout << "\n\tAnalyse et traitement des fichiers de commande du dossier c:\\my datas\\test toutes les 30 minutes:" << endl;
-	cout << "\n\t\t" << APP_FULL_NAME << " -d:\"c:\\my datas\\test\" -f:30" << endl;
+	cout << "\n- Analyse et traitement des fichiers de commande du dossier c:\\my datas\\test toutes les 30 minutes:" << endl;
+	cout << "\n\t" << APP_FULL_NAME << " -d:\"c:\\my datas\\test\" -f:30" << endl;
 
-	cout << "\n\tTraitement du fichier '~/ldap2Files/datas/dsun.xml'; le dossier de l'application étant '/shared/cmdFiles" << endl;
-	cout << "\n\t\t" << APP_FULL_NAME << " -base /shared/cmdFiles ~/ldap2Files/datas/dsun.xml" << endl;
+	cout << "\n- Traitement du fichier '~/ldap2Files/datas/dsun.xml'; le dossier de l'application étant '/shared/cmdFiles" << endl;
+	cout << "\n\t" << APP_FULL_NAME << " -base /shared/cmdFiles ~/ldap2Files/datas/dsun.xml" << endl;
 
-	cout << "\n\tTraitement des 5 fichiers passes en ligne de commande ! " << endl;
-	cout << "\n\t\t" << APP_FULL_NAME << " file1.xml file2.xml file3.xml file4.xml file5.xml" << endl;
+	cout << "\n- Traitement des 5 fichiers passes en ligne de commande ! " << endl;
+	cout << "\n\t" << APP_FULL_NAME << " file1.xml file2.xml file3.xml file4.xml file5.xml" << endl;
 }
 
 // EOF

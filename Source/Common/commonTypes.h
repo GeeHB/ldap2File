@@ -26,7 +26,7 @@
 //---------------------------------------------------------------------------
 
 #ifndef __JHB_COMMON_TYPES_h__
-#define __JHB_COMMON_TYPES_h__
+#define __JHB_COMMON_TYPES_h__  1
 
 //
 //	Global includes

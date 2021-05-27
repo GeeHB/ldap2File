@@ -25,7 +25,7 @@
 //--
 //--	14/05/2021 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@
 //-- Implémentation des classes
 //--
 //--------------------------------------------------------------------------
-		
+
 // Ajout d'un alias
 //
 bool aliases::add(std::string& name, std::string& app, std::string& command)
@@ -82,7 +82,7 @@ aliases::alias* aliases::find(std::string& name)
 	// Non trouvé
 	return NULL;
 }
-	
+
 // Accès
 //
 aliases::alias* aliases::operator[](size_t index)
@@ -99,7 +99,7 @@ aliases::alias* aliases::operator[](size_t index)
 
 // Nettoyage de la liste des alias
 //
-void aliases::_clear() 
+void aliases::_clear()
 {
 	// Suppression des alias
 	for (std::list<alias*>::iterator i = aliases_.begin(); i != aliases_.end(); i++) {

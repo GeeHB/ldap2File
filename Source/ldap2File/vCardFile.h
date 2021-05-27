@@ -15,6 +15,15 @@
 //--			Définition de la classe vCardFile
 //--			Génération d'un fichier au format VCARD 3.0
 //--
+//--            Le format VCARD est 100% UTF8
+//--
+//--            -> Sous linux rien à faire ...
+//--
+//--            -> Sous Windows les valeurs des attributs sont converties
+//--               en UTF8 dès leur ajout.
+//--
+//--                Attention : les valeurs issues des fichiers XML sont déja en UTF8
+//--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
@@ -23,12 +32,12 @@
 //--	08/02/2021 - JHB - Version 21.2.2
 //--						+ Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_VCARD_OUTPUT_FILE_h__
-#define __LDAP_2_FILE_VCARD_OUTPUT_FILE_h__
+#define __LDAP_2_FILE_VCARD_OUTPUT_FILE_h__ 1
 
 #include "textFile.h"
 
@@ -55,7 +64,6 @@
 #define VCARD_EMAIL				"EMAIL;type=INTERNET"
 #define VCARD_MOBILE			"TEL;type=CELL;type=VOICE"
 #define VCARD_TELEPHONENUMBER	"TEL;type=WORK;type=VOICE"
-
 
 //----------------------------------------------------------------------
 //--
@@ -223,8 +231,7 @@ private:
 	// Sauvegarde d'un attribut monovalué
 	void _attribute2VCARD(const char* szName, const char* szValue){
 		if (!IS_EMPTY(szName) && !IS_EMPTY(szValue)) {
-			string value(encoder_.toUTF8(szValue));		// VCARD est en UTF8
-			file_ << szName << VCARD_ASSIGN_OP << value << eol_;
+			file_ << szName << VCARD_ASSIGN_OP << szValue << eol_;
 		}
 	}
 
@@ -235,7 +242,9 @@ private:
 	// Données membres privées
 	//
 private:
+#ifdef _WIN32
 	charUtils					encoder_;			// Gestion de l'encodage des caractères
+#endif //  _WIN32
 
 	vCardUserDatas				attributesToSave_;	// Attributs à sauvegarder
 

@@ -80,10 +80,6 @@ LPCLP cmdLine::findParameter(const char* szName)
 deque<cmdLine::parameter*>::iterator cmdLine::_find(const char* szName)
 {
 	for (deque<parameter*>::iterator it = _params.begin(); it < _params.end(); it++){
-#ifdef _DEBUG
-		LPCLP param = (*it);
-#endif // #ifdef _DEBUG
-
 		if ((*it) && 0 == charUtils::stricmp((*it)->_szName, szName)){
 			// Trouvé
 			return it;

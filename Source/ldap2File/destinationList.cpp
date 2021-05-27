@@ -22,7 +22,7 @@
 //--
 //--	10/01/2018 - JHB - Création - Version 18.1.1
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -67,10 +67,6 @@ fileDestination* destinationList::getDestinationByName(const char* name)
 {
 	if (!IS_EMPTY(name)){
 		for (deque<fileDestination*>::iterator i = destinations_.begin(); i != destinations_.end(); i++){
-#ifdef _DEBUG
-			fileDestination* dest = (*i);
-#endif // _DEBUG
-
 			if ((*i) && 0 == strcmp(name, (*i)->name())){
 				// Trouvé
 				return (*i);

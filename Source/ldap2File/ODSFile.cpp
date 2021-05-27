@@ -22,7 +22,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -99,8 +99,8 @@ bool ODSFile::zipFile::open(const char* fileName)
 	string cmdLine(unzipAlias_->application());      // Application
 	cmdLine+=" ";
 	cmdLine+=unzipAlias_->command();                 // Ligne de commandes
-	unzipAlias_->addToken(TOKEN_SRC_FILENAME, fileName);
-	unzipAlias_->addToken(TOKEN_DEST_FOLDER, tempFolder_.c_str());
+	unzipAlias_->addToken(TOKEN_SRC_FILENAME, fileName, true);
+	unzipAlias_->addToken(TOKEN_DEST_FOLDER, tempFolder_.c_str(), true);
     unzipAlias_->replace(cmdLine);                   // remplacment(s)
 
 	// Execution de la ligne de commandes
@@ -164,8 +164,8 @@ void ODSFile::zipFile::close()
         cmdLine += zipAlias_->application();        // Application
         cmdLine+=" ";
         cmdLine+=zipAlias_->command();              // Ligne de commandes
-        zipAlias_->addToken(TOKEN_DEST_NAME, srcPath_.c_str());
-        zipAlias_->addToken(TOKEN_DEST_FOLDER, tempFolder_.c_str());
+        zipAlias_->addToken(TOKEN_DEST_NAME, srcPath_.c_str(), true);
+        zipAlias_->addToken(TOKEN_DEST_FOLDER, tempFolder_.c_str(), true);
         zipAlias_->replace(cmdLine);                // remplacment(s)
 
         // Execution
@@ -600,7 +600,7 @@ bool ODSFile::_initContentFile()
 	// Ouverture du zip
 	if (false == (destZip_.open(newName))) {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir la copie du fichier modèle %s", newName.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir la copie du fichier modele %s", newName.c_str());
 		}
 
 		// Suppression du fichier
@@ -820,7 +820,7 @@ bool ODSFile::addSheet(string& sheetName, bool withHeader, bool firstSheet)
 	}
 
 #ifdef _WIN32
-	encoder_.toUTF8(validName, false);
+	encoder_.convert_toUTF8(validName, false);
 #endif // _WIN32
 
 	return _createSheet(validName.c_str(), withHeader);

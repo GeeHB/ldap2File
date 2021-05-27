@@ -20,12 +20,12 @@
 //--
 //--	23/03/2021 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_LDAPSERVERS_LIST_h__
-#define __LDAP_2_FILE_LDAPSERVERS_LIST_h__
+#define __LDAP_2_FILE_LDAPSERVERS_LIST_h__  1
 
 #include <commonTypes.h>
 
@@ -59,10 +59,10 @@ public:
 	const char* defaultSourceName()
 	{ return defaultSourceName_.c_str(); }
 
-	// Recherche d'une source par son nom 
+	// Recherche d'une source par son nom
 	// et à défaut retourne la source par défaut, si elle existe ...
 	LDAPServer* findEnvironmentByName(string& envName);
-	
+
 	// Taille
 	size_t size()
 	{ return sources_.size(); }
@@ -84,9 +84,9 @@ public:
 protected:
 
 	// Recherche d'un serveur dans la liste par son nom (nom de l'environnement)
-	LDAPServer* _findServer(const string& serverName){ 
+	LDAPServer* _findServer(const string& serverName){
 		string strServer(serverName);
-		return _findServer(strServer); 
+		return _findServer(strServer);
 	}
 	LDAPServer* _findServer(string& serverName);
 

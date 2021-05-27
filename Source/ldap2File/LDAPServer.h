@@ -22,12 +22,12 @@
 //--
 //--	19/06/2016 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef _LDAP_2_FILE_LDAPSERVER_h__
-#define _LDAP_2_FILE_LDAPSERVER_h__
+#define _LDAP_2_FILE_LDAPSERVER_h__ 1
 
 #ifdef _WIN32
 #include <winldap.h>

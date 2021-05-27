@@ -21,27 +21,26 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef _LDAP_2_FILE_SHARED_CONSTS_h__
-#define _LDAP_2_FILE_SHARED_CONSTS_h__
+#define _LDAP_2_FILE_SHARED_CONSTS_h__  1
 
 // Gestions spécifiques à l'Allier
-#ifndef __LDAP_USE_ALLIER_TITLES_h__
-#define __LDAP_USE_ALLIER_TITLES_h__
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#ifndef __LDAP_USE_ALLIER_TITLES__
+#define __LDAP_USE_ALLIER_TITLES__
+#endif // __LDAP_USE_ALLIER_TITLES__
 
 // Gestion du scope LDAP_SCOPE_BASE lorsqu'il ne fonctionne pas
 #ifdef _WIN32
-#define _JHB_OWN_LDAP_SCOPE_BASE_
-#define CUT_LDAP_REQUEST					// Saucisonnage des requêtes LDAP
+#define __LDAP_OWN_SCOPE_BASE__		// Gestion du bug OpenLDAP (scope base ne fonctionne pas dans les recherches)
+#define __LDAP_CUT_REQUESTS__		// Saucisonnage des requêtes LDAP
 #endif // _WIN32
 
 // Fichier en mode test (ie. editable)
 //#define XML_BEST_FORMAT_MODE
-
 
 // Génération d'un document XML ?
 #ifdef _GEN_DOC_
@@ -66,7 +65,7 @@
 #endif // APP_FULL_NAME
 
 #define APP_DESC				"Utilitaire d'export des annuaires LDAP et OpenLDAP"
-#define APP_RELEASE				"21.5.6"
+#define APP_RELEASE				"21.5.7"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -165,7 +164,7 @@ using namespace jhbLDAPTools;
 
 // Définitions perso.
 //
-#include <commonTypes.h>
+#include "commonTypes.h"
 
 // Protocoles
 //
@@ -379,13 +378,7 @@ enum class FILE_TYPE { FILE_UNKNOWN_TYPE = 0, FILE_TXT = 0, FILE_CSV, FILE_XLS, 
 enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS = 1, DEST_FILE_SYSTEM = 1, DEST_EMAIL, DEST_FTP, DEST_SCP };
 
 // Retours
-enum class RET_TYPE {RET_OK = 0,RET_INVALID_PARAMETERS, RET_ERROR_NO_DESTINATION, RET_BLOCKING_ERROR,RET_NON_BLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE, RET_FILE_TO_DELETE, RET_NO_SUCH_CONTAINER_ERROR, RET_INVALID_OUTPUT_FORMAT };
-
-//
-// Structures et objets pour l'échange de données
-//
-
-#include "sharedTypes.h"
+enum class RET_TYPE {RET_OK = 0, RET_INVALID_FILE, RET_INVALID_PARAMETERS, RET_ERROR_NO_DESTINATION, RET_BLOCKING_ERROR,RET_NON_BLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE, RET_FILE_TO_DELETE, RET_NO_SUCH_CONTAINER_ERROR, RET_INVALID_OUTPUT_FORMAT };
 
 #endif /* _LDAP_2_FILE_SHARED_CONSTS_h__ */
 

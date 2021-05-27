@@ -22,7 +22,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -350,7 +350,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 		}
 
 		if (logs_){
-			logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d lors de la recherche d'un manager : '%s'", retCode, ldapServer_->err2string(retCode));
+			logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d lors de la recherche d'un manager : '%s'", retCode, ldapServer_->err2string(retCode).c_str());
 		}
 		return NULL;
 	}

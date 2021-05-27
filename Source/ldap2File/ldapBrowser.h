@@ -22,12 +22,12 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_LDAP_BROWSER_h__
-#define __LDAP_2_FILE_LDAP_BROWSER_h__
+#define __LDAP_2_FILE_LDAP_BROWSER_h__  1
 
 #include "sharedConsts.h"
 
@@ -40,9 +40,9 @@
 #include "treeStructure.h"
 #include "destinationList.h"
 
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 #include "titles.h"
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES__
 
 //
 // Définition de la classe
@@ -74,9 +74,9 @@ protected:
 
 	// Requetes LDAP
 	bool _getServices();
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 	bool _getTitles();
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES__
 	size_t _simpleLDAPRequest(PCHAR* attributes, commandFile::criterium& sCriterium, const char* searchDN, bool treeSearch, PLDAPControl* serverControls = NULL, PLDAPControl sortControl = NULL);
 	bool _getUserGroups(string& userDN, size_t colID, const char* gID);
 
@@ -107,7 +107,7 @@ protected:
 	const bool _SCPTransfer(SCPDestination* scpDest);
 
 	// Execution d'une application
-	bool _exec(const string& application, const string& parameters, string& errorMessage);
+	bool _exec(const string& application, const string& parameters, string& retMessage);
 
 	// Données membres privees
 	//
@@ -126,9 +126,9 @@ protected:
 	logs*				logs_;
 
 	servicesList*			services_;			// Services dans l'annuaire
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 	jhbLDAPTools::titles*	titles_;			// Liste des intitulés de postes
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES__
 
 	columnList				cols_;				// Mes colonnes
 	string					managersCol_;		// Nom de la colonne utilisée pour les managers

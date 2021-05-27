@@ -22,7 +22,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -216,19 +216,22 @@ unsigned int XMLParser::_value2LinkType(string& value)
 
 // Chargement du fichier XML
 //
-void XMLParser::_load()
+bool XMLParser::_load()
 {
 	// Le fichier doit exister et être non-vide
 	if (0 == fileName_.size()) {
-		throw LDAPException("Pas de nom pour le fichier de configuration");
+		if (logs_) {
+		    logs_->add(logs::TRACE_TYPE::ERR, "Pas de nom pour le fichier de configuration");
+        }
+		return false;
 	}
 
 	if (!sFileSystem::exists(fileName_) ||
 		0 == sFileSystem::file_size(fileName_)) {
-		string erreur("Le fichier '");
-		erreur += fileName_;
-		erreur += "' n'existe pas ou est vide";
-		throw LDAPException(erreur);
+		if (logs_) {
+            logs_->add(logs::TRACE_TYPE::ERR, "Le fichier '%' n'existe pas ou est vide", fileName_.c_str());
+        }
+		return false;
 	}
 
 	// Tentative d'ouverture du fichier
@@ -240,17 +243,17 @@ void XMLParser::_load()
 		result = xmlDocument_.load_file(fileName(), options);
 	}
 	catch (...) {
-		erreur = "Erreur inconnue lors du chargement de '";
-		erreur += fileName_;
-		erreur += "'";
-		throw LDAPException(erreur);
+		if (logs_) {
+            logs_->add(logs::TRACE_TYPE::ERR, "Erreur inconnue lors du chargement de '%s'", fileName_.c_str());
+        }
+		return false;
 	}
 
 	// Analyse du code retour
 	//
 	switch (result.status) {
 	case pugi::status_ok:
-		return;
+		return true;
 
 	case pugi::status_file_not_found:
 		erreur = "Le fichier n'existe pas : '";
@@ -315,7 +318,12 @@ void XMLParser::_load()
 
 	erreur += fileName_;
 	erreur += "'";
-	throw LDAPException(erreur);
+
+	if (logs_) {
+        logs_->add(logs::TRACE_TYPE::ERR, erreur.c_str());
+    }
+
+	return false;
 }
 
 // EOF

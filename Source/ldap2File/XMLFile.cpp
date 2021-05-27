@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -161,7 +161,7 @@ bool XMLFile::addAt(size_t colIndex, string& value)
 	// Copie de la valeur dans la matrice mémoire
 	line_[colIndex]._value = value;
 #ifdef _WIN32
-	encoder_.toUTF8(line_[colIndex]._value, false);
+	encoder_.convert_toUTF8(line_[colIndex]._value, false);
 #endif // _WIN32
 	line_[colIndex]._next = NULL;		// Une seule valeur (pour l'instant)
 
@@ -211,7 +211,7 @@ bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 		validValue = (*value);
 
 #ifdef _WIN32
-		encoder_.toUTF8(validValue, false);
+		encoder_.convert_toUTF8(validValue, false);
 #endif // _WIN32
 
 		// Création de la nouvelle cellule

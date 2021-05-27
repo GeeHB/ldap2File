@@ -97,7 +97,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;_GEN_DOC_;_UNICODE_LOGS;_CRT_SECURE_NO_WARNINGS;__WINDOWS_API__</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;_GEN_DOC_;_UNICODE_LOGS;_CRT_SECURE_NO_WARNINGS;__WINDOWS_API__;__LDAP_USE_ALLIER_TITLES__</PreprocessorDefinitions>
       <ForcedIncludeFiles>winsock2.h</ForcedIncludeFiles>
       <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
       <AdditionalIncludeDirectories>
@@ -131,7 +131,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>__WINDOWS_API__;_WINSOCK_DEPRECATED_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;_GEN_DOC_;_UNICODE_LOGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__WINDOWS_API__;_WINSOCK_DEPRECATED_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;_GEN_DOC_;_UNICODE_LOGS;_CRT_SECURE_NO_WARNINGS;__LDAP_USE_ALLIER_TITLES__</PreprocessorDefinitions>
       <ForcedIncludeFiles>winsock2.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
@@ -237,6 +237,7 @@
     <ClCompile Include="confFile.cpp" />
     <ClCompile Include="CSVFile.cpp" />
     <ClCompile Include="destinationList.cpp" />
+    <ClCompile Include="fileActions.cpp" />
     <ClCompile Include="folders.cpp" />
     <ClCompile Include="JScriptFile.cpp" />
     <ClCompile Include="ldap2File.cpp" />
@@ -273,6 +274,7 @@
     <ClInclude Include="confFile.h" />
     <ClInclude Include="CSVFile.h" />
     <ClInclude Include="destinationList.h" />
+    <ClInclude Include="fileActions.h" />
     <ClInclude Include="folders.h" />
     <ClInclude Include="JScriptConsts.h" />
     <ClInclude Include="JScriptFile.h" />

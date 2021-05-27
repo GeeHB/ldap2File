@@ -15,6 +15,15 @@
 //--			Définition de la classe LDIFFile
 //--			Génération d'un fichier au format LDIF
 //--
+//--            LDIFF n'est pas complètement UTF8 :
+//--                - Tous les commentaires peuvent être en UTF8 ...
+//--                - Le nom des attributs est en ASCII 7bits
+//--                - Les valeurs des attributs en UTF8 doivent être encodées en base64 !!!
+//--
+//--            Win32 : Les valeurs des attributs sont donc systématiquement converties en UTF8
+//--
+//--            Linux + Win32 : Les valeurs sont ensuites converties en base64 si besoin
+//--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
@@ -23,12 +32,12 @@
 //--	05/04/2020 - JHB - Version 20.4.6
 //--						+ Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_LDIF_OUTPUT_FILE_h__
-#define __LDAP_2_FILE_LDIF_OUTPUT_FILE_h__
+#define __LDAP_2_FILE_LDIF_OUTPUT_FILE_h__  1
 
 #include "textFile.h"
 

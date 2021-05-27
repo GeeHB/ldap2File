@@ -22,12 +22,12 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_XML_PARSER_h__
-#define __LDAP_2_FILE_XML_PARSER_h__
+#define __LDAP_2_FILE_XML_PARSER_h__    1
 
 #include "./xml/pugixml.hpp"
 #define PUGIXML_HEADER_ONLY
@@ -132,8 +132,8 @@ public:
 	{}
 
 	// Chargement du fichier XML
-	virtual void load()
-	{ _load(); }
+	virtual bool load()
+	{ return _load(); }
 
 	// Le fichier est-il valide ?
 	bool isValid()
@@ -173,9 +173,9 @@ public:
 	// Encodage
 	//
 	void fromUTF8(string& text)
-	{ encoder_.fromUTF8(text); }
+	{ encoder_.convert_fromUTF8(text); }
 	void toUTF8(string& text)
-	{ encoder_.toUTF8(text, false); }
+	{ encoder_.convert_toUTF8(text, false); }
 #endif // _WIN32
 
 	// Recherche d'un noeud "fils" ayant une valeur d'attribut particulière
@@ -211,7 +211,7 @@ protected:
 	{ return (fileName_.size() > 0); }
 
 	// Chargement du fichier XML
-	virtual void _load();
+	virtual bool _load();
 
 	// Recherches
 	pugi::xml_node _findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue);

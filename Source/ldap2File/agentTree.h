@@ -22,14 +22,15 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_AGENT_TREE_h__
-#define __LDAP_2_FILE_AGENT_TREE_h__
+#define __LDAP_2_FILE_AGENT_TREE_h__    1
 
 #include "sharedConsts.h"
+#include "charUtils.h"
 
 // Identifiant d'un agent  iconnu (ou inexistant)
 //

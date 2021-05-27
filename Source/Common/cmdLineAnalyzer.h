@@ -37,7 +37,7 @@
 //---------------------------------------------------------------------------
 
 #ifndef __JHB_COMMAND_LINE_ANALYSER_h__
-#define __JHB_COMMAND_LINE_ANALYSER_h__
+#define __JHB_COMMAND_LINE_ANALYSER_h__ 1
 
 #include <commonTypes.h>
 

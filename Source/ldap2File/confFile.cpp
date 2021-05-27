@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -444,7 +444,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 				}
 				else {
 					if (logs_) {
-						logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer l'objet mail pour %s", name);
+						logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer l'objet mail pour %s", name.c_str());
 					}
 				}
 
@@ -503,7 +503,12 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 							}
 							else {
 								if (logs_) {
-									logs_->add(logs::TRACE_TYPE::ERR, exists?"Destination - Impossible de créer l'objet pour '%s'": "Destination - Le dossier %s n'existe pas", folder.c_str());
+								    if (!exists){
+									    logs_->add(logs::TRACE_TYPE::NORMAL, "Destination - Le dossier %s n'existe pas", folder.c_str());
+                                    }
+                                    else{
+                                        logs_->add(logs::TRACE_TYPE::ERR, "Destination - Impossible de créer l'objet fileDestination pour '%s'", folder.c_str());
+                                    }
 								}
 							}
 						}
@@ -654,7 +659,7 @@ bool confFile::nextStructElement(TREEELEMENT& element)
 
 	// Sans accents
 #ifdef _WIN32
-	encoder_.fromUTF8(element.startWith_);
+	encoder_.convert_fromUTF8(element.startWith_);
 	element.startWith_ = encoder_.removeAccents(element.startWith_);
 #endif // #ifdef _WIN32
 
@@ -683,7 +688,7 @@ bool confFile::_open()
 
 // Lecture d'un fichier de conf.
 //
-void confFile::_load()
+bool confFile::_load()
 {
 	// Chargement du fichier ...
 	XMLParser::_load();
@@ -696,7 +701,10 @@ void confFile::_load()
 		if (logs_) {
 			logs_->add(logs::TRACE_TYPE::ERR, e.what());
 		}
-	}
+    }
+    catch(...){
+        return false;
+    }
 
 	//
 	// Lecture des paramètres
@@ -731,6 +739,8 @@ void confFile::_load()
 
 	// Ok
 	fileRead_ = true;
+
+	return fileRead_;
 }
 
 // Recherche d'un noeud (fils ou frère) par son nom en fonction de l'environnement

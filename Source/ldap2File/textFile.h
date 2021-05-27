@@ -19,12 +19,12 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_TXT_OUTPUT_FILE_h__
-#define __LDAP_2_FILE_TXT_OUTPUT_FILE_h__
+#define __LDAP_2_FILE_TXT_OUTPUT_FILE_h__   1
 
 #include "outputFile.h"
 #include <fstream>			// Enregistrement du fichier
@@ -100,8 +100,7 @@ protected:
 
 	string				currentLine_;	// ligne en cours
 
-	// Les lignes
-	deque<string>		lines_;
+	deque<string>		lines_;         // Les lignes crées
 };
 
 #endif // #ifndef __LDAP_2_FILE_TXT_OUTPUT_FILE_h__

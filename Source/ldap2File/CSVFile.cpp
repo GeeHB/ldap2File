@@ -135,9 +135,9 @@ bool CSVFile::getOwnParameters()
 	}
 
 	if (logs_){
-		logs_->add(logs::TRACE_TYPE::LOG, "Paramètres CSV :");
-		logs_->add(logs::TRACE_TYPE::LOG, "\t- Séparateur de colonnes : \'%s\'", sepCols_.c_str());
-		logs_->add(logs::TRACE_TYPE::LOG, "\t- Séparateur de valeurs : \'%s\'", sepValues_.c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "Paramètres CSV :");
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Séparateur de colonnes : \'%s\'", sepCols_.c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Séparateur de valeurs : \'%s\'", sepValues_.c_str());
 	}
 
 	return true;
@@ -302,19 +302,12 @@ bool CSVFile::saveLine(bool header, LPAGENTINFOS agent)
 			}
 
 			if (add) {
+#ifdef _WIN32
 				// Doit-on encoder en UTF8 ?
 				if (utf8_) {
-#ifdef _DEBUG
-					size_t pos;
-					if (currentLine.npos != (pos = currentLine.find("m.mouli"))) {
-						int i(5);
-						char test = currentLine[pos + 21];
-						unsigned __int8 bidon = test;
-						i++;
-					}
-#endif // _DEBUG
-					encoder_.toUTF8(currentLine, false);
+					encoder_.convert_toUTF8(currentLine, false);
 				}
+#endif // _WIN32
 
 				lines_.push_back(currentLine);
 			}

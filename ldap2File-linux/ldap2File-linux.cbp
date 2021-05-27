@@ -11,19 +11,12 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/home/jhb/Nextcloud/ldapTools/CD03/ods/DSUN-ODS.xml" />
+				<Option parameters="/home/jhb/Nextcloud/ldapTools/CD03/xlsx" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-D__LDAP_USE_ALLIER_TITLES_h__" />
-					<Add directory="/home/jhb/Nextcloud/dev/cpp/ldap2File/ldap2File-linux" />
-					<Add directory="../Source/Common" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D__USE_STD_FILESYSTEM__" />
 				</Compiler>
-				<Linker>
-					<Add option="-lstdc++fs" />
-					<Add option="-lcurl" />
-					<Add option="-lldap" />
-					<Add option="-llber" />
-				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="/home/jhb/Nextcloud/ldapTools/ldap2File" prefix_auto="1" extension_auto="1" />
@@ -33,30 +26,36 @@
 				<Option parameters="/home/jhb/Nextcloud/ldapTools/CD03/tous" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="-D__LDAP_USE_ALLIER_TITLES_h__" />
-					<Add directory="../Source/Common" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-lstdc++fs" />
-					<Add option="-lcurl" />
-					<Add option="-lldap" />
-					<Add option="-llber" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c17" />
 			<Add option="-fexceptions" />
 			<Add option="-DLINUX" />
-			<Add directory="../../Common" />
+			<Add option="-D__LDAP_USE_ALLIER_TITLES__" />
+			<Add option="-D__LDAP_OWN_SCOPE_BASE__" />
 			<Add directory="../Source" />
-			<Add directory="../../Common/jhbCURLTools" />
+			<Add directory="../Source/Common" />
+			<Add directory="../Source/Common/CURLTools" />
 		</Compiler>
+		<Linker>
+			<Add option="-lstdc++fs" />
+			<Add option="-lcurl" />
+			<Add option="-lldap" />
+			<Add option="-llber" />
+		</Linker>
 		<Unit filename="../Source/Common/CURLTools/FTPClient.cpp" />
 		<Unit filename="../Source/Common/CURLTools/SMTPClient.cpp" />
 		<Unit filename="../Source/Common/charUtils.cpp" />
+		<Unit filename="../Source/Common/charUtils.h" />
 		<Unit filename="../Source/Common/cmdLineAnalyzer.cpp" />
+		<Unit filename="../Source/Common/cmdLineAnalyzer.h" />
+		<Unit filename="../Source/Common/commonTypes.h" />
 		<Unit filename="../Source/ldap2File/CSVFile.cpp" />
 		<Unit filename="../Source/ldap2File/CSVFile.h" />
 		<Unit filename="../Source/ldap2File/JScriptConsts.h" />
@@ -88,6 +87,8 @@
 		<Unit filename="../Source/ldap2File/confFile.h" />
 		<Unit filename="../Source/ldap2File/destinationList.cpp" />
 		<Unit filename="../Source/ldap2File/destinationList.h" />
+		<Unit filename="../Source/ldap2File/fileActions.cpp" />
+		<Unit filename="../Source/ldap2File/fileActions.h" />
 		<Unit filename="../Source/ldap2File/folders.cpp" />
 		<Unit filename="../Source/ldap2File/folders.h" />
 		<Unit filename="../Source/ldap2File/ldap2File.cpp" />

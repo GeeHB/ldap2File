@@ -21,15 +21,17 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef _LDAP_2_FILE_SHARED_TYPES_h__
-#define _LDAP_2_FILE_SHARED_TYPES_h__
+#define _LDAP_2_FILE_SHARED_TYPES_h__   1
 
-#include <charUtils.h>
+#include "charUtils.h"
+
 #include "aliases.h"
+#include "fileActions.h"
 
 using namespace std;
 
@@ -262,177 +264,6 @@ typedef struct _tagTREEELEMENT
 	string		colValue_;			// Valeur associée à la colonne (lorsque l'index est renseigné)
 }TREEELEMENT, *LPTREEELEMENT;
 
-
-// fileActions - Liste des actions liées à la création d'un fichier
-//
-class fileActions
-{
-	// Méthodes publiques
-public:
-
-	// Type(s) d'actions (moment d'éxecution)
-	//
-	enum class ACTION_TYPE { ACTION_UNKNOWN = 0, ACTION_POST_GEN };
-
-	// Une action
-	//
-	class fileAction : public stringTokenizer
-	{
-	public:
-
-		// Construction
-		fileAction(string name, ACTION_TYPE type, string& application, string& command, string& output) {
-			name_ = name;
-			type_ = type;
-			application_ = application;
-			parameters_ = command;
-			output_ = output;
-		}
-
-		// Destruction
-		virtual ~fileAction() {}
-
-		// Mise à jour de la valeur du nom de fichier
-		void tokenize(string& filename) {
-
-			// Dans la ligne de commandes ...
-			replace(parameters_, TOKEN_TEMP_FILENAME, filename.c_str());
-
-			// ... dans le fichier destination
-			replace(output_, TOKEN_TEMP_FILENAME, filename.c_str());
-		}
-
-		// Accès
-		const char* name() {
-			return name_.c_str();
-		}
-		ACTION_TYPE type() {
-			return type_;
-		}
-		const char* application() {
-			return application_.c_str();
-		}
-		const char* parameters() {
-			return parameters_.c_str();
-		}
-		const char* outputFilename() {
-			return output_.c_str();
-		}
-
-		// Le binaire existe t'il ?
-		bool exists()
-		{ return sFileSystem::exists(application_); }
-
-		// Méthodes privées
-		//
-	protected:
-
-
-		// Données membres privées
-	protected:
-		string		name_;			// Nom de l'action ...
-		ACTION_TYPE type_;			// Type
-		string		application_;	// Application à appeler ...
-		string		parameters_;	// Paramètres de la ligne de commandes
-		string		output_;		// Nom (si renomage ou export)
-	};
-
-	// Construction
-	fileActions() {}
-
-	// Destruction
-	virtual ~fileActions() {
-		clear();
-	}
-
-	// Liste vide !
-	void clear(){
-		// Suppression des actions
-		for (list<fileAction*>::iterator i = actions_.begin(); i != actions_.end(); i++) {
-			if ((*i)) {
-				delete (*i);
-			}
-		}
-
-		actions_.clear();
-	}
-
-	// Ajout d'une action
-	bool add(string name, ACTION_TYPE type, string& application, string& command, string& output) {
-		if (0 == name.length() || 0 == application.length() || 0 == command.length() || ACTION_TYPE::ACTION_UNKNOWN == type) {
-			return false;
-		}
-
-		// Création de l'action
-		//
-		fileAction* nAction = new fileAction(name, type, application, command, output);
-		if (NULL == nAction) {
-			// Erreur mémoire
-			return false;
-		}
-
-		actions_.push_back(nAction);
-		return true;
-	}
-
-	bool add(string name, string& sType, string& application, string& command, string& output) {
-		// Recherche du type associé
-		ACTION_TYPE type = _string2Type(sType);
-		return (ACTION_TYPE::ACTION_UNKNOWN == type ? false : add(name, type, application, command, output));
-	}
-
-	// Mise à jour des tokens
-	void tokenize(string& outputFile) {
-		for (list<fileAction*>::iterator i = actions_.begin(); i != actions_.end(); i++) {
-			if ((*i)) {
-				(*i)->tokenize(outputFile);
-			}
-		}
-	}
-
-	// Accès
-	size_t size() {
-		return actions_.size();
-	}
-	fileAction* operator[](size_t index) {
-
-		if (index < size()) {
-			list<fileAction*>::iterator i = actions_.begin();
-			for (size_t i = 0; i < index; i++) i++;
-			return (*i);
-		}
-
-		// Non trouvé
-		return NULL;
-	}
-
-	// Méthodes privées
-	//
-protected:
-
-	ACTION_TYPE _string2Type(string& sType) {
-		return _string2Type(sType.c_str());
-	}
-	ACTION_TYPE _string2Type(const char* szType) {
-		if (!IS_EMPTY(szType)) {
-			if (0 == charUtils::stricmp(szType, TYPE_ACTION_POSTGEN)) {
-				return ACTION_TYPE::ACTION_POST_GEN;
-			}
-		}
-
-		// Erreur ou type inconnu
-		return ACTION_TYPE::ACTION_UNKNOWN;
-	}
-
-
-	// Données membres privées
-	//
-protected:
-
-	// Mes actions ...
-	list<fileAction*> actions_;
-};
-
 // Objet de base pour les destinations
 //
 class fileDestination
@@ -623,14 +454,13 @@ public:
 	SCPDestination(string& folder, aliases::alias* alias)
 		:FTPDestination(folder)
 	{
-		init(); alias_ = alias;
+		init();
+		alias_ = alias;
 	}
 
 	SCPDestination(string& name, string& folder, aliases::alias* alias)
 		:FTPDestination(name, folder)
-	{
-		init(); alias_ = alias;
-	}
+	{ init(); alias_ = alias; }
 	virtual ~SCPDestination()
 	{}
 
@@ -643,9 +473,7 @@ public:
 
 	// Accès
 	aliases::alias* alias()
-	{
-		return alias_;
-	}
+	{ return alias_; }
 
 	// Données membres privées
 protected:

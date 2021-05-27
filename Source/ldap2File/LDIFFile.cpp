@@ -15,6 +15,15 @@
 //--			Implémentation de la classe LDIFFile
 //--			Génération d'un fichier au format LDIF
 //--
+//--            LDIFF n'est pas complètement UTF8 :
+//--                - Tous les commentaires peuvent être en UTF8 ...
+//--                - Le nom des attributs est en ASCII 7bits
+//--                - Les valeurs des attributs en UTF8 doivent être encodées en base64 !!!
+//--
+//--            Win32 : Les valeurs des attributs sont donc systématiquement converties en UTF8
+//--
+//--            Linux + Win32 : Les valeurs sont ensuites converties en base64 si besoin
+//--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
@@ -23,7 +32,7 @@
 //--	05/04/2020 - JHB - Version 20.4.6
 //--						+ Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -32,23 +41,19 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Implémentation des classes
+//-- Implémentation de la classe
 //--
 //----------------------------------------------------------------------
-
-//
-//
-// LDIFFile
-//
 
 // Construction
 //
 LDIFFile::LDIFFile(const LPOPFI fileInfos, columnList* columns, confFile* parameters)
 	:textFile(fileInfos, columns, parameters)
 {
+#ifdef _WIN32
 	// Paramètres de l'encodeur
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
-
+#endif // _WIN32
 	eol_ = CHAR_LF;		// pour UNIX
 	newFile_ = true;
 
@@ -126,7 +131,9 @@ bool LDIFFile::getOwnParameters()
 
 		// La valeur est "dans" le noeud
 		value = snode.first_child().value();
-		encoder_.fromUTF8(value);	// Déja en UTF8 !!!
+#ifdef _WIN32
+		encoder_.convert_fromUTF8(value);	// Déja en UTF8 !!!
+#endif // _WIN32
 
 		// Si les 2 sont renseignés => ajout à la liste
 		add2All_.newAttribute(name, value);
@@ -142,7 +149,9 @@ bool LDIFFile::getOwnParameters()
 
 		// La valeur est "dans" le noeud
 		value = snode.first_child().value();
-		encoder_.fromUTF8(value);	// Déja en UTF8 !!!
+#ifdef _WIN32
+		encoder_.convert_fromUTF8(value);	// Déja en UTF8 !!!
+#endif // _WIN32
 
 		// Ajout à la liste
 		if (value.length()) {
@@ -165,8 +174,9 @@ bool LDIFFile::getOwnParameters()
 
 		// La valeur est "dans" le noeud
 		value = snode.first_child().value();
-		encoder_.fromUTF8(value);	// Déja en UTF8 !!!
-
+#ifdef _WIN32
+		encoder_.convert_fromUTF8(value);	// Déja en UTF8 !!!
+#endif // _WIN32
 
 		// Si les 2 sont renseignés => ajout à la liste
 		exclusions_.newAttribute(name, value);
@@ -195,9 +205,9 @@ bool LDIFFile::getOwnParameters()
 
 	if (logs_) {
 		logs_->add(logs::TRACE_TYPE::LOG, "LDIF - OU : \'%s\' - %d attribut(s) obligatoire(s)", usersOU_.c_str(), mandatories_.size());
-		logs_->add(logs::TRACE_TYPE::LOG, "\t- %d attribut(s) ajouté(s)", add2All_.size());
-		logs_->add(logs::TRACE_TYPE::LOG, "\t- %d exclusion(s)", exclusions_.size());
-		logs_->add(logs::TRACE_TYPE::LOG, "\t- %d fusion(s)", attributesToSave_.size());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %d attribut(s) ajouté(s)", add2All_.size());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %d exclusion(s)", exclusions_.size());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %d fusion(s)", attributesToSave_.size());
 	}
 
 	// Terminé
@@ -228,7 +238,7 @@ bool LDIFFile::create()
 	file_ << "# " << "Généré le " << std::setfill('0') << std::setw(2) << ltm->tm_mday << "/" << std::setfill('0') << std::setw(2) << ltm->tm_mon + 1 << "/" << std::setfill('0') << std::setw(4) << ltm->tm_year + 1900;
 	file_ << " à " << std::setfill('0') << std::setw(2) << ltm->tm_hour << ":" << std::setfill('0') << std::setw(2) << ltm->tm_min << ":" << std::setfill('0') << std::setw(2) << ltm->tm_sec << eol_;
 	*/
-	file_ << "# Généré avec " << APP_SHORT_NAME << " version " << APP_RELEASE << " version " << CURRENT_OS << eol_;
+	file_ << "# Généré avec " << APP_SHORT_NAME << " version " << APP_RELEASE << " pour " << CURRENT_OS << eol_;
 	file_ << "# " << eol_;
 	file_ << "# " << APP_COPYRIGHT << eol_;
 
@@ -263,7 +273,6 @@ bool LDIFFile::saveLine(bool header, LPAGENTINFOS agent)
 		}
 		return false;
 	}
-
 
 	string line(STR_ATTR_UID);
 	line += LDAP_DN_EQUAL;
@@ -461,19 +470,14 @@ void LDIFFile::_attribute2LDIF(LDAPATTRIBUTE* attribute)
 	}
 
 	string line;
-#endif
+#endif // _DEBUG
 
 	// Toutes ses valeurs
 	string value;
 	for (list<string>::iterator i = attribute->values_.begin(); i != attribute->values_.end(); i++) {
 		if ((*i).size()) {
 			// Génération d'une ligne au format LDIF en clair ou de plusieurs ligne et en b64 si nécessaire
-#ifdef _DEBUG
-			value = _string2LDIF(attribute->name(), (*i));
-			file_ << value << eol_;
-#else
 			file_ << _string2LDIF(attribute->name().c_str(), (*i).c_str()) << eol_;
-#endif
 		}
 	}
 }
@@ -484,15 +488,24 @@ void LDIFFile::_attribute2LDIF(LDAPATTRIBUTE* attribute)
 string LDIFFile::_string2LDIF(string& key, string& source)
 {
 	// Les chaines sont non-vides, le test a été effectué en amont
-	string value(encoder_.toUTF8(source));
-	bool b64(false);	// encodage base64 ?
+	string value(source);
+	bool b64(false);	        // encodage base64 ?
+#ifdef _WIN32
+	value = encoder_.toUTF8(value);
 
-	// L'encodage a t'il "agrandi" la chaine ?
-	if (value.size() > source.size()) {
-		// Oui => encodage en base64
+    // L'encodage a t'il "agrandi" la chaine ?
+    // (ie y a t'il des caractères accentués ? )
+    //      oui => il faut l'encoder en Base64
+	b64 = (value.size() > source.size());
+#else
+    // On encode en Base64 ce qui est "vraiment" de l'UTF8
+    b64 = !charUtils::isPureASCII(source);
+#endif // _WIN32
+
+    if (b64){
+        // Oui => encodage en base64
 		value = encoder_.toBase64(value);
-		b64 = true;
-	}
+    }
 
 	// Chaine "totale"
 	string out(key);
@@ -528,9 +541,6 @@ bool LDIFFile::tagLDAPATTRIBUTE::exists(string& attrValue)
 {
 	if (attrValue.size())
 	{
-#ifdef _DEBUG
-		size_t count = values_.size();
-#endif // _DEBUG
 		for (list<string>::iterator it = values_.begin(); it != values_.end(); it++) {
 			if ((*it) == attrValue) {
 				return true;
@@ -591,9 +601,6 @@ LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::findAttribute(string& attrName
 {
 	if (attrName.length()) {
 		LDAPATTRIBUTE* pAttribute(NULL);
-#ifdef _DEBUG
-		size_t len = attributes_.size();
-#endif
 		for (deque<LDAPATTRIBUTE*>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
 			if (NULL != (pAttribute = (*it)) && (*it)->name_ == attrName) {
 				// Trouvé !

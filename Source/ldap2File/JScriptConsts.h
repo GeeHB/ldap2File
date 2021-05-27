@@ -21,12 +21,12 @@
 //--
 //--	11/05/2016 - JHB - Création - Version 2.0
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef _LDAP_2_FILE_JAVASCRIPT_CONSTS_h__
-#define _LDAP_2_FILE_JAVASCRIPT_CONSTS_h__
+#define _LDAP_2_FILE_JAVASCRIPT_CONSTS_h__  1
 
 //---------------------------------------------------------------------------
 //--

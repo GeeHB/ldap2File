@@ -21,12 +21,12 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef _LDAP_2_FILE_ODS_CONSTS_h__
-#define _LDAP_2_FILE_ODS_CONSTS_h__
+#define _LDAP_2_FILE_ODS_CONSTS_h__ 1
 
 //
 // Fichiers

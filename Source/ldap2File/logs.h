@@ -18,12 +18,12 @@
 //--
 //--	12/05/2021 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __SIMPLIFIED_LOG_FILES_JHB_h__
-#define __SIMPLIFIED_LOG_FILES_JHB_h__
+#define __SIMPLIFIED_LOG_FILES_JHB_h__  1
 
 #include <commonTypes.h>
 #include <string>
@@ -39,7 +39,7 @@ using namespace std;
 
 // Niveaux de logs
 //
-#define LOG_LEVEL_MIN			"Minimal"		// Le moins verbeux (LOGS)
+#define LOG_LEVEL_MIN			"Minimal"		// Le moins verbeux (LOG)
 #define LOG_LEVEL_SHORT_MIN		"Min"
 
 #define LOG_LEVEL_NORMAL		"Normal"		// TRC

@@ -13,7 +13,16 @@
 //--	DESCRIPTION:
 //--
 //--			Implémentation de la classe vCardFile
-//--			Génération d'un fichier au format LDIF
+//--			Génération d'un fichier au format VCARD 3.0
+//--
+//--            Le format VCARD est 100% UTF8
+//--
+//--            -> Sous linux rien à faire ...
+//--
+//--            -> Sous Windows les valeurs des attributs sont converties
+//--               en UTF8 dès leur ajout.
+//--
+//--                Attention : les valeurs issues des fichiers XML sont déja en UTF8
 //--
 //---------------------------------------------------------------------------
 //--
@@ -23,7 +32,7 @@
 //--	08/02/2021 - JHB - Version 21.2.2
 //--						+ Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -54,9 +63,10 @@ vCardFile::vCardFile(const LPOPFI fileInfos, columnList* columns, confFile* para
 	:textFile(fileInfos, columns, parameters)
 {
 	// Paramètres de l'encodeur
+#ifdef _WIN32
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
+#endif // _WIN32
 
-	//eol_ = CHAR_LF;
 	organisation_ = "";
 	newFile_ = true;
 }
@@ -88,10 +98,6 @@ bool vCardFile::getOwnParameters()
 	pugi::xml_node snode = node.child(XML_OWN_VCARD_ORG_NODE);
 	if (!IS_EMPTY(snode.name())) {
 		organisation_ = snode.first_child().value();
-		encoder_.fromUTF8(organisation_);	// Déja en UTF8 !!!
-	}
-	else {
-		organisation_ = "";
 	}
 
 	// Attributs à ajouter à tous les objets
@@ -105,7 +111,6 @@ bool vCardFile::getOwnParameters()
 
 		// La valeur est "dans" le noeud
 		value = snode.first_child().value();
-		encoder_.fromUTF8(value);	// Déja en UTF8 !!!
 
 		// Si les 2 sont renseignés => ajout à la liste
 		add2All_.newAttribute(name, value);
@@ -173,7 +178,7 @@ bool vCardFile::saveLine(bool header, LPAGENTINFOS agent)
 	string value("");
 	pAttr = attributesToSave_.findAttribute(STR_ATTR_SN);
 	if (pAttr) {
-		value += pAttr->value();
+		value = pAttr->value();
 	}
 	value += VCARD_VALUE_SEP;
 
@@ -226,7 +231,7 @@ bool vCardFile::saveLine(bool header, LPAGENTINFOS agent)
 	value = organisation_;
 	value += VCARD_VALUE_SEP;
 
-	// direction
+	// Direction
 	pAttr = attributesToSave_.findAttribute(STR_ATTR_DEPARTMENT_NUMBER);
 	if (pAttr) {
 		value += pAttr->value();
@@ -270,6 +275,11 @@ bool vCardFile::addAt(size_t colIndex, string& value)
 		return false;
 	}
 
+#ifdef _WIN32
+    // Conversion en UTF8
+    encoder_.convert_toUTF8(value,false);
+#endif // _WIN32
+
 	// Le nom de la colonne ie. le nom "destination" LDAP
 	string name = currentAttribute_->colName_;
 
@@ -303,9 +313,19 @@ bool vCardFile::addAt(size_t colIndex, deque<string>& values)
 		pAttr = attributesToSave_.add(name, true);
 	}
 
+#ifdef _WIN32
+    string value("");
+#endif // _WIN32
+
 	// L'attribut existe, on va ajouter les valeurs (que l'on peut ajouter), les unes après les autres
 	for (deque<string>::iterator it = values.begin(); it != values.end(); it++) {
+#ifdef _WIN32
+        // Conversion en UTF8
+        value = encoder_.toUTF8((*it));
+        pAttr->add(value);
+#else
 		pAttr->add((*it));
+#endif // _WIN32
 	}
 
 	// Ok
@@ -332,6 +352,7 @@ bool vCardFile::removeAt(size_t colIndex)
 }
 
 // Remplacement d'une valeur
+//
 bool vCardFile::replaceAt(size_t colIndex, string& singleValue)
 {
 	if (NULL == currentAttribute_) {
@@ -346,6 +367,10 @@ bool vCardFile::replaceAt(size_t colIndex, string& singleValue)
 
 		// Ajout de la valeur
 		if (singleValue.length()) {
+#ifdef _WIN32
+            // Conversion en UTF8
+            encoder_.convert_toUTF8(singleValue,false);
+#endif // _WIN32
 			pAttr->add(singleValue);
 		}
 	}
@@ -365,7 +390,7 @@ bool vCardFile::close()
 			logs_->add(logs::TRACE_TYPE::ERR, "VCARD - Erreur lors de l'écriture dans le fichier");
 		}
 
-			writen = false;
+        writen = false;
 	}
 
 	// Fermeture du fichier
@@ -410,9 +435,6 @@ bool vCardFile::tagLDAPATTRIBUTE::exists(string& attrValue)
 {
 	if (attrValue.size())
 	{
-#ifdef _DEBUG
-		size_t count = values_.size();
-#endif // _DEBUG
 		for (list<string>::iterator it = values_.begin(); it != values_.end(); it++) {
 			if ((*it) == attrValue) {
 				return true;
@@ -461,9 +483,6 @@ vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::findAttribute(string& attrN
 {
 	if (attrName.length()) {
 		LDAPATTRIBUTE* pAttribute(NULL);
-#ifdef _DEBUG
-		size_t len = attributes_.size();
-#endif
 		for (deque<LDAPATTRIBUTE*>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
 			if (NULL != (pAttribute = (*it)) && (*it)->name_ == attrName) {
 				// Trouvé !

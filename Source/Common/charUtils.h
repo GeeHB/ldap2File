@@ -6,13 +6,13 @@
 //--
 //--	PROJET	:
 //--
-//--	DATE	: 05/04/2020
+//--	DATE	: 19/05/2021
 //--
 //---------------------------------------------------------------------------
 //--
-//--	DESCRIPTIONS:
+//--	DESCRIPTION:
 //--
-//--		Gestion des chaines de caracteres (fonctions, encodage)
+//--		Gestion des chaines de caractères (fonctions, encodage)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -44,6 +44,8 @@
 //--
 //--	05/04/2020 - JHB - Version 20.4.6 - Corrections
 //--
+//--	19/05/2021 - JHB - Version 21.5.7 - Corrections & modification de prototypes
+//--
 //---------------------------------------------------------------------------
 
 //
@@ -52,7 +54,7 @@
 //
 
 #ifndef __JHB_CHAR_UTILS_h__
-#define __JHB_CHAR_UTILS_h__
+#define __JHB_CHAR_UTILS_h__    1
 
 // #define __JHB_USE_CPP__
 
@@ -152,12 +154,17 @@ public:
 	// UTF8
 	//
 
-	// UTF8 => char*
-	bool fromUTF8(std::string& source);
+	// Version qui modifient l'entrée
+	//
 
-	// char* => UTF8
-	bool toUTF8(std::string& source, bool MIMEEncode);
+	// UTF8 => Ascii
+	bool convert_fromUTF8(std::string& source);
 
+	// Ascii => UTF8
+	bool convert_toUTF8(std::string& source, bool MIMEEncode);
+
+	// Versions neutres (la chaine en entrée n'est pas modifiée)
+	//
 	std::string toUTF8(const char* value, size_t len);
 	std::string toUTF8(const char* value){
 		if (value){
@@ -172,7 +179,18 @@ public:
 		return str;
 	}
 
+	// Codage UTF8 valide ?
 	static bool isValidUTF8(const char* source);
+	static bool isValidUTF8(const std::string source)
+	{ return charUtils::isValidUTF8(source.c_str()); }
+	//bool utf8_check_is_valid(const std::string& string);
+
+	static bool isPureASCII(const char* str);
+	static bool isPureASCII(const std::string str)
+	{ return charUtils::isPureASCII(str.c_str()); }
+
+	// Accès
+    static size_t utf8_realIndex(const std::string& source, size_t index);
 
 	// Base 64
 	//
@@ -188,10 +206,7 @@ public:
 	std::string file2Base64(const std::string& fileName);
 
 	// UTF8 puis "Quoted" ou "Base64"
-	enum class MIME_ENCODE {
-		QUOTED = 0,
-		BASE64
-		};
+	enum class MIME_ENCODE { QUOTED = 0, BASE64};
 
 	std::string toMIMEUTF8(const std::string& source, const MIME_ENCODE mEncode);
 

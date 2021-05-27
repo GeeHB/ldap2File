@@ -23,12 +23,12 @@
 //--
 //--	23/07/2020 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __JHB_SIMPLE_FILE_SYSTEM_OBJECT_h__
-#define __JHB_SIMPLE_FILE_SYSTEM_OBJECT_h__
+#define __JHB_SIMPLE_FILE_SYSTEM_OBJECT_h__ 1
 
 #include "commonTypes.h"
 
@@ -42,13 +42,13 @@
 //---------------------------------------------------------------------------
 
 #ifndef FILENAME_SEP
-#define WIN_FILENAME_SEP	'\\'
-#define POSIX_FILENAME_SEP	'/'
-#define POSIX_FILENAME_HOME	'~'
+#define WIN_FILENAME_SEP    	'\\'
+#define POSIX_FILENAME_SEP	    '/'
+#define POSIX_FILENAME_HOME	    '~'
 #ifdef _WIN32
-#define FILENAME_SEP		WIN_FILENAME_SEP
+#define FILENAME_SEP		    WIN_FILENAME_SEP
 #else
-#define FILENAME_SEP		POSIX_FILENAME_SEP
+#define FILENAME_SEP		    POSIX_FILENAME_SEP
 #endif // _WIN32
 #endif // FILENAME_SEP
 
@@ -109,6 +109,9 @@ namespace sFileSystem {
 	std::string merge(const std::string& path, const char* filename);
 	std::string merge(const char* path, const char* filename);
 	std::string merge(const char* path, const std::string& filename);
+
+	// Chemin relatif
+	std::string complete(const std::string& path);
 
 	// Changement de formalisme pour un chemin (Windows <-> Posix et inversement)
 	void check_path(std::string& path, const char valid, const char invalid);

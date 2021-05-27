@@ -22,12 +22,12 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_COMMAND_FILE_h__
-#define __LDAP_2_COMMAND_FILE_h__
+#define __LDAP_2_COMMAND_FILE_h__   1
 
 #include "sharedConsts.h"
 #include "sharedTypes.h"
@@ -267,7 +267,7 @@ protected:
 	virtual bool _open();
 
 	// Chargement / ouverture du document XML
-	virtual void _load();
+	virtual bool _load();
 
 	// Remplissage de la structure OPFI
 	bool _fileInfos(aliases& aliases, OPFI& fileInfos);
@@ -289,7 +289,7 @@ protected:
 	string				environment_;		// Nom de l'environnement (celui du fichier de conf. si non précisé)
 
 	commandFile*		includedFile_;		// Fichier inclus
-	
+
 	bool				isIncluded_;		// Fichier inclus ?
 
 	// Colonnes du fichier de sortie

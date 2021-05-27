@@ -22,12 +22,12 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_CONFIGURATION_FILE_h__
-#define __LDAP_2_CONFIGURATION_FILE_h__
+#define __LDAP_2_CONFIGURATION_FILE_h__ 1
 
 #include "sharedConsts.h"
 #include "sharedTypes.h"
@@ -106,7 +106,7 @@ protected:
 
 	// Ouverture
 	virtual bool _open();
-	virtual void _load();
+	virtual bool _load();
 
 	// Recherche d'un noeud (fils ou frère) par son nom en fonction de l'environnement
 	bool _nextNode(XMLParser::XMLNode* xmlNode, const char* parentNode, const char* envName, std::string* envValue);

@@ -22,12 +22,12 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2file__ODS_OUTPUTfile__h__
-#define __LDAP_2file__ODS_OUTPUTfile__h__
+#define __LDAP_2file__ODS_OUTPUTfile__h__   1
 
 #include "XMLFile.h"
 
@@ -87,6 +87,10 @@ public:
 	}
 #endif // __USE_CMD_LINE_ZIP__
 
+    // Nombre d'éléments enregistrés
+	virtual size_t size()
+	{ return  (elements_ - 1); }        // Suppression de l'entêe dans le décompte des lignes
+
 	// Création / initialisation(s)
 	virtual bool create();
 
@@ -127,7 +131,7 @@ public:
 	virtual bool createOrgSheet(const char* sheetName){
 		string validName(sheetName);
 #ifdef _WIN32
-		encoder_.toUTF8(validName, false);
+		encoder_.convert_toUTF8(validName, false);
 #endif // _WIN32
 		return _createSheet(validName.c_str(), false, false);
 	}

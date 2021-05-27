@@ -22,12 +22,12 @@
 //--
 //--	17/05/2021 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_STRING_TOKENIZER_h__
-#define __LDAP_2_STRING_TOKENIZER_h__
+#define __LDAP_2_STRING_TOKENIZER_h__   1
 
 #include "sFileSystem.h"
 #include "charUtils.h"
@@ -78,25 +78,37 @@ public:
 
 	// Ajout d'une tuple (token, valeur) pour remplacement ultérieur
 	//
-	void addToken(const char* token, const char* value) {
+	void addToken(const char* token, const char* value, bool handleSpace = false) {
 		std::string sToken(token), sValue(value);
-		addToken(sToken, sValue);
+		addToken(sToken, sValue, handleSpace);
 	}
 	void addToken(const char* token, int value, int digits = 0) {
 		std::string sToken(token);
 		std::string sNum(charUtils::itoa(value, 10, digits));
 		addToken(sToken, sNum);
 	}
-	void addToken(std::string& token, std::string& value) {
+	void addToken(std::string& token, std::string& value, bool handleSpace = false) {
+
+		std::string newValue("");
+		if (handleSpace && 0 != value.find(' ')){
+		    // Gestion des espaces
+		    newValue = "\"";
+		    newValue += value;
+		    newValue += "\"";
+		}
+		else{
+		    newValue = value;
+		}
+
 		// Le nom ne peut pas être vide ...
 		if (token.size()) {
 			LPSINGLEITEM prev = _findByName(token);
 			if (NULL != prev) {
 				// Mise à jour de la valeur
-				prev->value_ = value;
+				prev->value_ = newValue;
 			}
 			else {
-				if (NULL != (prev = new SINGLEITEM(token.c_str(), value.c_str()))) {
+				if (NULL != (prev = new SINGLEITEM(token.c_str(), newValue.c_str()))) {
 					// Nouvel élément
 					items_.push_back(prev);
 				}

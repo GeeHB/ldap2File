@@ -25,12 +25,12 @@
 //--
 //--	14/05/2021 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_ALIAS_h__
-#define __LDAP_2_FILE_ALIAS_h__
+#define __LDAP_2_FILE_ALIAS_h__ 1
 
 #include "stringTokenizer.h"
 

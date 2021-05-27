@@ -18,7 +18,7 @@
 //--
 //--	12/05/2021 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -137,7 +137,7 @@ namespace jhbLDAPTools {
 		string line(sLine);
 #ifdef _WIN32
 		// Sous Windows, on convertit en ASCII/ISO_8859_15 (aie !!!)
-		encoder_.fromUTF8(line);
+		encoder_.convert_fromUTF8(line);
 #endif // _WIN32
 
 		// Ecriture dans le fichier

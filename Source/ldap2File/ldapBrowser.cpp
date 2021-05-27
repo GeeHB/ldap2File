@@ -23,7 +23,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -41,6 +41,17 @@
 // Outils CURL
 #include "./CURLTools/FTPClient.h"
 #include "./CURLTools/SMTPClient.h"
+
+
+// Pour executer popen
+//
+#ifndef _WIN32
+#include <cstdio>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <array>
+#endif // _WIN32
 
 // Ne sert à rien car __USE_CMD_LINE_ZIP__ est défini dans ODSFile.h
 // bug editeur de Code::Blocks
@@ -69,9 +80,9 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 	managersCol_ = managersAttr_ = "";
 	ldapServer_ = NULL;
 
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 	titles_ = NULL;
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES__
 
 	// Serveur(s) LDAP
 	LDAPServer* myServer(NULL);
@@ -104,7 +115,7 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 
 	// Alias
 	configurationFile_->appAliases(aliases_);
-	logs_->add(logs::TRACE_TYPE::LOG, "%d alias(es) défini(s)", aliases_.size());
+	logs_->add(logs::TRACE_TYPE::LOG, "%d alias défini(s)", aliases_.size());
 	aliases::alias* palias(NULL);
 	for (size_t index = 0; index < aliases_.size(); index++) {
 		palias = aliases_[index];
@@ -123,7 +134,7 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 		}
 	}
 
-	logs_->add(logs::TRACE_TYPE::LOG, "%d destination(s)", servers_.size());
+	logs_->add(logs::TRACE_TYPE::LOG, "%d destination(s) spécifiée(s)", servers_.size());
 	fileDestination* pDest(NULL);
 	for (size_t index = 0; index < servers_.size(); index++) {
 		if (NULL != (pDest = servers_[index])) {
@@ -137,10 +148,6 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 		if (!cols_.reservedColName(attribute.name_)){
 			// Extension du schéma
 			if (cols_.extendSchema(attribute)){
-#ifdef _DEBUG
-				std::string essai("Schema - la colonne '%s' correspond à l'attribut '%s'");
-				encoder_.fromUTF8(essai);
-#endif // _DEBUG
 				logs_->add(logs::TRACE_TYPE::DBG, "Schema - la colonne '%s' correspond à l'attribut '%s'", attribute.name_.c_str(), attribute.ldapAttr_.c_str());
 			}
 			else{
@@ -177,7 +184,7 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 	// Colonne par défaut !
 	managersCol_ = managersCol;
 	managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
-	logs_->add(logs::TRACE_TYPE::LOG, "Par défaut, les encadrants sont définis par ('%s', '%s')", managersCol.c_str(), managersAttr_.c_str());
+	logs_->add(logs::TRACE_TYPE::NORMAL, "Par défaut, les encadrants sont définis par ('%s', '%s')", managersCol.c_str(), managersAttr_.c_str());
 
 	// Structure de l'arborescence LDAP
 	if (NULL == (struct_ = new treeStructure(logs_))){
@@ -226,12 +233,12 @@ ldapBrowser::~ldapBrowser()
 		services_ = NULL;
 	}
 
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 	if (titles_) {
 		delete titles_;
 		titles_ = NULL;
 	}
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES__
 
 	if (struct_) {
 		delete struct_;
@@ -250,7 +257,7 @@ RET_TYPE ldapBrowser::browse()
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
 
-	logs_->add(logs::TRACE_TYPE::LOG, "Ouverture du fichier de configuration '%s'", cmdFile->fileName());
+	logs_->add(logs::TRACE_TYPE::NORMAL, "Ouverture du fichier de configuration '%s'", cmdFile->fileName());
 
 	// Limite d'utilisation du fichier
 	commandFile::date* pLimit(cmdFile->limit());
@@ -421,11 +428,11 @@ void ldapBrowser::_dispose(bool freeLDAP)
 			services_->clear();
 		}
 
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 		if (titles_) {
 			titles_->clear();
 		}
-#endif // #ifdef __LDAP_USE_ALLIER_TITLES_h__
+#endif // #ifdef __LDAP_USE_ALLIER_TITLES__
 	}
 
 	// Arborescence
@@ -492,7 +499,7 @@ bool ldapBrowser::_initLDAP()
 		logs_->add(logs::TRACE_TYPE::LOG, "Le serveur limite le nombre d'enregistrements à %d", sizeLimit);
 	}
 	else{
-		logs_->add(logs::TRACE_TYPE::LOG, "Impossible de lire le nombre maximal d'enregistrement ... (500 ?)");
+		logs_->add(logs::TRACE_TYPE::NORMAL, "Impossible de lire le nombre maximal d'enregistrement ... (500 ?)");
 	}
 
 	// Récupération des services
@@ -831,16 +838,13 @@ RET_TYPE ldapBrowser::_createFile()
 			size_t agents(0);
 			bool treeSearch(true);
 			for (deque<servicesList::LPLDAPSERVICE>::iterator it = services.begin(); it != services.end(); it++){
-
-#ifdef _DEBUG
-				servicesList::LPLDAPSERVICE pSvc = (*it);
-#endif // #ifdef DEBUG
-
 				// Nom de l'onglet
 				if (start){
 					// On renomme l'onglet courant
 					string validName((*it)->realName());
-					encoder_.toUTF8(validName, false);
+#ifdef _WIN32
+					encoder_.convert_toUTF8(validName, false);
+#endif // _WIN32
 					file_->setSheetName(validName);
 					start = false;
 				}
@@ -850,9 +854,12 @@ RET_TYPE ldapBrowser::_createFile()
 				}
 
 				// Execution de la requete sur son DN
+#ifdef _DEBUG
+                string cName(search.container()), rName((*it)->realName());
+#endif // _DEBUG
 				treeSearch = search.container() != (*it)->realName();
 				agents = _simpleLDAPRequest(pAttributes, search, (*it)->DN(),treeSearch,  srvControls, sortControl);
-				logs_->add(logs::TRACE_TYPE::DBG, "Ajout de l'onglet '%s' avec %d agent(s)", (*it)->realName(), agents);
+				logs_->add(logs::TRACE_TYPE::NORMAL, "Ajout de l'onglet '%s' avec %d agent(s)", (*it)->realName(), agents);
 				agentsCount += agents;
 			}
 		}
@@ -866,7 +873,7 @@ RET_TYPE ldapBrowser::_createFile()
 
 		// Juste une requête avec l'onglet renommé à la demande
 		agentsCount = _simpleLDAPRequest(pAttributes, search, baseContainer.size() ? baseContainer.c_str() : ldapServer_->usersDN(), true, /*search.sorted ? srvControls : NULL*/srvControls, sortControl);
-		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de l'onglet '%s' avec %d agent(s)", tabName.c_str(), agentsCount);
+		logs_->add(logs::TRACE_TYPE::NORMAL, "Ajout de l'onglet '%s' avec %d agent(s)", tabName.c_str(), agentsCount);
 	}
 
 	logs_->add(logs::TRACE_TYPE::LOG, "%d agent(s) ajouté(s) dans le fichier", agentsCount);
@@ -1035,19 +1042,17 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	size_t colDG = cols_.getColumnByType(COL_DG);
 	*/
 
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 	// L'intitulé du poste
 	size_t colPoste = cols_.getColumnByType(COL_ID_POSTE);
 	if (colPoste != cols_.npos) {
 		// on demandes intitulés => on s'assure que la liste est chargée
 		if (NULL == titles_) {
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
 			if (NULL == (titles_ = new jhbLDAPTools::titles(logs_))) {
 				logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer la liste des postes => pas d'intitulés");
 				colPoste = cols_.npos;
 			}
 			else {
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
 				// Récupération des intitulés de poste
 				if (!_getTitles()) {
 					logs_->add(logs::TRACE_TYPE::ERR, "Erreur de la récupération des intitulés de poste");
@@ -1055,13 +1060,10 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 				else {
 					logs_->add(logs::TRACE_TYPE::LOG, "%d intitulés de poste récupérés", titles_->size());
 				}
-#endif // __LDAP_USE_ALLIER_TITLES_h__
-
 			}
-#endif // __LDAP_USE_ALLIER_TITLES_h__
 		}
 	}
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES__
 
 	string strManagers("");
 	size_t realColIndex(SIZE_MAX);
@@ -1085,7 +1087,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	ULONG totalAgents(0), agentsFound(0), agentsAdded(0);
 
 	string currentFilter;
-#ifdef CUT_LDAP_REQUEST
+#ifdef __LDAP_CUT_REQUESTS__
 	// Recherche alpha
 	searchExpr* psearchExpr(sCriterium.searchExpression());
 
@@ -1112,12 +1114,12 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	//currentFilter = filter;
 	searchExpr* psearchExpr(sCriterium.searchExpression());
 	currentFilter = psearchExpr->expression();
-#endif // CUT_LDAP_REQUEST
+#endif // __LDAP_CUT_REQUESTS__
 
 	//
 	// Recherche des agents
 	//
-#ifdef CUT_LDAP_REQUEST
+#ifdef __LDAP_CUT_REQUESTS__
 	while (todo){
 		// Génération du filtre
 		if (fullReg){
@@ -1152,25 +1154,27 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		if (fullReg){
 			logs_->add(logs::TRACE_TYPE::DBG, "Critères de recherche : %s", currentFilter.c_str());
 		}
-#endif // CUT_LDAP_REQUEST
+#endif // __LDAP_CUT_REQUESTS__
 
 		// Execution de la requete
 		//
 
 		//
 		// La fonction ldap_search_ext_s ne fonctionne pas avec scode = LDAP_SCOPE_BASE !!!
+		//  ni sous Win32 ni sous Linux => il faut définir __LDAP_OWN_SCOPE_BASE__
+		//
 		//	Lorsqu'une recherche doit se faire avec une profondeur 0 (scope = LDAP_SCOPE_BASE), on va le coder ...
 		//
 		//
 
 		string nodeDN = searchDN ? searchDN : ldapServer_->baseDN();
-#ifdef _JHB_OWN_LDAP_SCOPE_BASE_
+#ifdef __LDAP_OWN_SCOPE_BASE__
 		/// Seules les recherches en mode LDAP_SCOPE_SUBTREE fonctionnent ...
-		retCode = ldapServer_->searchExtS((PSTR)(nodeDN.c_str()), LDAP_SCOPE_SUBTREE, (PSTR)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
+		retCode = ldapServer_->searchExtS((char*)(nodeDN.c_str()), LDAP_SCOPE_SUBTREE, (char*)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
 #else
 		// ... et lorsque le scope LDAP_SCOPE_BASE fonctionne
 		retCode = ldapServer_->searchExtS((char*)(searchDN ? searchDN : ldapServer_->baseDN()), treeSearch ? LDAP_SCOPE_SUBTREE : LDAP_SCOPE_BASE, (char*)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
-#endif // _JHB_OWN_LDAP_SCOPE_BASE_
+#endif // __LDAP_OWN_SCOPE_BASE__
 		agentsFound = ldapServer_->countEntries(searchResult);
 
 		// Des résultats ?
@@ -1182,9 +1186,9 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 			}
 
 			logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d '%s' lors de l'execution de la requête", retCode, ldapServer_->err2string(retCode).c_str());
-#ifdef CUT_LDAP_REQUEST
+#ifdef __LDAP_CUT_REQUESTS__
 			todo = false;
-#endif // CUT_LDAP_REQUEST
+#endif // __LDAP_CUT_REQUESTS__
 		}
 		else{
 			// Un tri ?
@@ -1223,10 +1227,10 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 			// JHB
 			// => utilisé pour vérifier que l'utilisateur n'est pas dans une sous-branche
 			// lorsque les recherches de type LDAP_SCOPE_BASE ne fonctionnenet pas
-#ifdef _JHB_OWN_LDAP_SCOPE_BASE_
+#ifdef __LDAP_OWN_SCOPE_BASE__
 			bool validUser(true);
 			string userContainer("");
-#endif // _JHB_OWN_LDAP_SCOPE_BASE_
+#endif // __LDAP_OWN_SCOPE_BASE__
 
 			// Lecture ligne par ligne
 			//
@@ -1254,7 +1258,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 				//
 				if (dn.size()) {
 
-#ifdef _JHB_OWN_LDAP_SCOPE_BASE_
+#ifdef __LDAP_OWN_SCOPE_BASE__
 					if (treeSearch) {
 						// Recherche dans tout l'arbre => ok
 						validUser = true;
@@ -1266,76 +1270,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 					}
 
 					if (validUser) {
-#endif // _JHB_OWN_LDAP_SCOPE_BASE_
-
-						/*
-
-						// Tous les containers de l'agent
-						firstContainer = services_->userContainers(dn);
-
-						if (struct_->associatedCols()) {
-							// Mise à jour des valeurs dans le fichier
-							for (size_t columnIndex(0); columnIndex < cols_.size(); columnIndex++) {
-								// Ajout de la valeur associée à la colonne (si elle est gérée)
-#ifdef _DEBUG
-								string svalue = struct_->at(columnIndex);
-								if (svalue.size()) {
-									int i(5);
-									i++;
-								}
-#endif // _DEBUG
-								if (cols_[columnIndex]->visible()) {
-									file_->addAt(columnIndex, (char*)struct_->at(columnIndex).c_str());
-								}
-							}
-						}
-
-						// Le service et la direction sont demandés
-						if (colService != cols_.npos && colDirection != cols_.npos) {
-							string direction = struct_->at(colDirection);
-							string service = struct_->at(colService);
-
-							// Un service et pas de direction
-							if (service.size() && !direction.size()) {
-								// Le service dépend de la DGA (ou à défaut de la DG) ...
-								string dga = struct_->at(colDGA);
-								if (dga.size()) {
-									file_->addAt(colDirection, dga);
-								}
-								else {
-									dga = struct_->at(colDG);
-									if (dga.size()) {
-										file_->addAt(colDirection, dga);
-									}
-								}
-							}
-							else {
-								// Une direction et pas de service ...
-								if (!service.size() && direction.size()) {
-									// Service == "Administration"
-									//file_->addAt(colService, SERVICE_ADMINISTRATION);
-									file_->addAt(colService, direction);
-								}
-								else {
-									// Pas de direction ni service ...
-									if (!service.size() && !direction.size()) {
-										// une DGA ?
-										string dga = struct_->at(colDGA);
-										if (!dga.size()) {
-											dga = struct_->at(colDG);	// Une DG ?
-										}
-
-										// Si il y a quelque chose ...
-										if (dga.size()) {
-											//file_->addAt(colService, SERVICE_ADMINISTRATION);
-											file_->addAt(colService, dga);
-											file_->addAt(colDirection, dga);
-										}
-									}
-								}
-							}
-						}
-						*/
+#endif // __LDAP_OWN_SCOPE_BASE__
 
 						// Parcours par attribut
 						//
@@ -1422,7 +1357,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 																	if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_MATRICULE)) {
 																		matricule = u8Value;
 																	}
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 																	else {
 																		if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_ID_POSTE)
 																			&& titles_) {
@@ -1431,7 +1366,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 																			u8Value = (ptitle ? ptitle->label() : "");
 																		}
 																	}
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES__
 																}
 															}
 														}
@@ -1548,14 +1483,14 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 						// Sauvegarde / ligne suivante
 						file_->saveLine(false, agent);
 					}
-#ifdef _JHB_OWN_LDAP_SCOPE_BASE_
+#ifdef __LDAP_OWN_SCOPE_BASE__
 				} // dn.size()
-#endif // _JHB_OWN_LDAP_SCOPE_BASE_
+#endif // __LDAP_OWN_SCOPE_BASE__
 			} // for index
 
 			totalAgents += agentsAdded;
 
-#ifdef CUT_LDAP_REQUEST
+#ifdef __LDAP_CUT_REQUESTS__
 			// Lettre suivante
 			currentLetter++;
 
@@ -1570,7 +1505,7 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 			todo = (fullReg?(currentLetter < 26):false);
 #endif // JHB_USE_OLD_REG_SYNTAX
-#endif // CUT_LDAP_REQUEST
+#endif // __LDAP_CUT_REQUESTS__
 		}
 
 		// Libérations
@@ -1584,16 +1519,16 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 			//ldap_msgfree(searchResult);
 			searchResult = NULL;
 		}
-#ifdef CUT_LDAP_REQUEST
+#ifdef __LDAP_CUT_REQUESTS__
 	} // while (todo)
-#endif // CUT_LDAP_REQUEST
+#endif // __LDAP_CUT_REQUESTS__
 
-#ifdef CUT_LDAP_REQUEST
+#ifdef __LDAP_CUT_REQUESTS__
 	if (fullReg){
 		fullReg->clear(false);
 		delete fullReg;
 	}
-#endif // CUT_LDAP_REQUEST
+#endif // __LDAP_CUT_REQUESTS__
 
 	// retourne le nombre d'agents effectivement  ajoutés
 	//	totalAgents correspond au nombre d'éléments dans l'organigramme et outputFile::size() au nombre de "lignes" dans le fichier de sortie
@@ -1620,11 +1555,6 @@ bool ldapBrowser::_getServices()
 	searchExpr expression(SEARCH_EXPR_OPERATOR_AND);
 	expression.add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_TYPE_OU);
 	expression.exists(STR_ATTR_DESCRIPTION);
-
-#ifdef _DEBUG
-	string test((const char*)expression);
-	int i(5);
-#endif // _DEBUG
 
 	// Execution de la requete
 	//
@@ -1736,7 +1666,7 @@ bool ldapBrowser::_getServices()
 	return true;
 }
 
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 
 // Liste des intitulés de postes
 //
@@ -1885,7 +1815,7 @@ bool ldapBrowser::_getTitles()
 
 	return true;
 }
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES__
 
 // Liste des groupes auxquels apprtient un utilisateur
 //
@@ -2196,17 +2126,6 @@ const bool ldapBrowser::_FTPTransfer(FTPDestination* ftpDest)
 		// Connexion
 		ftpClient.InitSession(ftpDest->ftpServer(), ftpDest->ftpPort(), ftpDest->ftpUser(), ftpDest->ftpPwd());
 
-		// Suppression du fichier (si il existe déja)
-		//	JHB : La méthode Info génère un affichage sur la console !!!
-		//	et si le compte ftp dispose des droits de suppression, le remplacement sera effectué si nécessaire
-		/*
-		jhbCURLTools::FTPClient::FTPFILEINFO fi;
-		if (ftpClient.Info(destName, fi)){
-			ftpClient.RemoveFile(destName);
-			logs_->add(logs::TRACE_TYPE::DBG, "\t - Suppression sur le serveur de l'ancien fichier '%s'", destName.c_str());
-		}
-		*/
-
 		// Transfert du fichier
 		logs_->add(logs::TRACE_TYPE::NORMAL, "\t - Transfert du fichier '%s' par FTP vers '%s'", file_->fileName(false), ftpDest->name());
 
@@ -2298,6 +2217,9 @@ const bool ldapBrowser::_SCPTransfer(SCPDestination* scpDest)
 	string message("");
 	if (_exec(alias->application(), command, message)) {
 		logs_->add(logs::TRACE_TYPE::LOG, "Transfert SCP '%s' effectué avec succès", scpDest->name());
+		if (0 != message.size()){
+		    logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Message retour : %s", message.c_str());
+		}
 	}
 	else {
 		logs_->add(logs::TRACE_TYPE::ERR, "Transfert SCP '%s' - Erreur : %s", scpDest->name(), message.c_str());
@@ -2328,7 +2250,7 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 	// Mise à jour des noms
 	opfi.actions_.tokenize(file);
 
-	string output(""), errorMessage("");
+	string output(""), message("");
 	bool launched(false);
 	fileActions::fileAction* action(NULL);
 
@@ -2348,7 +2270,12 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 					sFileSystem::current_path(configurationFile_->getFolders()->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
 
 					// Exécution ...
-					if (true == (launched = _exec(action->application(), action->parameters(), errorMessage))) {
+					if (true == (launched = _exec(action->application(), action->parameters(), message))) {
+
+						// Retour du binaire appelé
+						if (0 != message.size()){
+                            logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Message retour : %s", message.c_str());
+                        }
 
 						bool done(true);
 
@@ -2365,12 +2292,7 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 								file_->setFileName(output);					// dans le "fichier" le nom complet
 								opfi.name_ = sFileSystem::split(output);	// le nom court
 
-#ifdef _DEBUG
-								logs_->add(logs::TRACE_TYPE::LOG, "\t- Renomamge du fichier de sortie en : %s", output.c_str());
-#else
-								logs_->add(logs::TRACE_TYPE::DBG, "\t- Renommage du fichier de sortie en : %s", output.c_str());
-#endif // _DEBUG
-							}
+								logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Renomamge du fichier de sortie en : %s", output.c_str());							}
 							else {
 								done = false;
 								logs_->add(logs::TRACE_TYPE::ERR, "\t- Le fichier %s est introuvable", output.c_str());
@@ -2378,11 +2300,11 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 						}
 
 						if (done) {
-							logs_->add(logs::TRACE_TYPE::LOG, "\t- Terminée avec succès");
+							logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Terminée avec succès");
 						}
 					}
 					else {
-						logs_->add(logs::TRACE_TYPE::ERR, "Action postgen pour '%s' - %s", action->name(), errorMessage.c_str());
+						logs_->add(logs::TRACE_TYPE::ERR, "Action postgen pour '%s' - %s", action->name(), message.c_str());
 					}
 				} // if (!exists())
 			}
@@ -2394,17 +2316,18 @@ void ldapBrowser::_handlePostGenActions(OPFI& opfi)
 }
 
 // Exécution d'une application
-bool ldapBrowser::_exec(const string& application, const string& parameters, string& errorMessage)
+//
+bool ldapBrowser::_exec(const string& application, const string& parameters, string& retMessage)
 {
 	bool valid(false);
 
 	if (0 == application.length()) {
-		errorMessage = "ldapBrowser::_exec - Pas d'application à lancer";
+		retMessage = "ldapBrowser::_exec - Pas d'application à lancer";
 		return false;
 	}
 
 	// C'est parti ...
-	errorMessage = "";
+	retMessage = "";
 	string app(application);
 	charUtils::cleanName(app);
 
@@ -2426,7 +2349,7 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 		DWORD exitCode(0);
 		if (WAIT_OBJECT_0 != (exitCode = WaitForSingleObject(pi.hProcess, 5000))) {
 			// erreur ...
-			errorMessage = "Timeout dépassé";
+			retMessage = "Timeout dépassé";
 			valid = false;
 		}
 		else {
@@ -2434,8 +2357,8 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 			BOOL status(GetExitCodeProcess(pi.hProcess, &exitCode));
 			if (FALSE == status || (TRUE == status && 0 != exitCode)){
 				// une erreur quelconque ...
-				errorMessage = "Erreur lors de l'exécution de l'application. Code retour : ";
-				errorMessage += charUtils::itoa(exitCode);
+				retMessage = "Erreur lors de l'exécution de l'application. Code retour : ";
+				retMessage += charUtils::itoa(exitCode);
 				valid = false;
 			}
 		}
@@ -2445,16 +2368,48 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
 	}
 	else {
 		DWORD lastError(GetLastError());
-		errorMessage = "Erreur n° ";
-		errorMessage += charUtils::itoa(lastError);
+		retMessage = "Erreur n° ";
+		retMessage += charUtils::itoa(lastError);
 
 		char errStr[256];
 		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, lastError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), errStr, 255, NULL);
-		errorMessage += " - : ";
-		errorMessage += errStr;
+		retMessage += " - : ";
+		retMessage += errStr;
 	}
 #else
+    string cmdLine(application);
+    if (0 != parameters.size()){
+        cmdLine += " ";
+        cmdLine += parameters;
+    }
+
 	// Lancement de la commande
+	//std::system(cmdLine.c_str());
+
+	char buffer[1024];
+    string result("");
+    unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmdLine.c_str(), "r"), pclose);
+    if (!pipe) {
+        retMessage = "Erreur popen : impossible d'exécuter la commande.";
+    }
+    else{
+        // Récupération du flux de sortie
+        while (fgets(buffer, 1024, pipe.get()) != nullptr) {
+            result += buffer;
+        }
+
+        // Tout s'est bien déroulé (du moins pas de plantage)
+        // les informations complémentaires sont dans le message de retour qui sera poussé dans les logs
+        retMessage = result;
+
+        size_t len(retMessage.size());
+        if (len && '\n' == retMessage[len - 1]){
+            // Retrait du saut de ligne final
+            retMessage.resize(len - 1);
+        }
+
+        valid = true;
+    }
 #endif // _WIN32
 
 	// Ok ?

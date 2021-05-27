@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
@@ -534,7 +534,9 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 	}
 
 	// Ajout dans le fichier
-	encoder_.toUTF8(line, false);
+#ifdef _WIN32
+	encoder_.convert_toUTF8(line, false);
+#endif // _WIN32
 	file_ << line;
 
 	// Fin de la ligne

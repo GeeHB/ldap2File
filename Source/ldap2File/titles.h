@@ -22,16 +22,16 @@
 //--
 //--	09/07/2020 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
-#ifdef __LDAP_USE_ALLIER_TITLES_h__
+#ifdef __LDAP_USE_ALLIER_TITLES__
 
 #include "sharedConsts.h"
 
 #ifndef __LDAP_2_FILE_TITLES_LIST_h__
-#define __LDAP_2_FILE_TITLES_LIST_h__
+#define __LDAP_2_FILE_TITLES_LIST_h__   1
 
 namespace jhbLDAPTools {
 
@@ -145,6 +145,6 @@ namespace jhbLDAPTools {
 
 #endif // __LDAP_2_FILE_TITLES_LIST_h__
 
-#endif // __LDAP_USE_ALLIER_TITLES_h__
+#endif // __LDAP_USE_ALLIER_TITLES__
 
 // EOF

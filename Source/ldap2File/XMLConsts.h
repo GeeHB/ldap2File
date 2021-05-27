@@ -21,12 +21,12 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef _LDAP_2_FILE_XML_CONSTS_h__
-#define _LDAP_2_FILE_XML_CONSTS_h__
+#define _LDAP_2_FILE_XML_CONSTS_h__ 1
 
 //---------------------------------------------------------------------------
 //--
@@ -39,7 +39,7 @@
 
 //
 // Définitions générales
-// 
+//
 
 #define TYPE_NONE					"aucun"		// Pas de type defini
 
@@ -355,9 +355,9 @@
 //#define XML_COMP_OPERATOR_LOWER				"lt"	// "<"
 #define XML_COMP_OPERATOR_LOWER_OR_EQUAL	"le"	// "<="
 
-// Opérateur binaires - pleinement fonctionnels 
+// Opérateur binaires - pleinement fonctionnels
 //
-#define XML_COMP_OPERATOR_AND				"AND"	
+#define XML_COMP_OPERATOR_AND				"AND"
 #define XML_COMP_OPERATOR_OR				"OR"
 
 //

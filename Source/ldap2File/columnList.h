@@ -22,14 +22,15 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_COLUMN_LIST_h__
-#define __LDAP_2_FILE_COLUMN_LIST_h__
+#define __LDAP_2_FILE_COLUMN_LIST_h__   1
 
 #include "sharedConsts.h"
+#include "sharedTypes.h"
 #include "ldapAttributes.h"			// Liste des attributs LDAP
 
 //--------------------------------------------------------------------------

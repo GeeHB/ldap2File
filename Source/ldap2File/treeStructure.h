@@ -26,14 +26,15 @@
 //--
 //--	14/02/2065 - JHB - Création
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	27/05/2021 - JHB - Version 21.5.7
 //--
 //---------------------------------------------------------------------------
 
 #ifndef __LDAP_2_FILE_LDAP_TREE_STRUCTURE_h__
-#define __LDAP_2_FILE_LDAP_TREE_STRUCTURE_h__
+#define __LDAP_2_FILE_LDAP_TREE_STRUCTURE_h__   1
 
 #include "sharedConsts.h"
+#include "sharedTypes.h"
 
 //
 // Définition de la classe

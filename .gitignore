@@ -12,3 +12,7 @@ Anciennes*/
 *.pdb
 *.ipch
 .vs/
+*.exe
+*.EXE
+*.dll
+*.DLL
