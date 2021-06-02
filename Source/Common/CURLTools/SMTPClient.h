@@ -38,7 +38,7 @@
 //---------------------------------------------------------------------------
 
 #ifndef __JHB_CUPS_SMTP_CLIENT_h__
-#define __JHB_CUPS_SMTP_CLIENT_h__
+#define __JHB_CUPS_SMTP_CLIENT_h__      1
 
 #include "CURLTools.h"
 

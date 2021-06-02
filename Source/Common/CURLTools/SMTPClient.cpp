@@ -6,7 +6,7 @@
 //--
 //--	DATE	: 11/05/2021
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -105,7 +105,7 @@ namespace jhbCURLTools
 	:object_{ subject }, body_{body}, from_{from, nameFrom, recipient::DEST_TYPE::FROM}
 	{
 		encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15, true);
-		eol_ = encoder_.eol(charUtils::FORMAT_EOL::EOL_CRLF);
+		eol_ = charUtils::eol(charUtils::FORMAT_EOL::EOL_CRLF);
 	}
 
 	// Envoi du message

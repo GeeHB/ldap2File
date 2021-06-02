@@ -143,7 +143,7 @@ public:
 	// Saut de ligne à utiliser
 	enum class FORMAT_EOL { EOL_CR, EOL_LF, EOL_CRLF };
 
-	std::string eol(FORMAT_EOL eType);
+	static std::string eol(FORMAT_EOL eType);
 	std::string eol()
 	{ return eol_; }
 

@@ -6,7 +6,7 @@
 //--
 //--	DATE	: 11/05/2021
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -68,7 +68,9 @@ namespace jhbCURLTools {
        strSSLKeyPwd_(""),
        pCurlSession_(nullptr),
        iCurlTimeout_(0),
+#ifdef __FTP_USE_CALLBACK_FUNCTION__
        bProgressCallbackSet_(false),
+#endif // __FTP_USE_CALLBACK_FUNCTION__
        hCurl_(CURLHandle::instance())
     {
     }
@@ -155,6 +157,7 @@ namespace jhbCURLTools {
        pCurlSession_ = nullptr;
     }
 
+#ifdef __FTP_USE_CALLBACK_FUNCTION__
     /**
      * @brief sets the progress function callback and the owner of the client
      *
@@ -169,6 +172,7 @@ namespace jhbCURLTools {
        ProgressStruct_.dLastRunTime = 0;
        bProgressCallbackSet_ = true;
     }
+#endif // __FTP_USE_CALLBACK_FUNCTION__
 
     /**
      * @brief sets the HTTP Proxy address to tunnel the operation through it
@@ -830,11 +834,14 @@ namespace jhbCURLTools {
           curl_easy_setopt(pCurlSession_, CURLOPT_NOSIGNAL, 1L);
        }
 
+#ifdef __FTP_USE_CALLBACK_FUNCTION__
        if (bProgressCallbackSet_) {
           curl_easy_setopt(pCurlSession_, CURLOPT_PROGRESSFUNCTION, *GetProgressFnCallback());
           curl_easy_setopt(pCurlSession_, CURLOPT_PROGRESSDATA, &ProgressStruct_);
           curl_easy_setopt(pCurlSession_, CURLOPT_NOPROGRESS, 0L);
        }
+#endif // __FTP_USE_CALLBACK_FUNCTION__
+
 
        if (eFtpProtocol_ == FTP_PROTOCOL::FTPS || eFtpProtocol_ == FTP_PROTOCOL::FTPES)
           /* We activate SSL and we require it for both control and data */

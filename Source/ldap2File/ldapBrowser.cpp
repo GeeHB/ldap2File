@@ -7,7 +7,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -23,7 +23,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 
@@ -148,14 +148,14 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 		if (!cols_.reservedColName(attribute.name_)){
 			// Extension du schéma
 			if (cols_.extendSchema(attribute)){
-				logs_->add(logs::TRACE_TYPE::DBG, "Schema - la colonne '%s' correspond à l'attribut '%s'", attribute.name_.c_str(), attribute.ldapAttr_.c_str());
+				logs_->add(logs::TRACE_TYPE::DBG, "Schéma - la colonne '%s' correspond à l'attribut '%s'", attribute.name_.c_str(), attribute.ldapAttr_.c_str());
 			}
 			else{
-				logs_->add(logs::TRACE_TYPE::ERR, "Schema - Impossible d'ajouter la colonne '%s'", attribute.name_.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Schéma - Impossible d'ajouter la colonne '%s'", attribute.name_.c_str());
 			}
 		}
 		else{
-			logs_->add(logs::TRACE_TYPE::ERR, "Schema - Le nom de colonne '%s' ne peut être utilisé. Il est réservé", attribute.name_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Schéma - Le nom de colonne '%s' ne peut être utilisé. Il est réservé", attribute.name_.c_str());
 		}
 	}
 
@@ -164,7 +164,7 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 		throw LDAPException("Aucun attribut n'a été défini dans le schéma");
 	}
 
-	logs_->add(logs::TRACE_TYPE::LOG, "Schema - %d attributs reconnus", cols_.attributes());
+	logs_->add(logs::TRACE_TYPE::LOG, "Schéma - %d attributs reconnus", cols_.attributes());
 
 	// On s'assure que la colonne "manager" existe
 	string managersCol = configurationFile_->managersCol();
@@ -268,7 +268,7 @@ RET_TYPE ldapBrowser::browse()
 			return RET_TYPE::RET_FILE_TO_DELETE;
 		}
 		else {
-			logs_->add(logs::TRACE_TYPE::LOG, "La date limite du fichier '%s' n'est pas dépassée", pLimit->value().c_str());
+			logs_->add(logs::TRACE_TYPE::NORMAL, "La date limite du fichier '%s' n'est pas dépassée", pLimit->value().c_str());
 		}
 	}
 	else {
@@ -2405,10 +2405,17 @@ bool ldapBrowser::_exec(const string& application, const string& parameters, str
         size_t len(retMessage.size());
         if (len && '\n' == retMessage[len - 1]){
             // Retrait du saut de ligne final
-            retMessage.resize(len - 1);
-        }
+			if ('\n' == retMessage[len - 1]) {
+				retMessage.resize(len - 1);
+			}
 
-        valid = true;
+			valid = true;
+		}
+		/*
+		else {
+
+		}
+		*/
     }
 #endif // _WIN32
 

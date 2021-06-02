@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -32,7 +32,7 @@
 //--	08/02/2021 - JHB - Version 21.2.2
 //--						+ Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 
@@ -67,8 +67,9 @@ vCardFile::vCardFile(const LPOPFI fileInfos, columnList* columns, confFile* para
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 #endif // _WIN32
 
-	organisation_ = "";
+    organisation_ = "";
 	newFile_ = true;
+
 }
 
 // Lecture des paramètres "personnels" dans le fichier de conf

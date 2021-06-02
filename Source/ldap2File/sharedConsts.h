@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -21,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@
 #endif // APP_FULL_NAME
 
 #define APP_DESC				"Utilitaire d'export des annuaires LDAP et OpenLDAP"
-#define APP_RELEASE				"21.5.7"
+#define APP_RELEASE				"21.6.8"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -103,7 +103,7 @@
 // Analyse du contenu d'un dossier
 #define CMD_LINE_DIR			"-d:"
 
-// Génération d'un fichier de sortie (à la place de ceux déterminés par le fichier de commande)
+// Génération d'un fichier de sortie (à la place du nom fourni par le fichier de commande)
 #define CMD_OUTPUT_FILE			"-o:"
 
 // Suppression du fichier après traitement ( -d doit être absent)

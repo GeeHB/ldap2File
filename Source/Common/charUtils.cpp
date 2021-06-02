@@ -8,7 +8,7 @@
 //--
 //--	DATE	: 19/05/2021
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -84,25 +84,25 @@ void charUtils::sourceFormat(SOURCE_FORMAT source, bool quotedPrintable)
 //
 std::string charUtils::eol(FORMAT_EOL eType)
 {
-	eol_ = "";
+	std::string newEoL("");
 	switch (eType){
 	case FORMAT_EOL::EOL_CR:
-		eol_ = CHAR_CR;
+		newEoL = CHAR_CR;
 		break;
 	case FORMAT_EOL::EOL_LF:
-		eol_ = CHAR_LF;
+		newEoL = CHAR_LF;
 		break;
 	case FORMAT_EOL::EOL_CRLF:
 	default:
 #ifdef _WIN32
-		eol_ = CHAR_LF;
+		newEoL = CHAR_LF;
 #else
-		eol_ = CHAR_CR;
-		eol_ += CHAR_LF;
+		newEoL = CHAR_CR;
+		newEoL += CHAR_LF;
 #endif // _WIN32
 		break;
 	}
-	return eol_;
+	return newEoL;
 }
 
 //

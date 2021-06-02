@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -22,7 +22,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 
@@ -149,8 +149,7 @@ public:
 
 	// "Profondeur" associée à un type de container
 	//
-	size_t containerDepth(const char* container)
-	{
+	size_t containerDepth(const char* container){
 		if (IS_EMPTY(container)) return DEPTH_NONE;
 		string sContainer(container);
 		return containerDepth(sContainer);
@@ -174,7 +173,9 @@ protected:
 	logs*				logs_;
 	treeStructure*			structure_;
 
+#ifdef _WIN32
 	charUtils				encoder_;
+#endif // _WIN32
 
 	// Liste
 	deque<LPLDAPSERVICE>	services_;

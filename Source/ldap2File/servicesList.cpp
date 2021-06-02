@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -22,7 +22,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 
@@ -105,7 +105,9 @@ servicesList::servicesList(logs* pLogs, treeStructure* structure)
 	logs_ = pLogs;
 	structure_ = structure;
 
+#ifdef _WIN32
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
+#endif // WIN32
 }
 
 // Vidage
@@ -151,7 +153,10 @@ bool servicesList::add(const char* dn, string& name, string& shortName, string&f
 	}
 
 	// Création du service (sans accents)
-	string sName = encoder_.removeAccents(name);
+	string sName(name);
+#ifdef _WIN32
+	sName = charUtils::removeAccents(sName);
+#endif // _WIN32
 	service = new LDAPService(dn, name.c_str(), sName.c_str(), shortName.c_str(), fileName.c_str(), bkColor.c_str(), site.c_str());
 	if (NULL == service){
 		if (logs_){
@@ -249,7 +254,9 @@ servicesList::LPLDAPSERVICE servicesList::userContainers(const char* userDN)
 servicesList::LPLDAPSERVICE servicesList::findContainer(string& container, string& containerDN, size_t& depth)
 {
 	LPLDAPSERVICE service(NULL);
-	container = encoder_.removeAccents(container);
+#ifdef _WIN32
+	container = charUtils::removeAccents(container);
+#endif // _WIN32
 	if (NULL != (service = _findContainerByName(container.c_str()))){
 		//depth = depthFromContainerType(container);
 		depth = containerDepth(container);
@@ -289,7 +296,7 @@ bool servicesList::findSubContainers(string& from, string& name, size_t depth, d
 			childDN.npos != (pos =childDN.find(from)) &&
 			pos >= 0){
 			// Un de mes descendants ...
-			childDepth = encoder_.countOf(childDN, ',', mySize);
+			childDepth = charUtils::countOf(childDN, ',', mySize);
 
 			if (childDepth == depth ||							// profondeur recherchée
 				(0 == childDepth && childSvc->equalName(name)))	// les agents du container
@@ -374,7 +381,6 @@ servicesList::LPLDAPSERVICE servicesList::_getContainerOf(const char* DN, const 
 	servicesList::LPLDAPSERVICE service = _findContainerByDN(dn.c_str());
 	if (service && !IS_EMPTY(inName)){
 		string sInName(inName);
-		//encoder_.fromUTF8(sInName);
 
 		// La description du container contient une sous-chaine
 		if (!strstr(service->realName(), sInName.c_str())){

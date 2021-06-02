@@ -2,15 +2,28 @@ TODO{
 	- Compatibilité Windows x64
 	- Linux : vérifier en écriture et/ou lecture pour les dossiers de l'application : std::filesystem::status(xxx).permissions()
 	- charUtils : la majorité des méthodes devraient être "static"
+	    - Linux : n'utiliser que les versions static et jamais "encoder_"
+	- Essayer sFileSystem sous Win32, sans utiliser les API Windows (serait plus facilement portable)
 }
 
-BUG{
-
+BUGS{
+	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
+
+21.6.8 - Version complète
+	* le 2 juin 2021 / MAJ de la ressource
+    + Corrections mineures
+        - FTPClient.h & FTPClient.cpp => pb de compilation sous CentOS 7
+        - Message d'erreur plus explicite losrque le fichier de ".conf" n'est pas disponible ou vide
+        - logs ...
+        - pb non bloquant : les fin de lignes dans les fichiers VCARD sont définis par CRLF
+    + Tests de regressions x3 x2 (tous les tests sur chaque OS cible ...)
+		+ win32 : OK
+		+ fedora : OK
 
 21.5.7 - RC2
 	* le 27 mai 2021 / MAJ de la ressource
-	+ Compatibilité Win32 / Fedora >= 32 / CentOS 7 / CentOS 8
+	+ Compatibilité Win32 / Fedora >= 32 / CentOS 7 / CentOS 8 (si makefile)
 	+ Corrections / modifications des sources
 	    + Modification des définitions en haut des fichiers ".h"
 	    + Normalisation des noms dans les #define globaux
@@ -22,7 +35,7 @@ BUG{
 	    + Linux :
 	        + Tout doit être en UTF8 (pas de conversion en ISO_8859_15)
 	        + Gestion des noms de fichier accentués et avec ' ' (même s'il faut les éviter ...)
-	        + erreur dans la génération des fichiers LDIF (si valeur en UTF8 -> encodage en Base64)
+	        + Erreur dans la génération des fichiers LDIF (si valeur en UTF8 -> encodage en Base64)
 	    + charUtils.cpp - changement des prototypes erratiques et ajout du prefixe "convert_"
 		+ UTF8 : bug lors de la simplication des noms d'onglet trop longs (il était possible de "couper" entre le car et son CP) => méthode charUtils::utf8_realIndex
     + Windows : simplification de l'algo pour la génération des fichiers VCARD

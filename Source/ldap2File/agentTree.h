@@ -13,7 +13,7 @@
 //--			Définition des classes agentInfos & agentTree pour la modélisation
 //--			de l'arborescence hiérachique
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -22,7 +22,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 

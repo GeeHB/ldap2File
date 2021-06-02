@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -38,7 +38,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 
@@ -160,14 +160,13 @@ int main(int argc, const char* argv[]) {
 		myFolders.add(folders::FOLDER_TYPE::FOLDER_TEMP, STR_FOLDER_TEMP);				// fichiers temporaires
 		myFolders.add(folders::FOLDER_TYPE::FOLDER_OUTPUTS, STR_FOLDER_OUTPUTS);		// pour les fichiers générés
 
-		file = sFileSystem::merge(folder, XML_CONF_FILE);
-
 		// Ouverture du fichier de configuration
-		//
-		if (!configurationFile.open(file.c_str())) {
-			// Une "petite" erreur ...
-			return 1;
-		}
+        //
+        file = sFileSystem::merge(folder, XML_CONF_FILE);
+        if (!configurationFile.open(file.c_str())) {
+            // Une "petite" erreur ...
+            return 1;
+        }
 	}
 	catch (LDAPException& e) {
 		cout << "Erreur : " << e.what() << endl;
@@ -221,7 +220,6 @@ int main(int argc, const char* argv[]) {
 			myLogs.add(logs::TRACE_TYPE::NORMAL, "Conservation des logs %d jours", lInfos.duration_);
 		}
 
-		//myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", argv[0]);
 		myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", fullAppName.c_str());
 		myLogs.add(logs::TRACE_TYPE::LOG, "Fichier de configuration : %s", file.c_str());
 		myLogs.add(logs::TRACE_TYPE::LOG, "Dossiers de l'application : ");
@@ -240,6 +238,21 @@ int main(int argc, const char* argv[]) {
 		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur inconnue");
 		retCode = 1;
 	}
+
+	// Le logs existent, on peut maintenant
+	// faire un peu de c++ ...
+	struct _finalLogs {
+		logs logs_;
+		_finalLogs(const logs& other) {
+			logs_ = other;
+		}
+		virtual ~_finalLogs() {
+			logs_.add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
+			logs_.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
+		}
+	};
+
+	_finalLogs myTrace(myLogs);
 
 	list<string> files;
 	size_t filesGenerated(0);
@@ -296,8 +309,6 @@ int main(int argc, const char* argv[]) {
 		// Analyse d'un dossier
 		if (remoteFolder.size()) {
 			if (false == _getFolderContent(remoteFolder, files, &myLogs)){
-			    myLogs.add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
-	            myLogs.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
 			    return 1;
 			}
 		}
@@ -424,12 +435,13 @@ int main(int argc, const char* argv[]) {
 		}
 	}
 	catch (LDAPException& e) {
-		myLogs.add(logs::TRACE_TYPE::ERR, "\nErreur : %s", e.what());
+		// Une ereur bloquante
+		myLogs.add(logs::TRACE_TYPE::ERR, e.what());
 		retCode = 1;
 	}
 	catch (...) {
 		// Erreur inconnue
-		myLogs.add(logs::TRACE_TYPE::ERR, "\nErreur inconnue");
+		myLogs.add(logs::TRACE_TYPE::ERR, "Erreur inconnue");
 		retCode = 1;
 	}
 
@@ -447,8 +459,6 @@ int main(int argc, const char* argv[]) {
 
 	// Fin
 	myLogs.add(logs::TRACE_TYPE::LOG, "%d / %d fichier(s) crée(s)", filesGenerated, files.size());
-	myLogs.add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
-	myLogs.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
 
 	return retCode;
 }

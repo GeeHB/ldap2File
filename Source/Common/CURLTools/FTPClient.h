@@ -33,11 +33,11 @@
 //---------------------------------------------------------------------------
 
 #ifndef __JHB_CUPS_FTP_CLIENT_h__
-#define __JHB_CUPS_FTP_CLIENT_h__
+#define __JHB_CUPS_FTP_CLIENT_h__   1
 
 #include "CURLTools.h"
 
-#define FTPCLIENT_VERSION "FTPCLIENT_VERSION_1.0.2"
+#define FTPCLIENT_VERSION "FTPCLIENT_VERSION_1.0.3"
 
 // Message d'erreur
 //
@@ -138,10 +138,12 @@ class FTPClient {
    { bActive_ = bEnable; }
    inline void SetNoSignal(const bool &bNoSignal)
    { bNoSignal_ = bNoSignal; }
+#ifdef __FTP_USE_CALLBACK_FUNCTION__
    inline auto GetProgressFnCallback() const
    { return fnProgressCallback_.target<int (*)(void *, double, double, double, double)>(); }
    inline void *GetProgressFnCallbackOwner() const
-   { return ProgressStruct_.pOwner; }
+   { return ProgressStruct_.pOwner; }*
+#endif // __FTP_USE_CALLBACK_FUNCTION__
    inline const std::string &GetProxy() const
    { return strProxy_; }
    inline const int GetTimeout() const
@@ -257,9 +259,11 @@ class FTPClient {
    int                  iCurlTimeout_;
 
    // Progress function
+#ifdef __FTP_USE_CALLBACK_FUNCTION__
    ProgressFnCallback   fnProgressCallback_;
    ProgressFnStruct     ProgressStruct_;
    bool                 bProgressCallbackSet_;
+#endif // __FTP_USE_CALLBACK_FUNCTION__
 
 #ifdef DEBUG_CURL
    static std::string s_strCurlTraceLogDirectory;

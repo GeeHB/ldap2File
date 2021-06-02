@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -40,8 +40,12 @@ CSVFile::CSVFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 :textFile(fileInfos, columns, parameters)
 {
 	// Paramètres de l'encodeur
-	//encoder_.sourceFormat(charUtils::ISO_8859_15, false, false);	// Pas de Latin étendus pour les CSV
+#ifdef _WIN32
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
+#endif // _WIN32
+
+	// Le saut de ligne est CRLF
+	eol_ = charUtils::eol(charUtils::FORMAT_EOL::EOL_CRLF);
 
 	utf8_ = false;			// par défaut en ISO ...
 	showVacant_ = true;		// ... et on affiche les postes vacants

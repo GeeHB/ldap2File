@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -15,7 +15,7 @@
 //--		Implémentation de la classe confFile pour la lecture des parametres
 //--		dans le fichier de configuration (au format XML)
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 
@@ -533,7 +533,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 	return true;
 }
 
-// Schema LDAP reconnu
+// Schéma LDAP reconnu
 //
 bool confFile::nextLDAPAttribute(columnList::COLINFOS& col)
 {

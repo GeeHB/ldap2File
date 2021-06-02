@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -22,7 +22,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 
@@ -43,7 +43,6 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool 
 	// Initialisation des paramètres
 	baseRootName_ = rootName;
 	folders_ = pFolders;
-	logs_ = pLogs;
 	fileName_ = "";
 	loadComments_ = loadComments;
 
@@ -55,6 +54,9 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool 
 	//
 	defType_ = DEST_TYPE::DEST_FS;		// Par défaut un fichier
 	expectedOS_ = CURRENT_OS;
+
+	// Traces & logs
+	logs_ = pLogs;
 }
 
 // Vérification de la version
@@ -220,17 +222,31 @@ bool XMLParser::_load()
 {
 	// Le fichier doit exister et être non-vide
 	if (0 == fileName_.size()) {
+	    string message("Pas de nom pour le fichier XML");
 		if (logs_) {
-		    logs_->add(logs::TRACE_TYPE::ERR, "Pas de nom pour le fichier de configuration");
+		    logs_->add(logs::TRACE_TYPE::ERR, message.c_str());
         }
+
+		throw LDAPException(message);
+
+		// ???
 		return false;
 	}
 
 	if (!sFileSystem::exists(fileName_) ||
 		0 == sFileSystem::file_size(fileName_)) {
+
+		string message("Le fichier '");
+        message += fileName_;
+        message += " n'existe pas ou est vide";
+
 		if (logs_) {
-            logs_->add(logs::TRACE_TYPE::ERR, "Le fichier '%' n'existe pas ou est vide", fileName_.c_str());
+            logs_->add(logs::TRACE_TYPE::ERR, message.c_str());
         }
+
+        throw LDAPException(message);
+
+        // !!!
 		return false;
 	}
 

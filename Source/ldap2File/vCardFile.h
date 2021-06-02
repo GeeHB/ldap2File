@@ -6,7 +6,7 @@
 //--
 //--	PROJET	: ldap2File
 //--
-//--    COMPATIBILITE : Win32 | Linux (Fedora 34 et supérieures)
+//--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -32,7 +32,7 @@
 //--	08/02/2021 - JHB - Version 21.2.2
 //--						+ Création
 //--
-//--	27/05/2021 - JHB - Version 21.5.7
+//--	02/06/2021 - JHB - Version 21.6.8
 //--
 //---------------------------------------------------------------------------
 
@@ -231,7 +231,8 @@ private:
 	// Sauvegarde d'un attribut monovalué
 	void _attribute2VCARD(const char* szName, const char* szValue){
 		if (!IS_EMPTY(szName) && !IS_EMPTY(szValue)) {
-			file_ << szName << VCARD_ASSIGN_OP << szValue << eol_;
+			//file_ << szName << VCARD_ASSIGN_OP << szValue << eol_;
+			file_ << szName << VCARD_ASSIGN_OP << szValue << std::endl;
 		}
 	}
 
