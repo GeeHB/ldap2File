@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="/home/jhb/Nextcloud/ldapTools/CD03/ods" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
@@ -55,6 +56,10 @@
 		<Unit filename="../Source/Common/cmdLineAnalyzer.cpp" />
 		<Unit filename="../Source/Common/cmdLineAnalyzer.h" />
 		<Unit filename="../Source/Common/commonTypes.h" />
+		<Unit filename="../Source/Common/logs.cpp" />
+		<Unit filename="../Source/Common/logs.h" />
+		<Unit filename="../Source/Common/sFileSystem.cpp" />
+		<Unit filename="../Source/Common/sFileSystem.h" />
 		<Unit filename="../Source/ldap2File/CSVFile.cpp" />
 		<Unit filename="../Source/ldap2File/CSVFile.h" />
 		<Unit filename="../Source/ldap2File/JScriptConsts.h" />
@@ -93,12 +98,8 @@
 		<Unit filename="../Source/ldap2File/ldap2File.cpp" />
 		<Unit filename="../Source/ldap2File/ldapBrowser.cpp" />
 		<Unit filename="../Source/ldap2File/ldapBrowser.h" />
-		<Unit filename="../Source/ldap2File/logs.cpp" />
-		<Unit filename="../Source/ldap2File/logs.h" />
 		<Unit filename="../Source/ldap2File/outputFile.cpp" />
 		<Unit filename="../Source/ldap2File/outputFile.h" />
-		<Unit filename="../Source/ldap2File/sFileSystem.cpp" />
-		<Unit filename="../Source/ldap2File/sFileSystem.h" />
 		<Unit filename="../Source/ldap2File/searchExpr.cpp" />
 		<Unit filename="../Source/ldap2File/searchExpr.h" />
 		<Unit filename="../Source/ldap2File/servicesList.cpp" />

@@ -65,7 +65,7 @@
 #endif // APP_FULL_NAME
 
 #define APP_DESC				"Utilitaire d'export des annuaires LDAP et OpenLDAP"
-#define APP_RELEASE				"21.6.8"
+#define APP_RELEASE				"21.7.9"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -160,7 +160,8 @@ using namespace jhbLDAPTools;
 #endif // MAX_PATH
 #endif // _WIN32
 
-#include "logs.h"		// Version non partagée ...
+#include "logs.h"			// Version "commune"
+using namespace jhbTools;
 
 // Définitions perso.
 //

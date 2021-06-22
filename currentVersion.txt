@@ -10,6 +10,13 @@ BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
 
+21.7.9 - Version complète
+	* le 2 juin 2021 / MAJ de la ressource
+	+ logs & sFileSystem deviennent des classes "communes" utilisables par d'autres projets
+	    + => dépalcement dans Source/Common
+		+ jhbLDAPtools::logs => jhbTools::logs
+    + Corrections mineures
+
 21.6.8 - Version complète
 	* le 2 juin 2021 / MAJ de la ressource
     + Corrections mineures

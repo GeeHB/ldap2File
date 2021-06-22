@@ -167,7 +167,9 @@
     <ClCompile Include="..\Common\cmdLineAnalyzer.cpp" />
     <ClCompile Include="..\Common\CURLTools\FTPClient.cpp" />
     <ClCompile Include="..\Common\CURLTools\SMTPClient.cpp" />
+    <ClCompile Include="..\Common\logs.cpp" />
     <ClCompile Include="..\Common\RegEntry.cpp" />
+    <ClCompile Include="..\Common\sFileSystem.cpp" />
     <ClCompile Include="..\ZipLib\detail\EndOfCentralDirectoryBlock.cpp" />
     <ClCompile Include="..\ZipLib\detail\ZipCentralDirectoryFileHeader.cpp" />
     <ClCompile Include="..\ZipLib\detail\ZipGenericExtraField.cpp" />
@@ -245,12 +247,10 @@
     <ClCompile Include="LDAPServer.cpp" />
     <ClCompile Include="LDAPSources.cpp" />
     <ClCompile Include="LDIFFile.cpp" />
-    <ClCompile Include="logs.cpp" />
     <ClCompile Include="ODSFile.cpp" />
     <ClCompile Include="outputFile.cpp" />
     <ClCompile Include="searchExpr.cpp" />
     <ClCompile Include="servicesList.cpp" />
-    <ClCompile Include="sFileSystem.cpp" />
     <ClCompile Include="textFile.cpp" />
     <ClCompile Include="titles.cpp" />
     <ClCompile Include="treeStructure.cpp" />
@@ -264,6 +264,8 @@
     <ClInclude Include="..\Common\commonTypes.h" />
     <ClInclude Include="..\Common\CURLTools\FTPClient.h" />
     <ClInclude Include="..\Common\CURLTools\SMTPClient.h" />
+    <ClInclude Include="..\Common\logs.h" />
+    <ClInclude Include="..\Common\sFileSystem.h" />
     <ClInclude Include="..\ZipLib\ZipArchive.h" />
     <ClInclude Include="..\ZipLib\ZipArchiveEntry.h" />
     <ClInclude Include="..\ZipLib\ZipFile.h" />
@@ -283,14 +285,12 @@
     <ClInclude Include="LDAPServer.h" />
     <ClInclude Include="LDAPSources.h" />
     <ClInclude Include="LDIFFile.h" />
-    <ClInclude Include="logs.h" />
     <ClInclude Include="ODSConsts.h" />
     <ClInclude Include="ODSFile.h" />
     <ClInclude Include="outputFile.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="searchExpr.h" />
     <ClInclude Include="servicesList.h" />
-    <ClInclude Include="sFileSystem.h" />
     <ClInclude Include="sharedConsts.h" />
     <ClInclude Include="sharedTypes.h" />
     <ClInclude Include="stringTokenizer.h" />
