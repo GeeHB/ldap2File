@@ -247,10 +247,16 @@ BOOL CRegEntry::WritePrivateString(LPCTSTR szSection, LPCTSTR szEntry, LPCTSTR s
 
 string CRegEntry::GetPrivateString(LPCTSTR szSection, LPCTSTR szEntry, LPCTSTR szdefValue, bool expand)
 {
-	//TCHAR szInter[MAX_PATH+1];
-	TCHAR szInter[2048];
-	GetPrivateString(szSection, szEntry, szdefValue,szInter,2048, expand);
-	return szInter;
+	TCHAR szInter[MAX_PATH+1];
+	GetPrivateString(szSection, szEntry, szdefValue, (LPTSTR)szInter,2048, expand);
+	
+#ifdef UNICODE
+	char sInter[MAX_PATH+1];
+	FROM_UNICODE(szInter, sInter, (int)_tcslen(szInter) + 1);
+	return sInter;
+#else
+	return "";
+#endif // UNICODE
 }
 
 //--------------------------------------------------------------------------------
@@ -562,12 +568,13 @@ HKEY CRegEntry::CreeClef(HKEY hMum, LPCTSTR szPath, DWORD dOpeningPrivilege)
 	
 	HKEY hRetour;
 	DWORD Disposition;
-		
+			
 	RegCreateKeyEx(
 		hMum,
 		szPath,
 		0,
-		_T(""),
+		//(LPTSTR)L"",
+		NULL,
 #ifndef UNDER_CE
 		REG_OPTION_NON_VOLATILE, 
 #else

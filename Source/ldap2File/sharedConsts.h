@@ -21,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	02/06/2021 - JHB - Version 21.6.8
+//--	23/11/2021 - JHB - Version 21.11.9
 //--
 //---------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@
 #endif // APP_FULL_NAME
 
 #define APP_DESC				"Utilitaire d'export des annuaires LDAP et OpenLDAP"
-#define APP_RELEASE				"21.7.9"
+#define APP_RELEASE				"21.11.9"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")

@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	:	cmdLineAnalyzer.h
 //--
-//--	AUTEUR	:	Jérôme Henry-Barnaudière (JHB)
+//--	AUTEUR	:	JÃ©rÃ´me Henry-BarnaudiÃ¨re (JHB)
 //--
 //--	DATE	:	15/05/2014
 //--
@@ -12,19 +12,19 @@
 //--
 //--	DESCRIPTIONS:
 //--
-//--	Définition des classes cmdLineAnalyzer et cmdLineBuilder
+//--	Dï¿½finition des classes cmdLineAnalyzer et cmdLineBuilder
 //--
-//--	L'objet cmdLineAnalyzer effectue une analyse puis un découpage
-//--	en liste des paramètres d'une ligne de commandes
+//--	L'objet cmdLineAnalyzer effectue une analyse puis un dï¿½coupage
+//--	en liste des paramï¿½tres d'une ligne de commandes
 //--
-//--	L'objet cmdLineBuilder génère une ligne de commande à partir de paramètres valués
+//--	L'objet cmdLineBuilder gï¿½nï¿½re une ligne de commande ï¿½ partir de paramï¿½tres valuï¿½s
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	04/08/2003 - JHB - Création
+//--	04/08/2003 - JHB - Crï¿½ation
 //--
 //--	11/08/2003 - JHB - Validation - Version 1.1
 //--
@@ -39,15 +39,15 @@
 #ifndef __JHB_COMMAND_LINE_ANALYSER_h__
 #define __JHB_COMMAND_LINE_ANALYSER_h__ 1
 
-#include <commonTypes.h>
+#include "commonTypes.h"
 
-// Utilisation des classes génériques STL
+// Utilisation des classes gï¿½nï¿½riques STL
 //
 #include <string>
 #include <deque>	// ie. double ended queue
 using namespace std;
 
-#include <charUtils.h>
+#include "charUtils.h"
 
 #ifndef WIN32
     #include <stdlib.h>
@@ -61,7 +61,7 @@ using namespace std;
 //---------------------------------------------------------------------------
 
 
-// Les paramètres sont de la forme ! /[paramName]:[paramValue]
+// Les paramï¿½tres sont de la forme ! /[paramName]:[paramValue]
 //
 #define DEF_CHAR_PARAM				_T('/')
 #define DEF_CHAR_VALUE				_T(':')
@@ -71,7 +71,7 @@ using namespace std;
 
 //---------------------------------------------------------------------------
 //--
-//--		Définition des classes
+//--		Dï¿½finition des classes
 //--
 //---------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ public:
 	virtual ~cmdLine()
 		{ _dispose();}
 
-	//	Un paramètre de la ligne de commande
+	//	Un paramï¿½tre de la ligne de commande
 	//
 	class parameter
 	{
@@ -121,7 +121,7 @@ public:
             if (_szValue) free((void*)_szValue);
         }
 
-		// Accès
+		// Accï¿½s
 		const char* getName()
         {return _szName;}
 		const char* getValue()
@@ -131,14 +131,14 @@ public:
 		const char* setValue(char* szNew){
             if (_szValue) { free((void*)_szValue); _szValue = NULL; }
             if (!IS_EMPTY(szNew)) _szValue = strdup(szNew);
-            _bModified = true;	// La valeur a été modifiée
+            _bModified = true;	// La valeur a ï¿½tï¿½ modifiï¿½e
             return _szValue;
         }
 
 		bool isModified()
         { return _bModified; }
 
-	// Méthodes privées
+	// Mï¿½thodes privï¿½es
 	protected:
 
 		// initialisation
@@ -148,20 +148,20 @@ public:
             else {_szName = (const char*)strdup((const char*)szName); _szValue = (const char*)strdup((const char*)szVal);}
         }
 
-	// Données membres
+	// Donnï¿½es membres
 	public:
-		// Paramètres
+		// Paramï¿½tres
 		const char*	_szName;	// Nom
-		const char*	_szValue;	// Valeur associée
+		const char*	_szValue;	// Valeur associï¿½e
 
-		bool	_bModified;	// Valeur originale ou modifiée
+		bool	_bModified;	// Valeur originale ou modifiï¿½e
 	};
 
 
-	// Accès
+	// Accï¿½s
 	//
 
-	// Nombre de paramètres lus
+	// Nombre de paramï¿½tres lus
 	size_t size()
     { return (size_t)_params.size(); }
 	int getParamCount()
@@ -171,38 +171,38 @@ public:
 
 	virtual const char* getCommandLine() = 0;
 
-	// Un paramètre
+	// Un paramï¿½tre
 	cmdLine::parameter* getParameter(int index)
     { return (index>=getParamCount()?NULL:_params[index]); }
 
-	// recherche d'un paramètre par son nom
+	// recherche d'un paramï¿½tre par son nom
 	cmdLine::parameter* findParameter(const char* szName);
 	cmdLine::parameter* find(const char* szName)
     { return findParameter(szName); }
 
-// Méthodes privées
+// Mï¿½thodes privï¿½es
 //
 protected:
 
-	// Initialisation des paramètres pour la gestion de la ligne de commandes
+	// Initialisation des paramï¿½tres pour la gestion de la ligne de commandes
 	void _init(char name, char val, char sep)
     { _nameSep = name; _valSep = val; _blockSep = sep;}
 
 	// Recherche
 	deque<cmdLine::parameter*>::iterator _find(const char* szName);
 
-	// Libération de la liste des paramètres
+	// Libï¿½ration de la liste des paramï¿½tres
 	void _dispose();
 
-//	Données membres privées
+//	Donnï¿½es membres privï¿½es
 //
 protected:
 
-	deque<parameter*>		_params;	// Liste des paramètres
+	deque<parameter*>		_params;	// Liste des paramï¿½tres
 
-	char					_nameSep;	// Debut du nom du paramètre
-	char					_valSep;	// Debut de la valeur du paramètre
-	char					_blockSep;	// Séparateur de valeurs
+	char					_nameSep;	// Debut du nom du paramï¿½tre
+	char					_valSep;	// Debut de la valeur du paramï¿½tre
+	char					_blockSep;	// Sï¿½parateur de valeurs
 };
 
 // Alias ...
@@ -216,7 +216,7 @@ class cmdLineAnalyzer : public cmdLine
 {
 public:
 
-//	Méthodes publiques
+//	Mï¿½thodes publiques
 //
 public:
 
@@ -251,11 +251,11 @@ public:
 	virtual bool analyze(const char* cmd, char nameChar, char valChar, char valSep = CHAR_SPACE)
 	{ _init(nameChar, valChar, valSep); return analyse(cmd);}
 
-	// Accès
+	// Accï¿½s
 	virtual const char* getCommandLine()
 	{ return (const char*)_cmdLine;}
 
-// Méthodes privées
+// Mï¿½thodes privï¿½es
 //
 protected:
 
@@ -263,7 +263,7 @@ protected:
 	void _analyse(const char* cmd);
 
 
-//	Données membres privées
+//	Donnï¿½es membres privï¿½es
 //
 protected:
 	char*					_cmdLine;	// Ligne de commande
@@ -281,24 +281,24 @@ public:
 
 	// Parse
 	virtual bool analyse(std::string& str){
-        std::string src("&");	// Ajout du "premier" séparateur
+        std::string src("&");	// Ajout du "premier" sï¿½parateur
         src += str;
         return analyze(src.c_str());
 	}
 	virtual bool analyse(const char* str){
-		std::string src("&");	// Ajout du "premier" séparateur
+		std::string src("&");	// Ajout du "premier" sï¿½parateur
 		src += str;
 		return analyze(src.c_str());
 	}
 };
 
-// Génération de la ligne de commandes
+// Gï¿½nï¿½ration de la ligne de commandes
 //
 class cmdLineBuilder : public cmdLine
 {
 public:
 
-//	Méthodes publiques
+//	Mï¿½thodes publiques
 //
 public:
 
@@ -309,7 +309,7 @@ public:
 	virtual ~cmdLineBuilder()
     { _dispose();}
 
-	// Accès
+	// Accï¿½s
 	//
 	virtual const char* getCommandLine();
 
@@ -321,27 +321,27 @@ public:
 	void setProcessName(string &name)
 	{ setProcessName(name.c_str());}
 
-	// Ajouts d'un paramètre
+	// Ajouts d'un paramï¿½tre
 	bool add(parameter* param);
 	void operator+=(string const &sValue);
 	void operator+=(parameter* param)
 	{ add(param);}
 
-	// Suppression de paramètre(s)
+	// Suppression de paramï¿½tre(s)
 	bool remove(const char* szName);		// Un seul
 	void clear()						// Tous
 	{ _dispose();}
 
-// Méthodes privées
+// Mï¿½thodes privï¿½es
 //
 protected:
 
-//	Données membres privées
+//	Donnï¿½es membres privï¿½es
 //
 protected:
 	string					_cmdLine;		// Ligne de commande
 	string					_binName;		// Nom complet du programme
-	string					_simpleParams;	// Paramètres simples
+	string					_simpleParams;	// Paramï¿½tres simples
 };
 
 #endif //#ifndef __JHB_COMMAND_LINE_ANALYSER_h__

@@ -38,7 +38,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	02/06/2021 - JHB - Version 21.6.8
+//--	23/11/2021 - JHB - Version 21.11.9
 //--
 //---------------------------------------------------------------------------
 
@@ -379,6 +379,7 @@ int main(int argc, const char* argv[]) {
 
 					case RET_TYPE::RET_LDAP_ERROR:
 						cout << "Erreur LDAP";
+						retCode = 1;            // L'erreur est bloquante (pas de connexion au serveur ...)
 						break;
 
 					case RET_TYPE::RET_UNABLE_TO_SAVE:
@@ -392,6 +393,7 @@ int main(int argc, const char* argv[]) {
 					case RET_TYPE::RET_BLOCKING_ERROR:
 					default:
 						cout << "Erreur(s) bloquante(s)";
+						retCode = 1;
 						break;
 					}
 				}

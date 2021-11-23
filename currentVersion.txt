@@ -11,9 +11,14 @@ BUGS{
 }
 
 21.7.9 - Version complète
-	* le 2 juin 2021 / MAJ de la ressource
+    * le 23 nov. 2021
+    - Correction de bugs mineurs
+
+21.7.9 - Version complète
+	* le 23 juin 2021 / MAJ de la ressource
 	+ logs & sFileSystem deviennent des classes "communes" utilisables par d'autres projets
-	    + => dépalcement dans Source/Common
+	    + Compatibles Win (x64 + x86) / Linux x64
+		+ => déplacement dans Source/Common
 		+ jhbLDAPtools::logs => jhbTools::logs
     + Corrections mineures
 

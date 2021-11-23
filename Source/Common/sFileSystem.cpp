@@ -70,7 +70,16 @@ namespace sFileSystem {
 
 #ifdef _WIN32
 		try {
-			return (INVALID_FILE_ATTRIBUTES != GetFileAttributes(path.c_str()));
+			DWORD ret(0);
+#ifdef UNICODE
+			WCHAR wPath[MAX_PATH + 1];
+			TO_UNICODE(path.c_str(), wPath, (int)path.length() + 1);
+			ret = GetFileAttributesW(wPath);
+#else
+			ret = GetFileAttributesA(path.c_str());
+#endif // UNICODE
+
+			return (INVALID_FILE_ATTRIBUTES != ret);
 		}
 		catch (...) {
 			return false;
@@ -100,7 +109,14 @@ namespace sFileSystem {
 		try {
 
 #ifdef _WIN32
-			return (0 != CopyFile(from.c_str(), to.c_str(), FALSE));
+#ifdef UNICODE
+			WCHAR wFrom[MAX_PATH + 1], wTo[MAX_PATH + 1];
+			TO_UNICODE(from.c_str(), wFrom, (int)from.length() + 1);
+			TO_UNICODE(from.c_str(), wTo, (int)to.length() + 1);
+			return (0 != CopyFileW(wFrom, wTo, FALSE));
+#else
+			return (0 != CopyFileA(from.c_str(), to.c_str(), FALSE));
+#endif // UNICODE
 #else
 #ifdef __USE_STD_FILESYSTEM__
 			// Effacement si le fichier existe
@@ -148,8 +164,13 @@ namespace sFileSystem {
 
 		try {
 #ifdef _WIN32
-
-			return (TRUE == DeleteFile(path.c_str()));
+#ifdef UNICODE
+			WCHAR wPath[MAX_PATH + 1];
+			TO_UNICODE(path.c_str(), wPath, (int)path.length() + 1);
+			return (TRUE == DeleteFileW(wPath));
+#else
+			return (TRUE == DeleteFileA(path.c_str()));
+#endif // UNICODE
 #else
 #ifdef __USE_STD_FILESYSTEM__
 			return fs::remove(path);
@@ -182,13 +203,21 @@ namespace sFileSystem {
 		}
 
 #ifdef _WIN32
-		OFSTRUCT reOpenBuff;
-		DWORD hSize;
-		HANDLE hFile = (HANDLE)OpenFile(path.c_str(), &reOpenBuff, OF_READ);
-		if (HFILE_ERROR == (HFILE)hFile) {
+		HANDLE hFile(INVALID_HANDLE_VALUE);
+		//HFILE hFile = OpenFile(path.c_str(), &reOpenBuff, OF_READ);
+#ifdef UNICODE
+		WCHAR wPath[MAX_PATH + 1];
+		TO_UNICODE(path.c_str(), wPath, (int)path.length() + 1);
+		hFile = CreateFileW(wPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+#else
+		hFile = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+#endif // UNICODE
+		
+		if (INVALID_HANDLE_VALUE == hFile) {
 			return 0;
 		}
 
+		DWORD hSize;
 		DWORD dSize = GetFileSize(hFile, &hSize);
 		CloseHandle(hFile);
 		return ((size_t)dSize);
@@ -222,7 +251,15 @@ namespace sFileSystem {
 
 		try {
 #ifdef _WIN32
-			DWORD dwAttrib = GetFileAttributes(path.c_str());
+			DWORD dwAttrib(0);
+#ifdef UNICODE
+			WCHAR wPath[MAX_PATH + 1];
+			TO_UNICODE(path.c_str(), wPath, (int)path.length() + 1);
+			dwAttrib = GetFileAttributesW(wPath);
+#else
+			dwAttrib = GetFileAttributesA(path.c_str());
+#endif // UNICODE
+
 			return ((dwAttrib != INVALID_FILE_ATTRIBUTES) && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 #else
 #ifdef __USE_STD_FILESYSTEM__
@@ -312,8 +349,14 @@ namespace sFileSystem {
 
 		try {
 #ifdef _WIN32
+#ifdef UNICODE
+			WCHAR wPath[MAX_PATH + 1];
+			TO_UNICODE(path.c_str(), wPath, (int)path.length() + 1);
+			return (0 != CreateDirectoryW(wPath, NULL));
+#else
 
 			return (0 != CreateDirectoryA(path.c_str(), NULL));
+#endif // UNICODE
 #else
 
 #ifdef __USE_STD_FILESYSTEM__
@@ -413,7 +456,13 @@ namespace sFileSystem {
 		try{
 #ifdef _WIN32
 			char curDir[MAX_PATH + 1];
-			GetCurrentDirectory(MAX_PATH, curDir);
+#ifdef UNICODE
+		WCHAR wPath[MAX_PATH + 1];
+		GetCurrentDirectoryW(MAX_PATH, wPath);
+		FROM_UNICODE(wPath, curDir, (int)wcslen(wPath) + 1);
+#else
+			GetCurrentDirectoryA(MAX_PATH, curDir);
+#endif // UNICODE
 			return curDir;
 #else
 #ifdef __USE_STD_FILESYSTEM__
@@ -444,7 +493,14 @@ namespace sFileSystem {
 
 		try {
 #ifdef _WIN32
-			SetCurrentDirectory(path.c_str());
+#ifdef UNICODE
+			WCHAR wPath[MAX_PATH + 1];
+			TO_UNICODE(path.c_str(), wPath, (int)path.length() + 1);
+			SetCurrentDirectoryW(wPath);
+#else
+
+			SetCurrentDirectoryA(path.c_str());
+#endif // UNICODE
 #else
 #ifdef __USE_STD_FILESYSTEM__
 			fs::current_path(path);

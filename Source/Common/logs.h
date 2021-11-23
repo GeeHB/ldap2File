@@ -120,8 +120,10 @@ namespace jhbTools {
 
 		bool        valid_;
 
-#ifdef _WIN32
+#ifdef _WIN32	
+#ifdef _UNICODE_LOGS
 		charUtils	encoder_;
+#endif // #ifdef _UNICODE_LOGS
 #endif // _WIN32
 
 	};

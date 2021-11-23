@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: aliases.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: Jï¿½rï¿½me Henry-Barnaudiï¿½re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,9 +12,9 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Définition des objets :
+//--		Dï¿½finition des objets :
 //--					- alias
-//	--					- aliases (liste d'alias)
+//--					- aliases (liste d'alias)
 //--
 //--		pour la gestion des pointeurs/liens vers des applications
 //--
@@ -23,9 +23,9 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	14/05/2021 - JHB - Création
+//--	14/05/2021 - JHB - Crï¿½ation
 //--
-//--	02/06/2021 - JHB - Version 21.6.8
+//--	23/11/2021 - JHB - Version 21.11.9
 //--
 //---------------------------------------------------------------------------
 
@@ -42,16 +42,16 @@
 
 // aliases - Liste des alias
 //		Une alias est un nom qui pointe vers une application
-//		L'alias permet de ne plus dépendre du système d'exploitation
+//		L'alias permet de ne plus dï¿½pendre du systï¿½me d'exploitation
 //
 class aliases
 {
-	// Définitions publiques
+	// Dï¿½finitions publiques
 public:
 	// Un alias ...
 	class alias : public stringTokenizer
 	{
-		// Méthodes publiques
+		// Mï¿½thodes publiques
 	public:
 
 		// Construction
@@ -64,7 +64,7 @@ public:
 		// Destruction
 		virtual ~alias() {}
 
-		// Acccès
+		// Acccï¿½s
 		const char* application() {
 			return application_.c_str();
 		}
@@ -83,18 +83,18 @@ public:
 			command_ = command;
 		}
 
-		// Vérification
+		// Vï¿½rification
 		bool exists()
 		{ return sFileSystem::exists(application_); }
 
-		// Données membres privées
+		// Donnï¿½es membres privï¿½es
 	protected:
 		std::string name_;
 		std::string application_;		// Le binaire
-		std::string command_;			// La ligne de commande associée (peut être vide)
+		std::string command_;			// La ligne de commande associï¿½e (peut ï¿½tre vide)
 	};
 
-	// Méthodes publiques
+	// Mï¿½thodes publiques
 public:
 
 	// Construction
@@ -124,7 +124,7 @@ public:
 		return aliases_.size();
 	}
 
-	// Accès
+	// Accï¿½s
 	alias* operator[](size_t index);
 
 	// Nettoyage
@@ -132,12 +132,12 @@ public:
 		_clear();
 	}
 
-	// Méthodes privées
+	// Mï¿½thodes privï¿½es
 protected:
 
 	void _clear();
 
-	// Données membres privées
+	// Donnï¿½es membres privï¿½es
 protected:
 
 	// les alias ...

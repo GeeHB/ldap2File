@@ -29,7 +29,7 @@
 #include <time.h>
 #include <fstream>
 
-#include "sFileSystem.h"
+#include <sFileSystem.h>
 
 //
 // Constantes internes
@@ -54,8 +54,10 @@ namespace jhbTools {
 	void logs::init(TRACE_TYPE logMode, const char* sFolder, const char* sFileName)
 	{
 #ifdef _WIN32
+#ifdef _UNICODE_LOGS
 		// Il faudra mettre les logs au format Windows (et oui, tjrs pas en UTF8 !!!)
 		encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
+#endif // #ifdef _UNICODE_LOGS
 #endif // _WIN32
 
 		logMode_ = logMode;
@@ -96,7 +98,7 @@ namespace jhbTools {
 			// Nom court
 			char fileName[MAX_PATH + 1];
 			//sprintf_s(fileName, MAX_PATH, _T("%02d%s"), ltm->tm_mday, TRACE_EXTENSION);
-			snprintf(fileName, MAX_PATH, _T("%02d%s"), ltm->tm_mday, TRACE_EXTENSION);
+			snprintf(fileName, MAX_PATH, "%02d%s", ltm->tm_mday, TRACE_EXTENSION);
 
 			return sFileSystem::merge(folder.c_str(), fileName);
 		}
@@ -136,8 +138,10 @@ namespace jhbTools {
 
 		string line(sLine);
 #ifdef _WIN32
+#ifdef _UNICODE_LOGS
 		// Sous Windows, on convertit en ASCII/ISO_8859_15 (aie !!!)
 		encoder_.convert_fromUTF8(line);
+#endif // #ifdef _UNICODE_LOGS
 #endif // _WIN32
 
 		// Ecriture dans le fichier
