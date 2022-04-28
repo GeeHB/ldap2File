@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: fileActions.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,18 +12,18 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Implémentation des objets :
+//--		ImplÃ©mentation des objets :
 //--					- fileAction
 //	--					- fileActions (liste de fileAction)
 //--
-//--		pour la gestion des actions à mener en lien avec la création d'un fichier
+//--		pour la gestion des actions Ã  mener en lien avec la crÃ©ation d'un fichier
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	14/05/2021 - JHB - Création
+//--	14/05/2021 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -53,11 +53,11 @@ bool fileActions::add(std::string name, ACTION_TYPE type, std::string& applicati
 		return false;
 	}
 
-	// Création de l'action
+	// CrÃ©ation de l'action
 	//
 	fileActions::fileAction* nAction = new fileActions::fileAction(name, type, application, command, output);
 	if (NULL == nAction) {
-		// Erreur mémoire
+		// Erreur mÃ©moire
 		return false;
 	}
 
@@ -65,7 +65,7 @@ bool fileActions::add(std::string name, ACTION_TYPE type, std::string& applicati
 	return true;
 }
 
-// Mise à jour des tokens de chacune des actions
+// Mise Ã  jour des tokens de chacune des actions
 //
 void fileActions::tokenize(std::string& outputFile)
 {
@@ -76,7 +76,7 @@ void fileActions::tokenize(std::string& outputFile)
 	}
 }
 
-// Accès
+// AccÃ¨s
 //
 fileActions::fileAction* fileActions::operator[](size_t index)
 {
@@ -86,7 +86,7 @@ fileActions::fileAction* fileActions::operator[](size_t index)
 		return (*i);
 	}
 
-	// Non trouvé
+	// Non trouvÃ©
 	return NULL;
 }
 

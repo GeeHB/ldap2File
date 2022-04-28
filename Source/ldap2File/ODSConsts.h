@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: ODSConsts.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,14 +12,14 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Constantes XML pour la génération d'un fichier ODS
+//--		Constantes XML pour la gÃ©nÃ©ration d'un fichier ODS
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	17/12/2015 - JHB - Création
+//--	17/12/2015 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -52,11 +52,11 @@
 #define ODS_VAL_YES					XML_YES
 #define ODS_VAL_NO					XML_NO
 
-// Indice de la dernière colonne
+// Indice de la derniÃ¨re colonne
 #define LAST_COL_INDEX				1200
 
 //
-// Début du fichier
+// DÃ©but du fichier
 //
 #define ODS_FILE_ROOT_NODE			"office:document-content"
 
@@ -92,7 +92,7 @@
 #define ODS_SHEET_STYLE_TA1_VAL		"ta1"
 #define ODS_SHEET_PRINT_ATTR		"table:print"
 
-// Définition des colonnes
+// DÃ©finition des colonnes
 #define ODS_SHEET_COL_NODE			"table:table-column"
 #define ODS_COL_STYLE_ATTR			"table:style-name"
 //#define CELL_TYPE_DEFAULT			"Default"

@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: CSVFile.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,8 +12,8 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Implémentation de la classe CSVFile
-//--			Génération des fichiers au format CSV (liste et organigramme)
+//--			ImplÃ©mentation de la classe CSVFile
+//--			GÃ©nÃ©ration des fichiers au format CSV (liste et organigramme)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -39,7 +39,7 @@
 CSVFile::CSVFile(const LPOPFI fileInfos, columnList* columns, confFile* parameters)
 :textFile(fileInfos, columns, parameters)
 {
-	// Paramètres de l'encodeur
+	// ParamÃ¨tres de l'encodeur
 #ifdef _WIN32
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 #endif // _WIN32
@@ -47,7 +47,7 @@ CSVFile::CSVFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 	// Le saut de ligne est CRLF
 	eol_ = charUtils::eol(charUtils::FORMAT_EOL::EOL_CRLF);
 
-	utf8_ = false;			// par défaut en ISO ...
+	utf8_ = false;			// par dÃ©faut en ISO ...
 	showVacant_ = true;		// ... et on affiche les postes vacants
 
 	sepCols_ = STR_FR_SEP;
@@ -68,23 +68,23 @@ CSVFile::~CSVFile()
 	}
 }
 
-// Création / initialisation(s)
+// CrÃ©ation / initialisation(s)
 //
 bool CSVFile::create()
 {
-	// Préparation de la matrice en mémoire
+	// PrÃ©paration de la matrice en mÃ©moire
 	values_ = columns_->size();
 	if (NULL == (line_ = new VALUE[values_])){
-		throw LDAPException("CSVFile - Impossible d'allouer de la mémoire pour la modélisation d'une ligne");
+		throw LDAPException("CSVFile - Impossible d'allouer de la mÃ©moire pour la modÃ©lisation d'une ligne");
 	}
 
-	// Création de l'entête
+	// CrÃ©ation de l'entÃªte
 	_addHeader();
 
 	return textFile::create();
 }
 
-// Lecture des paramètres "personnels" dans le fichier de conf
+// Lecture des paramÃ¨tres "personnels" dans le fichier de conf
 //
 bool CSVFile::getOwnParameters()
 {
@@ -109,7 +109,7 @@ bool CSVFile::getOwnParameters()
 		return true;
 	}
 
-	// Valeur des séparateurs
+	// Valeur des sÃ©parateurs
 	pugi::xml_node snode = node.child(XML_OWN_CSV_FORMAT_COL_SEPARATOR);
 	if (!IS_EMPTY(snode.name())){
 		sepCols_ = snode.first_child().value();
@@ -139,9 +139,9 @@ bool CSVFile::getOwnParameters()
 	}
 
 	if (logs_){
-		logs_->add(logs::TRACE_TYPE::NORMAL, "Paramètres CSV :");
-		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Séparateur de colonnes : \'%s\'", sepCols_.c_str());
-		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Séparateur de valeurs : \'%s\'", sepValues_.c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "ParamÃ¨tres CSV :");
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- SÃ©parateur de colonnes : \'%s\'", sepCols_.c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- SÃ©parateur de valeurs : \'%s\'", sepValues_.c_str());
 	}
 
 	return true;
@@ -152,12 +152,12 @@ bool CSVFile::getOwnParameters()
 //
 bool CSVFile::addAt(size_t colIndex, string& value)
 {
-	// L'index ne peut être supérieur au nombre de col.
+	// L'index ne peut Ãªtre supÃ©rieur au nombre de col.
 	if (colIndex >= values_){
 		return false;
 	}
 
-	// Est-ce un numéro de mobile ?
+	// Est-ce un numÃ©ro de mobile ?
 	if (value.size() == 10 &&
 		(value.find("04") == 0 ||
 		(value.find("06")==0 ||
@@ -166,7 +166,7 @@ bool CSVFile::addAt(size_t colIndex, string& value)
 		_formatTelephoneNumber(value);
 	}
 
-	// Copie de la valeur dans la matrice mémoire
+	// Copie de la valeur dans la matrice mÃ©moire
 	line_[colIndex].value_ = value;
 
 	return true;
@@ -178,11 +178,11 @@ bool CSVFile::addAt(size_t colIndex, deque<string>& values)
 	return addAt(colIndex, total);
 }
 
-// Un autre fichier pour gérer du contenu ?
+// Un autre fichier pour gÃ©rer du contenu ?
 //
 orgChartFile* CSVFile::addOrgChartFile(bool flatMode, bool fullMode, bool& newFile)
 {
-	// Les fichiers plats sont gérés
+	// Les fichiers plats sont gÃ©rÃ©s
 	if (flatMode){
 		newFile = true;
 		CSVFile* handler(NULL);
@@ -207,14 +207,14 @@ void CSVFile::_emptyLine()
 	}
 }
 
-// Ajout de l'entête
+// Ajout de l'entÃªte
 //
 void CSVFile::_addHeader()
 {
 	// La ligne est vierge
 	_emptyLine();
 
-	// Création des colonnes
+	// CrÃ©ation des colonnes
 	//
 	int visibleIndex(0);
 	columnList::LPCOLINFOS col(NULL);
@@ -230,7 +230,7 @@ void CSVFile::_addHeader()
 	}
 
 	if (logs_) {
-		logs_->add(logs::TRACE_TYPE::DBG, "%d colonnes afficheés sur %d", visibleIndex, columns_->size());
+		logs_->add(logs::TRACE_TYPE::DBG, "%d colonnes afficheÃ©s sur %d", visibleIndex, columns_->size());
 
 		if (false == fileInfos_->showHeader_) {
 			logs_->add(logs::TRACE_TYPE::LOG, "Pas d'entete dans le fichier");
@@ -241,7 +241,7 @@ void CSVFile::_addHeader()
 	saveLine(true);
 }
 
-// Mise en forme des numéros de téléphones
+// Mise en forme des numÃ©ros de tÃ©lÃ©phones
 //
 void CSVFile::_formatTelephoneNumber(string& value)
 {
@@ -251,13 +251,13 @@ void CSVFile::_formatTelephoneNumber(string& value)
 
 	string number("");
 
-	// On coupe de numéro en 5
+	// On coupe de numÃ©ro en 5
 	for (int index = 0; index < 5; index++){
 		number += value.substr(2 * index, 2);
 		number += " ";
 	}
 
-	// Terminé
+	// TerminÃ©
 	value = number;
 }
 
@@ -272,8 +272,8 @@ void CSVFile::_formatTelephoneNumber(string& value)
 bool CSVFile::saveLine(bool header, LPAGENTINFOS agent)
 {
 	if (false == header || (header && fileInfos_->showHeader_)) {
-		// Création d'une ligne au format texte en utilisant
-		// le séparateur
+		// CrÃ©ation d'une ligne au format texte en utilisant
+		// le sÃ©parateur
 		string currentLine("");
 		for (size_t index = 0; index < values_; index++) {
 			if (line_[index].visible_) {
@@ -281,7 +281,7 @@ bool CSVFile::saveLine(bool header, LPAGENTINFOS agent)
 					currentLine += line_[index].value_;
 				}
 
-				// Ajout du séparateur
+				// Ajout du sÃ©parateur
 				currentLine += sepCols_;
 			}
 		}
@@ -289,7 +289,7 @@ bool CSVFile::saveLine(bool header, LPAGENTINFOS agent)
 		// Retrait du dernier sep.
 		currentLine.resize(currentLine.size() - 1);
 
-		// Ajout de la ligne courante à la liste des lignes "ecrites"
+		// Ajout de la ligne courante Ã  la liste des lignes "ecrites"
 		if (currentLine.size() && !clearLine_) {
 #ifdef _DEBUG
 			if (0 != strstr(currentLine.c_str(), STR_VACANT_POST)) {
@@ -317,7 +317,7 @@ bool CSVFile::saveLine(bool header, LPAGENTINFOS agent)
 			}
 		}
 
-		// Méthode héritée
+		// MÃ©thode hÃ©ritÃ©e
 		outputFile::_saveLine(header);
 	}
 

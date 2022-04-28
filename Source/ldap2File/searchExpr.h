@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: searchExpr.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition de la classe searchExpr
+//--			DÃ©finition de la classe searchExpr
 //--			Gestion des expressions pour les recherches LDAP
 //--
 //--	TODO:
@@ -22,7 +22,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	05/02/2016 - JHB - Création
+//--	05/02/2016 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -40,13 +40,13 @@
 //--
 //----------------------------------------------------------------------
 
-// Opérateurs de combinaison
+// OpÃ©rateurs de combinaison
 //
 #define SEARCH_EXPR_OPERATOR_AND		"&"
 #define SEARCH_EXPR_OPERATOR_OR			"|"
 #define SEARCH_EXPR_OPERATOR_NOT		"!"
 
-// Opérateurs de comparaison
+// OpÃ©rateurs de comparaison
 //
 #define SEARCH_ATTR_COMP_EQUAL				"="
 #define SEARCH_ATTR_COMP_GREATER_OR_EQUAL	">="
@@ -60,7 +60,7 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Définition des classes
+//-- DÃ©finition des classes
 //--
 //----------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ public:
 		tagExprAttr(const string& attr, const string& op, const string& val){
 			attribute_ = attr;
 			value_ = val;
-			//compOperator_ = SEARCH_ATTR_COMP_EQUAL;		// Par défaut égalité
+			//compOperator_ = SEARCH_ATTR_COMP_EQUAL;		// Par dÃ©faut Ã©galitÃ©
 			compOperator_ = op;
 			otherExpr_ = NULL;
 		}
@@ -99,11 +99,11 @@ public:
 
 		string		attribute_;
 		string		value_;
-		string		compOperator_;		// Opérateur de comparaison
+		string		compOperator_;		// OpÃ©rateur de comparaison
 		searchExpr*	otherExpr_;
 	}EXPRGATTR;
 
-	// Méthodes publiques
+	// MÃ©thodes publiques
 	//
 public:
 
@@ -124,12 +124,12 @@ public:
 	virtual ~searchExpr()
 	{ dispose(); }
 
-	// Libération de la mémoire
+	// LibÃ©ration de la mÃ©moire
 	void dispose()
 	{ clear(); }
 	void clear(bool freeMemory = true);
 
-	// Gestion des opérateurs
+	// Gestion des opÃ©rateurs
 	static string string2Operator(string& sValue);
 	static string string2Operator(const char* value){
 		string sValue(value);
@@ -146,7 +146,7 @@ public:
 	bool add(searchExpr* pExpr, bool copy = false);
 	//bool add(string& name, string& value);
 
-	// Ajout/remplacement d'un attribut (selon l'opérateur)
+	// Ajout/remplacement d'un attribut (selon l'opÃ©rateur)
 	searchExpr::EXPRGATTR* add(string& name, string& op, string& value);
 	searchExpr::EXPRGATTR* add(const char* name, const char* op, const char* value){
 		string sName(name), sOp(op), sValue(value);
@@ -174,7 +174,7 @@ public:
 	// Recherche d'un attribut
 	searchExpr* find(const char* name);
 
-	// Recherche d'une expression régulière
+	// Recherche d'une expression rÃ©guliÃ¨re
 	searchExpr* findByName(const char* name);
 	searchExpr* findByDescription(const char* description)
 	{ return findByName(description); }
@@ -183,7 +183,7 @@ public:
 	bool remove(const char* regName, bool freeMemory = true);
 	bool remove(const searchExpr* toRemove, bool freeMemory = true);
 
-	// Accès
+	// AccÃ¨s
 	string name()
 	{ return name_; }
 	string description()
@@ -202,7 +202,7 @@ public:
 	{ return _expression(addOp); }
 	//{ return (const char*)(*this);}
 
-	// Méthodes privées
+	// MÃ©thodes privÃ©es
 	//
 protected:
 
@@ -215,20 +215,20 @@ protected:
 	string _addParenthesis(const char* op, const char* output)
 	{ string s(output), o(op); return _addParenthesis(o, s); }
 
-	// Génération de l'expression régulière
+	// GÃ©nÃ©ration de l'expression rÃ©guliÃ¨re
 	const char* _expression(bool addOperator);
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 protected:
 	columnList*			schema_;		// Liste des attributs connus
-	string				op_;			// Opérateur de l'expression régulière
+	string				op_;			// OpÃ©rateur de l'expression rÃ©guliÃ¨re
 	string				name_;			// Nom/Description
 
 	// Liste des attributs/valeurs
 	deque<EXPRGATTR*>	expressions_;
 
-	string				output_;		// Expression formatée
+	string				output_;		// Expression formatÃ©e
 };
 
 #endif // #ifndef __LDAP_2_FILE_SEARCH_EXPRESSIONS_HANDLER_h__

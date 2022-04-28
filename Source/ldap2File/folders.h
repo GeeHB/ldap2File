@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: folders.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition des classes folders et folders::folder
+//--			DÃ©finition des classes folders et folders::folder
 //--			Dossiers de l'application
 //--
 //---------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	21/07/2020 - JHB - Création
+//--	21/07/2020 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -43,7 +43,7 @@ namespace jhbLDAPTools {
 	//
 	class folders
 	{
-	// Méthodes publiques
+	// MÃ©thodes publiques
 	public:
 
 		// Type(s) de dossiers
@@ -65,7 +65,7 @@ namespace jhbLDAPTools {
 			virtual ~folder()
 			{}
 
-			// Accès
+			// AccÃ¨s
 			//
 			folders::FOLDER_TYPE type()
 			{ return type_; }
@@ -80,17 +80,17 @@ namespace jhbLDAPTools {
 			void setSubFolder(bool isSub)
 			{ subFolder_ = isSub; }
 
-		// Méthodes privées
+		// MÃ©thodes privÃ©es
 		protected:
-			// Création (si nécessaire) du dossier
+			// CrÃ©ation (si nÃ©cessaire) du dossier
 			bool _create();
 
 		protected:
-			// Données membres
+			// DonnÃ©es membres
 			//
 			folders::FOLDER_TYPE	type_;		// Type de dossier
 			string					path_;		// Chemin complet
-			bool					subFolder_;	// Un sous-dossier ou un dossier "indépendant" ?
+			bool					subFolder_;	// Un sous-dossier ou un dossier "indÃ©pendant" ?
 		};
 
 		// Construction et destruction
@@ -119,10 +119,10 @@ namespace jhbLDAPTools {
 		// ... par son index
 		folders::folder* operator[] (size_t index);
 
-		// Le chemin correspond t'il à un sous-dossier ?
+		// Le chemin correspond t'il Ã  un sous-dossier ?
 		static bool isSubFolder(string& path) {
 #ifdef _WIN32
-			// Les sous-dossiers ne contiennent pas le caractère ":"
+			// Les sous-dossiers ne contiennent pas le caractÃ¨re ":"
 			return (path.npos == path.find(WIN_FILENAME_PREFIX));
 #else
 			// Le nom d'un sous-dossier ne commence pas par "/" ni par "~"
@@ -134,11 +134,11 @@ namespace jhbLDAPTools {
 			return isSubFolder(path);
 		}
 
-		// Methodes privées
+		// Methodes privÃ©es
 	protected:
 
 
-		// Données membres privées
+		// DonnÃ©es membres privÃ©es
 		//
 	protected:
 

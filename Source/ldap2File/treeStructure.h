@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: treeStructure.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,19 +12,19 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition de la classe treeStructure
-//--			pour la modélisation de l'arborescence LDAP
+//--			DÃ©finition de la classe treeStructure
+//--			pour la modÃ©lisation de l'arborescence LDAP
 //--
-//--			Cette classe fonctionne comme une liste d'éléments de structure
-//--			ainsi que tel un tableau associatif entre ces éléments
-//--			et les colonnes du tableur en cours de génération
+//--			Cette classe fonctionne comme une liste d'Ã©lÃ©ments de structure
+//--			ainsi que tel un tableau associatif entre ces Ã©lÃ©ments
+//--			et les colonnes du tableur en cours de gÃ©nÃ©ration
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	14/02/2065 - JHB - Création
+//--	14/02/2065 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -37,11 +37,11 @@
 #include "sharedTypes.h"
 
 //
-// Définition de la classe
+// DÃ©finition de la classe
 //
 class treeStructure
 {
-	// Méthodes publiques
+	// MÃ©thodes publiques
 public:
 
 	// Construction et destruction
@@ -50,21 +50,21 @@ public:
 	virtual ~treeStructure()
 	{ clear(); }
 
-	// Libération
+	// LibÃ©ration
 	void clear();
 
 	// Nombre d'elements
 	size_t size()
 	{ return elements_.size(); }
 
-	// Ajout d'un élément
+	// Ajout d'un Ã©lÃ©ment
 	bool add(string& type, string& name, size_t depth);
 	bool add(TREEELEMENT& element)
 	{
 		return add(element.type_, element.startWith_, element.depth_);
 	}
 
-	// "Profondeur" associée à un type de container
+	// "Profondeur" associÃ©e Ã  un type de container
 	size_t depthByType(string& type);
 	size_t depthByType(const char* type) {
 		string inter(type);
@@ -94,10 +94,10 @@ public:
 	}
 
 	//
-	// Associations élement / colonne du fichier
+	// Associations Ã©lement / colonne du fichier
 	//
 
-	// Effacement des valeurs associées aux colonnes
+	// Effacement des valeurs associÃ©es aux colonnes
 	void  clearValues();
 
 	// Index d'une colonne en fonction du "nom" de la colonne
@@ -107,7 +107,7 @@ public:
 		setAt(inter, colIndex);
 	}
 
-	// Valeur à ajouter à une ou plusieurs colonne(s)
+	// Valeur Ã  ajouter Ã  une ou plusieurs colonne(s)
 	void setAt(size_t depth, string& value)
 	{
 		return _setAt(depth, value, false);
@@ -125,10 +125,10 @@ public:
 		}
 	}
 
-	// On fixe la valeur pour l'élément courant et peut-être ses descendants
+	// On fixe la valeur pour l'Ã©lÃ©ment courant et peut-Ãªtre ses descendants
 	void setFor(LPTREEELEMENT element, const char* value);
 
-	// La colonne est-elle associée ?
+	// La colonne est-elle associÃ©e ?
 	bool handled(size_t colIndex)
 	{
 		return (_findElementByCol(colIndex) ? true : false);
@@ -137,30 +137,30 @@ public:
 	// Valeur pour la colonne
 	string at(size_t colIndex);
 
-	// Nombre de colonnes associées
+	// Nombre de colonnes associÃ©es
 	size_t associatedCols()
 	{ return cols_; }
 
-	// Methodes privées
+	// Methodes privÃ©es
 	//
 protected:
 
 	bool _add(const LPTREEELEMENT element);
 	void _setAt(size_t depth, string& value, bool applyToChilds);
 
-	// Recherche d'un élément
+	// Recherche d'un Ã©lÃ©ment
 	LPTREEELEMENT _findElementByType(string& type);
 	LPTREEELEMENT _findElementByName(string& name);
 	LPTREEELEMENT _findElementByCol(size_t colIndex);
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 protected:
 
 	logs*				logs_;
 
-	deque<LPTREEELEMENT>	elements_;	// Liste des éléments de structure
-	size_t					cols_;		// Nombre de colonnes associées
+	deque<LPTREEELEMENT>	elements_;	// Liste des Ã©lÃ©ments de structure
+	size_t					cols_;		// Nombre de colonnes associÃ©es
 };
 
 #endif // __LDAP_2_FILE_LDAP_TREE_STRUCTURE_h__

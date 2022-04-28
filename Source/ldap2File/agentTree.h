@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: agentTree.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -10,8 +10,8 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition des classes agentInfos & agentTree pour la modélisation
-//--			de l'arborescence hiérachique
+//--			DÃ©finition des classes agentInfos & agentTree pour la modÃ©lisation
+//--			de l'arborescence hiÃ©rachique
 //--
 //--    COMPATIBILITE : Win32 | Linux  Fedora (34 et +) / CentOS (7 & 8)
 //--
@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	24/12/2015 - JHB - Création
+//--	24/12/2015 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -42,7 +42,7 @@
 
 //----------------------------------------------------------------------
 //--
-//--  Déclarations anticipées
+//--  DÃ©clarations anticipÃ©es
 //--
 //----------------------------------------------------------------------
 
@@ -51,13 +51,13 @@ typedef agentInfos* LPAGENTINFOS;
 
 //----------------------------------------------------------------------
 //--
-//-- Arborsecence hiérachique des agents
+//-- Arborsecence hiÃ©rachique des agents
 //--
 //----------------------------------------------------------------------
 
 class agentTree
 {
-	// Méthodes publiques
+	// MÃ©thodes publiques
 	//
 public:
 
@@ -74,11 +74,11 @@ public:
 		return add(uid, bd, bp, bn, bmail, status, bm, bmat, deducted);
 	}
 
-	// Information(s) sur les managers à chercher
+	// Information(s) sur les managers Ã  chercher
 	void setManagerSearchMode(string ldapAttribute, bool recurse, bool IDWanted, string separator = ","){
 		managersAttribute_ = ldapAttribute;
 		managersSeparator_ = separator;
-		recurseManagers_ = recurse;	// Recherche récursive
+		recurseManagers_ = recurse;	// Recherche rÃ©cursive
 		managerIDWanted_ = IDWanted;
 	}
 
@@ -110,7 +110,7 @@ public:
 	//
 	void findOtherDNIds();
 
-	// Méthodes privées
+	// MÃ©thodes privÃ©es
 	//
 private:
 
@@ -131,14 +131,14 @@ private:
 	{ return _getAgentFromLDAP(dnAgent.c_str()); }
 	LPAGENTINFOS _findManager(LPAGENTINFOS from, bool fullMode);
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 private:
 
 	charUtils*			encoder_;
 	logs*				logs_;
 
-	LDAPServer*			ldapServer_;		// Connexion à LDAP
+	LDAPServer*			ldapServer_;		// Connexion Ã  LDAP
 	string				baseDN_;
 
 	string				managersAttribute_;	// Quel attribut utiliser pour la recherche des "managers"
@@ -146,13 +146,13 @@ private:
 	bool				recurseManagers_;
 	bool				managerIDWanted_;
 
-	deque<LPAGENTINFOS>	agents_;			// Organigramme synthétique
+	deque<LPAGENTINFOS>	agents_;			// Organigramme synthÃ©tique
 };
 
 //----------------------------------------------------------------------
 //--
 //-- Un agent ...
-//--	un "agent" est aussi une liste doublement chainée
+//--	un "agent" est aussi une liste doublement chainÃ©e
 //--
 //----------------------------------------------------------------------
 
@@ -160,7 +160,7 @@ class agentInfos
 {
 public:
 
-	// Données liées à un agent (dépend de l'instanciation)
+	// DonnÃ©es liÃ©es Ã  un agent (dÃ©pend de l'instanciation)
 	//
 	class agentDatas
 	{
@@ -177,10 +177,10 @@ public:
 	// Construction
 	agentInfos(unsigned int uid, const char* dn, string& prenom, string& nom, string& email, unsigned int status, bool autoAdded);
 
-	// Libération
+	// LibÃ©ration
 	virtual ~agentInfos();
 
-	// Accès
+	// AccÃ¨s
 	//
 	unsigned int uid()
 	{ return uid_; }
@@ -221,7 +221,7 @@ public:
 	bool isVacant()
 	{ return (ALLIER_STATUS_VACANT == (status_ & ALLIER_STATUS_VACANT)); }
 
-	// Remplaçacant
+	// RemplaÃ§acant
 	void setReplacedBy(const LPAGENTINFOS agent){	// Qui me remplace ?
 		if (agent != replacedBy_){
 			replacedBy_ = agent;
@@ -241,7 +241,7 @@ public:
 	LPAGENTINFOS replace()
 	{ return replace_; }
 
-	// Données personnelles
+	// DonnÃ©es personnelles
 	agentInfos::agentDatas* ownData()
 	{ return ownData_; }
 	agentInfos::agentDatas* setOwnData(agentInfos::agentDatas* pData);
@@ -251,13 +251,13 @@ public:
 	static string idFromDN(string& DN)
 	{ return idFromDN(DN.c_str()); }
 
-	// Elément déduit ?
+	// ElÃ©ment dÃ©duit ?
 	bool autoAdded()
 	{ return autoAdded_; }
 	void setAutoAdded(bool autoAdded)
 	{ autoAdded_ = autoAdded; }
 
-	// Liste chainée
+	// Liste chainÃ©e
 	//
 	void setParent(agentInfos* pAgent);
 	agentInfos* parent(){
@@ -301,13 +301,13 @@ public:
 	bool addOtherDN(const char* dn);
 	bool setOtherDNId(const char* dn, unsigned int id);
 
-	// Opérateurs
+	// OpÃ©rateurs
 	bool operator == (agentInfos& right) const
 	{ return (nom_ == right.nom_ && prenom_ == right.prenom_); }
 	bool operator > (agentInfos& right) const
 	{ return _sup(right); }
 
-	// Méthodes privées
+	// MÃ©thodes privÃ©es
 	//
 private:
 
@@ -317,7 +317,7 @@ private:
 	// Comparaison
 	bool _sup(agentInfos& right) const;
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 private:
 
@@ -344,9 +344,9 @@ private:
 
 	unsigned int	status_;		// Statut "SMH" du poste
 
-	agentDatas*			ownData_;		// Données personnelles
+	agentDatas*			ownData_;		// DonnÃ©es personnelles
 
-	// Déduit ?
+	// DÃ©duit ?
 	bool				autoAdded_;
 
 	// Liens
@@ -354,7 +354,7 @@ private:
 
 										// Remplacement
 	//
-	LPAGENTINFOS		replacedBy_;	// Mon remplaçcant
+	LPAGENTINFOS		replacedBy_;	// Mon remplaÃ§cant
 	LPAGENTINFOS		replace_;		// Je remplace ...
 
 	// Autre(s) DN pour l'agent

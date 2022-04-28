@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: LDAPServer.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,8 +12,8 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Implémentation de la classe LDAPServer - Connexoin à un serveur LDAP
-//--		Gestion de la connexion et des échanges avec un serveur LDAP
+//--		ImplÃ©mentation de la classe LDAPServer - Connexoin Ã  un serveur LDAP
+//--		Gestion de la connexion et des Ã©changes avec un serveur LDAP
 //--
 //--    REMARQUES:
 //--        Linux / Linker : -llber lldap
@@ -23,7 +23,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	19/06/2016 - JHB - Création
+//--	19/06/2016 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -37,7 +37,7 @@ using namespace std;
 
 #include "LDAPServer.h"
 
-// La valeur doit-elle être considérée comme vide ?
+// La valeur doit-elle Ãªtre considÃ©rÃ©e comme vide ?
 //
 bool LDAPServer::isEmptyVal(const char* value)
 {

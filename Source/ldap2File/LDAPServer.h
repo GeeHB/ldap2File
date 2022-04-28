@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: LDAPServer.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,15 +12,15 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Définition de la classe LDAPServer
-//--		Gestion de la connexion et des échanges avec un serveur LDAP
+//--		DÃ©finition de la classe LDAPServer
+//--		Gestion de la connexion et des Ã©changes avec un serveur LDAP
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	19/06/2016 - JHB - Création
+//--	19/06/2016 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -48,7 +48,7 @@ typedef unsigned int    UINT;
 
 #include "ldapAttributes.h"
 
-// Quelques définitions ...
+// Quelques dÃ©finitions ...
 #define LDAP_DEF_PORT				LDAP_PORT
 
 // Serveur LDAP
@@ -57,7 +57,7 @@ class LDAPServer
 {
 public:
 
-	// Type d'accès
+	// Type d'accÃ¨s
 	enum class LDAP_ACCESS_MODE { LDAP_READ = 0, LDAP_WRITE = 1, LDAP_ADMIN = 1 };
 
 	// Construction
@@ -91,7 +91,7 @@ public:
 	void init(LDAP_ACCESS_MODE ldapMode){
 		connection_ = NULL;
 
-		// En mode DEBUG l'application utilise des valeurs par défaut
+		// En mode DEBUG l'application utilise des valeurs par dÃ©faut
 		//
 		environment_ = "";
 		host_ = "";
@@ -157,7 +157,7 @@ public:
 	{ return ldap_err2string(err);}
 	*/
 
-	// Libérations
+	// LibÃ©rations
 	void memFree(char* Block)
 	{ return ldap_memfree(Block); }
 	ULONG msgFree(LDAPMessage *res)
@@ -247,10 +247,10 @@ public:
 	{ return (connection_ ? ldap_count_entries(connection_, res) : LDAP_PARAM_ERROR); }
 
 
-	// Accès
+	// AccÃ¨s
 	//
 
-	// Nom / nom de l'environnement associé
+	// Nom / nom de l'environnement associÃ©
 	void setEnvironment(const char* value)
 	{ environment_ = value;	}
 	const char* environment()
@@ -322,7 +322,7 @@ protected:
 	string				user_;
 	string				pwd_;
 
-	list<string>		emptyVals_;		// Valeur(s) à ignorer
+	list<string>		emptyVals_;		// Valeur(s) Ã  ignorer
 };
 
 #endif // _LDAP_2_FILE_LDAPSERVER_h__

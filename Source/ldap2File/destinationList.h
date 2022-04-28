@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	:	destinationList.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Définition de l'objet destinationList
+//--		DÃ©finition de l'objet destinationList
 //--		liste des serveurs/destinations
 //--
 //---------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	10/01/2018 - JHB - Création - Version 18.1.1
+//--	10/01/2018 - JHB - CrÃ©ation - Version 18.1.1
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -56,14 +56,14 @@ public:
 	// Ajout
 	bool append(fileDestination* destination);
 
-	// Libération
+	// LibÃ©ration
 	void dispose();
 
 	// Taille
 	size_t size()
 	{ return destinations_.size(); }
 
-	// Recherches et accès
+	// Recherches et accÃ¨s
 	fileDestination* getDestinationByName(const char* name);
 	fileDestination* getDestinationByName(const string& name)
 	{ return getDestinationByName(name.c_str()); }
@@ -77,7 +77,7 @@ public:
 protected:
 
 
-	// Donnees membres privées
+	// Donnees membres privÃ©es
 	//
 protected:
 	deque<fileDestination*>		destinations_;	// Liste des serveurs/destinations

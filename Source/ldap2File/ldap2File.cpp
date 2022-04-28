@@ -188,7 +188,7 @@ int main(int argc, const char* argv[]) {
 			myFolders.add(folders::FOLDER_TYPE::FOLDER_LOGS, lInfos.folder_);
 		}
 
-		// Le dossier des logs doit exister (son a auparavant tenté de le créer s'il n'existait pas)
+		// Le dossier des logs doit exister (on a auparavant tenté de le créer s'il n'existait pas)
 		folders::folder* logFolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS);
 		if (NULL == logFolder) {
 			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée");

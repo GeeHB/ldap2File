@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: CSVFile.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,8 +12,8 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition de la classe CSVFile
-//--			Génération des fichiers au format CSV (liste et organigramme)
+//--			DÃ©finition de la classe CSVFile
+//--			GÃ©nÃ©ration des fichiers au format CSV (liste et organigramme)
 //--
 //---------------------------------------------------------------------------
 //--
@@ -37,7 +37,7 @@
 
 class CSVFile : public textFile, orgChartFile
 {
-	// Méthodes publiques
+	// MÃ©thodes publiques
 	//
 public:
 
@@ -47,19 +47,19 @@ public:
 	// Destruction
 	virtual ~CSVFile();
 
-	// Paramètres spécifiques
+	// ParamÃ¨tres spÃ©cifiques
 	virtual bool getOwnParameters();
 
-	// Nombre d'éléments enregistrés
+	// Nombre d'Ã©lÃ©ments enregistrÃ©s
 	virtual size_t size(){
 		size_t count = outputFile::size();
 		return ((count > 1) ? count - 1 : 0);
 	 }
 
-	// Création / initialisation(s)
+	// CrÃ©ation / initialisation(s)
 	virtual bool create();
 
-	// Un autre fichier pour gérer du contenu?
+	// Un autre fichier pour gÃ©rer du contenu?
 	virtual orgChartFile* addOrgChartFile(bool flatMode, bool fullMode, bool& newFile);
 
 	// Ajout d'une valeur
@@ -85,7 +85,7 @@ public:
 	virtual void add2Chart(LPAGENTINFOS agent)
 	{ if (agent) add(agent->display(nodeFormat_).c_str()); }
 
-	// Création d'un arborescence "flat"
+	// CrÃ©ation d'un arborescence "flat"
 	virtual void shift(int offset, treeCursor& ascendants)
 		{ /*orgChartFile::shift(offset, ascendants);*/ }
 
@@ -97,7 +97,7 @@ public:
 	virtual void closeOrgChartFile()
 	{ close(); }
 
-	// Méthodes privées
+	// MÃ©thodes privÃ©es
 	//
 private:
 
@@ -120,7 +120,7 @@ protected:
 		bool	visible_;
 	}VALUE;
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 protected:
 	charUtils	encoder_;		// Gestion de l'encodage des caracteres
@@ -133,7 +133,7 @@ protected:
 	VALUE*		line_;			// Tableau des valeurs
 	size_t		values_;		// Nombre de colonnes (ie. de valeurs)
 
-	string		sepCols_;		// Séparateurs
+	string		sepCols_;		// SÃ©parateurs
 	string		sepValues_;
 };
 

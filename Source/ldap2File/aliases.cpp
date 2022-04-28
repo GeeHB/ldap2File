@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: aliases.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Implémentation des objets :
+//--		ImplÃ©mentation des objets :
 //--					- alias
 //--					- aliases (liste d'alias)
 //--
@@ -23,9 +23,9 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	14/05/2021 - JHB - Création
+//--	14/05/2021 - JHB - CrÃ©ation
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	23/11/2021 - JHB - Version 21.11.9./CD03/js/Allier-JS.xml
 //--
 //---------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@
 
 //--------------------------------------------------------------------------
 //--
-//-- Implémentation des classes
+//-- ImplÃ©mentation des classes
 //--
 //--------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ bool aliases::add(std::string& name, std::string& app, std::string& command)
 		pAlias->setCommand(command);
 	}
 
-	// Ajouté ou modifié
+	// AjoutÃ© ou modifiÃ©
 	return true;
 }
 
@@ -74,16 +74,16 @@ aliases::alias* aliases::find(std::string& name)
 
 	for (std::list<alias*>::iterator i = aliases_.begin(); i != aliases_.end(); i++) {
 		if ((*i) && (*i)->name() == name) {
-			// Trouvé
+			// TrouvÃ©
 			return (*i);
 		}
 	}
 
-	// Non trouvé
+	// Non trouvÃ©
 	return NULL;
 }
 
-// Accès
+// AccÃ¨s
 //
 aliases::alias* aliases::operator[](size_t index)
 {
@@ -93,7 +93,7 @@ aliases::alias* aliases::operator[](size_t index)
 		return (*it);
 	}
 
-	// Non trouvé
+	// Non trouvÃ©
 	return NULL;
 }
 

@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	:	columnList.h
 //--
-//--	AUTEUR	:	Jérôme Henry-Barnaudière (JHB)
+//--	AUTEUR	:	JÃ©rÃ´me Henry-BarnaudiÃ¨re (JHB)
 //--
 //--	03/06/2020 - JHB - Version 20.6.13
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Définition de l'objet columList
+//--		DÃ©finition de l'objet columList
 //--		pour la modelisation de l'entete des tableaux
 //--
 //---------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	18/12/2015 - JHB - Création
+//--	18/12/2015 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -94,21 +94,21 @@ public:
 			if (names_) { delete names_; }
 		}
 
-		// Initialisation des données membres
+		// Initialisation des donnÃ©es membres
 		void init()
 		{
 			orgChartMode_ = false;
 			name_ = "";
 			ldapAttr_ = "";
 			width_ = COL_DEF_WITDH;
-			dataType_ = DATA_TYPE_UNDEFINED;		// Non défini
+			dataType_ = DATA_TYPE_UNDEFINED;		// Non dÃ©fini
 			show_ = true;
 			recurse_ = false;
 			reserved_ = false;
 			names_ = NULL;
 		}
 
-		// Ajout à un requête LDAP
+		// Ajout Ã  un requÃªte LDAP
 		bool add2Request()
 		{
 			return (reserved_ ? (/*name!=ldapAttr &&*/ ldapAttr_.size()>0): true);
@@ -139,7 +139,7 @@ public:
 		bool multiValued()
 		{ return (orgChartMode_?false:((dataType_ & BASE_TYPE_VALID) && (dataType_ & BASE_TYPE_MULTIVALUED))); }
 
-		// Est-ce une donnee de type alphanumérique ?
+		// Est-ce une donnee de type alphanumÃ©rique ?
 		bool numeric()
 		{ return (orgChartMode_ ? false : (dataType_&BASE_TYPE_VALID && dataType_&BASE_TYPE_FLOAT)); }
 
@@ -159,10 +159,10 @@ public:
 		string			name_;			// Nom de la colonne dans le fichier
 		string			ldapAttr_;		// Nom de l'attribut LDAP equivalent
 		double			width_;			// Largeur en cm de la colonne (-1 = valeur par defaut)
-		unsigned int	dataType_;		// Type de donnée (entier/chaine, multi/monovalué, lien hypertexte, ...)
+		unsigned int	dataType_;		// Type de donnÃ©e (entier/chaine, multi/monovaluÃ©, lien hypertexte, ...)
 		bool			show_;			// Visible ?
 		bool			recurse_;		// La valeur necessite t'elle un appel recursif ?
-		bool			reserved_;		// Mot clé réservé ?
+		bool			reserved_;		// Mot clÃ© rÃ©servÃ© ?
 		LPATTRNAMES		names_;			// Tous les noms de l'attribut
 	} COLINFOS,* LPCOLINFOS;
 
@@ -199,7 +199,7 @@ public:
 	size_t size()
 	{ return columns_.size(); }
 
-	// Nom réservé ?
+	// Nom rÃ©servÃ© ?
 	bool reservedColName(const char* colName);
 	bool reservedColName(string& colName)
 	{ return reservedColName(colName.c_str()); }
@@ -256,10 +256,10 @@ protected:
 	{ return _type2Attribute(columnType.c_str()); }
 	LPCOLINFOS _type2Attribute(const char* columnType);
 
-	// Donnees membres privées
+	// Donnees membres privÃ©es
 	//
 protected :
-	deque<LPCOLINFOS>		attributes_;	// Schéma - Liste des attributs LDAP reconnus
+	deque<LPCOLINFOS>		attributes_;	// SchÃ©ma - Liste des attributs LDAP reconnus
 	deque<LPCOLINFOS>		columns_;		// Ma liste de colonnes (pour le fichier de sortie)
 
 	string					lastError_;		// !!!

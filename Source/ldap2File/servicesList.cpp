@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: servicesList.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,15 +12,15 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Implémentation de la classe servicesList
-//--			Liste des services/directions/pôles
+//--			ImplÃ©mentation de la classe servicesList
+//--			Liste des services/directions/pÃ´les
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	24/12/2015 - JHB - Création
+//--	24/12/2015 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -42,7 +42,7 @@
 //
 servicesList::LDAPService::LDAPService(const char* DN, const char* rname, const char* cname, const char* sname, const char* fName, const char* color, const char* rSite)
 {
-	// Initialisation des données membres
+	// Initialisation des donnÃ©es membres
 	//
 	parent_ = NULL;
 	DN_ = DN;
@@ -53,7 +53,7 @@ servicesList::LDAPService::LDAPService(const char* DN, const char* rname, const 
 
 	shortName_ = (sname?sname:"");
 	if (IS_EMPTY(sname)){
-		// déduit du DN
+		// dÃ©duit du DN
 		if (0 == DN_.find(LDAP_PREFIX_OU)){
 			size_t pos(-1);
 			if (DN_.npos != (pos = DN_.find(","))){
@@ -63,7 +63,7 @@ servicesList::LDAPService::LDAPService(const char* DN, const char* rname, const 
 		}
 	}
 
-	// Couleur par défaut
+	// Couleur par dÃ©faut
 	color_ = IS_EMPTY(color)?"":color;
 }
 
@@ -72,7 +72,7 @@ servicesList::LDAPService::LDAPService(const char* DN, const char* rname, const 
 const char* servicesList::LDAPService::color()
 {
 	// Si pas de couleur => couleur de mon container
-	// si pas de container, couleur par défaut
+	// si pas de container, couleur par dÃ©faut
 	if (!color_.size()){
 		color_ = (parent_ ? parent_->color() : JS_DEF_BK_COLOR);
 	}
@@ -80,7 +80,7 @@ const char* servicesList::LDAPService::color()
 	return color_.c_str();
 }
 
-// Site / bâtiment
+// Site / bÃ¢timent
 //
 
 const char* servicesList::LDAPService::site()
@@ -128,7 +128,7 @@ void servicesList::clear()
 //bool servicesList::add(const char* dn,const char* name)
 bool servicesList::add(const char* dn, string& name, string& shortName, string&fileName, string& bkColor, string& site)
 {
-	// Paramètres valides ?
+	// ParamÃ¨tres valides ?
 	//
 	if (IS_EMPTY(dn) || !name.size()){
 		return false;
@@ -141,18 +141,18 @@ bool servicesList::add(const char* dn, string& name, string& shortName, string&f
 	}
 #endif // #ifdef _DEBUG
 
-	// Le service doit être unique (par son DN)
+	// Le service doit Ãªtre unique (par son DN)
 	LPLDAPSERVICE service(NULL);
 	if (NULL != (service = _findContainerByDN(dn))){
 		if (logs_){
-			logs_->add(logs::TRACE_TYPE::ERR, "Le service '%s' est déja défini avec le DN : '%s'", name.c_str(), service->DN());
+			logs_->add(logs::TRACE_TYPE::ERR, "Le service '%s' est dÃ©ja dÃ©fini avec le DN : '%s'", name.c_str(), service->DN());
 			logs_->add(logs::TRACE_TYPE::ERR, "Le container '%s' ne sera pas pris en compte", dn);
 		}
 
 		return false;
 	}
 
-	// Création du service (sans accents)
+	// CrÃ©ation du service (sans accents)
 	string sName(name);
 #ifdef _WIN32
 	sName = charUtils::removeAccents(sName);
@@ -160,29 +160,29 @@ bool servicesList::add(const char* dn, string& name, string& shortName, string&f
 	service = new LDAPService(dn, name.c_str(), sName.c_str(), shortName.c_str(), fileName.c_str(), bkColor.c_str(), site.c_str());
 	if (NULL == service){
 		if (logs_){
-			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour le service '%s'", name.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mÃ©moire pour le service '%s'", name.c_str());
 		}
 
 		return false;
 	}
 
-	// Ajout à la liste
+	// Ajout Ã  la liste
 	LPLDAPSERVICE prev = _findContainerByName(sName.c_str());
 	if (NULL != prev){
-		// Il existe déja un servie avec ce nom
+		// Il existe dÃ©ja un servie avec ce nom
 		//
 		if (strlen(prev->DN()) < strlen(dn)){
-			// le DN est plus court => c'est mon container je m'ajoute à la fin
+			// le DN est plus court => c'est mon container je m'ajoute Ã  la fin
 			services_.push_back(service);
 		}
 		else{
-			// Je suis son container, donc je dois être situé "avant" lui dans la liste
-			// le DN est plus court => c'est mon container je m'ajoute au début
+			// Je suis son container, donc je dois Ãªtre situÃ© "avant" lui dans la liste
+			// le DN est plus court => c'est mon container je m'ajoute au dÃ©but
 			services_.push_front(service);
 		}
 	}
 	else{
-		// sinon ajout à la fin
+		// sinon ajout Ã  la fin
 		services_.push_back(service);
 	}
 
@@ -196,7 +196,7 @@ bool servicesList::add(const char* dn, string& name, string& shortName, string&f
 
 servicesList::LPLDAPSERVICE servicesList::userContainers(const char* userDN)
 {
-	// Vérification des paramètres
+	// VÃ©rification des paramÃ¨tres
 	if (NULL == structure_ || IS_EMPTY(userDN)){
 		return NULL;
 	}
@@ -216,30 +216,30 @@ servicesList::LPLDAPSERVICE servicesList::userContainers(const char* userDN)
 	size_t pos = dn.find(LDAP_PREFIX_OU, 1);
 	if (dn.npos == pos){
 		// ???
-		// format invalide ou il ne s'agit pas d'un objet positionné dans les OU
+		// format invalide ou il ne s'agit pas d'un objet positionnÃ© dans les OU
 		return NULL;
 	}
 	dn = dn.substr(pos);
 
 	LPTREEELEMENT pElement(NULL);
 
-	// Recherche récursive de tous les containers
+	// Recherche rÃ©cursive de tous les containers
 	servicesList::LPLDAPSERVICE container(_findContainerByDN(dn.c_str()));
 	servicesList::LPLDAPSERVICE myContainer(container);
 	servicesList::LPLDAPSERVICE prevContainer(container);
 
 	while (container){
-		// Ce container correspond t'il à un élément de structure ?
+		// Ce container correspond t'il Ã  un Ã©lÃ©ment de structure ?
 		if (NULL != (pElement = structure_->elementByName(container->cleanName()))){
-			// Oui => on fixe sa valeur (et éventuellement ses descendants si héritage)
+			// Oui => on fixe sa valeur (et Ã©ventuellement ses descendants si hÃ©ritage)
 			structure_->setFor(pElement, container->realName());
 		}
 
-		// Container précédent ...
+		// Container prÃ©cÃ©dent ...
 		if (NULL == (container = _getContainerOf(dn.c_str()))){
 			dn = container->DN();
 
-			// C'est mon "père"
+			// C'est mon "pÃ¨re"
 			prevContainer->setParent(container);
 			prevContainer = container;
 		}
@@ -266,21 +266,21 @@ servicesList::LPLDAPSERVICE servicesList::findContainer(string& container, strin
 		return service;
 	}
 
-	// non trouvé ou rien à trouver ...
+	// non trouvÃ© ou rien Ã  trouver ...
 	containerDN = "";
 	depth = DEPTH_NONE;
 	//return (container.size()>0?false:true);
 	return NULL;
 }
 
-// Recherche de tous les sous-services à partir de ...
+// Recherche de tous les sous-services Ã  partir de ...
 //
 bool servicesList::findSubContainers(string& from, string& name, size_t depth, deque<servicesList::LPLDAPSERVICE>& services)
 {
 	// Liste vierge ...
 	services.clear();
 
-	// Rien à faire
+	// Rien Ã  faire
 	if (!from.size()){
 		return false;
 	}
@@ -298,7 +298,7 @@ bool servicesList::findSubContainers(string& from, string& name, size_t depth, d
 			// Un de mes descendants ...
 			childDepth = charUtils::countOf(childDN, ',', mySize);
 
-			if (childDepth == depth ||							// profondeur recherchée
+			if (childDepth == depth ||							// profondeur recherchÃ©e
 				(0 == childDepth && childSvc->equalName(name)))	// les agents du container
 			{
 				// Je le garde
@@ -310,7 +310,7 @@ bool servicesList::findSubContainers(string& from, string& name, size_t depth, d
 	return (services.size() > 0);
 }
 
-// Profondeur associée à un type de container
+// Profondeur associÃ©e Ã  un type de container
 //
 size_t servicesList::containerDepth(string& container)
 {

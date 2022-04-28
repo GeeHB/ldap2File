@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: agentTree.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,15 +12,15 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Implémentation des classes agentInfos & agentTree pour la modélisation
-//--			de l'arborescence hiérachique
+//--			ImplÃ©mentation des classes agentInfos & agentTree pour la modÃ©lisation
+//--			de l'arborescence hiÃ©rachique
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	24/12/2015 - JHB - Création
+//--	24/12/2015 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -35,7 +35,7 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Implémentation de la classe
+//-- ImplÃ©mentation de la classe
 //--
 //----------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ agentTree::agentTree(charUtils* encoder, logs* pLogs, LDAPServer* lServer, const
 		throw LDAPException("Erreur lors de l'initialisation du gestionnaire d'organigramme");
 	}
 
-	// Initialisation des données membres
+	// Initialisation des donnÃ©es membres
 	//
 	encoder_ = encoder;
 	logs_ = pLogs;
@@ -68,11 +68,11 @@ agentTree::agentTree(charUtils* encoder, logs* pLogs, LDAPServer* lServer, const
 //
 agentTree::~agentTree()
 {
-	// Libération de la liste des agents
+	// LibÃ©ration de la liste des agents
 	//
 	for (deque<LPAGENTINFOS>::iterator agentIT = agents_.begin(); agentIT != agents_.end(); agentIT++){
 		if (*agentIT){
-			// Libération de l'objet
+			// LibÃ©ration de l'objet
 			delete (*agentIT);
 		}
 	}
@@ -82,7 +82,7 @@ agentTree::~agentTree()
 //
 LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, string& nom, string& email, unsigned int status, string& manager, string& matricule, bool deducted)
 {
-	// L'agent a t'il déja été ajouté ?
+	// L'agent a t'il dÃ©ja Ã©tÃ© ajoutÃ© ?
 	LPAGENTINFOS agent = _findAgent(dnAgent, uid);
 #ifdef _DEBUG
 	if (dnAgent.size() && !manager.size()) {
@@ -91,7 +91,7 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, s
 	}
 #endif // uid = NO_AGENT_UID;
 	if (agent){
-		if (agent->uid() == uid &&			// Même uid pour 2 DN différents !!!
+		if (agent->uid() == uid &&			// MÃªme uid pour 2 DN diffÃ©rents !!!
 			dnAgent != agent->dn()) {
 
 			if (logs_){
@@ -102,19 +102,19 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, s
 		}
 
 		// oui
-		agent->setAutoAdded(false);		// Je l'aurais ajouté à un moment ou un autre !
+		agent->setAutoAdded(false);		// Je l'aurais ajoutÃ© Ã  un moment ou un autre !
 	}
 	else{
-		// Création d'un nouvel agent
+		// CrÃ©ation d'un nouvel agent
 		if (NULL == (agent = new agentInfos(uid, dnAgent.c_str(), prenom, nom, email, status, deducted))){
-			// Impossible d'allouer de la mémoire
+			// Impossible d'allouer de la mÃ©moire
 			return NULL;
 		}
 
 		agent->setMatricule(matricule);
 		agent->setid(agents_.size());
 
-		// Ajout à la liste
+		// Ajout Ã  la liste
 		agents_.push_back(agent);
 	}
 
@@ -138,7 +138,7 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, s
 	return agent;
 }
 
-// Mise à jour des id pour les agents intervenants sur plusieurs postes
+// Mise Ã  jour des id pour les agents intervenants sur plusieurs postes
 //
 void agentTree::findOtherDNIds()
 {
@@ -156,7 +156,7 @@ void agentTree::_findOtherDNIds(agentInfos* agent)
 {
 	deque<agentInfos::OTHERJOB*>* otherJobs(NULL);
 
-	// Rien à faire ?
+	// Rien Ã  faire ?
 	if (NULL == agent
 		|| NULL == (otherJobs = agent->getOtherDNs())
 		|| 0 == otherJobs->size()){
@@ -169,22 +169,22 @@ void agentTree::_findOtherDNIds(agentInfos* agent)
 	agentInfos* pOther(NULL);
 	while (pointer != otherJobs->end()){
 		if (NULL != (other = (*pointer)) && NO_AGENT_UID == other->id_){
-			// Le lien n'a pas été fait => recherche dans la liste
+			// Le lien n'a pas Ã©tÃ© fait => recherche dans la liste
 			if (NULL == (pOther = _findAgent(other->dn_, NO_AGENT_UID))
 				|| ((pOther != NULL) && pOther->autoAdded())){
-				// L'agent n'est pas dans la liste mémoire
+				// L'agent n'est pas dans la liste mÃ©moire
 				//other->dn_ = "";
 				pointer = otherJobs->erase(pointer);
 				delete other;
 			}
 			else{
-				// Je l'ai trouvé !
+				// Je l'ai trouvÃ© !
 				other->id_ = pOther->id();
 				pointer++;
 			}
 		}
 		else{
-			// Elément/emploi suivant
+			// ElÃ©ment/emploi suivant
 			pointer++;
 		}
 	}
@@ -208,13 +208,13 @@ LPAGENTINFOS agentTree::_findAgent(const char* dnAgent, unsigned int uid)
 				((uid != NO_AGENT_UID && (*agentIT)->uid() == uid)
 					|| (*agentIT)->dn() == dnAgent)
 				){
-				// Trouvé
+				// TrouvÃ©
 				return (*agentIT);
 			}
 		}
 	}
 
-	// Non trouvé
+	// Non trouvÃ©
 	return NULL;
 }
 
@@ -224,13 +224,13 @@ LPAGENTINFOS agentTree::_findManager(LPAGENTINFOS from, bool fullMode)
 {
 	deque<LPAGENTINFOS>::iterator agentIT = agents_.begin();
 
-	// On se positionne dans la liste à partir de "from"
+	// On se positionne dans la liste Ã  partir de "from"
 	if (from){
 		while (agentIT != agents_.end() && (*agentIT) != from){
 			agentIT++;
 		}
 
-		// trouvé ?
+		// trouvÃ© ?
 		if (agentIT++ == agents_.end()){
 			// non
 			return NULL;
@@ -249,7 +249,7 @@ LPAGENTINFOS agentTree::_findManager(LPAGENTINFOS from, bool fullMode)
 				||
 				(fullMode && !cParent)
 				)){
-			// Trouvé
+			// TrouvÃ©
 			return cAgent;
 		}
 
@@ -257,12 +257,12 @@ LPAGENTINFOS agentTree::_findManager(LPAGENTINFOS from, bool fullMode)
 		agentIT++;
 	}
 
-	// Non trouvé
+	// Non trouvÃ©
 	return NULL;
 }
 
 
-// Chaine cancaténée avec tous les managers de l'agent
+// Chaine cancatÃ©nÃ©e avec tous les managers de l'agent
 //
 string agentTree::_getAscendantsString(const char* dnAgent, bool withMe, string* managerID)
 {
@@ -271,13 +271,13 @@ string agentTree::_getAscendantsString(const char* dnAgent, bool withMe, string*
 	// Recherche de l'agent
 	LPAGENTINFOS agent = _findAgent(dnAgent, NO_AGENT_UID);
 	if (!withMe){
-		// je passe à mon premier ancètre
+		// je passe Ã  mon premier ancÃ¨tre
 		agent = (agent ? agent->parent() : NULL);
 	}
 	while (agent){
-		// Déja un prédecesseur ?
+		// DÃ©ja un prÃ©decesseur ?
 		if (fullString.size()){
-			// Ajout du séparateur
+			// Ajout du sÃ©parateur
 			fullString += managersSeparator_.length()?managersSeparator_:",";
 			fullString += " ";
 		}
@@ -289,15 +289,15 @@ string agentTree::_getAscendantsString(const char* dnAgent, bool withMe, string*
 			(*managerID) = agent->matricule();
 		}
 
-		// Le prédédecesseur
+		// Le prÃ©dÃ©decesseur
 		agent = (recurseManagers_ ? agent->parent() : NULL);
 	}
 
-	// Terminé
+	// TerminÃ©
 	return fullString;
 }
 
-// Recherche récursive des managers/encadrants d'un agent
+// Recherche rÃ©cursive des managers/encadrants d'un agent
 //
 LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 {
@@ -309,7 +309,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 		return NULL;
 	}
 
-	// L'agent en question est-il déja en mémoire ?
+	// L'agent en question est-il dÃ©ja en mÃ©moire ?
 	LPAGENTINFOS agent = _findAgent(dnAgent, NO_AGENT_UID);
 	if (agent){
 		// oui
@@ -332,7 +332,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 		myAttributes += STR_ATTR_ALLIER_MATRICULE;
 	}
 
-	// Génération de la requête
+	// GÃ©nÃ©ration de la requÃªte
 	searchExpr expression(XML_LOG_OPERATOR_AND);
 	expression.add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_TYPE_PERSON);
 	expression.add(STR_ATTR_UID, SEARCH_ATTR_COMP_EQUAL, agentInfos::idFromDN(dnAgent).c_str());
@@ -380,7 +380,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 		}
 	}
 	else{
-		// On ne s'interesse qu'à la première valeur
+		// On ne s'interesse qu'Ã  la premiÃ¨re valeur
 		// d'ailleurs il ne devrait y en avoir qu'un'
 		if (NULL != (pEntry = ldapServer_->firstEntry(searchResult))){
 			pAttribute = ldapServer_->firstAttribute(pEntry, &pBer);
@@ -444,7 +444,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 #ifdef _DEBUG
 				else {
 					if (pValue && *pValue == NULL) {
-						// Attribut existant mais vide => on passe à l'attribut suivant
+						// Attribut existant mais vide => on passe Ã  l'attribut suivant
 						pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
 					}
 				}
@@ -452,7 +452,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 			} // while
 		} // pEntry != NULL;
 	}
-	// Libérations
+	// LibÃ©rations
 	//
 	if (pBer){
 		ber_free(pBer, 0);
@@ -460,7 +460,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 
 	ldapServer_->msgFree(searchResult);
 
-	// Ai je trouvé des valeurs ?
+	// Ai je trouvÃ© des valeurs ?
 	if (nom.size() && prenom.size()){
 		// Si le responsable est l'agent, risque de boucle ...
 		if (manager == dnAgent){
@@ -488,7 +488,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 //
 agentInfos::agentInfos(unsigned int uid, const char* dn, string& prenom, string& nom, string& email, unsigned int status, bool autoAdded)
 {
-	// Initialisation des données membres
+	// Initialisation des donnÃ©es membres
 	//
 	uid_ = uid;
 	dn_ = dn;
@@ -510,7 +510,7 @@ agentInfos::agentInfos(unsigned int uid, const char* dn, string& prenom, string&
 #endif // _DEBUG
 }
 
-// Libération
+// LibÃ©ration
 //
 agentInfos::~agentInfos()
 {
@@ -527,7 +527,7 @@ agentInfos::~agentInfos()
 
 // Insertion d'un agent dans l'arborescence
 //
-//		Les agents sont classés par ordre alphabétique du nom
+//		Les agents sont classÃ©s par ordre alphabÃ©tique du nom
 //		il faut positionner les 3 liens
 //
 void agentInfos::setParent(agentInfos* pAgent)
@@ -542,11 +542,11 @@ void agentInfos::setParent(agentInfos* pAgent)
 
 
 	if (pAgent == this ||		// Je ne suis pas mon manager ...
-		pAgent == manager_.parent_){		// Déja fait !
+		pAgent == manager_.parent_){		// DÃ©ja fait !
 		return;
 	}
 
-	// Mon père
+	// Mon pÃ¨re
 	manager_.parent_ = pAgent;
 
 	agentInfos* child(NULL);
@@ -566,7 +566,7 @@ void agentInfos::setParent(agentInfos* pAgent)
 
 	// Suis je le premier dans la fratrie ?
 	if (!prev){
-		// oui => je mets à jour mon père
+		// oui => je mets Ã  jour mon pÃ¨re
 		pAgent->setFirstChild(this);
 	}
 	else{
@@ -574,12 +574,12 @@ void agentInfos::setParent(agentInfos* pAgent)
 		prev->setNextSibling(this);
 	}
 
-	// Il y a quelqu'un après moi => insertion
+	// Il y a quelqu'un aprÃ¨s moi => insertion
 	// ou pas ( = NULL)
 	setNextSibling(child);
 }
 
-// Nom affiché
+// Nom affichÃ©
 //
 string agentInfos::display(string& format)
 {
@@ -602,7 +602,7 @@ string agentInfos::_display(string& format)
 	size_t pos(full.npos);
 
 	//
-	// Génération du noeud par tokenisation
+	// GÃ©nÃ©ration du noeud par tokenisation
 	//
 
 	// L'adresse mail
@@ -628,7 +628,7 @@ string agentInfos::_display(string& format)
 		}
 	}
 
-	// Prénom + Nom
+	// PrÃ©nom + Nom
 	//
 	if (full.npos != (pos = full.find(TOKEN_NODE_NAME))){
 		if (isVacant()){
@@ -669,7 +669,7 @@ string agentInfos::_display(string& format)
 			//_itoa_s(myChilds, bidon, 9, 10);
 			inter += charUtils::itoa(myChilds, 10);
 
-			// Ceux encadrés ...
+			// Ceux encadrÃ©s ...
 			size_t allChilds(descendants());
 			if (allChilds > myChilds){
 				inter += " + ";
@@ -694,7 +694,7 @@ string agentInfos::_display(string& format)
 //
 size_t agentInfos::childs()
 {
-	// Décompte du nombre d'enfants
+	// DÃ©compte du nombre d'enfants
 	size_t count(0);
 	LPAGENTINFOS child = firstChild();
 	while (child){
@@ -711,7 +711,7 @@ size_t agentInfos::childs()
 //
 size_t agentInfos::descendants()
 {
-	// Décompte du nombre de feuilles à partir de mes enfants
+	// DÃ©compte du nombre de feuilles Ã  partir de mes enfants
 	size_t count(0);
 	LPAGENTINFOS child = firstChild();
 	while (child){
@@ -725,7 +725,7 @@ size_t agentInfos::descendants()
 	return count;
 }
 
-// Récupération de l'ID d'un agent a partir de son DN
+// RÃ©cupÃ©ration de l'ID d'un agent a partir de son DN
 //
 string agentInfos::idFromDN(const char* szDN)
 {
@@ -735,7 +735,7 @@ string agentInfos::idFromDN(const char* szDN)
 		if (!pos){
 			// Le DN d'un agent commence par l'uid
 			if (DN.npos != (pos = DN.find(","))){
-				// Trouvé
+				// TrouvÃ©
 				size_t offset = strlen(LDAP_PREFIX_UID);
 				return DN.substr(offset, pos - offset);
 			}
@@ -758,7 +758,7 @@ bool agentInfos::addOtherDN(const char* dn)
 {
 	if (!IS_EMPTY(dn) &&
 		dn_ != dn){
-		// Déja ce DN ?
+		// DÃ©ja ce DN ?
 		for (deque<OTHERJOB*>::iterator it = otherJobs_.begin(); it != otherJobs_.end(); it++){
 			if (*it && (*it)->dn_ == dn){
 				return false;
@@ -770,7 +770,7 @@ bool agentInfos::addOtherDN(const char* dn)
 		return true;
 	}
 
-	// Rien n'a été fait
+	// Rien n'a Ã©tÃ© fait
 	return false;
 }
 
@@ -800,7 +800,7 @@ bool agentInfos::_sup(agentInfos& right) const
 		return false;
 	}
 
-	// Si les noms sont égaux il faut comparer les prénoms
+	// Si les noms sont Ã©gaux il faut comparer les prÃ©noms
 	if (!ret){
 		return (charUtils::stricmp(prenom_.c_str(), right.prenom_.c_str()) >= 0);
 	}
@@ -809,7 +809,7 @@ bool agentInfos::_sup(agentInfos& right) const
 	return true;
 }
 
-// Pointeur sur les données "personnelles"
+// Pointeur sur les donnÃ©es "personnelles"
 //
 agentInfos::agentDatas* agentInfos::setOwnData(agentInfos::agentDatas* pData)
 {

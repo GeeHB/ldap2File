@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: sFileSystem.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: xxx
 //--
@@ -12,16 +12,16 @@
 //--
 //--	DESCRIPTION:
 //--
-//--	Définition de la classe sFileSystem
+//--	DÃ©finition de la classe sFileSystem
 //--
-//--		Gestion simplifiée du système de fichiers
+//--		Gestion simplifiÃ©e du systÃ¨me de fichiers
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	23/07/2020 - JHB - Création
+//--	23/07/2020 - JHB - CrÃ©ation
 //--
 //--	22/06/2021 - JHB - Version 1.2.1
 //--
@@ -62,7 +62,7 @@ namespace sFileSystem {
 
 	//---------------------------------------------------------------------------
 	//--
-	//--		Définitions
+	//--		DÃ©finitions
 	//--
 	//---------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ namespace sFileSystem {
 	//
 	bool exists(const std::string& path);
 
-	// Opérations sur les fichiers
+	// OpÃ©rations sur les fichiers
 	//
 
 	// Copie
@@ -89,7 +89,7 @@ namespace sFileSystem {
 	// Un dossier ?
 	bool is_directory(const std::string& path);
 
-	// Création
+	// CrÃ©ation
 	bool create_directory(const std::string& path);
 
 	// Dossier courant
@@ -104,7 +104,7 @@ namespace sFileSystem {
 	std::string split(const std::string& fullName, std::string& path);
 	bool split(const std::string& fullName, std::list<std::string>& out);
 
-	// Génération d'un nom de fichier
+	// GÃ©nÃ©ration d'un nom de fichier
 	std::string merge(const std::string& path, const std::string& filename);
 	std::string merge(const std::string& path, const char* filename);
 	std::string merge(const char* path, const char* filename);

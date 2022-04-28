@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: titles.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,15 +12,15 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Implémentation de la classe titles
-//--			Liste des intitulés de poste
+//--			ImplÃ©mentation de la classe titles
+//--			Liste des intitulÃ©s de poste
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	09/07/2020 - JHB - Création
+//--	09/07/2020 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -48,7 +48,7 @@ namespace jhbLDAPTools {
 	//
 	void titles::clear()
 	{
-		// Suppression de tous les éléments de la liste
+		// Suppression de tous les Ã©lÃ©ments de la liste
 		for (deque<LPAGENTTITLE>::iterator it = titles_.begin(); it != titles_.end(); it++) {
 			if ((*it)) {
 				delete (*it);
@@ -61,29 +61,29 @@ namespace jhbLDAPTools {
 	//
 	bool titles::add(const string& id, const string& label, int responsable, const string& description)
 	{
-		// Paramètres valides ?
+		// ParamÃ¨tres valides ?
 		//
 		if (!id.length() ||
 			!label.length()) {
 			return false;
 		}
 
-		// Le titre doit être unique (par son ID mais aussi sa valeur !!!)
+		// Le titre doit Ãªtre unique (par son ID mais aussi sa valeur !!!)
 		LPAGENTTITLE pTitle(NULL);
 		if (NULL != (pTitle = find(id)) && pTitle->label() != label) {
 			if (logs_) {
-				logs_->add(logs::TRACE_TYPE::DBG, "Erreur - Impossible d'ajouter le titre '%s'. Il est déja utilisé avec l'ID '%s' pour '%s'", label.c_str(), id.c_str(), pTitle->label());
-				//logs_->add(logs::TRACE_TYPE::DBG, "Erreur - Le titre id:%s est déja défini pour '%s'", id.c_str(), pTitle->label());
+				logs_->add(logs::TRACE_TYPE::DBG, "Erreur - Impossible d'ajouter le titre '%s'. Il est dÃ©ja utilisÃ© avec l'ID '%s' pour '%s'", label.c_str(), id.c_str(), pTitle->label());
+				//logs_->add(logs::TRACE_TYPE::DBG, "Erreur - Le titre id:%s est dÃ©ja dÃ©fini pour '%s'", id.c_str(), pTitle->label());
 			}
 
 			return false;
 		}
 
-		// Création du nouveau titre
+		// CrÃ©ation du nouveau titre
 		pTitle = new title(id, label, responsable, description);
 		if (NULL == pTitle) {
 			if (logs_) {
-				logs_->add(logs::TRACE_TYPE::ERR, "Erreur d'allocation mémoire. Le titre '%s' n'a pu être ajouté", id.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Erreur d'allocation mÃ©moire. Le titre '%s' n'a pu Ãªtre ajoutÃ©", id.c_str());
 			}
 
 			return false;
@@ -106,12 +106,12 @@ namespace jhbLDAPTools {
 	{
 		for (deque<LPAGENTTITLE>::iterator it = titles_.begin(); it != titles_.end(); it++) {
 			if ((*it) && id == (*it)->id()) {
-				// trouvé
+				// trouvÃ©
 				return (*it);
 			}
 		}
 
-		// Non trouvé
+		// Non trouvÃ©
 		return NULL;
 	}
 

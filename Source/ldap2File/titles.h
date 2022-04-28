@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: titles.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,15 +12,15 @@
 //--
 //--	DESCRIPTIONS:
 //--
-//--			Définition de la classe titles
-//--			Liste des titres/intitulés de postes
+//--			DÃ©finition de la classe titles
+//--			Liste des titres/intitulÃ©s de postes
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	09/07/2020 - JHB - Création
+//--	09/07/2020 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -36,14 +36,14 @@
 namespace jhbLDAPTools {
 
 	//
-	// Définition de la classe
+	// DÃ©finition de la classe
 	//
 	class titles
 	{
-		// Méthodes publiques
+		// MÃ©thodes publiques
 	public:
 
-		// Un intitulé de poste
+		// Un intitulÃ© de poste
 		//
 		class title
 		{
@@ -63,7 +63,7 @@ namespace jhbLDAPTools {
 			virtual ~title()
 			{}
 
-			// Accès
+			// AccÃ¨s
 			//
 
 			// Identifiant
@@ -72,7 +72,7 @@ namespace jhbLDAPTools {
 				return id_.c_str();
 			}
 
-			// Libellé
+			// LibellÃ©
 			const char* label()
 			{
 				return label_.c_str();
@@ -91,9 +91,9 @@ namespace jhbLDAPTools {
 			}
 
 		protected:
-			// Données membres
+			// DonnÃ©es membres
 			//
-			string			id_;			// ID (n'estpas forcément numérique)
+			string			id_;			// ID (n'estpas forcÃ©ment numÃ©rique)
 			string			label_;
 			bool			manager_;		// Est-ce un manager ?
 			string			description_;	// description
@@ -128,11 +128,11 @@ namespace jhbLDAPTools {
 		}
 		LPAGENTTITLE find(const string& id);
 
-		// Methodes privées
+		// Methodes privÃ©es
 	protected:
 
 
-		// Données membres privées
+		// DonnÃ©es membres privÃ©es
 		//
 	protected:
 

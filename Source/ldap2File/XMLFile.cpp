@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: XMLFile.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,17 +12,17 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Implémentation de la classe XMLFile
-//--			Génération d'un fichier au format XML
+//--			ImplÃ©mentation de la classe XMLFile
+//--			GÃ©nÃ©ration d'un fichier au format XML
 //--
-//--			Classe abstraite dont hérite ODSFile
+//--			Classe abstraite dont hÃ©rite ODSFile
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	17/12/2015 - JHB - Création
+//--	17/12/2015 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -33,14 +33,14 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Constantes privées
+//-- Constantes privÃ©es
 //--
 //----------------------------------------------------------------------
 
 
 //----------------------------------------------------------------------
 //--
-//-- Implémentation de la classe XMLCELL
+//-- ImplÃ©mentation de la classe XMLCELL
 //--
 //----------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ void XMLFile::XMLCELL::_init(const char* value, bool firstTime)
 		while (next){
 			current = next;			// Je conserve un pointeur sur la valeur courante
 			next = next->_next;		// Encore une valeur ?
-			delete current;			// Libération de cette valeur
+			delete current;			// LibÃ©ration de cette valeur
 		}
 	}
 
@@ -66,7 +66,7 @@ void XMLFile::XMLCELL::_init(const char* value, bool firstTime)
 
 //----------------------------------------------------------------------
 //--
-//-- Implémentation de la classe XMLFile
+//-- ImplÃ©mentation de la classe XMLFile
 //--
 //----------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ XMLFile::XMLFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 XMLFile::~XMLFile()
 {
 	if (values_ && line_){
-		// Suppression des cellules multivaluées
+		// Suppression des cellules multivaluÃ©es
 		_emptyLine();
 
 		// Suppression de la ligne
@@ -103,13 +103,13 @@ XMLFile::~XMLFile()
 // Initialisation(s)
 //
 bool XMLFile::init(){
-	// Preparation de la matrice en mémoire
+	// Preparation de la matrice en mÃ©moire
 	values_ = columns_->size();
 	if (NULL == (line_ = new XMLFile::XMLCELL[values_])){
-		throw LDAPException("Impossible d'allouer de la mémoire pour la modélisation d'une ligne");
+		throw LDAPException("Impossible d'allouer de la mÃ©moire pour la modÃ©lisation d'une ligne");
 	}
 
-	// Modèle
+	// ModÃ¨le
 	//
 	if (fileInfos_->templateFile_.length()){
 		templateFileName(templateFile_, fileInfos_->templateFile_.c_str(), false);
@@ -119,7 +119,7 @@ bool XMLFile::init(){
 		// Le fichier template existe t'il ?
 		if (!sFileSystem::exists(templateFile_)){
 			if (logs_){
-				logs_->add(logs::TRACE_TYPE::ERR, "Le modèle '%s' n'existe pas", templateFile_.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Le modÃ¨le '%s' n'existe pas", templateFile_.c_str());
 			}
 
 			return false;
@@ -136,7 +136,7 @@ bool XMLFile::init(){
 	}
 #endif // XML_TEST_FORMAT_MODE
 
-	// Fichier à générer
+	// Fichier Ã  gÃ©nÃ©rer
 	defaultContentFileName(contentFile_, false);
 
 	// Initialisation du fichier de contenu
@@ -148,17 +148,17 @@ bool XMLFile::init(){
 	return _openContentFile();
 }
 
-// Ajout d'une valeur monovaluée
+// Ajout d'une valeur monovaluÃ©e
 //
 bool XMLFile::addAt(size_t colIndex, string& value)
 {
-	// Vérifications
+	// VÃ©rifications
 	if (colIndex >= values_ || !value.size()){
-		// Rien à ajouter
+		// Rien Ã  ajouter
 		return false;
 	}
 
-	// Copie de la valeur dans la matrice mémoire
+	// Copie de la valeur dans la matrice mÃ©moire
 	line_[colIndex]._value = value;
 #ifdef _WIN32
 	encoder_.convert_toUTF8(line_[colIndex]._value, false);
@@ -173,13 +173,13 @@ bool XMLFile::addAt(size_t colIndex, string& value)
 //
 bool XMLFile::removeAt(size_t colIndex)
 {
-	// Vérifications
+	// VÃ©rifications
 	if (colIndex >= values_){
-		// Rien à faire
+		// Rien Ã  faire
 		return false;
 	}
 
-	// Supression de la valeur dans la matrice mémoire
+	// Supression de la valeur dans la matrice mÃ©moire
 	line_[colIndex]._value = "";
 	if (line_[colIndex]._next){
 		line_[colIndex]._next->_init();
@@ -189,11 +189,11 @@ bool XMLFile::removeAt(size_t colIndex)
 	return true;
 }
 
-// Ajout d'une valeur multivaluée
+// Ajout d'une valeur multivaluÃ©e
 //
 bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 {
-	// Ajout de la première valeur
+	// Ajout de la premiÃ¨re valeur
 	deque<string>::iterator value = values.begin();
 	if (value == values.end() ||
 		!addAt(colIndex, *value)){
@@ -201,7 +201,7 @@ bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 		return false;
 	}
 
-	// Pointeur sur la cellule contenant la première valeur
+	// Pointeur sur la cellule contenant la premiÃ¨re valeur
 	LPXMLCELL current(&line_[colIndex]), next(NULL);
 
 	// Ajout des autres valeurs
@@ -214,7 +214,7 @@ bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 		encoder_.convert_toUTF8(validValue, false);
 #endif // _WIN32
 
-		// Création de la nouvelle cellule
+		// CrÃ©ation de la nouvelle cellule
 		if (NULL != (next = new XMLCELL(validValue))){
 			// chainage
 			current->_next = next;
@@ -223,7 +223,7 @@ bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 			current = next;
 		}
 		else{
-			throw LDAPException("Impossible d'allouer de la mémoire pour les cellules multivaluées");
+			throw LDAPException("Impossible d'allouer de la mÃ©moire pour les cellules multivaluÃ©es");
 		}
 	}
 
@@ -258,14 +258,14 @@ bool XMLFile::close()
 		XMLContentFile_.save_file(contentFile_.c_str(), PUGIXML_TEXT("\t"), pugi::format_default | pugi::format_save_file_text, pugi::encoding_utf8);
 	}
 
-	// Le fichier de contenu est généré ...
+	// Le fichier de contenu est gÃ©nÃ©rÃ© ...
 	// traitements finaux (compression...)
 	_endContentFile();
 
 	return true;
 }
 
-// Création d'une arborescence "flat"
+// CrÃ©ation d'une arborescence "flat"
 //
 void XMLFile::shift(int offset, treeCursor& ascendants)
 {

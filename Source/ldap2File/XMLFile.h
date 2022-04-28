@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: XMLFile.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,17 +12,17 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition de la classe XMLFile
-//--			Génération d'un fichier au format XML
+//--			DÃ©finition de la classe XMLFile
+//--			GÃ©nÃ©ration d'un fichier au format XML
 //--
-//--			Classe abstraite dont hérite ODSFile
+//--			Classe abstraite dont hÃ©rite ODSFile
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	17/12/2015 - JHB - Création
+//--	17/12/2015 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -50,13 +50,13 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Définition de la classe
+//-- DÃ©finition de la classe
 //--
 //----------------------------------------------------------------------
 
 class XMLFile : public outputFile, public orgChartFile
 {
-	// Méthodes publiques
+	// MÃ©thodes publiques
 	//
 public:
 
@@ -106,7 +106,7 @@ public:
         }
 	}
 
-	// Création d'un arborescence "flat"
+	// CrÃ©ation d'un arborescence "flat"
 	virtual void shift(int offset, treeCursor& ascendants);
 
 	// Saut de ligne (si le fichier est en mode texte)
@@ -114,7 +114,7 @@ public:
 	{ saveLine(); }
 
 
-	// Méthodes privées
+	// MÃ©thodes privÃ©es
 	//
 protected:
 
@@ -139,15 +139,15 @@ protected:
 
 		void _init(const char* value = NULL, bool firstTime = false);
 
-		// Données de la cellule
+		// DonnÃ©es de la cellule
 		//
 		string		_value;	// Valeur alpha
-		tagXMLCell*	_next;	// valeur suivante (si multivalué)
+		tagXMLCell*	_next;	// valeur suivante (si multivaluÃ©)
 	}XMLCELL, *LPXMLCELL;
 
 
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 protected:
 #ifdef _WIN32
@@ -160,7 +160,7 @@ protected:
 	size_t				values_;		// Nombre de colonnes (ie. de valeurs)
 
 	string				contentFile_;	// Contenu
-	string				templateFile_;	// Modèle / base pour la génération du fichier
+	string				templateFile_;	// ModÃ¨le / base pour la gÃ©nÃ©ration du fichier
 
 	bool				indentXML_;		// Indentation du fichier ?
 

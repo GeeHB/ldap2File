@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: textFile.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,14 +12,14 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Implémentation de la classe textFile
+//--			ImplÃ©mentation de la classe textFile
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	18/01/2016 - JHB - Création - Version 1.2
+//--	18/01/2016 - JHB - CrÃ©ation - Version 1.2
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -41,7 +41,7 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Implémentation de la classe
+//-- ImplÃ©mentation de la classe
 //--
 //----------------------------------------------------------------------
 
@@ -63,11 +63,11 @@ textFile::textFile(const LPOPFI fileInfos, columnList* columns, confFile* parame
 #endif // _WIN32
 }
 
-// Séparateurs et formats d'écriture
+// SÃ©parateurs et formats d'Ã©criture
 //
 void textFile::setSeparators(const char* valSep, const char* valEOL)
 {
-	// Séparateur de valeurs
+	// SÃ©parateur de valeurs
 	sep_ = (IS_EMPTY(valSep)?STR_COMMA:valSep);
 
 	//Saut de ligne
@@ -99,7 +99,7 @@ bool textFile::add(string& value)
 		currentLine_+=value;
 	}
 
-	// Terminé
+	// TerminÃ©
 	return true;
 }
 
@@ -111,7 +111,7 @@ bool textFile::add(deque<string>& values)
 		return true;
 	}
 
-	// Cancaténation des valeurs
+	// CancatÃ©nation des valeurs
 	string value(STR_VALUE_SEP);
 	string total = _cat(values, value);
 
@@ -120,22 +120,22 @@ bool textFile::add(deque<string>& values)
 }
 
 /*
-// Création d'un arborescence "flat"
+// CrÃ©ation d'un arborescence "flat"
 //
 void textFile::shift(int offset, treeCursor& ascendants)
 {
-	// Nous sommes forcéménet en début de ligne ...
+	// Nous sommes forcÃ©mÃ©net en dÃ©but de ligne ...
 	currentLine_ = "";
 
 	if (offset){
 		string val(" ", 4);
 
-		// Mes ancètres
+		// Mes ancÃ¨tres
 		for (int index=0; index<(offset-1); index++){
 			add(ascendants[index]->last()?flatLines_[LINK_NO_ANCESTER]:flatLines_[LINK_ANCESTER]);
 		}
 
-		// Ai je des frères après moi ?
+		// Ai je des frÃ¨res aprÃ¨s moi ?
 		add(ascendants[offset-1]->last()?flatLines_[LINK_NO_SIBLINGS]:flatLines_[LINK_SIBLINGS]);
 	}
 }
@@ -145,26 +145,26 @@ void textFile::shift(int offset, treeCursor& ascendants)
 //
 bool textFile::close()
 {
-	// Création du fichier
+	// CrÃ©ation du fichier
 	if (!_open()){
 		return false;
 	}
 
 	bool writen(true);
 
-	// Ajout ligne à ligne
+	// Ajout ligne Ã  ligne
 	for (deque<string>::iterator it = lines_.begin(); it != lines_.end(); it++){
 		file_ << (*it) << eol_;
 	}
 
-	// La dernière ?
+	// La derniÃ¨re ?
 	if (currentLine_.size() && !clearLine_){
 		file_ << currentLine_ << eol_;
 	}
 
 	if (file_.fail()){
 		if (logs_){
-			logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'écriture dans le fichier");
+			logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'Ã©criture dans le fichier");
 		}
 
 		writen = false;
@@ -172,7 +172,7 @@ bool textFile::close()
 
 	if (file_.fail()) {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'écriture dans le fichier");
+			logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'Ã©criture dans le fichier");
 		}
 
 		writen = false;
@@ -186,7 +186,7 @@ bool textFile::close()
 }
 
 //
-// Méthodes privées
+// MÃ©thodes privÃ©es
 //
 
 // Nouvelle ligne
@@ -208,7 +208,7 @@ bool textFile::_saveLine(bool header, LPAGENTINFOS agent)
 }
 
 
-// Création du fichier
+// CrÃ©ation du fichier
 //
 bool textFile::_open()
 {

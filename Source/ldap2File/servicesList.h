@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: servicesList.h
 //--
-//--	AUTEUR	: JÈrÙme Henry-BarnaudiËre - JHB
+//--	AUTEUR	: J√©r√¥me Henry-Barnaudi√®re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,15 +12,15 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			DÈfinition de la classe servicesList
-//--			Liste des services/directions/pÙles
+//--			D√©finition de la classe servicesList
+//--			Liste des services/directions/p√¥les
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	24/12/2015 - JHB - CrÈation
+//--	24/12/2015 - JHB - Cr√©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -36,11 +36,11 @@
 #include "ldapAttributes.h"
 
 //
-// DÈfinition de la classe
+// D√©finition de la classe
 //
 class servicesList
 {
-	// MÈthodes publiques
+	// M√©thodes publiques
 public:
 
 	// Un service LDAP
@@ -58,7 +58,7 @@ public:
 		virtual ~LDAPService()
 		{}
 
-		// AccËs
+		// Acc√®s
 		const char* DN()
 		{ return DN_.c_str(); }
 
@@ -89,14 +89,14 @@ public:
 		void setParent(servicesList::LDAPService* parent)
 		{ parent_ = parent; }
 
-		// EgalitÈ
+		// Egalit√©
 		bool equalName(const char* value)
 		{ return ((cleanName_ == value) || (realName_ == value)); }
 		bool equalName(string& value)
 		{ return equalName(value.c_str()); }
 
 	protected:
-		// DonnÈes membres
+		// Donn√©es membres
 		//
 
 		LDAPService*	parent_;
@@ -113,7 +113,7 @@ public:
 		string			fileName_;
 
 		string			color_;			// Couleur du container (ou celle du parent ...)
-		string			site_;			// Site / b‚timent
+		string			site_;			// Site / b√¢timent
 	};
 
 	typedef LDAPService* LPLDAPSERVICE;
@@ -144,10 +144,10 @@ public:
 	// Recherche d'un container par son nom
 	LPLDAPSERVICE findContainer(string& container, string& containerDN, size_t& depth);
 
-	// Recherche de tous les sous-services ‡ partir de ...
+	// Recherche de tous les sous-services √† partir de ...
 	bool findSubContainers(string& from, string& name, size_t depth, deque<LPLDAPSERVICE>& services);
 
-	// "Profondeur" associÈe ‡ un type de container
+	// "Profondeur" associ√©e √† un type de container
 	//
 	size_t containerDepth(const char* container){
 		if (IS_EMPTY(container)) return DEPTH_NONE;
@@ -156,7 +156,7 @@ public:
 	}
 	size_t containerDepth(string& container);
 
-	// Methodes privÈes
+	// Methodes priv√©es
 protected:
 
 	// Recherche d'un service
@@ -166,7 +166,7 @@ protected:
 	// Recherche d'un container
 	LPLDAPSERVICE _getContainerOf(const char* DN, const char* inName = NULL);
 
-	// DonnÈes membres privÈes
+	// Donn√©es membres priv√©es
 	//
 protected:
 

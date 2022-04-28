@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: ODSFile.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,15 +12,15 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition de la classe ODSFile
-//--			Génération d'un fichier au format Open Documents
+//--			DÃ©finition de la classe ODSFile
+//--			GÃ©nÃ©ration d'un fichier au format Open Documents
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	17/12/2015 - JHB - Création
+//--	17/12/2015 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -49,7 +49,7 @@
 	// Sous linux on utilise la ligne de commandes
 	#define	__USE_CMD_LINE_ZIP__
 
-	// Dossier temporaire pour la gestion/création des fichiers ZIP/ODS
+	// Dossier temporaire pour la gestion/crÃ©ation des fichiers ZIP/ODS
 	#define  ZIP_TEMP_FOLDER	"tmpODS"
 
 	// Utilisation d'alias pour pointer vers les utilitaires en ligne de commande
@@ -65,13 +65,13 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Définition de la classe
+//-- DÃ©finition de la classe
 //--
 //----------------------------------------------------------------------
 
 class ODSFile : public XMLFile
 {
-	// Méthodes publiques
+	// MÃ©thodes publiques
 	//
 public:
 
@@ -87,11 +87,11 @@ public:
 	}
 #endif // __USE_CMD_LINE_ZIP__
 
-    // Nombre d'éléments enregistrés
+    // Nombre d'Ã©lÃ©ments enregistrÃ©s
 	virtual size_t size()
-	{ return  (elements_ - 1); }        // Suppression de l'entêe dans le décompte des lignes
+	{ return  (elements_ - 1); }        // Suppression de l'entÃªe dans le dÃ©compte des lignes
 
-	// Création / initialisation(s)
+	// CrÃ©ation / initialisation(s)
 	virtual bool create();
 
 	// Noms des fichiers
@@ -101,7 +101,7 @@ public:
 	// Enregistrement de la ligne courante
 	virtual bool saveLine(bool header = false, LPAGENTINFOS agent = NULL);
 
-	// Création des entêtes et des onglets
+	// CrÃ©ation des entÃªtes et des onglets
 	virtual bool addSheet(string& sheetName, bool withHeader, bool firstSheet = false);
 	virtual void setSheetName(string& sheetName)
 	{
@@ -113,7 +113,7 @@ public:
 		}
 	}
 
-	// Pas de création de fichier mais ajout d'un onglet
+	// Pas de crÃ©ation de fichier mais ajout d'un onglet
 	virtual orgChartFile* addOrgChartFile(bool flatMode, bool fullMode, bool& newFile){
 		// moi !
 		newFile = false;
@@ -124,8 +124,8 @@ public:
 	// Organigramme
 	//
 
-	// L'organigramme est enregistré dans un onglet sans entete
-	// et dont les colonnes ne sont par retaillées
+	// L'organigramme est enregistrÃ© dans un onglet sans entete
+	// et dont les colonnes ne sont par retaillÃ©es
 	virtual bool createOrgSheet(const string& sheetName)
 	{ return createOrgSheet(sheetName.c_str()); }
 	virtual bool createOrgSheet(const char* sheetName){
@@ -140,7 +140,7 @@ public:
 	virtual void closeOrgChartFile()
 	{}
 
-	// Méthodes privées
+	// MÃ©thodes privÃ©es
 	//
 private:
 
@@ -170,7 +170,7 @@ private:
 		{ close(); }
 
 #ifdef __USE_CMD_LINE_ZIP__
-		// Dossier temporaire (dans lequel sera décompressée l'archive
+		// Dossier temporaire (dans lequel sera dÃ©compressÃ©e l'archive
 		bool setTempFolder(const string& zipFolder, string& msg) {
 			return setTempFolder(zipFolder.c_str(), msg);
 		}
@@ -212,26 +212,26 @@ private:
 		bool removeFile(const string& entryName);
 
 #ifdef __USE_CMD_LINE_ZIP__
-        // Accès à un fichier
+        // AccÃ¨s Ã  un fichier
         string _tempPath(const string& file)
         { return sFileSystem::merge(tempFolder_, file); }
 #endif // __USE_CMD_LINE_ZIP__
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	private:
 		string	            srcPath_;		// Chemin complet vers l'archive
 
-		bool				file_;			// Le fichier est-il un zip valide ? (le nom est pourri mais reste identique à la version ZIP_UTILS_LIB)
+		bool				file_;			// Le fichier est-il un zip valide ? (le nom est pourri mais reste identique Ã  la version ZIP_UTILS_LIB)
 
 #ifdef __USE_CMD_LINE_ZIP__
 		aliases::alias*		zipAlias_;      // Lien vers les commandes de l'OS
 		aliases::alias*		unzipAlias_;
 
-		std::string			tempFolder_;	// Le dossier temporaire dans lequel sont dezipés/zipés les fichiers
+		std::string			tempFolder_;	// Le dossier temporaire dans lequel sont dezipÃ©s/zipÃ©s les fichiers
 #endif // #ifdef __USE_CMD_LINE_ZIP__
 	};
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 private:
 	size_t			lineIndex_;				// Index de la ligne dans l'onglet

@@ -10,6 +10,12 @@ BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
 
+22.4.1 _
+    * xxx
+    - Corrections mineures
+        + Affichages
+        + Tous les fichiers sont encodés en UTF8 (même celui -ci)
+
 21.7.9 - Version complète
     * le 23 nov. 2021
     - Correction de bugs mineurs

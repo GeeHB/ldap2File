@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: LDAPSources.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Implémentation de LDAPSources
+//--		ImplÃ©mentation de LDAPSources
 //--		Liste des serveur source LDAP
 //--
 //---------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	23/03/2021 - JHB - Création
+//--	23/03/2021 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -38,7 +38,7 @@
 //
 LDAPSources::LDAPSources()
 {
-	// Initialisation des données membres
+	// Initialisation des donnÃ©es membres
 	defaultSourceName_ = "";
 }
 
@@ -66,8 +66,8 @@ bool LDAPSources::add(LDAPServer* server)
 
 	LDAPServer* pServer = _findServer(server->name());
 	if (NULL == pServer) {
-		// Le serveur n'a pas déja été ajouté il il n'exista pas deserveur homonyme dans la liste
-		// Ajout à la liste
+		// Le serveur n'a pas dÃ©ja Ã©tÃ© ajoutÃ© il il n'exista pas deserveur homonyme dans la liste
+		// Ajout Ã  la liste
 		sources_.push_back(server);
 	}
 
@@ -75,7 +75,7 @@ bool LDAPSources::add(LDAPServer* server)
 	return true;
 }
 
-// Source / environnement par défaut
+// Source / environnement par dÃ©faut
 //
 bool LDAPSources::setDefaultSourceName(string& srcName)
 {
@@ -86,7 +86,7 @@ bool LDAPSources::setDefaultSourceName(string& srcName)
 			return true;
 		}
 
-		// Non trouvé
+		// Non trouvÃ©
 		return false;
 	}
 
@@ -95,7 +95,7 @@ bool LDAPSources::setDefaultSourceName(string& srcName)
 }
 
 // Recherche d'une source par son nom
-// et à défaut retourne la source par défaut, si elle existe
+// et Ã  dÃ©faut retourne la source par dÃ©faut, si elle existe
 LDAPServer* LDAPSources::findEnvironmentByName(string& envName)
 {
 	//LDAPServer* server(NULL);
@@ -103,7 +103,7 @@ LDAPServer* LDAPSources::findEnvironmentByName(string& envName)
 		return _findServer(envName);
 	}
 
-	// Environnement par défaut
+	// Environnement par dÃ©faut
 	return (defaultSourceName_.length()?_findServer(defaultSourceName_):NULL);
 }
 
@@ -125,7 +125,7 @@ LDAPServer* LDAPSources::_findServer(string& serverName)
 		}
 	}
 
-	// Non trouvé
+	// Non trouvÃ©
 	return NULL;
 }
 

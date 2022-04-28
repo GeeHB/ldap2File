@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: ODSFile.cpp
 //--
-//--	AUTEUR	: JÈrÙme Henry-BarnaudiËre - JHB
+//--	AUTEUR	: J√©r√¥me Henry-Barnaudi√®re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,15 +12,15 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			ImplÈmentation de la classe ODSFile
-//--			GÈnÈration d'un fichier au format Open Documents
+//--			Impl√©mentation de la classe ODSFile
+//--			G√©n√©ration d'un fichier au format Open Documents
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	17/12/2015 - JHB - CrÈation
+//--	17/12/2015 - JHB - Cr√©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -33,11 +33,11 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Constantes privÈes
+//-- Constantes priv√©es
 //--
 //----------------------------------------------------------------------
 
-// BUG Èditeur Code::Blocks ...
+// BUG √©diteur Code::Blocks ...
 #ifndef _WIN32
 #ifndef __USE_CMD_LINE_ZIP__
 #define __USE_CMD_LINE_ZIP__
@@ -46,7 +46,7 @@
 
 //----------------------------------------------------------------------
 //--
-//-- ImplÈmentation de la classe zipFile
+//-- Impl√©mentation de la classe zipFile
 //--
 //----------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ bool ODSFile::zipFile::setTempFolder(const char* szFolder, string& msg)
 	// Si le dosssier existe, on le supprime
 	if (sFileSystem::is_directory(tempFolder_)) {
 		if (false == sFileSystem::remove_all(tempFolder_)) {
-			msg =  "GÈnÈration ODS - Impossible de vider l'ancien dossier temporaire '" + tempFolder_ + "'";
+			msg =  "G√©n√©ration ODS - Impossible de vider l'ancien dossier temporaire '" + tempFolder_ + "'";
 			return false;
 		}
 	}
@@ -78,7 +78,7 @@ bool ODSFile::zipFile::open(const char* fileName)
 		return false;
 	}
 
-	// DÈja un fichier ouvert ?
+	// D√©ja un fichier ouvert ?
 	if (file_ && srcPath_ != fileName) {
 		close();
 	}
@@ -92,10 +92,10 @@ bool ODSFile::zipFile::open(const char* fileName)
 		return false;
 	}
 
-	// DÈcompression du fichier source
+	// D√©compression du fichier source
 	//
 
-	// GÈnÈration de la ligne de commandes ‡ partir des tokens
+	// G√©n√©ration de la ligne de commandes √† partir des tokens
 	string cmdLine(unzipAlias_->application());      // Application
 	cmdLine+=" ";
 	cmdLine+=unzipAlias_->command();                 // Ligne de commandes
@@ -114,7 +114,7 @@ bool ODSFile::zipFile::open(const char* fileName)
 #else
 	// On n'utilise plus l'objet ZipArchive qui ne fonctionne pas en modification
 	// En remplacement, on utilise les api ZipFile::
-	// auquel cas, file_ n'est plus un pointeur mais un boolÈen qui indique si le fichier est une archive zip valide ou non
+	// auquel cas, file_ n'est plus un pointeur mais un bool√©en qui indique si le fichier est une archive zip valide ou non
 
 	string sFile(fileName);
 	//if (NULL == (file_ = ZipFile::Open(sFile))) {
@@ -146,7 +146,7 @@ void ODSFile::zipFile::close()
 	if (file_) {
 #ifdef __USE_CMD_LINE_ZIP__
 
-		// Quelque chose ‡ compresser ?
+		// Quelque chose √† compresser ?
 		if (false == sFileSystem::is_directory(tempFolder_)) {
 			return;
 		}
@@ -157,7 +157,7 @@ void ODSFile::zipFile::close()
 		// Compression du dossier
 		//
 
-		// GÈnÈration de la ligne de commandes ‡ partir des tokens
+		// G√©n√©ration de la ligne de commandes √† partir des tokens
         string cmdLine("cd ");
         cmdLine += tempFolder_;                     // On se positionne dans le dossier
 		cmdLine += ";";
@@ -188,18 +188,18 @@ void ODSFile::zipFile::close()
 int ODSFile::zipFile::findFile(const char* fileName)
 {
 	if (!file_ || IS_EMPTY(fileName)) {
-		// Non trouvÈ
+		// Non trouv√©
 		return -1;
 	}
 
 #ifdef __USE_CMD_LINE_ZIP__
-	// Le fichier doit exister dans le dossier (p‚s besoin d'aller dans les sous-dossiers)
+	// Le fichier doit exister dans le dossier (p√¢s besoin d'aller dans les sous-dossiers)
 	string path(_tempPath(fileName));
 	return (sFileSystem::exists(path)?1:-1);
 #else
 	//ZipArchiveEntry::Ptr pentry = file_->GetEntry(fileName);
 
-	// Retourne 1 si trouvÈ, -1 sinon (pas d'accËs ‡ l'index)
+	// Retourne 1 si trouv√©, -1 sinon (pas d'acc√®s √† l'index)
 	//return ((pentry && !pentry->IsDirectory())?1:-1);
 	string sFile(fileName);
 	return (ZipFile::IsInArchive(srcPath_, sFile) ? 1 : -1);
@@ -209,10 +209,10 @@ int ODSFile::zipFile::findFile(const char* fileName)
 // Extraction d'un fichier particulier
 //
 
-// ... ‡ partir de son nom
+// ... √† partir de son nom
 bool ODSFile::zipFile::extractFile(const char* fileName, const char* destFile)
 {
-	// VÈrification des paramËtres
+	// V√©rification des param√®tres
 	if (!file_ || IS_EMPTY(fileName) || IS_EMPTY(destFile)) {
 		return false;
 	}
@@ -220,13 +220,13 @@ bool ODSFile::zipFile::extractFile(const char* fileName, const char* destFile)
 	return extractFile(fileName, destFile);
 }
 
-// ... ‡ partir de son nom
+// ... √† partir de son nom
 //
 bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile)
 {
 	if ((0 == srcPath_.length() || 0 == srcName.length() || 0 == destFile.length())
 		&& (-1 != findFile(srcName))) {
-		// ParamËtres invalides (ou fichier non encore ouvert)
+		// Param√®tres invalides (ou fichier non encore ouvert)
 		return false;
 	}
 
@@ -247,18 +247,18 @@ bool ODSFile::zipFile::extractFile(const string& srcName, const string& destFile
 
 	// Le fichier existe t'il ?
 	if (sFileSystem::exists(destFile)) {
-		// Le fichier doit Ítre non vide
+		// Le fichier doit √™tre non vide
 		return sFileSystem::file_size(destFile) > 0;
 	}
 
 	return false;
 }
 
-// Ajout d'un fichier ‡ l'archive
+// Ajout d'un fichier √† l'archive
 //
 bool ODSFile::zipFile::addFile(const char* srcFile, const char* destName)
 {
-	// VÈrification des paramËtres
+	// V√©rification des param√®tres
 	if (!file_ || IS_EMPTY(destName) || IS_EMPTY(srcFile)) {
 		return false;
 	}
@@ -269,7 +269,7 @@ bool ODSFile::zipFile::addFile(const char* srcFile, const char* destName)
 
 bool ODSFile::zipFile::addFile(const string& srcFile, const string& destName)
 {
-	// VÈrification des paramËtres
+	// V√©rification des param√®tres
 	if (!file_) {
 		return false;
 	}
@@ -287,7 +287,7 @@ bool ODSFile::zipFile::addFile(const string& srcFile, const string& destName)
 		return false;
 	}
 
-	// AjoutÈ ?
+	// Ajout√© ?
 	return ZipFile::IsInArchive(srcPath_, destName);
 #endif // #ifdef __USE_CMD_LINE_ZIP__
 }
@@ -297,7 +297,7 @@ bool ODSFile::zipFile::addFile(const string& srcFile, const string& destName)
 bool ODSFile::zipFile::removeFile(const string& entryName)
 {
 	if (!file_ || 0 == srcPath_.length() || 0 == entryName.length()) {
-		// ParamËtres invalides (ou fichier non encore ouvert)
+		// Param√®tres invalides (ou fichier non encore ouvert)
 		return false;
 	}
 
@@ -323,7 +323,7 @@ bool ODSFile::zipFile::removeFile(const string& entryName)
 
 //----------------------------------------------------------------------
 //--
-//-- ImplÈmentation de la classe ODSFile
+//-- Impl√©mentation de la classe ODSFile
 //--
 //----------------------------------------------------------------------
 
@@ -332,7 +332,7 @@ bool ODSFile::zipFile::removeFile(const string& entryName)
 ODSFile::ODSFile(const LPOPFI fileInfos, columnList* columns, confFile* parameters)
 	:XMLFile(fileInfos, columns, parameters, true)
 {
-	// Initialisation des donneÈs membres
+	// Initialisation des donne√©s membres
 	//
 	defaultContentFileName(contentFile_, false);
 	lineIndex_ = 0;
@@ -351,7 +351,7 @@ ODSFile::ODSFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 ODSFile::~ODSFile()
 {}
 
-// CrÈation / initialisation(s)
+// Cr√©ation / initialisation(s)
 //
 bool ODSFile::create()
 {
@@ -377,7 +377,7 @@ void ODSFile::defaultContentFileName(string& out, bool shortName)
 		return;
 	}
 
-	// RÈcupÈration du dossier "temp"
+	// R√©cup√©ration du dossier "temp"
 	out = sFileSystem::merge(folders_->find(folders::FOLDER_TYPE::FOLDER_TEMP)->path(), ODS_CONTENT_FILENAME);
 }
 
@@ -408,7 +408,7 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 		return false;
 	}
 
-	// CrÈation de la ligne
+	// Cr√©ation de la ligne
 	//
 	pugi::xml_node row, cell, val;
 	row = sheetRoot_.append_child(ODS_SHEET_ROW_NODE);
@@ -447,15 +447,15 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 		if (col->visible()){
 			cell = row.append_child(ODS_SHEET_CELL_NODE);
 
-			// la premiËre valeur..
+			// la premi√®re valeur..
 			pCell = &(line_[colIndex]);
 
 			// style de la cellule
 			//cell.append_attribute(ODS_COL_STYLE_ATTR) = ((!header && col->hyperLink())? CELL_TYPE_DEFAULT :cellStyleName.c_str());
 			cell.append_attribute(ODS_COL_STYLE_ATTR) = cellStyleName.c_str();
 
-			// Le valeur de type numerique ne sont enregistrÈes comme telles
-			// qu'‡ la condition qu'elles ne soient pas multivaluÈes !!!
+			// Le valeur de type numerique ne sont enregistr√©es comme telles
+			// qu'√† la condition qu'elles ne soient pas multivalu√©es !!!
 			if (!header && col->numeric() && !pCell->_next && pCell->_value.size()){
 				cell.append_attribute(ODS_CELL_TYPE_ATTR) = CELL_TYPE_FLOAT_VAL;
 				cell.append_attribute(ODS_CELL_VAL_ATTR) = pCell->_value.c_str();
@@ -486,7 +486,7 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 						val.append_attribute(ODS_CELL_LINK_ATTR) = fullLink.c_str();
 					}
 
-					// valeur simple / ou valeur affichÈe sur le lien
+					// valeur simple / ou valeur affich√©e sur le lien
 					val.text().set(pCell->_value.c_str());
 				}
 				else{
@@ -522,7 +522,7 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 	return true;
 }
 
-// CrÈation d'une ligne d'entete
+// Cr√©ation d'une ligne d'entete
 //
 void ODSFile::_addHeader()
 {
@@ -544,7 +544,7 @@ void ODSFile::_addHeader()
 	saveLine(true);
 }
 
-// Initialisation du fichier ‡ gÈnÈrer
+// Initialisation du fichier √† g√©n√©rer
 //
 bool ODSFile::_initContentFile()
 {
@@ -552,13 +552,13 @@ bool ODSFile::_initContentFile()
 	//
 	// Algo 3 - final (ouf !!!!)
 	//
-	// Cette fois nous allons agir en 3 Ètapes :
-	//	1 - Copie du fichier de rÈfÈrence dans le fichier destination (on travaille avec les fichiers ODS)
+	// Cette fois nous allons agir en 3 √©tapes :
+	//	1 - Copie du fichier de r√©f√©rence dans le fichier destination (on travaille avec les fichiers ODS)
 	//		& extraction du fichier de contenu "vierge"
 	//		::_initContentFile
 	//
-	//  2 - GÈnÈration du fichier de contenu ‡ partir de la source "vierge"
-	//		::_openContentFile et autre mÈthodes
+	//  2 - G√©n√©ration du fichier de contenu √† partir de la source "vierge"
+	//		::_openContentFile et autre m√©thodes
 	//
 	//	3 - Retrait du fichier de contenu (du fichier destination)
 	//		::_endOfContentFile
@@ -587,11 +587,11 @@ bool ODSFile::_initContentFile()
 #endif // __USE_CMD_LINE_ZIP__
 
 
-	// 1 - Copie du fichier de rÈfÈrence
+	// 1 - Copie du fichier de r√©f√©rence
 	string newName(fileName());
 	if (false == sFileSystem::copy_file(templateFile_, newName)) {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Pas de gÈnÈration du fichier ODS : Impossible de copier le fichier %s", templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Pas de g√©n√©ration du fichier ODS : Impossible de copier le fichier %s", templateFile_.c_str());
 		}
 
 		return false;
@@ -609,7 +609,7 @@ bool ODSFile::_initContentFile()
 		return false;
 	}
 
-	// 2 - Extraction du fichier "contenu" modËle
+	// 2 - Extraction du fichier "contenu" mod√®le
 	//
 
 	// son "index"
@@ -618,7 +618,7 @@ bool ODSFile::_initContentFile()
 
 	if (-1 == destZip_.findFile(shortName)) {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le fichier '%s' dans le modËle '%s'", shortName.c_str(), templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le fichier '%s' dans le mod√®le '%s'", shortName.c_str(), templateFile_.c_str());
 		}
 
 		return false;
@@ -626,28 +626,28 @@ bool ODSFile::_initContentFile()
 
 	if (false == destZip_.extractFile(shortName, contentFile_)) {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'extraire le fichier '%s' dans le modËle '%s'", shortName.c_str(), templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'extraire le fichier '%s' dans le mod√®le '%s'", shortName.c_str(), templateFile_.c_str());
 		}
 
 		return false;
 	}
 
-	// Extrait avec succËs
+	// Extrait avec succ√®s
 #endif // _GEN_DOC_
 	return true;
 }
 
-// Ouverture du fichier ‡ gÈnÈrer
+// Ouverture du fichier √† g√©n√©rer
 //
 bool ODSFile::_openContentFile()
 {
 #ifdef _GEN_DOC_
-	// CrÈation du document
+	// Cr√©ation du document
 	//
 
 	TCHAR szValue[1024];
 
-	// DÈclaration "personnelles"
+	// D√©claration "personnelles"
 	pugi::xml_node decl = XMLContentFile_.prepend_child(pugi::node_declaration);
 	decl.append_attribute("version") = "1.0";
 	decl.append_attribute("encoding") = "UTF-8";
@@ -671,7 +671,7 @@ bool ODSFile::_openContentFile()
 		return false;
 	}
 
-	// Quelques attributs ‡ ajouter dans l'entete
+	// Quelques attributs √† ajouter dans l'entete
 	pugi::xml_node decl = XMLContentFile_.prepend_child(pugi::node_declaration);
 	decl.append_attribute("version") = "1.0";
 	//decl.append_attribute("encoding") = "Windows-1250";
@@ -680,7 +680,7 @@ bool ODSFile::_openContentFile()
 	docRoot_ = XMLContentFile_.child(ODS_FILE_ROOT_NODE);
 	if (IS_EMPTY(docRoot_.name())){
 		if (logs_){
-			logs_->add(logs::TRACE_TYPE::ERR, "Le modËle '%s' n'est pas au bon format", templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Le mod√®le '%s' n'est pas au bon format", templateFile_.c_str());
 		}
 		return false;
 	}
@@ -692,7 +692,7 @@ bool ODSFile::_openContentFile()
 	sheetsRoot_ = docRoot_.child(ODS_BODY_NODE);
 	if (IS_EMPTY(sheetsRoot_.name())){
 		if (logs_){
-			logs_->add(logs::TRACE_TYPE::ERR, "Le modËle '%s' n'est pas au bon format", templateFile_.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "Le mod√®le '%s' n'est pas au bon format", templateFile_.c_str());
 		}
 		return false;
 	}
@@ -757,7 +757,7 @@ bool ODSFile::_openContentFile()
 //
 bool ODSFile::_endContentFile()
 {
-	bool created(false);	// Pas enocre crÈe ...
+	bool created(false);	// Pas enocre cr√©e ...
 
 	// Nom du fichier de contenu dans la source ods
 	string shortName;
@@ -778,7 +778,7 @@ bool ODSFile::_endContentFile()
 	}
 	else {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de supprimer le contenu du fichier modËle");
+			logs_->add(logs::TRACE_TYPE::ERR, "Impossible de supprimer le contenu du fichier mod√®le");
 		}
 	}
 
@@ -790,7 +790,7 @@ bool ODSFile::_endContentFile()
 	// 5 - fermeture (et compression si besoin)
 	destZip_.close();
 
-	// TerminÈ avec succÈs (ou pas)
+	// Termin√© avec succ√©s (ou pas)
 	return created;
 }
 
@@ -813,7 +813,7 @@ bool ODSFile::addSheet(string& sheetName, bool withHeader, bool firstSheet)
 		validName = sheetName;
 	}
 
-	// Un caractËre ‡ remplacer ?
+	// Un caract√®re √† remplacer ?
 	size_t pos(0);
 	while (validName.npos != (pos = validName.find("/"))) {
 		validName.replace(pos, 1, "-");
@@ -826,14 +826,14 @@ bool ODSFile::addSheet(string& sheetName, bool withHeader, bool firstSheet)
 	return _createSheet(validName.c_str(), withHeader);
 }
 
-// CrÈation d'un onglet
+// Cr√©ation d'un onglet
 //
 bool ODSFile::_createSheet(const char* name, bool withHeader, bool sizeColumns)
 {
 	// On repart en haut de l'onglet
 	lineIndex_ = 0;
 
-	// CrÈation du noeud
+	// Cr√©ation du noeud
 	//
 	sheetRoot_ = sheetsRoot_.append_child(ODS_SHEET_NODE);
 	sheetRoot_.append_attribute(ODS_SHEET_STYLE_ATTR) = ODS_SHEET_STYLE_TA1_VAL;
@@ -842,7 +842,7 @@ bool ODSFile::_createSheet(const char* name, bool withHeader, bool sizeColumns)
 	// son nom
 	_setSheetName(name);
 
-	// DÈfinition des colonnes
+	// D√©finition des colonnes
 	//
 	if (sizeColumns)
 	{
@@ -874,7 +874,7 @@ bool ODSFile::_createSheet(const char* name, bool withHeader, bool sizeColumns)
 		_addHeader();
 	}
 
-	// CrÈe avec succËs
+	// Cr√©e avec succ√®s
 	return true;
 }
 

@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: sFileSystem.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: xxx
 //--
@@ -12,16 +12,16 @@
 //--
 //--	DESCRIPTION:
 //--
-//--	Implémentation de la classe sFileSystem
+//--	ImplÃ©mentation de la classe sFileSystem
 //--
-//--		Gestion simplifiée du système de fichiers
+//--		Gestion simplifiÃ©e du systÃ¨me de fichiers
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	23/07/2020 - JHB - Création
+//--	23/07/2020 - JHB - CrÃ©ation
 //--
 //--	22/06/2021 - JHB - Version 1.2.1
 //--
@@ -54,7 +54,7 @@ namespace fs = std::filesystem;
 
 //---------------------------------------------------------------------------
 //--
-//--		Implémentation
+//--		ImplÃ©mentation
 //--
 //---------------------------------------------------------------------------
 
@@ -95,7 +95,7 @@ namespace sFileSystem {
 	}
 
 	//
-	// Opérations sur les fichiers
+	// OpÃ©rations sur les fichiers
 	//
 
 	// Copie
@@ -212,7 +212,7 @@ namespace sFileSystem {
 #else
 		hFile = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 #endif // UNICODE
-		
+
 		if (INVALID_HANDLE_VALUE == hFile) {
 			return 0;
 		}
@@ -281,12 +281,12 @@ namespace sFileSystem {
 		}
 	}
 
-	// Création d'un dossier
+	// CrÃ©ation d'un dossier
 	//
 #ifndef _WIN32
 #ifndef __USE_STD_FILESYSTEM__
 
-    // Création d'un dossier
+    // CrÃ©ation d'un dossier
     //
     int _mkdir(const char *path, mode_t mode)
     {
@@ -309,7 +309,7 @@ namespace sFileSystem {
         return status;
     }
 
-	// Création récursive d'un dossier
+	// CrÃ©ation rÃ©cursive d'un dossier
 	//
 	bool _create_directory(const std::string& path, mode_t mode)
     {
@@ -377,7 +377,7 @@ namespace sFileSystem {
 	std::uintmax_t remove_all(const std::string& path)
 	{
 #ifdef _WIN32
-        // Pas implémentée pour l'instant ...
+        // Pas implÃ©mentÃ©e pour l'instant ...
 		return 0;
 #else
 		if (0 == path.length()) {
@@ -407,7 +407,7 @@ namespace sFileSystem {
                 return false;
             }
 
-            // Parcours du contenu de l'énumération
+            // Parcours du contenu de l'Ã©numÃ©ration
             while ((curr = fts_read(ftsp))) {
                 switch (curr->fts_info) {
                 // Un fichier
@@ -547,7 +547,7 @@ namespace sFileSystem {
 		return inter.substr(pos + 1);	// binaire (ou sous-dossier)
 	}
 
-	// Décomposition du nom du fichier/dossier
+	// DÃ©composition du nom du fichier/dossier
 	//
 	bool split(const std::string& fullName, std::list<std::string>& out)
 	{
@@ -579,7 +579,7 @@ namespace sFileSystem {
 		return (out.size() > 0);
 	}
 
-	// Génération d'un nom de fichier
+	// GÃ©nÃ©ration d'un nom de fichier
 	//
 	std::string merge(const std::string& path, const std::string& filename)
 	{
@@ -593,7 +593,7 @@ namespace sFileSystem {
 			fullName = path;
 
 			if (FILENAME_SEP != path[len - 1]) {
-				// le séparateur
+				// le sÃ©parateur
 				fullName += FILENAME_SEP;
 			}
 		}
@@ -628,7 +628,7 @@ namespace sFileSystem {
             return path;
         }
 
-        // Un chemin en notation pointée commence par :
+        // Un chemin en notation pointÃ©e commence par :
         std::string prefix(".");
         prefix+=FILENAME_SEP;
 
@@ -638,7 +638,7 @@ namespace sFileSystem {
             return newPath;
         }
 
-        // Rien à faire
+        // Rien Ã  faire
         return path;
 	}
 
@@ -649,7 +649,7 @@ namespace sFileSystem {
 		if (path.size() > 0) {
 			size_t pos(0);
 
-			// Tant que le token "invalid" est trouvé ...
+			// Tant que le token "invalid" est trouvÃ© ...
 			while (path.npos != (pos = path.find(invalid, pos))) {
 				path.replace(pos, 1, 1, valid);
 				pos++;

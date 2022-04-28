@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: LDAPSources.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -10,7 +10,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Définition de LDAPSources
+//--		DÃ©finition de LDAPSources
 //--		Liste des serveur source LDAP
 //--
 //---------------------------------------------------------------------------
@@ -18,7 +18,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	23/03/2021 - JHB - Création
+//--	23/03/2021 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -40,7 +40,7 @@ using namespace std;
 //
 class LDAPSources
 {
-// Méthodes publiques
+// MÃ©thodes publiques
 public:
 
 	// Construction
@@ -54,20 +54,20 @@ public:
 	void operator +=(LDAPServer* server)
 	{ add(server); }
 
-	// Source par défaut
+	// Source par dÃ©faut
 	bool setDefaultSourceName(string& srcName);
 	const char* defaultSourceName()
 	{ return defaultSourceName_.c_str(); }
 
 	// Recherche d'une source par son nom
-	// et à défaut retourne la source par défaut, si elle existe ...
+	// et Ã  dÃ©faut retourne la source par dÃ©faut, si elle existe ...
 	LDAPServer* findEnvironmentByName(string& envName);
 
 	// Taille
 	size_t size()
 	{ return sources_.size(); }
 
-	// Accès
+	// AccÃ¨s
 	LDAPServer* operator[](size_t index) {
 
 		if (index < size()) {
@@ -76,11 +76,11 @@ public:
 			return (*it);
 		}
 
-		// Non trouvé (mauvais index)
+		// Non trouvÃ© (mauvais index)
 		return NULL;
 	}
 
-// Méthodes privées
+// MÃ©thodes privÃ©es
 protected:
 
 	// Recherche d'un serveur dans la liste par son nom (nom de l'environnement)
@@ -90,10 +90,10 @@ protected:
 	}
 	LDAPServer* _findServer(string& serverName);
 
-// Données membres
+// DonnÃ©es membres
 protected:
 
-	string				defaultSourceName_;		// Nom du serveur par défaut
+	string				defaultSourceName_;		// Nom du serveur par dÃ©faut
 	list<LDAPServer*>	sources_;				// Mes sources
 };
 

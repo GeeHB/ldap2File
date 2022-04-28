@@ -294,7 +294,9 @@ RET_TYPE ldapBrowser::browse()
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
 
-	logs_->add(logs::TRACE_TYPE::LOG, "Utilisation de l'environnement '%s'", newServer->name());
+	if (newServer->name() != envName){
+	    logs_->add(logs::TRACE_TYPE::LOG, "Utilisation de l'environnement '%s'", newServer->name());
+    }
 
 	// Nouvelle connexion ou besoin de reinitialiser ?
 	bool ldapChanged((newServer != ldapServer_) || (false == newServer->connected()));

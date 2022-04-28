@@ -65,7 +65,7 @@
 #endif // APP_FULL_NAME
 
 #define APP_DESC				"Utilitaire d'export des annuaires LDAP et OpenLDAP"
-#define APP_RELEASE				"21.11.9"
+#define APP_RELEASE				"22.4.1"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")

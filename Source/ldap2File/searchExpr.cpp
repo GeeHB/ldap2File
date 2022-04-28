@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: searchExpr.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Implémentation de la classe searchExpr
+//--			ImplÃ©mentation de la classe searchExpr
 //--			Gestion des expressions pour les recherches
 //--
 //---------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	05/02/2016 - JHB - Création
+//--	05/02/2016 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -38,8 +38,8 @@
 //----------------------------------------------------------------------
 //--
 //-- searchExpr
-//--	Expresison régulière avec gesiton dynamique
-//--	ie. peut être modifiée au fur et à mesure ...
+//--	Expresison rÃ©guliÃ¨re avec gesiton dynamique
+//--	ie. peut Ãªtre modifiÃ©e au fur et Ã  mesure ...
 //--
 //----------------------------------------------------------------------
 
@@ -47,7 +47,7 @@
 //
 searchExpr::searchExpr(columnList* cols, const char* description, const char* op)
 {
-	// Initialisation des données membres
+	// Initialisation des donnÃ©es membres
 	schema_ = cols;
 	string newOp = string2Operator(op);
 	op_ = (newOp.size() ? newOp : op);
@@ -57,7 +57,7 @@ searchExpr::searchExpr(columnList* cols, const char* description, const char* op
 
 searchExpr::searchExpr(const char* description, const char* op)
 {
-	// Initialisation des données membres
+	// Initialisation des donnÃ©es membres
 	schema_ = NULL;
 	string newOp = string2Operator(op);
 	op_ = (newOp.size() ? newOp : op);
@@ -97,7 +97,7 @@ searchExpr::searchExpr(searchExpr* source)
 	}
 }
 
-// Libération de la mémoire
+// LibÃ©ration de la mÃ©moire
 //
 void searchExpr::clear(bool freeMemory)
 {
@@ -112,13 +112,13 @@ void searchExpr::clear(bool freeMemory)
 	expressions_.clear();
 }
 
-// Gestion des opérateurs
+// Gestion des opÃ©rateurs
 //
-//	... opérateur de combinaison des expressions
+//	... opÃ©rateur de combinaison des expressions
 //
 string searchExpr::string2Operator(string& sValue)
 {
-	if (!sValue.size() ||				// Par défaut
+	if (!sValue.size() ||				// Par dÃ©faut
 		XML_LOG_OPERATOR_AND == sValue){
 		return SEARCH_EXPR_OPERATOR_AND;
 	}
@@ -135,17 +135,17 @@ string searchExpr::string2Operator(string& sValue)
 	return "";
 }
 
-// ... opérateur de comparaison des attributs
+// ... opÃ©rateur de comparaison des attributs
 //
 string searchExpr::string2CompOperator(string& sValue)
 {
-	if (!sValue.size() ||				// Par défaut
+	if (!sValue.size() ||				// Par dÃ©faut
 		XML_COMP_OPERATOR_EQUAL == sValue){
 		return SEARCH_ATTR_COMP_EQUAL;
 	}
 
 	//
-	// Comparaisons numériques
+	// Comparaisons numÃ©riques
 	//
 	/*
 	if (XML_COMP_OPERATOR_GREATER == sValue) {
@@ -178,7 +178,7 @@ string searchExpr::string2CompOperator(string& sValue)
 		return SEARCH_ATTR_COMP_OR;
 	}
 
-	// Inconnu => égalité
+	// Inconnu => Ã©galitÃ©
 	return SEARCH_ATTR_COMP_EQUAL;
 }
 
@@ -201,7 +201,7 @@ bool searchExpr::add(searchExpr* pExprSrc, bool copy)
 		pExpr = pExprSrc;
 	}
 
-	// Si l'opérateur est identique, on "additionne" les deux expressions
+	// Si l'opÃ©rateur est identique, on "additionne" les deux expressions
 	if (op_ == pExpr->operation()){
 		EXPRGATTR* other(NULL);
 		for (size_t index(0); index < pExpr->size(); index++){
@@ -230,7 +230,7 @@ bool searchExpr::add(searchExpr* pExprSrc, bool copy)
 			ret = true;
 		}
 
-		copy = false;	// Je suis "obligé" de la conserver maintenant que je l'ai intégrée
+		copy = false;	// Je suis "obligÃ©" de la conserver maintenant que je l'ai intÃ©grÃ©e
 	}
 
 	if (copy){
@@ -253,7 +253,7 @@ bool searchExpr::add(string& name, string& value)
 		return true;
 	}
 
-	// Rien a été fait
+	// Rien a Ã©tÃ© fait
 	return false;
 }
 */
@@ -269,7 +269,7 @@ searchExpr::EXPRGATTR* searchExpr::add(string& name, string& op, string& value)
 		return attr;
 	}
 
-	// Rien a été fait
+	// Rien a Ã©tÃ© fait
 	return NULL;
 }
 
@@ -296,11 +296,11 @@ searchExpr* searchExpr::find(const char* name)
 		}
 	}
 
-	// Non trouvé
+	// Non trouvÃ©
 	return NULL;
 }
 
-// Recherche d'une expression à partir de son nom (sa description)
+// Recherche d'une expression Ã  partir de son nom (sa description)
 //
 searchExpr* searchExpr::findByName(const char* name)
 {
@@ -317,13 +317,13 @@ searchExpr* searchExpr::findByName(const char* name)
 			if (NULL != (attr = (*it)) &&
 				attr->otherExpr_ &&
 				attr->otherExpr_->name() == name){
-				// Trouvée
+				// TrouvÃ©e
 				return attr->otherExpr_;
 			}
 		}
 	}
 
-	// Non trouvée
+	// Non trouvÃ©e
 	return NULL;
 }
 
@@ -337,7 +337,7 @@ bool searchExpr::remove(const char* name, bool freeMemory)
 			if (NULL != (attr = (*it)) &&
 				attr->otherExpr_ &&
 				attr->otherExpr_->name() == name){
-				// Trouvé
+				// TrouvÃ©
 				expressions_.erase(it);	// Suppression dans la liste
 				if (freeMemory){
 					delete attr;			// Supression de l'objet
@@ -347,7 +347,7 @@ bool searchExpr::remove(const char* name, bool freeMemory)
 		}
 	}
 
-	// Rien n'a été fait
+	// Rien n'a Ã©tÃ© fait
 	return false;
 }
 
@@ -358,7 +358,7 @@ bool searchExpr::remove(const searchExpr* toRemove, bool freeMemory)
 		for (deque<EXPRGATTR*>::iterator it = expressions_.begin(); it != expressions_.end(); it++){
 			if (NULL != (attr = (*it)) &&
 				attr->otherExpr_  == toRemove){
-				// Trouvé
+				// TrouvÃ©
 				expressions_.erase(it);	// Suppression dans la liste
 				if (freeMemory){
 					delete attr;			// Supression de l'objet
@@ -368,12 +368,12 @@ bool searchExpr::remove(const searchExpr* toRemove, bool freeMemory)
 		}
 	}
 
-	// Rien n'a été fait
+	// Rien n'a Ã©tÃ© fait
 	return false;
 }
 
 
-// Génération d'une chaine de caractères
+// GÃ©nÃ©ration d'une chaine de caractÃ¨res
 //
 //searchExpr::operator const char*()
 const char* searchExpr::_expression(bool addOperator)
@@ -399,16 +399,16 @@ const char* searchExpr::_expression(bool addOperator)
 					output_ += C_PARENTHESIS;
 				}
 				else{
-					// Une expression non vide (ne devrait jamais être utile !)
+					// Une expression non vide (ne devrait jamais Ãªtre utile !)
 					if (nuple->otherExpr_ && nuple->otherExpr_->size()){
-						// Si c'est le même opérateur, pas besoin de le remettre
+						// Si c'est le mÃªme opÃ©rateur, pas besoin de le remettre
 						output_ += nuple->otherExpr_->expression((op_ != nuple->otherExpr_->operation()));
 					}
 				}
 			}
 		}
 
-		// Entouré de paranthèse ?
+		// EntourÃ© de paranthÃ¨se ?
 		if (addOperator){
 			_addParenthesis();
 		}
@@ -417,7 +417,7 @@ const char* searchExpr::_expression(bool addOperator)
 	return output_.c_str();
 }
 
-// Ajout de parenthèse autour de l'expression
+// Ajout de parenthÃ¨se autour de l'expression
 //
 string searchExpr::_addParenthesis(string& op, string& output)
 {
@@ -446,7 +446,7 @@ string searchExpr::_colName2AttrName(string& colName)
 		}
 	}
 
-	// Non trouvé, on retourne la valeur originale
+	// Non trouvÃ©, on retourne la valeur originale
 	return colName;
 }
 

@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: fileActions.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,18 +12,18 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Définition des objets :
+//--		DÃ©finition des objets :
 //--					- fileAction
 //	--					- fileActions (liste de fileAction)
 //--
-//--		pour la gestion des actions à mener en lien avec la création d'un fichier
+//--		pour la gestion des actions Ã  mener en lien avec la crÃ©ation d'un fichier
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	14/05/2021 - JHB - Création
+//--	14/05/2021 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -41,14 +41,14 @@
 //--
 //--------------------------------------------------------------------------
 
-// fileActions - Liste des actions liées à la création d'un fichier
+// fileActions - Liste des actions liÃ©es Ã  la crÃ©ation d'un fichier
 //
 class fileActions
 {
-	// Méthodes publiques
+	// MÃ©thodes publiques
 public:
 
-	// Type(s) d'actions (moment d'éxecution)
+	// Type(s) d'actions (moment d'Ã©xecution)
 	//
 	enum class ACTION_TYPE { ACTION_UNKNOWN = 0, ACTION_POST_GEN };
 
@@ -70,7 +70,7 @@ public:
 		// Destruction
 		virtual ~fileAction() {}
 
-		// Mise à jour de la valeur du nom de fichier
+		// Mise Ã  jour de la valeur du nom de fichier
 		void tokenize(std::string& filename) {
 
 			// Dans la ligne de commandes ...
@@ -80,7 +80,7 @@ public:
 			replace(output_, TOKEN_TEMP_FILENAME, filename.c_str());
 		}
 
-		// Accès
+		// AccÃ¨s
 		const char* name()
 		{ return name_.c_str(); }
 		ACTION_TYPE type()
@@ -96,17 +96,17 @@ public:
 		bool exists()
 		{ return sFileSystem::exists(application_); }
 
-		// Méthodes privées
+		// MÃ©thodes privÃ©es
 		//
 	protected:
 
 
-		// Données membres privées
+		// DonnÃ©es membres privÃ©es
 	protected:
 		std::string		name_;			// Nom de l'action ...
 		ACTION_TYPE type_;				// Type
-		std::string		application_;	// Application à appeler ...
-		std::string		parameters_;	// Paramètres de la ligne de commandes
+		std::string		application_;	// Application Ã  appeler ...
+		std::string		parameters_;	// ParamÃ¨tres de la ligne de commandes
 		std::string		output_;		// Nom (si renomage ou export)
 	};
 
@@ -123,20 +123,20 @@ public:
 	// Ajout d'une action
 	bool add(std::string name, ACTION_TYPE type, std::string& application, std::string& command, std::string& output);
 	bool add(std::string name, std::string& sType, std::string& application, std::string& command, std::string& output) {
-		// Recherche du type associé
+		// Recherche du type associÃ©
 		ACTION_TYPE type = _string2Type(sType);
 		return (ACTION_TYPE::ACTION_UNKNOWN == type ? false : add(name, type, application, command, output));
 	}
 
-	// Mise à jour des tokens
+	// Mise Ã  jour des tokens
 	void tokenize(std::string& outputFile);
 
-	// Accès
+	// AccÃ¨s
 	size_t size()
 	{ return actions_.size(); }
 	fileActions::fileAction* operator[](size_t index);
 
-	// Méthodes privées
+	// MÃ©thodes privÃ©es
 	//
 protected:
 
@@ -154,7 +154,7 @@ protected:
 	}
 
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 protected:
 

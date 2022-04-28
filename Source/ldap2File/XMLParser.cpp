@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: XMLParser.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,15 +12,15 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Implémentation de la classe XMLParser pour la lecture
-//--		des fichiers de paramètres et/ou de configuration au format XML
+//--		ImplÃ©mentation de la classe XMLParser pour la lecture
+//--		des fichiers de paramÃ¨tres et/ou de configuration au format XML
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	28/11/2016 - JHB - Création
+//--	28/11/2016 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -29,7 +29,7 @@
 #include "XMLParser.h"
 
 //
-// Implémentation de la classe
+// ImplÃ©mentation de la classe
 //
 
 // Construction
@@ -40,7 +40,7 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool 
 		throw LDAPException("XMLParser - Pas de nom pour la racine");
 	}
 
-	// Initialisation des paramètres
+	// Initialisation des paramÃ¨tres
 	baseRootName_ = rootName;
 	folders_ = pFolders;
 	fileName_ = "";
@@ -50,20 +50,20 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool 
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 #endif // #ifdef _WIN32
 
-	// Type de système de fichier "local"
+	// Type de systÃ¨me de fichier "local"
 	//
-	defType_ = DEST_TYPE::DEST_FS;		// Par défaut un fichier
+	defType_ = DEST_TYPE::DEST_FS;		// Par dÃ©faut un fichier
 	expectedOS_ = CURRENT_OS;
 
 	// Traces & logs
 	logs_ = pLogs;
 }
 
-// Vérification de la version
+// VÃ©rification de la version
 //
 void XMLParser::checkProtocol(const string& parametersNode)
 {
-	valid_ = false;		// On part du principe que ça va coincer ...
+	valid_ = false;		// On part du principe que Ã§a va coincer ...
 
 	pugi::xml_node node = xmlDocument_.child(baseRootName_.c_str());
 	if (0 == parametersNode.length() || IS_EMPTY(node.name())) {
@@ -86,7 +86,7 @@ void XMLParser::checkProtocol(const string& parametersNode)
 		throw LDAPException(msg);
 	}
 
-	// On se positionne à la "racine" des paramètres
+	// On se positionne Ã  la "racine" des paramÃ¨tres
 	paramsRoot_ = node.child(parametersNode.c_str());
 	if (IS_EMPTY(paramsRoot_.name())) {
 		// Pas le bon document
@@ -98,7 +98,7 @@ void XMLParser::checkProtocol(const string& parametersNode)
 		throw LDAPException(msg);
 	}
 
-	// Si je suis arrivé ici c'est que tout est correct !
+	// Si je suis arrivÃ© ici c'est que tout est correct !
 	valid_ = true;
 }
 
@@ -117,14 +117,14 @@ bool XMLParser::save()
 	return true;
 }
 
-// Recherche d'un noeud "fils" ayant une valeur d'attribut particulière
+// Recherche d'un noeud "fils" ayant une valeur d'attribut particuliÃ¨re
 //
 pugi::xml_node XMLParser::findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue, bool searchDefValue)
 {
 	// On cherche la "bonne" valeur
 	pugi::xml_node found = _findChildNode(parent, childName, attrName, attrValue);
 
-	// Trouvé ?
+	// TrouvÃ© ?
 	if (!IS_EMPTY(found.name())){
 		return found;
 	}
@@ -139,7 +139,7 @@ pugi::xml_node XMLParser::findChildNode(const pugi::xml_node& parent, const stri
 	return _findChildNode(parent, childName, attrName, empty);
 }
 
-// Méthode "sous" findChildNode
+// MÃ©thode "sous" findChildNode
 pugi::xml_node XMLParser::_findChildNode(const pugi::xml_node& parent, const string& childName, const string& attrName, const string& attrValue)
 {
 	// Recherche du "noeud"
@@ -158,7 +158,7 @@ pugi::xml_node XMLParser::_findChildNode(const pugi::xml_node& parent, const str
 		}
 	}
 
-	// On retourne le noeud si trouvé ou un noeud vide
+	// On retourne le noeud si trouvÃ© ou un noeud vide
 	return childNode;
 }
 
@@ -212,7 +212,7 @@ unsigned int XMLParser::_value2LinkType(string& value)
 		}
 	}
 
-	// Par défaut ...
+	// Par dÃ©faut ...
 	return DATA_LINK_NONE;
 }
 
@@ -220,7 +220,7 @@ unsigned int XMLParser::_value2LinkType(string& value)
 //
 bool XMLParser::_load()
 {
-	// Le fichier doit exister et être non-vide
+	// Le fichier doit exister et Ãªtre non-vide
 	if (0 == fileName_.size()) {
 	    string message("Pas de nom pour le fichier XML");
 		if (logs_) {
@@ -280,11 +280,11 @@ bool XMLParser::_load()
 		break;
 
 	case pugi::status_out_of_memory:
-		erreur = "Erreur mémoire pendant la lecture de '";
+		erreur = "Erreur mÃ©moire pendant la lecture de '";
 		break;
 
 	case pugi::status_unrecognized_tag:
-		erreur = "Tag invalide au caractère ";
+		erreur = "Tag invalide au caractÃ¨re ";
 		erreur += charUtils::itoa(result.offset);
 		erreur += " dans '";
 		break;
@@ -293,31 +293,31 @@ bool XMLParser::_load()
 	case pugi::status_bad_cdata:
 	case pugi::status_bad_doctype:
 	case pugi::status_bad_pcdata:
-		erreur = "Format invalide au caractère ";
+		erreur = "Format invalide au caractÃ¨re ";
 		erreur += charUtils::itoa(result.offset);
 		erreur += " dans '";
 		break;
 
 	case pugi::status_bad_start_element:
-		erreur = "Début d'élément invalide au caractère ";
+		erreur = "DÃ©but d'Ã©lÃ©ment invalide au caractÃ¨re ";
 		erreur += charUtils::itoa(result.offset);
 		erreur += " dans '";
 		break;
 
 	case pugi::status_bad_attribute:
-		erreur = "Erreur d'attribut au caractère ";
+		erreur = "Erreur d'attribut au caractÃ¨re ";
 		erreur += charUtils::itoa(result.offset);
 		erreur += " dans '";
 		break;
 
 	case pugi::status_bad_end_element:
-		erreur = "Fin d'élément invalide au caractère ";
+		erreur = "Fin d'Ã©lÃ©ment invalide au caractÃ¨re ";
 		erreur += charUtils::itoa(result.offset);
 		erreur += " dans '";
 		break;
 
 	case pugi::status_end_element_mismatch:
-		erreur = "La fermeture d'élement ne correspond à aucun élément ouvert au caractère ";
+		erreur = "La fermeture d'Ã©lement ne correspond Ã  aucun Ã©lÃ©ment ouvert au caractÃ¨re ";
 		erreur += charUtils::itoa(result.offset);
 		erreur += " dans '";
 		break;

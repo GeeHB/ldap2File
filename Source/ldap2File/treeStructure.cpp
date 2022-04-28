@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: treeStructure.cpp
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -13,18 +13,18 @@
 //--	DESCRIPTION:
 //--
 //--			Implementation de la classe treeStructure
-//--			pour la modélisation de l'arborescence LDAP
+//--			pour la modÃ©lisation de l'arborescence LDAP
 //--
-//--			Cette classe fonctionne comme une liste d'éléments de structure
-//--			ainsi que tel un tableau associatif entre ces éléments
-//--			et les colonnes du tableur en cours de génération
+//--			Cette classe fonctionne comme une liste d'Ã©lÃ©ments de structure
+//--			ainsi que tel un tableau associatif entre ces Ã©lÃ©ments
+//--			et les colonnes du tableur en cours de gÃ©nÃ©ration
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	14/02/2065 - JHB - Création
+//--	14/02/2065 - JHB - CrÃ©ation
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -34,19 +34,19 @@
 #include <charUtils.h>
 
 //
-// Implémentation de la classe
+// ImplÃ©mentation de la classe
 //
 
 // Construction
 //
 treeStructure::treeStructure(logs* pLogs)
 {
-	// Initialisation des données membres
+	// Initialisation des donnÃ©es membres
 	logs_ = pLogs;
 	cols_ = 0;
 }
 
-// Nettoyage de la liste des éléments
+// Nettoyage de la liste des Ã©lÃ©ments
 //
 void treeStructure::clear()
 {
@@ -63,11 +63,11 @@ void treeStructure::clear()
 	elements_.clear();
 }
 
-// Ajout d'un élément
+// Ajout d'un Ã©lÃ©ment
 //
 bool treeStructure::add(string& type, string& name, size_t depth)
 {
-	// Quelques vérifications
+	// Quelques vÃ©rifications
 	if (!depth || !type.size() || !name.size())
 	{
 		return false;
@@ -75,41 +75,41 @@ bool treeStructure::add(string& type, string& name, size_t depth)
 
 	LPTREEELEMENT element(NULL);
 
-	// Les éléments sont uniques par leur type
+	// Les Ã©lÃ©ments sont uniques par leur type
 	if (NULL != (element = _findElementByType(type)))
 	{
-		logs_->add(logs::TRACE_TYPE::ERR, "Il existe déjà un élément de structure de type '%s'", type.c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Il existe dÃ©jÃ  un Ã©lÃ©ment de structure de type '%s'", type.c_str());
 		return false;
 	}
 
 	// Les comparaisons se feront en majuscules et sans accents
 	string cName = charUtils::upString(name, true);
 
-	// Les éléments sont uniques par leur nom
+	// Les Ã©lÃ©ments sont uniques par leur nom
 	if (NULL != (element = _findElementByName(cName)))
 	{
-		logs_->add(logs::TRACE_TYPE::ERR, "Il existe déjà un élément de structure de nom '%s'", cName.c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Il existe dÃ©jÃ  un Ã©lÃ©ment de structure de nom '%s'", cName.c_str());
 		return false;
 	}
 
-	// Création d'un objet
+	// CrÃ©ation d'un objet
 	if (NULL == (element = new TREEELEMENT(type, cName, depth)))
 	{
-		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour l'élément de struture '%s'", type.c_str());
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mÃ©moire pour l'Ã©lÃ©ment de struture '%s'", type.c_str());
 		return false;
 	}
 
-	// Ajout à la liste mémoire
+	// Ajout Ã  la liste mÃ©moire
 	if (_add(element))
 	{
-		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de l'élément de structure '%s' - '%s' - profondeur : %d", type.c_str(), cName.c_str(), depth);
+		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de l'Ã©lÃ©ment de structure '%s' - '%s' - profondeur : %d", type.c_str(), cName.c_str(), depth);
 		return true;
 	}
 
 	return false;
 }
 
-// "Profondeur" associée à un type de container
+// "Profondeur" associÃ©e Ã  un type de container
 //
 size_t treeStructure::depthByType(string& type)
 {
@@ -117,7 +117,7 @@ size_t treeStructure::depthByType(string& type)
 	return (element?element->depth_:DEPTH_NONE);
 }
 
-// Profondeur associée au nom d'un container
+// Profondeur associÃ©e au nom d'un container
 //
 size_t treeStructure::depthByName(string& name)
 {
@@ -126,10 +126,10 @@ size_t treeStructure::depthByName(string& name)
 }
 
 //
-// Associations élement / colonne du fichier
+// Associations Ã©lement / colonne du fichier
 //
 
-// Effacement des valeurs associées aux colonnes
+// Effacement des valeurs associÃ©es aux colonnes
 //
 void treeStructure::clearValues()
 {
@@ -147,9 +147,9 @@ void treeStructure::clearValues()
 //
 void treeStructure::setAt(string& colName, size_t colIndex)
 {
-	// Vérifications
+	// VÃ©rifications
 	if (!colName.size() || SIZE_MAX == colIndex
-		|| handled(colIndex))	// Déjà associée
+		|| handled(colIndex))	// DÃ©jÃ  associÃ©e
 	{
 		return;
 	}
@@ -166,7 +166,7 @@ void treeStructure::setAt(string& colName, size_t colIndex)
 		me = element;
 		cols_++;
 
-		// Les autres "éléments" de profondeur identique sont aussi associés ...
+		// Les autres "Ã©lÃ©ments" de profondeur identique sont aussi associÃ©s ...
 		if (me && depth != SIZE_MAX)
 		{
 			for (deque<LPTREEELEMENT>::iterator it = elements_.begin(); it != elements_.end(); it++)
@@ -181,13 +181,13 @@ void treeStructure::setAt(string& colName, size_t colIndex)
 	}
 }
 
-// Valeur à ajouter à une colonne
+// Valeur Ã  ajouter Ã  une colonne
 //
 void treeStructure::_setAt(size_t depth, string& value, bool applyToChilds)
 {
 	if (SIZE_MAX == depth || depth == DEPTH_NONE)
 	{
-		// Pas de valeur à mettre
+		// Pas de valeur Ã  mettre
 		return;
 	}
 
@@ -199,18 +199,18 @@ void treeStructure::_setAt(size_t depth, string& value, bool applyToChilds)
 				||
 			(!applyToChilds && element->depth_ == depth)))
 		{
-			// Trouvé
+			// TrouvÃ©
 			element->colValue_ = value;
 		}
 	}
 }
 
-// On fixe la valeur pour l'élément courant et peut-être ses descendants
+// On fixe la valeur pour l'Ã©lÃ©ment courant et peut-Ãªtre ses descendants
 //
 void treeStructure::setFor(LPTREEELEMENT element, const char* value)
 {
-	if (NULL == element || IS_EMPTY(value)		// Paramètres incorrect
-		|| element->colValue_.size())			// La valeur a déjà été donnée
+	if (NULL == element || IS_EMPTY(value)		// ParamÃ¨tres incorrect
+		|| element->colValue_.size())			// La valeur a dÃ©jÃ  Ã©tÃ© donnÃ©e
 	{
 		return;
 	}
@@ -218,7 +218,7 @@ void treeStructure::setFor(LPTREEELEMENT element, const char* value)
 	// Enregistrement de la valeur pour lui ...
 	element->colValue_ = value;
 
-	// ... et pour les autres éléments de même profondeur
+	// ... et pour les autres Ã©lÃ©ments de mÃªme profondeur
 	LPTREEELEMENT other(NULL);
 	for (deque<LPTREEELEMENT>::iterator it = elements_.begin(); it != elements_.end(); it++)
 	{
@@ -229,7 +229,7 @@ void treeStructure::setFor(LPTREEELEMENT element, const char* value)
 		}
 	}
 
-	// Héritage ?
+	// HÃ©ritage ?
 	if (element->inheritable())
 	{
 		size_t minDepth(1 + element->depth_), maxDepth(element->heritableDownTo_);
@@ -255,14 +255,14 @@ string treeStructure::at(size_t colIndex)
 	return (element ? element->colValue_ : string(""));
 }
 
-// Ajout d'un élément dans la liste interne
+// Ajout d'un Ã©lÃ©ment dans la liste interne
 //
 bool treeStructure::_add(const LPTREEELEMENT element)
 {
 	size_t currentSize(elements_.size());
 
-	// On a vérifié en amont que l'élément n'existait pas
-	// reste à l'ajouter dans la liste ordonnée
+	// On a vÃ©rifiÃ© en amont que l'Ã©lÃ©ment n'existait pas
+	// reste Ã  l'ajouter dans la liste ordonnÃ©e
 	if (!elements_.size())
 	{
 		// Liste vide => ajout simple
@@ -274,7 +274,7 @@ bool treeStructure::_add(const LPTREEELEMENT element)
 		deque<LPTREEELEMENT>::iterator it(elements_.begin());
 		while (it != elements_.end() && (*it) && (*it)->depth_ <= element->depth_)
 		{
-			// Elément suivant
+			// ElÃ©ment suivant
 			it++;
 		}
 
@@ -285,7 +285,7 @@ bool treeStructure::_add(const LPTREEELEMENT element)
 		}
 		else
 		{
-			// Insertion avant l'itérateur
+			// Insertion avant l'itÃ©rateur
 			elements_.insert(it, element);
 		}
 	}
@@ -294,7 +294,7 @@ bool treeStructure::_add(const LPTREEELEMENT element)
 	return (elements_.size() > currentSize);
 }
 
-// Recherches d'un élément
+// Recherches d'un Ã©lÃ©ment
 //
 LPTREEELEMENT treeStructure::_findElementByType(string& type)
 {
@@ -304,12 +304,12 @@ LPTREEELEMENT treeStructure::_findElementByType(string& type)
 		if (NULL != (element = (*it)) &&
 			element->type_ == type)
 		{
-			// Trouvé
+			// TrouvÃ©
 			return element;
 		}
 	}
 
-	// Non trouvé
+	// Non trouvÃ©
 	return NULL;
 }
 
@@ -322,16 +322,16 @@ LPTREEELEMENT treeStructure::_findElementByName(string& name)
 		if (NULL != (element = (*it)) &&
 			0 == cName.find(element->startWith_))
 		{
-			// Le nom commence par la chaine de l'élément courant
+			// Le nom commence par la chaine de l'Ã©lÃ©ment courant
 			return element;
 		}
 	}
 
-	// Non trouvé
+	// Non trouvÃ©
 	return NULL;
 }
 
-// La colonne est-elle associée ?
+// La colonne est-elle associÃ©e ?
 //
 LPTREEELEMENT treeStructure::_findElementByCol(size_t colIndex)
 {
@@ -341,13 +341,13 @@ LPTREEELEMENT treeStructure::_findElementByCol(size_t colIndex)
 		return NULL;
 	}
 
-	// Y a t'il un élément associé à cette colonne
+	// Y a t'il un Ã©lÃ©ment associÃ© Ã  cette colonne
 	LPTREEELEMENT element(NULL);
 	for (deque<LPTREEELEMENT>::iterator it = elements_.begin(); it != elements_.end(); it++)
 	{
 		if (NULL != (element = (*it)) && element->colIndex_ == colIndex)
 		{
-			// Trouvée
+			// TrouvÃ©e
 			return element;
 		}
 	}

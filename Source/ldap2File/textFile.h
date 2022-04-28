@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: textFile.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition de la classe textFile
+//--			DÃ©finition de la classe textFile
 //--
 //---------------------------------------------------------------------------
 //--
@@ -37,13 +37,13 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Définition de la classe
+//-- DÃ©finition de la classe
 //--
 //----------------------------------------------------------------------
 
 class textFile : public outputFile
 {
-	// Méthodes publiques
+	// MÃ©thodes publiques
 	//
 public:
 
@@ -54,17 +54,17 @@ public:
 	virtual ~textFile()
 	{}
 
-	// Séparateurs et formats d'écriture
+	// SÃ©parateurs et formats d'Ã©criture
 	void setSeparators(const char* valSep = STR_FR_SEP, const char* valEOL = NULL);
 
-	// Création / nitialisation(s)
+	// CrÃ©ation / nitialisation(s)
 	virtual bool create();
 
 	// Ajout d'une valeur (avec changement de colonne)
 	virtual bool add(string& value);
 	virtual bool add(deque<string>& values);
 
-	// Ajout d'une valeur dans une colonne précise
+	// Ajout d'une valeur dans une colonne prÃ©cise
 	virtual bool addAt(size_t colIndex, string& value)
 		{ return add(value); }
 	virtual bool addAt(size_t colIndex, deque<string>& values)
@@ -73,7 +73,7 @@ public:
 	// Sauvegarde / fermeture
 	virtual bool close();
 
-	// Méthodes privées
+	// MÃ©thodes privÃ©es
 	//
 protected:
 
@@ -89,18 +89,18 @@ protected:
 	void _close()
 	{ file_.close(); }
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 protected:
 
-	string				sep_;			// Séparateur de valeurs
+	string				sep_;			// SÃ©parateur de valeurs
 	string				eol_;			// Fin de ligne
 
-	ofstream			file_;			// Fichier à générer
+	ofstream			file_;			// Fichier Ã  gÃ©nÃ©rer
 
 	string				currentLine_;	// ligne en cours
 
-	deque<string>		lines_;         // Les lignes crées
+	deque<string>		lines_;         // Les lignes crÃ©es
 };
 
 #endif // #ifndef __LDAP_2_FILE_TXT_OUTPUT_FILE_h__

@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	:	cmdLineAnalyzer.cpp
 //--
-//--	AUTEUR	:	Jérôme Henry-Barnaudière (JHB)
+//--	AUTEUR	:	JÃ©rÃ´me Henry-BarnaudiÃ¨re (JHB)
 //--
 //--	DATE	:	27/06/2019
 //--
@@ -12,19 +12,19 @@
 //--
 //--	DESCRIPTIONS:
 //--
-//--	Implémentation des classes cmdLineAnalyzer et cmdLineBuilder
+//--	ImplÃ©mentation des classes cmdLineAnalyzer et cmdLineBuilder
 //--
-//--	L'objet cmdLineAnalyzer effectue une analyse puis un découpage
-//--	en liste des paramètres d'une ligne de commandes
+//--	L'objet cmdLineAnalyzer effectue une analyse puis un dÃ©coupage
+//--	en liste des paramÃ¨tres d'une ligne de commandes
 //--
-//--	L'objet cmdLineBuilder génère une ligne de commande à partir de paramètres valués
+//--	L'objet cmdLineBuilder gÃ©nÃ¨re une ligne de commande Ã  partir de paramÃ¨tres valuÃ©s
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	04/08/2003 - JHB - Création
+//--	04/08/2003 - JHB - CrÃ©ation
 //--
 //--	11/08/2003 - JHB - Validation - Version 1.1
 //--
@@ -44,7 +44,7 @@
 //--
 //---------------------------------------------------------------------------
 
-// Libération de la liste des paramètres
+// LibÃ©ration de la liste des paramÃ¨tres
 //
 void cmdLine::_dispose()
 {
@@ -53,7 +53,7 @@ void cmdLine::_dispose()
 	{
 		if (*i)
 		{
-			// Libération du paramètre
+			// LibÃ©ration du paramÃ¨tre
 			delete (*i);
 		}
 	}
@@ -63,7 +63,7 @@ void cmdLine::_dispose()
 }
 
 
-// Recherche d'un paramètre par son nom
+// Recherche d'un paramÃ¨tre par son nom
 //
 LPCLP cmdLine::findParameter(const char* szName)
 {
@@ -73,7 +73,7 @@ LPCLP cmdLine::findParameter(const char* szName)
 		return ((it == _params.end()?NULL:(*it)));
 	}
 
-	// pas trouvé ...
+	// pas trouvÃ© ...
 	return NULL;
 }
 
@@ -81,12 +81,12 @@ deque<cmdLine::parameter*>::iterator cmdLine::_find(const char* szName)
 {
 	for (deque<parameter*>::iterator it = _params.begin(); it < _params.end(); it++){
 		if ((*it) && 0 == charUtils::stricmp((*it)->_szName, szName)){
-			// Trouvé
+			// TrouvÃ©
 			return it;
 		}
 	}
 
-	// pas trouvé ...
+	// pas trouvÃ© ...
 	return _params.end();
 }
 
@@ -102,10 +102,10 @@ deque<cmdLine::parameter*>::iterator cmdLine::_find(const char* szName)
 cmdLineAnalyzer::cmdLineAnalyzer(cmdLineAnalyzer& src)
 {
 	//
-	// Copie de la liste des paramètres
+	// Copie de la liste des paramÃ¨tres
 	//
 
-	// Copie des paramètres et ajouts 1 à 1
+	// Copie des paramÃ¨tres et ajouts 1 Ã  1
 	deque<parameter*>::iterator i;
 	for (i=_params.begin(); i<_params.end(); i++)
 	{
@@ -113,7 +113,7 @@ cmdLineAnalyzer::cmdLineAnalyzer(cmdLineAnalyzer& src)
 	}
 
 	//
-	// Copie des autres données membres
+	// Copie des autres donnÃ©es membres
 	//
 	_nameSep = src._nameSep;
 	_valSep = src._valSep;
@@ -121,12 +121,12 @@ cmdLineAnalyzer::cmdLineAnalyzer(cmdLineAnalyzer& src)
 }
 
 
-// Analyse de la ligne de commandes et découpage
-// en paramètres individuels
+// Analyse de la ligne de commandes et dÃ©coupage
+// en paramÃ¨tres individuels
 //
 void cmdLineAnalyzer::_analyse(const char* cmdLine)
 {
-	// On s'assure que la liste des paramètres est vide
+	// On s'assure que la liste des paramÃ¨tres est vide
 	_dispose();
 
 	_cmdLine = (char*)cmdLine;
@@ -141,9 +141,9 @@ void cmdLineAnalyzer::_analyse(const char* cmdLine)
 	while (szStart){
 		inserted = false;
 
-		// Recherche du caractère de début du nom
+		// Recherche du caractÃ¨re de dÃ©but du nom
 		if (NULL == (szStart = strchr(szStart, _nameSep))){
-			// plus de paramètres ...
+			// plus de paramÃ¨tres ...
 			return;
 		}
 		szName = szStart + 1;
@@ -164,14 +164,14 @@ void cmdLineAnalyzer::_analyse(const char* cmdLine)
 			szEnd = strchr(szValue, CHAR_DQUOTE);
 		}
 		else{
-			// sinon on recherche le premier séparateur (en général [espace])
+			// sinon on recherche le premier sÃ©parateur (en gÃ©nÃ©ral [espace])
 			if (_blockSep){
 				szEnd = strchr(szValue, _blockSep);
 			}
 			else{
-				szEnd = strchr(szValue, _nameSep);	// Sinon on revient au séparateur de noms
+				szEnd = strchr(szValue, _nameSep);	// Sinon on revient au sÃ©parateur de noms
 				if (szEnd){
-					inserted = true; // Le séparateur n'existe pas, je vais l'insérer ..
+					inserted = true; // Le sÃ©parateur n'existe pas, je vais l'insÃ©rer ..
 				}
 			}
 		}
@@ -181,24 +181,24 @@ void cmdLineAnalyzer::_analyse(const char* cmdLine)
 			szEnd[0] = EOS;
 		}
 
-		// La valeur existe t'elle déja ?
+		// La valeur existe t'elle dÃ©ja ?
 		//
 		LPCLP pPrev = findParameter(szName);
 
 		if (pPrev){
-			// On ecrase la version précédente
+			// On ecrase la version prÃ©cÃ©dente
 			pPrev->setValue(szValue);
-			pPrev->_bModified = false;		// ça reste la valeur "originale"
+			pPrev->_bModified = false;		// Ã§a reste la valeur "originale"
 		}
 		else{
-			// Ajout du paramètre à la liste
+			// Ajout du paramÃ¨tre Ã  la liste
 			_params.push_back(new parameter(szName, szValue));
 		}
 
-		// paramètre suivant ...
+		// paramÃ¨tre suivant ...
 		if (inserted){
-			szEnd[0] = _nameSep;	// Je remet le séparateur ...
-			szStart = szEnd;		// et on repart de ce caractère (pour le retrouver à la prochaine occurence)
+			szEnd[0] = _nameSep;	// Je remet le sÃ©parateur ...
+			szStart = szEnd;		// et on repart de ce caractÃ¨re (pour le retrouver Ã  la prochaine occurence)
 		}
 		else{
 			szStart = (szEnd ? szEnd + 1 : NULL);
@@ -216,21 +216,21 @@ void cmdLineAnalyzer::_analyse(const char* cmdLine)
 //
 cmdLineBuilder::cmdLineBuilder(char nameChar,  char valChar, char valSep)
 {
-	// Initialisation des données membres
+	// Initialisation des donnÃ©es membres
 	_init(nameChar, valChar, valSep);
 	_binName = "";
 	_simpleParams = "";
 	_cmdLine = "";
 }
 
-// Accès
+// AccÃ¨s
 //
 const char* cmdLineBuilder::getCommandLine()
 {
-	// Génération de la ligne de commande
+	// GÃ©nÃ©ration de la ligne de commande
 	if (!_binName.size() && !_params.size())
 	{
-		// Pas de paramètres
+		// Pas de paramÃ¨tres
 		return NULL;
 	}
 
@@ -251,14 +251,14 @@ const char* cmdLineBuilder::getCommandLine()
 		_cmdLine+=CHAR_SPACE;
 	}
 
-	// Puis on ajoute chacun des paramètres
+	// Puis on ajoute chacun des paramÃ¨tres
 	//
 	for (deque<parameter*>::iterator it =_params.begin(); it<_params.end(); it++)
 	{
 		if (*it)
 		{
 			_cmdLine+=_nameSep;
-			_cmdLine+=(*it)->getName();		// Nom du paramètre
+			_cmdLine+=(*it)->getName();		// Nom du paramÃ¨tre
 			_cmdLine+=_valSep;
 
 			// Sa valeur
@@ -278,7 +278,7 @@ const char* cmdLineBuilder::getCommandLine()
 		}
 	}
 
-	// Les paramètres "simples"
+	// Les paramÃ¨tres "simples"
 	_cmdLine+=_simpleParams;
 
 	// " " terminal
@@ -288,11 +288,11 @@ const char* cmdLineBuilder::getCommandLine()
 		_cmdLine.resize(len - 1);
 	}
 
-	// On retourne un pointeur sur la ligne nouvellement générée ...
+	// On retourne un pointeur sur la ligne nouvellement gÃ©nÃ©rÃ©e ...
 	return _cmdLine.c_str();
 }
 
-// Ajouts d'un paramètre
+// Ajouts d'un paramÃ¨tre
 //
 bool cmdLineBuilder::add(parameter* param)
 {
@@ -301,7 +301,7 @@ bool cmdLineBuilder::add(parameter* param)
 		return false;
 	}
 
-	// Le paramètre doit-être unique
+	// Le paramÃ¨tre doit-Ãªtre unique
 	if (NULL != find(param->getName()))
 	{
 		return false;
@@ -332,18 +332,18 @@ bool cmdLineBuilder::remove(const char* szName)
 		return false;
 	}
 
-	// Le paramètre existe t-il ?
+	// Le paramÃ¨tre existe t-il ?
 	deque<cmdLine::parameter*>::iterator it = _find(szName);
 	if (it != _params.end())
 	{
 		// Oui => je l'efface
 		_params.erase(it);
 
-		// retiré
+		// retirÃ©
 		return true;
 	}
 
-	// non trouvé
+	// non trouvÃ©
 	return false;
 }
 

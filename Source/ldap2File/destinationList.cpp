@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	:	destinationList.cpp
 //--
-//--	AUTEUR	:	Jérôme Henry-Barnaudière (JHB)
+//--	AUTEUR	:	JÃ©rÃ´me Henry-BarnaudiÃ¨re (JHB)
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		Impleméntation de l'objet destinationList
+//--		ImplemÃ©ntation de l'objet destinationList
 //--		Liste des serveurs/destinations
 //--
 //---------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	10/01/2018 - JHB - Création - Version 18.1.1
+//--	10/01/2018 - JHB - CrÃ©ation - Version 18.1.1
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -28,7 +28,7 @@
 
 #include "destinationList.h"
 
-// Libération de la mémoire
+// LibÃ©ration de la mÃ©moire
 //
 void destinationList::dispose()
 {
@@ -47,7 +47,7 @@ bool destinationList::append(fileDestination* destination)
 {
 	if (NULL == destination ||
 		NULL != getDestinationByName(destination->name())){	// Unique par son nom !!!
-		// Je libère le pointeur (si il existe ...)
+		// Je libÃ¨re le pointeur (si il existe ...)
 		if (destination){
 			delete destination;
 		}
@@ -57,24 +57,24 @@ bool destinationList::append(fileDestination* destination)
 
 	destinations_.push_back(destination);
 
-	// Ajouté avec succès
+	// AjoutÃ© avec succÃ¨s
 	return true;
 }
 
-// Recherches et accès
+// Recherches et accÃ¨s
 //
 fileDestination* destinationList::getDestinationByName(const char* name)
 {
 	if (!IS_EMPTY(name)){
 		for (deque<fileDestination*>::iterator i = destinations_.begin(); i != destinations_.end(); i++){
 			if ((*i) && 0 == strcmp(name, (*i)->name())){
-				// Trouvé
+				// TrouvÃ©
 				return (*i);
 			}
 		}
 	}
 
-	// non trouvée
+	// non trouvÃ©e
 	return NULL;
 }
 
@@ -87,11 +87,11 @@ fileDestination* destinationList::operator[] (size_t index)
 		return NULL;
 	}
 
-	// On pointe surle premier élément
+	// On pointe surle premier Ã©lÃ©ment
 	deque<fileDestination*>::iterator it = destinations_.begin();
 
 	if (index) {
-		// on avance jusqu'à l'index demandé
+		// on avance jusqu'Ã  l'index demandÃ©
 		advance(it, index);
 	}
 

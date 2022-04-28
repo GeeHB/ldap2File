@@ -12,19 +12,19 @@
 //--
 //--	DESCRIPTIONS:
 //--
-//--	D�finition des classes cmdLineAnalyzer et cmdLineBuilder
+//--	Définition des classes cmdLineAnalyzer et cmdLineBuilder
 //--
-//--	L'objet cmdLineAnalyzer effectue une analyse puis un d�coupage
-//--	en liste des param�tres d'une ligne de commandes
+//--	L'objet cmdLineAnalyzer effectue une analyse puis un découpage
+//--	en liste des paramètres d'une ligne de commandes
 //--
-//--	L'objet cmdLineBuilder g�n�re une ligne de commande � partir de param�tres valu�s
+//--	L'objet cmdLineBuilder génère une ligne de commande à partir de paramètres valués
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	04/08/2003 - JHB - Cr�ation
+//--	04/08/2003 - JHB - Création
 //--
 //--	11/08/2003 - JHB - Validation - Version 1.1
 //--
@@ -41,7 +41,7 @@
 
 #include "commonTypes.h"
 
-// Utilisation des classes g�n�riques STL
+// Utilisation des classes génériques STL
 //
 #include <string>
 #include <deque>	// ie. double ended queue
@@ -61,7 +61,7 @@ using namespace std;
 //---------------------------------------------------------------------------
 
 
-// Les param�tres sont de la forme ! /[paramName]:[paramValue]
+// Les paramètres sont de la forme ! /[paramName]:[paramValue]
 //
 #define DEF_CHAR_PARAM				_T('/')
 #define DEF_CHAR_VALUE				_T(':')
@@ -71,7 +71,7 @@ using namespace std;
 
 //---------------------------------------------------------------------------
 //--
-//--		D�finition des classes
+//--		Définition des classes
 //--
 //---------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ public:
 	virtual ~cmdLine()
 		{ _dispose();}
 
-	//	Un param�tre de la ligne de commande
+	//	Un paramètre de la ligne de commande
 	//
 	class parameter
 	{
@@ -121,7 +121,7 @@ public:
             if (_szValue) free((void*)_szValue);
         }
 
-		// Acc�s
+		// Accès
 		const char* getName()
         {return _szName;}
 		const char* getValue()
@@ -138,7 +138,7 @@ public:
 		bool isModified()
         { return _bModified; }
 
-	// M�thodes priv�es
+	// Méthodes privées
 	protected:
 
 		// initialisation
@@ -148,20 +148,20 @@ public:
             else {_szName = (const char*)strdup((const char*)szName); _szValue = (const char*)strdup((const char*)szVal);}
         }
 
-	// Donn�es membres
+	// Données membres
 	public:
-		// Param�tres
+		// Paramètres
 		const char*	_szName;	// Nom
-		const char*	_szValue;	// Valeur associ�e
+		const char*	_szValue;	// Valeur associée
 
-		bool	_bModified;	// Valeur originale ou modifi�e
+		bool	_bModified;	// Valeur originale ou modifiée
 	};
 
 
-	// Acc�s
+	// Accès
 	//
 
-	// Nombre de param�tres lus
+	// Nombre de paramètres lus
 	size_t size()
     { return (size_t)_params.size(); }
 	int getParamCount()
@@ -171,38 +171,38 @@ public:
 
 	virtual const char* getCommandLine() = 0;
 
-	// Un param�tre
+	// Un paramètre
 	cmdLine::parameter* getParameter(int index)
     { return (index>=getParamCount()?NULL:_params[index]); }
 
-	// recherche d'un param�tre par son nom
+	// Recherche d'un paramètre par son nom
 	cmdLine::parameter* findParameter(const char* szName);
 	cmdLine::parameter* find(const char* szName)
     { return findParameter(szName); }
 
-// M�thodes priv�es
+// Méthodes privées
 //
 protected:
 
-	// Initialisation des param�tres pour la gestion de la ligne de commandes
+	// Initialisation des paramètres pour la gestion de la ligne de commandes
 	void _init(char name, char val, char sep)
     { _nameSep = name; _valSep = val; _blockSep = sep;}
 
 	// Recherche
 	deque<cmdLine::parameter*>::iterator _find(const char* szName);
 
-	// Lib�ration de la liste des param�tres
+	// Libération de la liste des paramètres
 	void _dispose();
 
-//	Donn�es membres priv�es
+//	Données membres privées
 //
 protected:
 
-	deque<parameter*>		_params;	// Liste des param�tres
+	deque<parameter*>		_params;	// Liste des paramètres
 
-	char					_nameSep;	// Debut du nom du param�tre
-	char					_valSep;	// Debut de la valeur du param�tre
-	char					_blockSep;	// S�parateur de valeurs
+	char					_nameSep;	// Debut du nom du paramètre
+	char					_valSep;	// Debut de la valeur du paramètre
+	char					_blockSep;	// Séparateur de valeurs
 };
 
 // Alias ...
@@ -216,7 +216,7 @@ class cmdLineAnalyzer : public cmdLine
 {
 public:
 
-//	M�thodes publiques
+//	Méthodes publiques
 //
 public:
 
@@ -251,11 +251,11 @@ public:
 	virtual bool analyze(const char* cmd, char nameChar, char valChar, char valSep = CHAR_SPACE)
 	{ _init(nameChar, valChar, valSep); return analyse(cmd);}
 
-	// Acc�s
+	// Accès
 	virtual const char* getCommandLine()
 	{ return (const char*)_cmdLine;}
 
-// M�thodes priv�es
+// Méthodes privées
 //
 protected:
 
@@ -263,7 +263,7 @@ protected:
 	void _analyse(const char* cmd);
 
 
-//	Donn�es membres priv�es
+//	Données membres privées
 //
 protected:
 	char*					_cmdLine;	// Ligne de commande
@@ -281,24 +281,24 @@ public:
 
 	// Parse
 	virtual bool analyse(std::string& str){
-        std::string src("&");	// Ajout du "premier" s�parateur
+        std::string src("&");	// Ajout du "premier" séparateur
         src += str;
         return analyze(src.c_str());
 	}
 	virtual bool analyse(const char* str){
-		std::string src("&");	// Ajout du "premier" s�parateur
+		std::string src("&");	// Ajout du "premier" séparateur
 		src += str;
 		return analyze(src.c_str());
 	}
 };
 
-// G�n�ration de la ligne de commandes
+// Génération de la ligne de commandes
 //
 class cmdLineBuilder : public cmdLine
 {
 public:
 
-//	M�thodes publiques
+//	Méthodes publiques
 //
 public:
 
@@ -309,7 +309,7 @@ public:
 	virtual ~cmdLineBuilder()
     { _dispose();}
 
-	// Acc�s
+	// Accès
 	//
 	virtual const char* getCommandLine();
 
@@ -321,27 +321,27 @@ public:
 	void setProcessName(string &name)
 	{ setProcessName(name.c_str());}
 
-	// Ajouts d'un param�tre
+	// Ajouts d'un paramètre
 	bool add(parameter* param);
 	void operator+=(string const &sValue);
 	void operator+=(parameter* param)
 	{ add(param);}
 
-	// Suppression de param�tre(s)
-	bool remove(const char* szName);		// Un seul
+	// Suppression de paramètre(s)
+	bool remove(const char* szName);	// Un seul
 	void clear()						// Tous
 	{ _dispose();}
 
-// M�thodes priv�es
+// Méthodes privées
 //
 protected:
 
-//	Donn�es membres priv�es
+//	Données membres privées
 //
 protected:
 	string					_cmdLine;		// Ligne de commande
 	string					_binName;		// Nom complet du programme
-	string					_simpleParams;	// Param�tres simples
+	string					_simpleParams;	// Paramètres simples
 };
 
 #endif //#ifndef __JHB_COMMAND_LINE_ANALYSER_h__
