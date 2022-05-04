@@ -236,7 +236,7 @@ servicesList::LPLDAPSERVICE servicesList::userContainers(const char* userDN)
 		}
 
 		// Container précédent ...
-		if (NULL == (container = _getContainerOf(dn.c_str()))){
+		if (NULL != (container = _getContainerOf(dn.c_str()))){
 			dn = container->DN();
 
 			// C'est mon "père"

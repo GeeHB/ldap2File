@@ -448,23 +448,6 @@ void JScriptFile::closeOrgChartFile()
 //
 void JScriptFile::add2Chart(LPAGENTINFOS agent)
 {
-	// Petites vérifications ...
-	//
-	if (NULL == agent || !file_.is_open())
-	{
-		return;
-	}
-
-	if (newFile_){
-		newFile_ = false;
-	}
-	else{
-		file_ << ",";		// Séparateur de lignes
-	}
-
-	file_ << eol_;			// Saut de ligne précédent
-	file_ << "{";
-
 	// Données contenu dans l'objet
 	//
 	string line("");
@@ -517,6 +500,7 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 
 	// Ajout des autres données
 	//
+	size_t count(0);
 	JSData* other = (JSData*)agent->ownData();
 	if (other){
 		other->newAttribute(JS_LABEL_PHOTO, photoServer_.URL(photoServer_.shortFileName(other->photo).c_str()).c_str());
@@ -529,9 +513,33 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 		for (deque<JSATTRIBUTE*>::iterator it = other->otherAttributes.begin(); it != other->otherAttributes.end(); it++){
 			if (NULL != (pAttribute = (*it))){
 				_add(line, pAttribute->name.c_str(), pAttribute->value.c_str());
+				count++;
 			}
 		}
 	}
+
+    // Pas de données ?
+    if (0 == count){
+        return;
+    }
+
+    // Petites vérifications ...
+	//
+	if (NULL == agent || !file_.is_open())
+	{
+		return;
+	}
+
+	if (newFile_){
+		newFile_ = false;
+	}
+	else{
+		file_ << ",";		// Séparateur de lignes
+	}
+
+	file_ << eol_;			// Saut de ligne précédent
+	file_ << "{";
+
 
 	// Ajout dans le fichier
 #ifdef _WIN32

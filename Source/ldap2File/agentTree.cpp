@@ -85,11 +85,11 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, s
 	// L'agent a t'il déja été ajouté ?
 	LPAGENTINFOS agent = _findAgent(dnAgent, uid);
 #ifdef _DEBUG
-	if (dnAgent.size() && !manager.size()) {
+	if ("uid=benrached.n,ou=[01399]DRH,ou=[00004]DGS,ou=[00003]AdD,ou=[00001]CDdl,ou=users,dc=allier,dc=fr" == dnAgent) {
 		int i(5);
 		i++;
 	}
-#endif // uid = NO_AGENT_UID;
+#endif
 	if (agent){
 		if (agent->uid() == uid &&			// Même uid pour 2 DN différents !!!
 			dnAgent != agent->dn()) {
@@ -464,7 +464,8 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 	if (nom.size() && prenom.size()){
 		// Si le responsable est l'agent, risque de boucle ...
 		if (manager == dnAgent){
-			return NULL;
+			manager = "";
+			//return NULL;
 		}
 
 		agent = add(uid, dnAgent, prenom.c_str(), nom.c_str(), email.c_str(), allierStatus, manager.c_str(), matricule.c_str(), true);

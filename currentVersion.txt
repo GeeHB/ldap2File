@@ -4,7 +4,21 @@ TODO{
 	- charUtils : la majorité des méthodes devraient être "static"
 	    - Linux : n'utiliser que les versions static et jamais "encoder_"
 	- Essayer sFileSystem sous Win32, sans utiliser les API Windows (serait plus facilement portable)
+
+	- Validation des incohérences :
+		- Agent sans nom ...
+		- Agent étant son propre manager
+
+	- Toutes les constantes chaines dans un fichier ./intl-fr.h
+	- Ajouter un objet pour la gestion des indices incrémentés (++ auto ou hash)
+		- ownCounter::getUID(DN)
 }
+
+### TODO ###
+	+ pugi::XML Utilisation des XPaths et des predicates
+	+ Génération d'exceptions par SMTPClient
+	+ Vérification & réecriture SMTPClient
+
 
 BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
@@ -13,8 +27,11 @@ BUGS{
 22.4.1 _
     * xxx
     - Corrections mineures
-        + Affichages
+        + Logs : Corrections / Enrichissement
         + Tous les fichiers sont encodés en UTF8 (même celui -ci)
+        + Si un agent n'a pas de nom/prénom => on ne l'ajoute pas au fichier de sortie
+        + Un agent ne peut être son manager => pas de manager dans ce cas
+	+ Remise en place de la gestion des containers pour l'héritage des attributs (couleur par ex.)
 
 21.7.9 - Version complète
     * le 23 nov. 2021
@@ -168,11 +185,6 @@ BUGS{
 	+ pugi::XML
 		+ Gestion des codes retours => génération d'exceptions
 		+ (re)généraion des commentaires d'origine dans les fichiers XML
-
-### TODO ###
-	+ pugi::XML Utilisation des XPaths et des predicates
-	+ Génération d'exceptions par SMTPClient
-	+ Vérification & réecriture SMTPClient
 
 20.7.28
 	* 27 juillet 2020

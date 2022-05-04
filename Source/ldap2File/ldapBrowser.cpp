@@ -1260,6 +1260,9 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 				//
 				if (dn.size()) {
 
+					// Liste des containers de l'agent
+					firstContainer = services_->userContainers(dn);
+
 #ifdef __LDAP_OWN_SCOPE_BASE__
 					if (treeSearch) {
 						// Recherche dans tout l'arbre => ok
@@ -1421,13 +1424,16 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 						// la couleur est demandée ?
 						if (SIZE_MAX != colorID) {
-							if (firstContainer &&
+
+							if (firstContainer /*&&
 								!(
 									(allierStatus & ALLIER_STATUS_NA) ||
 									(allierStatus & ALLIER_STATUS_STAGIAIRE) ||
 									(allierStatus & ALLIER_STATUS_NOT_A_MANAGER)
-									)) { /* Pas pour les stagaires ni les agents non-affectés*/
+									)) { // Pas pour les stagaires ni les agents non-affectés
 									// ma couleur est celle de mon container si l'agent n'est pas non-affectué
+									*/
+									){
 								file_->addAt((size_t)colorID, firstContainer->color());
 							}
 							else {
@@ -2045,14 +2051,6 @@ void ldapBrowser::_addOrgLeaf(orgChartFile* orgFile, orgChartFile::treeCursor& a
 
 	// Moi ...
 	//
-#ifdef _DEBUG
-	string nom = agent->nom();
-	if (nom == "Chalamet"){
-		int i(5);
-		i++;
-	}
-#endif // #ifdef _DEBUG
-
 	// Nombre de descendants directs
 	size_t brothers(agent->childs());
 
