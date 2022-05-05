@@ -178,13 +178,24 @@ public:
 	virtual ~outputFile();
 
 	// Lecture des paramètres "personnels" dans le fichier de conf
-	//	retourne un booléen (conitniuer les traitements ?)
+	//	retourne un booléen (continuer les traitements ?)
 	virtual bool getOwnParameters(){
 #ifdef _WIN32
 		logs_->add(logs::TRACE_TYPE::DBG, _T("Pas de paramètres supplémentaires dans le fichier XML"));
 #endif // ifdef _WIN32
 		return true;		// Pas de param => on continue
 	}
+
+	// Colonnes "obligatoires"
+	virtual void getOwnColumns(deque<string>& colNames){
+        // Dans tous les cas, il faut l'ID de l'agent, son prénom, son nom, le statut du compte
+	    //
+	    colNames.clear();       // On part avec une liste vide !
+	    colNames.push_back(COL_AGENT_UID);
+	    colNames.push_back(COL_PRENOM);
+	    colNames.push_back(COL_NOM);
+		colNames.push_back(COL_STATUS);
+    }
 
 	// Création du fichier / initialisation(s)
 	virtual bool create() = 0;

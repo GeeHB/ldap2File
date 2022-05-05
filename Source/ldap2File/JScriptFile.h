@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: JScriptFile.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,8 +12,8 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition de la classe JScriptFile
-//--			Génération d'un fichier javascript
+//--			DÃ©finition de la classe JScriptFile
+//--			GÃ©nÃ©ration d'un fichier javascript
 //--
 //---------------------------------------------------------------------------
 //--
@@ -21,10 +21,10 @@
 //--	-------------
 //--
 //--	01/07/2016 - JHB - Version 2
-//--					+ Création
-//--					+ Ajout de l'opacité (% de la couleur de fond)
-//--					+ Ajout de toutes les colonnes (si pas reconnue, utilisation du nom du schéma)
-//--					+ Valeur par défaut des attributs
+//--					+ CrÃ©ation
+//--					+ Ajout de l'opacitÃ© (% de la couleur de fond)
+//--					+ Ajout de toutes les colonnes (si pas reconnue, utilisation du nom du schÃ©ma)
+//--					+ Valeur par dÃ©faut des attributs
 //--
 //--	23/11/2021 - JHB - Version 21.11.9
 //--
@@ -42,18 +42,18 @@
 //--
 //----------------------------------------------------------------------
 
-// Fond coloré pour les DGA ?
+// Fond colorÃ© pour les DGA ?
 //#define _GENERATE_COLORED_GROUPS_
 
 //----------------------------------------------------------------------
 //--
-//-- Définition de la classe
+//-- DÃ©finition de la classe
 //--
 //----------------------------------------------------------------------
 
 class JScriptFile : public textFile, orgChartFile
 {
-	// Méthodes publiques
+	// MÃ©thodes publiques
 	//
 public:
 
@@ -66,6 +66,15 @@ public:
 	// Initialisation(s)
 	virtual bool init();
 
+	// Colonnes "obligatoires"
+	virtual void getOwnColumns(deque<string>& colNames){
+
+        outputFile::getOwnColumns(colNames);
+
+        colNames.push_back(COL_STRUCT_LEVEL);	// Structure contenante
+		colNames.push_back(COL_STATUS);			// Statut
+    }
+
 	// Enregistrement de la ligne courante
 	virtual bool saveLine(bool header = false, LPAGENTINFOS agent = NULL);
 
@@ -75,7 +84,7 @@ public:
 	virtual bool add(deque<string>& values)
 	{ return false; }
 
-	// Ajout d'une valeur dans une colonne précise
+	// Ajout d'une valeur dans une colonne prÃ©cise
 	virtual bool addAt(size_t colIndex, string& value);
 	virtual bool addAt(size_t colIndex, deque<string>& values);
 
@@ -86,7 +95,7 @@ public:
 	virtual bool replaceAt(size_t colIndex, string& singleValue);
 
 	// Sauvegarde
-	// rien à sauvegarder vu qu'il n'y a que l'organigramme !!!
+	// rien Ã  sauvegarder vu qu'il n'y a que l'organigramme !!!
 	virtual bool save()
 	{ return true; }
 
@@ -106,7 +115,7 @@ public:
 	virtual bool createOrgSheet(const char* sheetName)
 	{ return true; }
 
-	// Création d'une arborescence "flat"
+	// CrÃ©ation d'une arborescence "flat"
 	virtual void shift(int offset, treeCursor& ascendants)
 	{}
 	virtual void add2Chart(LPAGENTINFOS agent);
@@ -115,7 +124,7 @@ public:
 	virtual void endOfLine()
 	{ saveLine(); }
 
-	// Méthodes privées
+	// MÃ©thodes privÃ©es
 	//
 private:
 
@@ -133,7 +142,7 @@ private:
 		string value;
 	}JSATTRIBUTE;
 
-	// Un élément de l'organigramme
+	// Un Ã©lÃ©ment de l'organigramme
 	//
 	class JSData : public agentInfos::agentDatas
 	{
@@ -180,7 +189,7 @@ private:
 			}
 		}
 
-		// Données à insérer dans le fichier JS
+		// DonnÃ©es Ã  insÃ©rer dans le fichier JS
 		unsigned int	uId;
 		unsigned int	parentId;
 		float				groupOpacity;
@@ -188,12 +197,12 @@ private:
 		string				containerColor;
 		string				photo;
 
-		// Autres éléments ...
+		// Autres Ã©lÃ©ments ...
 		deque<JSATTRIBUTE*>	otherAttributes;
 	};
 
 	// Groupe
-	// dans une groupe tous les éléments "fils" ont la même couleur
+	// dans une groupe tous les Ã©lÃ©ments "fils" ont la mÃªme couleur
 	typedef struct tagELEMENTGROUP
 	{
 		tagELEMENTGROUP(unsigned int id, string& color, float op)
@@ -203,7 +212,7 @@ private:
 			opacity = op;
 		}
 
-		unsigned int	ownerId;		// Identifiant du propriétaire du groupe
+		unsigned int	ownerId;		// Identifiant du propriÃ©taire du groupe
 		string				baseColor;		// couleur de base
 		float				opacity;		// % de la couleur de base
 	}EGRP,* LPEGRP;
@@ -217,8 +226,8 @@ private:
 			to = toL;
 		}
 
-		unsigned int	from;		// Identifiant du remplaçant
-		unsigned int	to;			// Identifiant du remplacé
+		unsigned int	from;		// Identifiant du remplaÃ§ant
+		unsigned int	to;			// Identifiant du remplacÃ©
 	}AGENTLINK,*LPAGENTLINK;
 
 	bool _add(string& value);
@@ -234,19 +243,19 @@ private:
 	void _newLine();
 
 
-	// Données membres privées
+	// DonnÃ©es membres privÃ©es
 	//
 private:
-	charUtils		encoder_;		// Gestion de l'encodage des caractères
-	JSData*			line_;			// Données correspondant à une "ligne"
+	charUtils		encoder_;		// Gestion de l'encodage des caractÃ¨res
+	JSData*			line_;			// DonnÃ©es correspondant Ã  une "ligne"
 
 	//ofstream		file_;
 	bool			newFile_;
-	// bool			keepLine_;		// La ligne doit-être générée ?
+	// bool			keepLine_;		// La ligne doit-Ãªtre gÃ©nÃ©rÃ©e ?
 	bool			addEmptyAttributes_;
 	bool			fullMode_;
 
-	IMGSERVER		photoServer_;	// Serveur gérant les photos
+	IMGSERVER		photoServer_;	// Serveur gÃ©rant les photos
 
 #ifdef _GENERATE_COLORED_GROUPS_
 	deque<LPEGRP>				groups_;		// Regroupements d'agents

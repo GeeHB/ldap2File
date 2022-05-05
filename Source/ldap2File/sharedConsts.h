@@ -352,7 +352,9 @@ using namespace jhbTools;
 #define COL_MANAGER_ALLIER			"ALLIER-RESPONSABLE"	// Juste le N+1 (dans l'Allier ?)
 
 #define COL_MANAGER_MATRICULE		"MANAGER-MATRICULE"		// Matricule du N+1
+#define COL_STATUS      			"STATUS"
 #define COL_ACCOUNTSTATUS			"STATUS"
+#define COL_STRUCT_LEVEL            "NIVEAU-STRUCT"
 
 #define COL_MATRICULE				"MATRICULE"
 #define PREFIX_MATRICULE			"s"

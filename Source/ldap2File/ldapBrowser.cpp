@@ -367,17 +367,6 @@ RET_TYPE ldapBrowser::browse()
 	// Liste des colonnes demandées
 	logs_->add(logs::TRACE_TYPE::LOG, "%d colonne(s) demandée(s)", cols_.size());
 
-	// Dans tous les cas, il faut l'ID de l'agent, son prénom, son nom, le statut du compte et la DGA
-	//
-	cols_.append(COL_AGENT_UID);
-	cols_.append(COL_PRENOM);
-	cols_.append(COL_NOM);
-	cols_.append(COL_ACCOUNTSTATUS);
-	cols_.append(COL_ALLIER_STATUS_NAME, COL_ALLIER_STATUS, COL_DEF_WITDH, DATA_TYPE_SINGLEVALUED_STRING, false);	// Pas de "-" dans le nom d'un attribut en js !
-	cols_.append(COL_DGA);
-	struct_->setAt(COL_DGA, cols_.size() - 1);
-	cols_.append(COL_DG);
-	struct_->setAt(COL_DG, cols_.size() - 1);
 
 	// Organigramme
 	cmdFile->orgChart(orgChart_);
@@ -592,31 +581,6 @@ RET_TYPE ldapBrowser::_createFile()
 		logs_->add(logs::TRACE_TYPE::LOG, "Les encadrants sont modélisés par ('%s', '%s')" , managersCol_.c_str(), managersAttr_.c_str());
 	}
 
-	// Liste des colonnes demandées
-	logs_->add(logs::TRACE_TYPE::LOG, "%d colonnes à créer", cols_.size());
-
-	// Attributs recherchés
-	//
-	PCHAR* pAttributes = (PCHAR*)malloc((1+cols_.size())*sizeof(PCHAR));
-	if (NULL == pAttributes){
-		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour la liste des attributs");
-		return RET_TYPE::RET_BLOCKING_ERROR;
-	}
-
-	// Les colonnes !
-	size_t index(0);
-	for (size_t realIndex(0); realIndex < cols_.size(); realIndex++){
-		if (cols_[realIndex]->add2Request()){
-#ifdef _DEBUG
-			string attrVal = cols_[realIndex]->ldapAttr_;
-#endif // _DEBUG
-			pAttributes[index++] = (PCHAR)cols_[realIndex]->ldapAttr_.c_str();
-		}
-	}
-
-	// la dernière col. est marquée à NULL
-	pAttributes[index] = NULL;
-
 	// Nombre d'agents
 	size_t agentsCount(0);
 
@@ -749,6 +713,37 @@ RET_TYPE ldapBrowser::_createFile()
 		logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'initialisation du fichier de sortie");
 		return RET_TYPE::RET_BLOCKING_ERROR;
 	}
+
+	// Les attributs (ie. les colonnes)
+	//
+    deque<string> ownCols;
+    file_->getOwnColumns(ownCols);
+    for (deque<string>::iterator it = ownCols.begin(); it != ownCols.end(); it++){
+        cols_.append((*it).c_str());
+    }
+
+	logs_->add(logs::TRACE_TYPE::LOG, "%d colonnes à créer", cols_.size());
+
+	// => attributs recherchés
+	//
+	PCHAR* pAttributes = (PCHAR*)malloc((1+cols_.size())*sizeof(PCHAR));
+	if (NULL == pAttributes){
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour la liste des attributs");
+		return RET_TYPE::RET_BLOCKING_ERROR;
+	}
+
+	size_t index(0);
+	for (size_t realIndex(0); realIndex < cols_.size(); realIndex++){
+		if (cols_[realIndex]->add2Request()){
+#ifdef _DEBUG
+			string attrVal = cols_[realIndex]->ldapAttr_;
+#endif // _DEBUG
+			pAttributes[index++] = (PCHAR)cols_[realIndex]->ldapAttr_.c_str();
+		}
+	}
+
+	// la dernière col. est marquée à NULL
+	pAttributes[index] = NULL;
 
 	/*
 	// Le nom du fichier doit-il être déduit de l'annuaire ?
@@ -1040,8 +1035,6 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	/*
 	size_t colService = cols_.getColumnByType(COL_SERVICE);
 	size_t colDirection = cols_.getColumnByType(COL_DIRECTION);
-	size_t colDGA= cols_.getColumnByType(COL_DGA);
-	size_t colDG = cols_.getColumnByType(COL_DG);
 	*/
 
 #ifdef __LDAP_USE_ALLIER_TITLES__
@@ -1422,18 +1415,18 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 							_getUserGroups(userDN, groupID, primaryGroup.c_str());
 						}
 
-						// la couleur est demandée ?
+						// La couleur est demandée ?
 						if (SIZE_MAX != colorID) {
 
-							if (firstContainer /*&&
+							if (firstContainer &&
 								!(
 									(allierStatus & ALLIER_STATUS_NA) ||
 									(allierStatus & ALLIER_STATUS_STAGIAIRE) ||
 									(allierStatus & ALLIER_STATUS_NOT_A_MANAGER)
 									)) { // Pas pour les stagaires ni les agents non-affectés
 									// ma couleur est celle de mon container si l'agent n'est pas non-affectué
-									*/
-									){
+
+									/*){*/
 								file_->addAt((size_t)colorID, firstContainer->color());
 							}
 							else {
@@ -2070,6 +2063,13 @@ void ldapBrowser::_addOrgLeaf(orgChartFile* orgFile, orgChartFile::treeCursor& a
 	while (child){
 		// Nouvelle ligne ?
 		if (child->isAgent()){
+#ifdef _DEBUG
+			string dn = child->dn();
+			if (dn.find("uid=henry-barnaudiere") != dn.npos) {
+				int i(5);
+				i++;
+			}
+#endif // _DEBUG
 			orgFile->endOfLine();
 
 			// Ma position dans la lignée

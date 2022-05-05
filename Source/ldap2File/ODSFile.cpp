@@ -504,7 +504,7 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 					}
 
 					// Ai je atteint la fin du tableau ?
-					colIndex = (nextValid >= columns_->size() ? nextValid : nextValid - 1);
+					colIndex = (nextValid >= (colMax -1) ? nextValid : nextValid - 1);
 				}
 
 				// Une autre valeur ?

@@ -9,15 +9,29 @@ TODO{
 		- Agent sans nom ...
 		- Agent étant son propre manager
 
-	- Toutes les constantes chaines dans un fichier ./intl-fr.h
-	- Ajouter un objet pour la gestion des indices incrémentés (++ auto ou hash)
-		- ownCounter::getUID(DN)
-}
+	# Regionalisation et UTF8
+	    + Toutes les constantes chaines dans un fichier ./intl-fr.h
+	    + A terme (...) une classe strHandler
+	        + strHandler(languageID)
+	        + strHandler::getString(strID)
 
-### TODO ###
-	+ pugi::XML Utilisation des XPaths et des predicates
-	+ Génération d'exceptions par SMTPClient
-	+ Vérification & réecriture SMTPClient
+    # Logs
+        + La classe doit devenir "streamable"
+        + Descripteurs de formats (PID, Date, Heure, Niveau ...)
+
+    # Fichier JS
+	    + JSFile => récupération du niveau de structure
+
+	# XML
+	    + pugi::XML Utilisation des XPaths et des predicates
+	    + Utilisation optionnelle du schéma
+	        + "oui" => récupération dans le fichier ldapConf
+	        + "non" => utilisation d'un attribut des container (par ex. allierNiveauStruct)
+
+	# Exceptions
+	    + Génération d'exceptions par SMTPClient
+	    + Vérification & réecriture SMTPClient
+}
 
 
 BUGS{
@@ -27,11 +41,14 @@ BUGS{
 22.4.1 _
     * xxx
     - Corrections mineures
-        + Logs : Corrections / Enrichissement
-        + Tous les fichiers sont encodés en UTF8 (même celui -ci)
-        + Si un agent n'a pas de nom/prénom => on ne l'ajoute pas au fichier de sortie
-        + Un agent ne peut être son manager => pas de manager dans ce cas
+        - Logs : Corrections / Enrichissement
+        - Tous les fichiers sont encodés en UTF8 (même celui -ci)
+        - Si un agent n'a pas de nom/prénom => on ne l'ajoute pas au fichier de sortie
+        - Un agent ne peut être son manager => pas de manager dans ce cas
+    - Correction du bug lors de la génération de fichiers ODS lorsque tous les derniers éléments d'une ligne étaient vides, sauf le dernier'
 	+ Remise en place de la gestion des containers pour l'héritage des attributs (couleur par ex.)
+	+ bool outputFile::getOwnAttributes(&attrList) => Possibilité d'ajouter des colonnes spécifiques par défaut selon le type de fichier
+
 
 21.7.9 - Version complète
     * le 23 nov. 2021
