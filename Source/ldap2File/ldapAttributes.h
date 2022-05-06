@@ -1,24 +1,24 @@
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	FICHIER	: ldapAttributes.h
-//--	
+//--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
 //--	PROJET	: ldap2File
 //--
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	DESCRIPTION :
-//--	
+//--
 //--	Attributs LDAP spécifiques au schéma de l'Allier
-//--	
+//--
 //---------------------------------------------------------------------------
-//--		
+//--
 //--	MODIFICATIONS :
 //--	-------------
 //--
 //--	12/03/2020 - JHB - Version 20.3.2 - Création
-//--	
+//--
 //--	18/05/2021 - JHB - Version 21.5.6
 //--
 //---------------------------------------------------------------------------
@@ -29,9 +29,9 @@
 #define __ALLIER_LDAP_ATTRIBUTES_h__
 
 //---------------------------------------------------------------------------
-//--	
+//--
 //--	Extension du Schema pour le CD03
-//--	
+//--
 //---------------------------------------------------------------------------
 
 //
@@ -118,6 +118,10 @@
 #define STR_ATTR_ALLIER_REPARTITION			"allierRepartition"
 #define W_ATTR_ALLIER_REPARTITION			L"allierRepartition"
 
+// Niveau de la structure
+//
+#define STR_ATTR_STRUCT_LEVEL				"allierNiveauStruct"
+#define W_ATTR_STRUCT_LEVEL					L"allierNiveauStruct"
 
 // Site
 //

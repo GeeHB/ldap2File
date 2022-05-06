@@ -22,7 +22,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -43,16 +43,16 @@ class servicesList
 	// Méthodes publiques
 public:
 
-	// Un service LDAP
+	// Un service dans l'Annuaire
 	//
 	class LDAPService
 	{
 	public:
 		// Construction
 		LDAPService()
-		: parent_{NULL}, DN_{""}, cleanName_{""}, realName_{""}, shortName_{""}, fileName_{""}, color_{""}, site_{ "" }
+		: parent_{NULL}, DN_{""}, cleanName_{""}, realName_{""}, shortName_{""}, fileName_{""}, color_{""}, level_{JS_DEF_STRUCT_LEVEL}, site_{ "" }
 		{}
-		LDAPService(const char* DN, const char* rname, const char* cname, const char* sname = NULL, const char* fName = NULL, const char* color = NULL, const char* site = NULL);
+		LDAPService(const char* DN, const char* rname, const char* cname, const char* sname = NULL, const char* fName = NULL, const char* color = NULL, unsigned int level = JS_DEF_STRUCT_LEVEL, const char* site = NULL);
 
 		// Destruction
 		virtual ~LDAPService()
@@ -77,6 +77,12 @@ public:
 		const char* color();
 		void setColor(const char* color)
 		{ color_ = (IS_EMPTY(color) ? JS_DEF_BK_COLOR : color); }
+
+		// Niveau de la structure
+		unsigned int structLevel()
+		{ return level_; }
+		void setStructLevel(const char* value)
+		{ level_ = (IS_EMPTY(value) ? JS_DEF_STRUCT_LEVEL : atoi(value)); }
 
 		// Site
 		const char* site();
@@ -113,6 +119,7 @@ public:
 		string			fileName_;
 
 		string			color_;			// Couleur du container (ou celle du parent ...)
+		unsigned int    level_;         // Niveau de la structure
 		string			site_;			// Site / bâtiment
 	};
 
@@ -133,7 +140,7 @@ public:
 
 	// Ajout d'un service
 	//bool add(const char* dn, const char* name);
-	bool add(const char* dn, string& name, string& shortName, string& fileName, string& bkColor, string& site);
+	bool add(const char* dn, string& name, string& shortName, string& fileName, string& bkColor, unsigned int level, string& site);
 
 	// Containers d'un agent
 	//

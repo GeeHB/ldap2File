@@ -12,15 +12,13 @@ TODO{
 	# Regionalisation et UTF8
 	    + Toutes les constantes chaines dans un fichier ./intl-fr.h
 	    + A terme (...) une classe strHandler
-	        + strHandler(languageID)
-	        + strHandler::getString(strID)
+	        + intlStr(languageID)
+	        + intlStr::getString(strID)
 
     # Logs
         + La classe doit devenir "streamable"
         + Descripteurs de formats (PID, Date, Heure, Niveau ...)
 
-    # Fichier JS
-	    + JSFile => récupération du niveau de structure
 
 	# XML
 	    + pugi::XML Utilisation des XPaths et des predicates
@@ -38,17 +36,20 @@ BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
 
-22.4.1 _
-    * xxx
+22.5.1
+    * le 6 mai 2022
     - Corrections mineures
+        - format des sources noramliés
         - Logs : Corrections / Enrichissement
         - Tous les fichiers sont encodés en UTF8 (même celui -ci)
         - Si un agent n'a pas de nom/prénom => on ne l'ajoute pas au fichier de sortie
         - Un agent ne peut être son manager => pas de manager dans ce cas
+        - JS - Les attributs de type num. ne doivent pas être quotés
     - Correction du bug lors de la génération de fichiers ODS lorsque tous les derniers éléments d'une ligne étaient vides, sauf le dernier'
 	+ Remise en place de la gestion des containers pour l'héritage des attributs (couleur par ex.)
-	+ bool outputFile::getOwnAttributes(&attrList) => Possibilité d'ajouter des colonnes spécifiques par défaut selon le type de fichier
-
+	+ bool virtual outputFile::getOwnColumns(&colNames) => Possibilité d'ajouter des colonnes spécifiques par défaut selon le type de fichier
+	    + par défaut : uid, prénom, nom
+        + JScriptFile => += status, niveau de structure
 
 21.7.9 - Version complète
     * le 23 nov. 2021

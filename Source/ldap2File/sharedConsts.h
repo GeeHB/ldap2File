@@ -21,7 +21,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@
 #endif // APP_FULL_NAME
 
 #define APP_DESC				"Utilitaire d'export des annuaires LDAP et OpenLDAP"
-#define APP_RELEASE				"22.4.1"
+#define APP_RELEASE				"22.5.1"
 
 // Copyright
 #define APP_COPYRIGHT			_T("Conseil départemental de l'Allier - DSUN")
@@ -354,7 +354,7 @@ using namespace jhbTools;
 #define COL_MANAGER_MATRICULE		"MANAGER-MATRICULE"		// Matricule du N+1
 #define COL_STATUS      			"STATUS"
 #define COL_ACCOUNTSTATUS			"STATUS"
-#define COL_STRUCT_LEVEL            "NIVEAU-STRUCT"
+#define COL_STRUCT_LEVEL            "NIVEAU"
 
 #define COL_MATRICULE				"MATRICULE"
 #define PREFIX_MATRICULE			"s"

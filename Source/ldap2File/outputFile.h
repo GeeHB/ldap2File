@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -187,14 +187,24 @@ public:
 	}
 
 	// Colonnes "obligatoires"
-	virtual void getOwnColumns(deque<string>& colNames){
+
+	typedef struct tagOWNCOL{
+	    tagOWNCOL(const char* colType, const char* name = NULL){
+	        type_ = colType;
+	        name_ = IS_EMPTY(name)?colType:name;
+	    }
+
+	    std::string name_;
+	    std::string type_;
+	} OWNCOL;
+
+	virtual void getOwnColumns(deque<OWNCOL>& colNames){
         // Dans tous les cas, il faut l'ID de l'agent, son prénom, son nom, le statut du compte
 	    //
 	    colNames.clear();       // On part avec une liste vide !
 	    colNames.push_back(COL_AGENT_UID);
 	    colNames.push_back(COL_PRENOM);
 	    colNames.push_back(COL_NOM);
-		colNames.push_back(COL_STATUS);
     }
 
 	// Création du fichier / initialisation(s)

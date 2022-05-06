@@ -22,7 +22,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@
 
 // Construction
 //
-servicesList::LDAPService::LDAPService(const char* DN, const char* rname, const char* cname, const char* sname, const char* fName, const char* color, const char* rSite)
+servicesList::LDAPService::LDAPService(const char* DN, const char* rname, const char* cname, const char* sname, const char* fName, const char* color, unsigned int level, const char* rSite)
 {
 	// Initialisation des données membres
 	//
@@ -65,6 +65,9 @@ servicesList::LDAPService::LDAPService(const char* DN, const char* rname, const 
 
 	// Couleur par défaut
 	color_ = IS_EMPTY(color)?"":color;
+
+    // Niveau
+    level_ = level;
 }
 
 // Changement de la couleur
@@ -126,7 +129,7 @@ void servicesList::clear()
 // Ajout d'un service
 //
 //bool servicesList::add(const char* dn,const char* name)
-bool servicesList::add(const char* dn, string& name, string& shortName, string&fileName, string& bkColor, string& site)
+bool servicesList::add(const char* dn, string& name, string& shortName, string&fileName, string& bkColor, unsigned int level, string& site)
 {
 	// Paramètres valides ?
 	//
@@ -157,7 +160,7 @@ bool servicesList::add(const char* dn, string& name, string& shortName, string&f
 #ifdef _WIN32
 	sName = charUtils::removeAccents(sName);
 #endif // _WIN32
-	service = new LDAPService(dn, name.c_str(), sName.c_str(), shortName.c_str(), fileName.c_str(), bkColor.c_str(), site.c_str());
+	service = new LDAPService(dn, name.c_str(), sName.c_str(), shortName.c_str(), fileName.c_str(), bkColor.c_str(), level, site.c_str());
 	if (NULL == service){
 		if (logs_){
 			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour le service '%s'", name.c_str());

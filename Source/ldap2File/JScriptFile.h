@@ -26,7 +26,7 @@
 //--					+ Ajout de toutes les colonnes (si pas reconnue, utilisation du nom du schéma)
 //--					+ Valeur par défaut des attributs
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -67,12 +67,12 @@ public:
 	virtual bool init();
 
 	// Colonnes "obligatoires"
-	virtual void getOwnColumns(deque<string>& colNames){
+	virtual void getOwnColumns(deque<OWNCOL>& colNames){
 
         outputFile::getOwnColumns(colNames);
 
-        colNames.push_back(COL_STRUCT_LEVEL);	// Structure contenante
-		colNames.push_back(COL_STATUS);			// Statut
+        colNames.push_back(OWNCOL(COL_STRUCT_LEVEL, JS_VAR_LEVEL));	// Structure contenante
+		colNames.push_back(OWNCOL(COL_STATUS, JS_VAR_STATUS));		// Statut
     }
 
 	// Enregistrement de la ligne courante
@@ -129,17 +129,17 @@ public:
 private:
 
 	// Un attrribut LDAP
-	typedef struct tagJSATTRIBUTE
-	{
+	typedef struct tagJSATTRIBUTE{
 		// Construction
-		tagJSATTRIBUTE(string& attrName, string& attrValue)
-		{
-			name = attrName;
-			value = attrValue;
+		tagJSATTRIBUTE(string& attrName, string& attrValue, bool quoted = true){
+			name_ = attrName;
+			value_ = attrValue;
+			quoted_ = quoted;
 		}
 
-		string name;
-		string value;
+		string name_;
+		string value_;
+		bool quoted_;
 	}JSATTRIBUTE;
 
 	// Un élément de l'organigramme
@@ -148,57 +148,53 @@ private:
 	{
 	public:
 		// Construction
-		JSData()
-		{
-			uId = parentId = NO_AGENT_UID;
-			groupOpacity = JF_DEF_GROUP_OPACITY;
-			photo = JS_DEF_PHOTO;
-			bkColor = JS_DEF_BK_COLOR;
-			containerColor = JS_DEF_CONTAINER_BK_COLOR;
+		JSData(){
+			uId_ = parentId_ = NO_AGENT_UID;
+			groupOpacity_ = JF_DEF_GROUP_OPACITY;
+			photo_ = JS_DEF_PHOTO;
+			bkColor_ = JS_DEF_BK_COLOR;
+			containerColor_ = JS_DEF_CONTAINER_BK_COLOR;
 		}
 
 		// Destruction
 		virtual ~JSData()
 		{
 			JSATTRIBUTE* pAttribute(NULL);
-			for (deque<JSATTRIBUTE*>::iterator it = otherAttributes.begin(); it != otherAttributes.end(); it++)
-			{
-				if (NULL != (pAttribute = (*it)))
-				{
+			for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); it != otherAttributes_.end(); it++){
+				if (NULL != (pAttribute = (*it))){
 					delete pAttribute;
 				}
 			}
 
-			otherAttributes.clear();
+			otherAttributes_.clear();
 		}
 
 		// Ajout d'un attribut et de sa valeur
-		void newAttribute(string& attrName, string& attrValue);
-		void newAttribute(string& attrName, const char* attrValue)
+		void newAttribute(string& attrName, string& attrValue, bool quoted = true);
+		void newAttribute(string& attrName, const char* attrValue, bool quoted = true)
 		{
 			string val = (IS_EMPTY(attrValue) ? "" : attrValue);
-			newAttribute(attrName, val);
+			newAttribute(attrName, val, quoted);
 		}
-		void newAttribute(const char* attrName, const char* attrValue)
+		void newAttribute(const char* attrName, const char* attrValue, bool quoted = true)
 		{
-			if (!IS_EMPTY(attrName))
-			{
+			if (!IS_EMPTY(attrName)){
 				string name(attrName);
 				string val = (IS_EMPTY(attrValue) ? "" : attrValue);
-				newAttribute(name, val);
+				newAttribute(name, val, quoted);
 			}
 		}
 
 		// Données à insérer dans le fichier JS
-		unsigned int	uId;
-		unsigned int	parentId;
-		float				groupOpacity;
-		string				bkColor;
-		string				containerColor;
-		string				photo;
+		unsigned int	uId_;
+		unsigned int	parentId_;
+		float			groupOpacity_;
+		string			bkColor_;
+		string			containerColor_;
+		string			photo_;
 
 		// Autres éléments ...
-		deque<JSATTRIBUTE*>	otherAttributes;
+		deque<JSATTRIBUTE*>	otherAttributes_;
 	};
 
 	// Groupe
@@ -207,14 +203,14 @@ private:
 	{
 		tagELEMENTGROUP(unsigned int id, string& color, float op)
 		{
-			ownerId = id;
-			baseColor = color;
-			opacity = op;
+			ownerId_ = id;
+			baseColor_ = color;
+			opacity_ = op;
 		}
 
-		unsigned int	ownerId;		// Identifiant du propriétaire du groupe
-		string				baseColor;		// couleur de base
-		float				opacity;		// % de la couleur de base
+		unsigned int	ownerId_;		// Identifiant du propriétaire du groupe
+		string			baseColor_;		// couleur de base
+		float			opacity_;		// % de la couleur de base
 	}EGRP,* LPEGRP;
 
 	// Remplacement ou agent sur plusieurs postes
@@ -222,19 +218,25 @@ private:
 	{
 		tagAgentLink(unsigned int fromL, unsigned int toL)
 		{
-			from = fromL;
-			to = toL;
+			from_ = fromL;
+			to_ = toL;
 		}
 
-		unsigned int	from;		// Identifiant du remplaçant
-		unsigned int	to;			// Identifiant du remplacé
+		unsigned int	from_;		// Identifiant du remplaçant
+		unsigned int	to_;		// Identifiant du remplacé
 	}AGENTLINK,*LPAGENTLINK;
 
-	bool _add(string& value);
+	bool _add(string& value, bool quoted);
 	void _add(string& line, const char* label, string& value, bool quote = true);
 	void _add(string& line, const char* label, const char* value, bool quote = true)
 	{
 		string val(value);
+
+	    // Les valeurs numériques vides sont égales à 0
+		if (false == quote && "" == val){
+		    val = "0";
+		}
+
 		return _add(line, label, val, quote);
 	}
 	void _add(string& line, const char* label, int value);

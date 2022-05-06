@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -141,7 +141,7 @@ void JScriptFile::_newLine()
 					STR_ATTR_ALLIER_GROUP_OPACITY != col->ldapAttr_ &&
 					STR_ATTR_ALLIER_BK_COLOUR != col->ldapAttr_ &&
 					STR_ATTR_ALLIER_CHILD_PLACEMENT != col->ldapAttr_){
-					line_->newAttribute(col->name_, "");
+					line_->newAttribute(col->name_, "", false == col->numeric());
 				}
 			}
 		}
@@ -167,7 +167,7 @@ bool JScriptFile::saveLine(bool header, LPAGENTINFOS agent)
 
 // Ajout d'une valeur (avec changement de colonne)
 //
-bool JScriptFile::_add(string& value)
+bool JScriptFile::_add(string& value, bool quoted)
 {
 	if (value.size() && line_){
 		if (STR_ATTR_ALLIER_GROUP_OPACITY == currentAttribute_->ldapName_){
@@ -182,15 +182,15 @@ bool JScriptFile::_add(string& value)
 				}
 			}
 
-			line_->groupOpacity = ((float)numVal) / (float)100.0;
+			line_->groupOpacity_ = ((float)numVal) / (float)100.0;
 		}
 		else{
 			if (STR_ATTR_ALLIER_BK_COLOUR == currentAttribute_->ldapName_){
-				line_->bkColor = value;
+				line_->bkColor_ = value;
 			}
 			else{
 				if (STR_ATTR_ALLIER_PHOTO == currentAttribute_->ldapName_){
-					line_->photo = value;
+					line_->photo_ = value;
 				}
 				else{
 					/*if (STR_ATTR_ALLIER_STATUS == currentAttribute_->ldapName){
@@ -206,7 +206,7 @@ bool JScriptFile::_add(string& value)
 
 						// Le nom de la variable sera le nom de la colonne
 						if (currentAttribute_){
-							line_->newAttribute(currentAttribute_->colName_, value);
+							line_->newAttribute(currentAttribute_->colName_, value, quoted);
 						}
 					//}
 				}
@@ -234,7 +234,7 @@ bool JScriptFile::addAt(size_t colIndex, string& value)
 	if (value.size()){
 		// Ai je le nom de l'attribut ?
 		if (currentAttribute_){
-			return _add(value);
+			return _add(value, false == currentAttribute_->numeric_);
 		}
 
 		// L'indice de la colonne peut m'aider
@@ -243,7 +243,7 @@ bool JScriptFile::addAt(size_t colIndex, string& value)
 			setAttributeNames(col ? col->names_ : NULL);
 
 			// Je peux ajouter
-			return _add(value);
+			return _add(value, false == col->numeric());
 		}
 	}
 
@@ -277,10 +277,10 @@ bool JScriptFile::removeAt(size_t colIndex)
 
 	// Recherche de l'attribut
 	if (line_){
-		deque<JSATTRIBUTE*>::iterator it = line_->otherAttributes.begin();
-		while (it != line_->otherAttributes.end()){
-			if ((*it) && (*it)->name == colName){
-				(*it)->value = "";
+		deque<JSATTRIBUTE*>::iterator it = line_->otherAttributes_.begin();
+		while (it != line_->otherAttributes_.end()){
+			if ((*it) && (*it)->name_ == colName){
+				(*it)->value_ = "";
 
 				// Supprimé
 				return true;
@@ -297,15 +297,15 @@ bool JScriptFile::removeAt(size_t colIndex)
 //
 bool JScriptFile::replaceAt(size_t colIndex, string& singleValue)
 {
-	// Nom de la colonne associ�e ...
+	// Nom de la colonne associée ...
 	string colName = columns_->at(colIndex, false)->name_;
 
 	// Recherche de l'attribut
 	if (line_){
-		deque<JSATTRIBUTE*>::iterator it = line_->otherAttributes.begin();
-		while (it != line_->otherAttributes.end()){
-			if ((*it) && (*it)->name == colName){
-				(*it)->value = singleValue;
+		deque<JSATTRIBUTE*>::iterator it = line_->otherAttributes_.begin();
+		while (it != line_->otherAttributes_.end()){
+			if ((*it) && (*it)->name_ == colName){
+				(*it)->value_ = singleValue;
 
 				// Remplacé
 				return true;
@@ -409,7 +409,7 @@ void JScriptFile::closeOrgChartFile()
 					file_ << ',';
 				}
 
-				file_ << eol_ << "{from:" << replace->to << ", to: " << replace->from << "}";
+				file_ << eol_ << "{from:" << replace->to_ << ", to: " << replace->from_ << "}";
 			}
 		}
 		file_ << eol_ << "];" << eol_;
@@ -434,7 +434,7 @@ void JScriptFile::closeOrgChartFile()
 				}
 
 				//file_ << eol_ << "{fromItem:" << jobLink->from << ", toItem: " << jobLink->to << JS_DEFAULT_LINK << "}";
-				file_ << eol_ << "{fromItem:" << jobLink->from << ", toItem: " << jobLink->to << "}";
+				file_ << eol_ << "{fromItem:" << jobLink->from_ << ", toItem: " << jobLink->to_ << "}";
 			}
 		}
 		file_ << eol_ << "];" << eol_;
@@ -474,7 +474,7 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 			_add(line, JS_LABEL_PARENT_UID, "null", false);
 		}
 		else{
-			// Un parent, mais � ne faire figurer que s'il n'a pas �t� d�duit
+			// Un parent, mais à ne faire figurer que s'il n'a pas été déduit
 			if (fullMode_){
 				_add(line, JS_LABEL_PARENT_UID, agent->parent()->id());
 			}
@@ -503,16 +503,20 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 	size_t count(0);
 	JSData* other = (JSData*)agent->ownData();
 	if (other){
-		other->newAttribute(JS_LABEL_PHOTO, photoServer_.URL(photoServer_.shortFileName(other->photo).c_str()).c_str());
+		other->newAttribute(JS_LABEL_PHOTO, photoServer_.URL(photoServer_.shortFileName(other->photo_).c_str()).c_str());
 
-		other->newAttribute(JS_LABEL_CONTAINER_COLOR, other->containerColor.c_str());
-		other->newAttribute(JS_LABEL_BK_COLOR, other->bkColor.c_str());
+		other->newAttribute(JS_LABEL_CONTAINER_COLOR, other->containerColor_.c_str());
+		other->newAttribute(JS_LABEL_BK_COLOR, other->bkColor_.c_str());
 
-		// Tous les attributs dans l'ordre demand� ...
+		// Tous les attributs dans l'ordre demandé ...
 		JSATTRIBUTE* pAttribute(NULL);
-		for (deque<JSATTRIBUTE*>::iterator it = other->otherAttributes.begin(); it != other->otherAttributes.end(); it++){
+		for (deque<JSATTRIBUTE*>::iterator it = other->otherAttributes_.begin(); it != other->otherAttributes_.end(); it++){
 			if (NULL != (pAttribute = (*it))){
-				_add(line, pAttribute->name.c_str(), pAttribute->value.c_str());
+#ifdef _DEBUG
+                string name(pAttribute->name_);
+                bool quoted(pAttribute->quoted_);
+#endif // _DEBUG
+				_add(line, pAttribute->name_.c_str(), pAttribute->value_.c_str(), pAttribute->quoted_);
 				count++;
 			}
 		}
@@ -597,30 +601,33 @@ void JScriptFile::_add(string& line, const char* label, int value)
 
 // Ajout d'un attribut et de sa valeur
 //
-void JScriptFile::JSData::newAttribute(string& attrName, string& attrValue){
+void JScriptFile::JSData::newAttribute(string& attrName, string& attrValue, bool quoted){
+
+#ifdef _DEBUG
+        if (attrName == "structLevel"){
+				int i(5);
+				i++;
+        }
+#endif // _DEBUG
+
+
 	if (attrName.size()){
-		// Ai je déja cet attribut en m�moire ?
+		// Ai je déja cet attribut en mémoire ?
 		JSATTRIBUTE* pAttribute(NULL);
-		for (deque<JSATTRIBUTE*>::iterator it = otherAttributes.begin(); NULL == pAttribute && it != otherAttributes.end(); it++){
-			if (NULL != (*it) && (*it)->name == attrName){
+		for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); NULL == pAttribute && it != otherAttributes_.end(); it++){
+			if (NULL != (*it) && (*it)->name_ == attrName){
 				pAttribute = (*it);
 			}
 		}
 
 		// oui ?
 		if (pAttribute){
-#ifdef _DEBUG
-			if (pAttribute->name == "service"){
-				int i(5);
-				i++;
-			}
-#endif // _DEBUG
 			// La dernière valeur est la bonne !
-			pAttribute->value = attrValue;
+			pAttribute->value_ = attrValue;
 		}
 		else{
 			// Non => ajout
-			otherAttributes.push_back(new JSATTRIBUTE(attrName, attrValue));
+			otherAttributes_.push_back(new JSATTRIBUTE(attrName, attrValue, quoted));
 		}
 	}
 }

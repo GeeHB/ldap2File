@@ -21,7 +21,7 @@
 //--
 //--	11/05/2016 - JHB - Création - Version 2.0
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -48,6 +48,8 @@
 #define JS_VAR_GROUPS				_T("groupes")
 #define JS_VAR_REPLACEMENTS			_T("remplacements")
 #define JS_VAR_LINKS				_T("multipostes")
+#define JS_VAR_LEVEL                _T("structLevel")
+#define JS_VAR_STATUS               _T("status")
 
 //#define JS_DEFAULT_LINK				_T(", color: primitives.common.Colors.Blue, connectorShapeType: primitives.common.ConnectorShapeType.BothWay, lineType: primitives.common.LineType.Solid")
 
@@ -59,7 +61,8 @@
 #define JS_DEF_CONTAINER_BK_COLOR	"#4169e1"
 #define JS_DEF_BK_COLOR				"#4b0082"
 #define JS_DEF_STATUS_NO_COLOR		"#c0c0c0"
-#define JF_DEF_GROUP_OPACITY		0.0					/* pas de groupe */
+#define JF_DEF_GROUP_OPACITY		0.0				// Pas de groupe
+#define JS_DEF_STRUCT_LEVEL         0xFFFFFFFF      // Pas de niveau
 
 // pour mémoire ...
 #define JS_BK_COLOR_MAIRE_DGS		_T("#00919e")

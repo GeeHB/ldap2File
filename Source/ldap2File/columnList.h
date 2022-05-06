@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -65,8 +65,7 @@ public:
 		_COLINFOS()
 		{ init(); }
 
-		_COLINFOS(const char* colName, const char* ldapAttribute, double colWidth = COL_DEF_WITDH, unsigned int dType = DATA_TYPE_UNDEFINED, bool multipleValues = false)
-		{
+		_COLINFOS(const char* colName, const char* ldapAttribute, double colWidth = COL_DEF_WITDH, unsigned int dType = DATA_TYPE_UNDEFINED, bool multipleValues = false){
 			name_ = (IS_EMPTY(colName)?"":colName);
 			ldapAttr_ = (IS_EMPTY(ldapAttribute)?"":ldapAttribute);
 			width_ = colWidth;
@@ -76,8 +75,7 @@ public:
 			names_ = NULL;
 		}
 
-		_COLINFOS(const _COLINFOS& source)
-		{
+		_COLINFOS(const _COLINFOS& source){
 			orgChartMode_ = source.orgChartMode_;
 			name_ = source.name_;
 			ldapAttr_ = source.ldapAttr_;
@@ -89,14 +87,12 @@ public:
 		}
 
 		// Destruction
-		virtual ~_COLINFOS()
-		{
+		virtual ~_COLINFOS(){
 			if (names_) { delete names_; }
 		}
 
 		// Initialisation des données membres
-		void init()
-		{
+		void init(){
 			orgChartMode_ = false;
 			name_ = "";
 			ldapAttr_ = "";
@@ -109,8 +105,7 @@ public:
 		}
 
 		// Ajout à un requête LDAP
-		bool add2Request()
-		{
+		bool add2Request(){
 			return (reserved_ ? (/*name!=ldapAttr &&*/ ldapAttr_.size()>0): true);
 		}
 
@@ -139,7 +134,7 @@ public:
 		bool multiValued()
 		{ return (orgChartMode_?false:((dataType_ & BASE_TYPE_VALID) && (dataType_ & BASE_TYPE_MULTIVALUED))); }
 
-		// Est-ce une donnee de type alphanumérique ?
+		// Est-ce une donnée de type alphanumérique ?
 		bool numeric()
 		{ return (orgChartMode_ ? false : (dataType_&BASE_TYPE_VALID && dataType_&BASE_TYPE_FLOAT)); }
 

@@ -23,7 +23,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -716,10 +716,13 @@ RET_TYPE ldapBrowser::_createFile()
 
 	// Les attributs (ie. les colonnes)
 	//
-    deque<string> ownCols;
+    deque<outputFile::OWNCOL> ownCols;
     file_->getOwnColumns(ownCols);
-    for (deque<string>::iterator it = ownCols.begin(); it != ownCols.end(); it++){
-        cols_.append((*it).c_str());
+    for (deque<outputFile::OWNCOL>::iterator it = ownCols.begin(); it != ownCols.end(); it++){
+    #ifdef _DEBUG
+        outputFile::OWNCOL cols((*it));
+    #endif // _DEBUG
+        cols_.append((*it).name_.c_str(), (*it).type_.c_str());
     }
 
 	logs_->add(logs::TRACE_TYPE::LOG, "%d colonnes à créer", cols_.size());
@@ -811,13 +814,6 @@ RET_TYPE ldapBrowser::_createFile()
 	}
 
 	// Pagination
-	/*
-	if (LDAP_SUCCESS == ldapServer_->createPageControl(100, NULL, 0, &pageControl)){
-		int index = (srvControls[0] == NULL ? 0 : 1);
-		//srvControls[index] = pageControl;
-		//ldap_init_search_page
-	}
-	*/
 	ldapServer_->createPageControl(100, NULL, 0, &pageControl);
 
 	// Gestion de la (ou des) requête(s)
@@ -1019,6 +1015,9 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	bool recurse(false);
 	size_t colorID(cols_.getColumnByAttribute(STR_ATTR_ALLIER_BK_COLOUR, &recurse));
 
+	// Niveau de structure
+	size_t structLevel(cols_.getColumnByType(COL_STRUCT_LEVEL, &recurse));
+
 	// Site
 	size_t siteID(cols_.getColumnByAttribute(STR_ATTR_ALLIER_SITE, &recurse));
 
@@ -1030,12 +1029,6 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	// Le remplaçant
 	//size_t colRemplacement = cols_.getColumnByType(STR_ATTR_ALLIER_REMPLACEMENT);
 	LPAGENTINFOS replacement(NULL);
-
-	// Service et direction
-	/*
-	size_t colService = cols_.getColumnByType(COL_SERVICE);
-	size_t colDirection = cols_.getColumnByType(COL_DIRECTION);
-	*/
 
 #ifdef __LDAP_USE_ALLIER_TITLES__
 	// L'intitulé du poste
@@ -1434,6 +1427,17 @@ size_t ldapBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 							}
 						}
 
+						// Niveau de la structure ?
+						if (SIZE_MAX != structLevel) {
+
+							if (firstContainer) {
+								file_->addAt((size_t)structLevel, firstContainer->structLevel());
+							}
+							else {
+								file_->addAt((size_t)structLevel, JS_DEF_STRUCT_LEVEL);
+							}
+						}
+
 						// le site est demandé ?
 						if (SIZE_MAX != siteID) {
 							if (firstContainer) {
@@ -1546,11 +1550,12 @@ bool ldapBrowser::_getServices()
 	}
 
 	LDAPAttributes myAttributes;
-	myAttributes += STR_ATTR_DESCRIPTION;			// Nom complet de l'OU
-	myAttributes += STR_ATTR_ALLIER_BK_COLOUR;			// Couleur du container
-	myAttributes += STR_ATTR_ALLIER_SHORT_NAME;		// Nom court
-	myAttributes += STR_ATTR_ALLIER_ORGCHART_FILENAME;	// Nom du fichier
-	myAttributes += STR_ATTR_ALLIER_SITE;				// Site
+	myAttributes += STR_ATTR_DESCRIPTION;			    // Nom complet de l'OU
+	myAttributes += STR_ATTR_ALLIER_BK_COLOUR;	    	// Couleur du container
+	myAttributes += STR_ATTR_ALLIER_SHORT_NAME; 		// Nom court
+	myAttributes += STR_ATTR_ALLIER_ORGCHART_FILENAME;  // Nom du fichier
+	myAttributes += STR_ATTR_STRUCT_LEVEL;              // Niveau de la structure
+	myAttributes += STR_ATTR_ALLIER_SITE;			    // Site
 
 	// Génération de la requête
 	searchExpr expression(SEARCH_EXPR_OPERATOR_AND);
@@ -1586,6 +1591,7 @@ bool ldapBrowser::_getServices()
 	}
 
 	string description(""), bkColor(""), shortName(""), fileName(""), site("");
+	unsigned int level(JS_DEF_STRUCT_LEVEL);
 
 	//
 	// Transfert des données dans la liste
@@ -1601,6 +1607,7 @@ bool ldapBrowser::_getServices()
 			bkColor = "";
 			shortName = "";
 			fileName = "";
+			level = JS_DEF_STRUCT_LEVEL;
 			site = "";
 
 			// Recherche des valeurs
@@ -1637,11 +1644,16 @@ bool ldapBrowser::_getServices()
 									if (!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_SITE)){
 										site = u8Value;
 									}
-								}
-							}
-						}
-					}
-				}
+									else{
+                                        if (!encoder_.stricmp(pAttribute, STR_ATTR_STRUCT_LEVEL)){
+                                            level = atoi(u8Value.c_str());
+                                        }
+								    }
+							    }
+						    }
+					    }
+				    }
+                }   // if (NULL ...
 
 				// Prochain attribut
 				pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
@@ -1649,7 +1661,7 @@ bool ldapBrowser::_getServices()
 
 			// Création du "service"
 			if (description.size()){
-				services_->add(pDN, description, shortName, fileName, bkColor, site);
+				services_->add(pDN, description, shortName, fileName, bkColor, level, site);
 			}
 
 			ldapServer_->memFree(pDN);			// Je n'ai plus besoin du pointeur ...

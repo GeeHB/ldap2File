@@ -21,7 +21,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -555,29 +555,33 @@ typedef struct tagATTRNAMES
 {
 	// Constructions
 	tagATTRNAMES()
-	{ ldapName_ = schemaName_ = colName_ = ""; }
+	{ ldapName_ = schemaName_ = colName_ = ""; numeric_ = false; }
 
 	tagATTRNAMES(const tagATTRNAMES& src){
 		ldapName_ = src.ldapName_;
 		schemaName_ = src.schemaName_;
 		colName_ = src.colName_;
+		numeric_ = src.numeric_;
 	}
 
-	tagATTRNAMES(string& lName, string& sName, string& cName){
+	tagATTRNAMES(string& lName, string& sName, string& cName, bool numeric){
 		ldapName_ = lName;
 		schemaName_ = sName;
 		colName_ = cName;
+		numeric_ = numeric;
 	}
 
-	tagATTRNAMES(const char* lName, const char* sName, const char* cName){
+	tagATTRNAMES(const char* lName, const char* sName, const char* cName, bool numeric){
 		ldapName_ = IS_EMPTY(lName)?"":lName;
 		schemaName_ = IS_EMPTY(sName) ? "" : sName;
 		colName_ = IS_EMPTY(cName) ? "" : cName;
+		numeric_ = numeric;
 	}
 
 	string		ldapName_;
 	string		schemaName_;
 	string		colName_;
+	bool        numeric_;
 }ATTRNAMES,* LPATTRNAMES;
 
 

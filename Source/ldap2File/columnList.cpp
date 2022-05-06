@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	23/11/2021 - JHB - Version 21.11.9
+//--	06/05/2022 - JHB - Version 22.5.1
 //--
 //---------------------------------------------------------------------------
 
@@ -129,6 +129,7 @@ bool columnList::_append(const char* colName, const char* colType, double colWid
 			column->names_->colName_ = colName;
 			column->names_->ldapName_ = attribute ? attribute->ldapAttr_ : "";
 			column->names_->schemaName_ = colType;
+			column->names_->numeric_ = attribute->numeric();
 		}
 
 
@@ -188,9 +189,14 @@ bool columnList::append(const COLINFOS& column)
 		}
 
 		if (col->names_){
+#ifdef _DEBUG
+			//bool test = (column.dataType_ == (BASE_TYPE_VALID | BASE_TYPE_FLOAT));
+#endif // _DEBUG
 			col->names_->colName_ = column.name_;
 			col->names_->ldapName_ = attribute?attribute->ldapAttr_:"";
 			col->names_->schemaName_ = column.ldapAttr_;
+			//col->names_->numeric_ = column.numeric();
+			col->names_->numeric_ = (column.dataType_ == (BASE_TYPE_VALID | BASE_TYPE_FLOAT));
 		}
 
 		// Ajout a la liste
