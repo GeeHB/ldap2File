@@ -49,7 +49,7 @@ public:
 		// Méthodes publiques
 		//
 	public:
-		
+
 		// Construction
 		attrTuple(const char* name, const char* value) {
 			if (!IS_EMPTY(name) || IS_EMPTY(value)) {
@@ -85,7 +85,7 @@ public:
 			std::string		name_;
 			std::string		value_;
 	};
-	
+
 	// Un "container" dans l'Annuaire
 	//
 	class LDAPContainer
@@ -93,9 +93,9 @@ public:
 	public:
 		// Construction
 		LDAPContainer()
-			: parent_{ NULL }, DN_{ "" }, cleanName_{ "" }, realName_{ "" }, shortName_{ "" }
+			: parent_{ nullptr }, DN_{ "" }, cleanName_{ "" }, realName_{ "" }, shortName_{ "" }
 		{}
-		
+
 		// Destruction
 		virtual ~LDAPContainer()
 		{}
@@ -116,21 +116,53 @@ public:
 		void setDN(std::string& DN) {
 			DN_ = DN;
 		}
-		
+
+		// Nom
 		const char* realName()
 		{ return realName_.c_str(); }
+		void setRealName(std::string& name) {
+			realName_ = name;
+		}
+
 		const char* cleanName()
 		{ return cleanName_.c_str(); }
+		void setCleanName(std::string& name) {
+			cleanName_ = name;
+		}
+
 		const char* shortName()
 		{ return shortName_.c_str(); }
+        void setShortName(std::string& name) {
+			shortName_ = name;
+		}
 
+        //
 		// Attributs personnalisés
 		//
+
+		// Recherche d'un attribut
+		containersList::attrTuple* findAttribute(const char* name){
+            if (IS_EMPTY(name)){
+                return nullptr;
+            }
+
+		    std::string sName(name);
+		    return findAttribute((sName));
+		}
+		containersList::attrTuple* findAttribute(std::string& name);
+
+		// Valeur d'un attribut
 		const char* attribute(const char* aName) {
 			std::string name(IS_EMPTY(aName) ? "" : aName);
 			return attribute(name);
 		}
-		const char* attribute(std::string& name);
+		const char* attribute(std::string& name){
+            // L'attribut est-il présent ?
+            containersList::attrTuple* attr(findAttribute(name));
+            return (nullptr == attr)?nullptr:attr->value().c_str();
+		}
+
+		// Ajout d'un attribut (et de sa  valeur)
 		bool add(const char* aName, const char* aValue);
 
 		// Parent
@@ -187,6 +219,18 @@ public:
 	bool addAttribute(std::string& name);
 	const char** getAttributes();
 
+	// Recherche d'une valeur héritée
+	/*
+	bool getAttributeValue(const char* attrName, std::string& value){
+        if (IS-EMPTY(attrName)){
+            return false;   // Pas de nom => pas de valeur
+        }
+
+        std::string name(attrName);
+        return getAttributeValue((name, value);
+    }*/
+    bool getAttributeValue(std:: string& DN, std:: string& attrName, std::string& value);
+
 	// Ajout d'un container
 	bool add(LPLDAPCONTAINER container);
 
@@ -199,20 +243,34 @@ public:
 	// Recherche par son DN
 	LPLDAPCONTAINER findContainer(std::string& DN)
 	{ return _findContainerByDN(DN.c_str()); }
-	
+
+	// DN d'un container
+    bool _containerDN(std::string& DN);
+
 	// Methodes privées
 protected:
 
-	// Recherche d'un service
+	// Recherches d'un container
+	//
+
 	LPLDAPCONTAINER _findContainerByDN(const char* DN);
+    LPLDAPCONTAINER _findContainerByDN(std::string DN){
+        return _findContainerByDN(DN.c_str());
+    }
+
 	LPLDAPCONTAINER _findContainerByName(const char* name);
+	LPLDAPCONTAINER _findContainerByName(std::string& name){
+	    return _findContainerByName(name.c_str());
+	}
+
+	LPLDAPCONTAINER _firstContainer(string& DN);
 
 	// Données membres privées
 	//
 protected:
 
 	logs* logs_;
-	
+
 #ifdef _WIN32
 	charUtils				encoder_;
 #endif // _WIN32

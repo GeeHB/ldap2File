@@ -89,6 +89,8 @@
 		<Unit filename="../Source/ldap2File/commandFile.h" />
 		<Unit filename="../Source/ldap2File/confFile.cpp" />
 		<Unit filename="../Source/ldap2File/confFile.h" />
+		<Unit filename="../Source/ldap2File/containersList.cpp" />
+		<Unit filename="../Source/ldap2File/containersList.h" />
 		<Unit filename="../Source/ldap2File/destinationList.cpp" />
 		<Unit filename="../Source/ldap2File/destinationList.h" />
 		<Unit filename="../Source/ldap2File/fileActions.cpp" />

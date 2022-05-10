@@ -40,7 +40,7 @@ BUGS{
     * le 6 mai 2022
     - Corrections
 		+ Logs ...
-		- Impossible de récupérer les informations sur le serveur d'images dabns le fichier de configuration
+		- Impossible de récupérer les informations sur le serveur d'images dans le fichier de configuration
 	+ Nouvel algorithme pour la gestion de l'héritage des attributs
 		+ ajout de la classe containersList
 		- suppression de servicesList et treeStruct

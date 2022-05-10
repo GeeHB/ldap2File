@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
 //--
 //--	FICHIER	: ldapBrowser.cpp
 //--
@@ -198,6 +197,12 @@ ldapBrowser::ldapBrowser(logs* pLogs, confFile* configurationFile)
 		throw LDAPException("Impossible de créer la liste des services");
 	}
 
+	// Liste des containers
+	if (NULL == (containers_ = new containersList(logs_))) {
+		// Fin du processus
+		throw LDAPException("Impossible de créer la liste des containers");
+	}
+
 	// Lecture des éléments définis dans le fichier de conf.
 	TREEELEMENT element;
 	string value;
@@ -231,6 +236,11 @@ ldapBrowser::~ldapBrowser()
 	if (services_) {
 		delete services_;
 		services_ = NULL;
+	}
+
+	if (containers_) {
+		delete 	containers_;
+		containers_ = NULL;
 	}
 
 #ifdef __LDAP_USE_ALLIER_TITLES__

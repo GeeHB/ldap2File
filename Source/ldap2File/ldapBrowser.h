@@ -36,8 +36,12 @@
 #include "outputFile.h"
 
 #include "LDAPSources.h"
+
 #include "servicesList.h"
 #include "treeStructure.h"
+
+#include "containersList.h"
+
 #include "destinationList.h"
 
 #ifdef __LDAP_USE_ALLIER_TITLES__
@@ -126,6 +130,10 @@ protected:
 	logs*				logs_;
 
 	servicesList*			services_;			// Services dans l'annuaire
+	treeStructure*			struct_;			// Struture de l'annuaire LDAP
+
+	containersList*		containers_;			// Containers (svc, direction, etc...)			
+
 #ifdef __LDAP_USE_ALLIER_TITLES__
 	jhbLDAPTools::titles*	titles_;			// Liste des intitulés de postes
 #endif // __LDAP_USE_ALLIER_TITLES__
@@ -133,7 +141,6 @@ protected:
 	columnList				cols_;				// Mes colonnes
 	string					managersCol_;		// Nom de la colonne utilisée pour les managers
 	string					managersAttr_;		// Attribut associé
-	treeStructure*			struct_;			// Struture de l'annuaire LDAP
 
 	aliases					aliases_;			// Liste des alias
 
