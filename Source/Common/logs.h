@@ -64,7 +64,7 @@ namespace jhbTools {
 	public:
 
 		// Type de trace
-		enum class TRACE_TYPE { INVISIBLE = -1, INV = -1, DBG = 0, FULL = 0 /*1*/, NORMAL = 2, LOG = 3, MIN = 3, ERR = 0xFFFF };
+		enum class TRACE_TYPE { INVISIBLE = -1, INV = -1, DBG = 0, FULL = 0 /*1*/, NORMAL = 2, TRC = 2, LOG = 3, MIN = 3, ERR = 0xFFFF };
 
 		// Construction & destruction
 		//

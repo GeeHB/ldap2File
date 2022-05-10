@@ -53,14 +53,12 @@ public:
 		XMLNode(){
 			root_ = NULL;
 			index_ = 0;
-			root_ = NULL;
 			name_ = "";
 			parentMode_ = true;
 		}
 		XMLNode(pugi::xml_node* root, const char* name) {
-			root_ = NULL;
-			index_ = 0;
 			root_ = root;
+			index_ = 0;
 			name_ = name;
 			parentMode_ = true;
 		}

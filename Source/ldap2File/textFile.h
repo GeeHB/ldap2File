@@ -57,7 +57,7 @@ public:
 	// Séparateurs et formats d'écriture
 	void setSeparators(const char* valSep = STR_FR_SEP, const char* valEOL = NULL);
 
-	// Création / nitialisation(s)
+	// Création / initialisation(s)
 	virtual bool create();
 
 	// Ajout d'une valeur (avec changement de colonne)

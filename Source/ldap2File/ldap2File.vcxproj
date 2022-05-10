@@ -237,6 +237,7 @@
     <ClCompile Include="columnList.cpp" />
     <ClCompile Include="commandFile.cpp" />
     <ClCompile Include="confFile.cpp" />
+    <ClCompile Include="containersList.cpp" />
     <ClCompile Include="CSVFile.cpp" />
     <ClCompile Include="destinationList.cpp" />
     <ClCompile Include="fileActions.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="columnList.h" />
     <ClInclude Include="commandFile.h" />
     <ClInclude Include="confFile.h" />
+    <ClInclude Include="containersList.h" />
     <ClInclude Include="CSVFile.h" />
     <ClInclude Include="destinationList.h" />
     <ClInclude Include="fileActions.h" />

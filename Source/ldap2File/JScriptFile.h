@@ -66,6 +66,9 @@ public:
 	// Initialisation(s)
 	virtual bool init();
 
+	// Création / initialisation(s)
+	virtual bool create();
+
 	// Colonnes "obligatoires"
 	virtual void getOwnColumns(deque<OWNCOL>& colNames){
 

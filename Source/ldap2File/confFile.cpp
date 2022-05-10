@@ -230,12 +230,17 @@ bool confFile::imagesServer(IMGSERVER& dst)
 {
 	dst.init();
 
-	XMLParser::XMLNode baseNode(&paramsRoot_, XML_CONF_IMG_SERVER_NODE);
+	pugi::xml_node element = paramsRoot_.child(XML_CONF_LDAP_SOURCES_NODE);
+	if (IS_EMPTY(element.name())) {
+		return false;
+	}
+	
+	XMLParser::XMLNode baseNode(&element, XML_CONF_IMG_SERVER_NODE);
 	std::string env("");
-	pugi::xml_node firstNode = _findFirstNode(&baseNode, XML_CONF_LDAP_SOURCES_NODE, XML_CONF_ENV_NODE, &env);
+	pugi::xml_node myNode = _findFirstNode(&baseNode, XML_CONF_IMG_SERVER_NODE, XML_CONF_ENV_NODE, &env);
 
 	// Rien trouvé ?
-	if (IS_EMPTY(firstNode.name())) {
+	if (IS_EMPTY(myNode.name())) {
 		return false;
 	}
 
@@ -246,18 +251,24 @@ bool confFile::imagesServer(IMGSERVER& dst)
 	//
 
 	// Adresse du serveur
-	dst.host_ = firstNode.attribute(XML_CONG_IMG_SERVER_HOST_ATTR).value();
+	dst.host_ = myNode.attribute(XML_CONG_IMG_SERVER_HOST_ATTR).value();
 
 	// Dossier des photos
-	pugi::xml_node subNode = firstNode.child(XML_CONF_IMG_SERVER_FOLDER_NODE);
-	if (!IS_EMPTY(firstNode.name())){
-		dst.folder_ = firstNode.first_child().value();
+	pugi::xml_node subNode = myNode.child(XML_CONF_IMG_SERVER_FOLDER_NODE);
+	if (!IS_EMPTY(subNode.name())){
+		dst.folder_ = subNode.first_child().value();
 	}
 
+#ifdef _DEBUG
+    std::string folder(dst.folder_);
+    int i(5);
+    i++;
+#endif // _DEBUG
+
 	// Fichier par défaut
-	subNode = firstNode.child(XML_CONF_IMG_SERVER_DEF_NODE);
-	if (!IS_EMPTY(firstNode.name())){
-		dst.nophoto_ = firstNode.first_child().value();
+	subNode = myNode.child(XML_CONF_IMG_SERVER_DEF_NODE);
+	if (!IS_EMPTY(subNode.name())){
+		dst.nophoto_ = subNode.first_child().value();
 	}
 
 	// Ok
@@ -747,7 +758,7 @@ bool confFile::_load()
 //
 bool confFile::_nextNode(XMLParser::XMLNode* xmlNode, const char* parentNode, const char* envName, std::string* envValue)
 {
-	// Vérirfication des paramètres
+	// Vérification des paramètres
 	if (NULL == xmlNode) {
 		return false;
 	}
@@ -759,12 +770,18 @@ bool confFile::_nextNode(XMLParser::XMLNode* xmlNode, const char* parentNode, co
 	// En partant de la "racine"
 	if (xmlNode->parentMode() && parentNode) {
 		pugi::xml_node element = xmlNode->root()->child(parentNode);
+		/*
 		if (!IS_EMPTY(element.name())) {
 			element = element.child(xmlNode->name());
 		}
 
 		// Je conserve le pointeur ...
-		xmlNode->set(element);
+		xmlNode->set(element);*/
+
+		if (!IS_EMPTY(element.name())) {
+			// Je conserve le pointeur ...
+			xmlNode->set(element);
+		}
 	}
 
 	// Est-ce le "bon" noeud ?

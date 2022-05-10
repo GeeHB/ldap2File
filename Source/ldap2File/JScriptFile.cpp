@@ -98,6 +98,18 @@ JScriptFile::~JScriptFile()
 
 // Initialisation(s)
 //
+bool JScriptFile::create(){
+	bool ret(textFile::create());
+
+	if (ret){
+	    ret = init();
+	}
+
+	return ret;
+}
+
+// Initialisation(s)
+//
 bool JScriptFile::init()
 {
 	// Serveur d'images
@@ -113,7 +125,10 @@ bool JScriptFile::init()
 		logs_->add(logs::TRACE_TYPE::LOG, "Serveur d'images - Pas d'environnement particulier");
 	}
 	else {
-		logs_->add(logs::TRACE_TYPE::LOG, "Serveur d'images -  environnement \'%s\'", photoServer_.environment_.c_str());
+		logs_->add(logs::TRACE_TYPE::LOG, "Serveur d'images -  Environnement \'%s\'", photoServer_.environment_.c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t-  URL : \'%s\'", photoServer_.host_.c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t-  Dossier : \'%s\'", photoServer_.folder_.c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t-  Photo par défaut : \'%s\'", photoServer_.nophoto_.c_str());
 	}
 
 	// Création d'une ligne vierge
@@ -514,7 +529,7 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 			if (NULL != (pAttribute = (*it))){
 #ifdef _DEBUG
                 string name(pAttribute->name_);
-                bool quoted(pAttribute->quoted_);
+                //bool quoted(pAttribute->quoted_);
 #endif // _DEBUG
 				_add(line, pAttribute->name_.c_str(), pAttribute->value_.c_str(), pAttribute->quoted_);
 				count++;

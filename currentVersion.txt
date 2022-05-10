@@ -36,6 +36,15 @@ BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
 
+22.5.2
+    * le 6 mai 2022
+    - Corrections
+		+ Logs ...
+		- Impossible de récupérer les informations sur le serveur d'images dabns le fichier de configuration
+	+ Nouvel algorithme pour la gestion de l'héritage des attributs
+		+ ajout de la classe containersList
+		- suppression de servicesList et treeStruct
+
 22.5.1
     * le 6 mai 2022
     - Corrections mineures
