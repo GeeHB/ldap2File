@@ -33,7 +33,7 @@
 #include "sharedConsts.h"
 
 #include "JScriptConsts.h"
-#include "ldapAttributes.h"
+#include "LDAPAttributes.h"
 
 //
 // Définition de la classe
@@ -50,9 +50,20 @@ public:
 		//
 	public:
 
-		// Construction
+		// Constructions
 		attrTuple(const char* name, const char* value) {
-			if (!IS_EMPTY(name) || IS_EMPTY(value)) {
+			if (!IS_EMPTY(name)) {
+				name_ = name;
+				value_ = IS_EMPTY(value)?"":value;
+			}
+			else {
+				// ???
+				name_ = value_ = "";
+			}
+		}
+
+		attrTuple(std::string& name, std::string& value) {
+			if (name.size()>0) {
 				name_ = name;
 				value_ = value;
 			}
@@ -92,8 +103,8 @@ public:
 	{
 	public:
 		// Construction
-		LDAPContainer()
-			: parent_{ nullptr }, DN_{ "" }, cleanName_{ "" }, realName_{ "" }, shortName_{ "" }
+		LDAPContainer(const char* dn)
+			: parent_{ nullptr }, DN_{ dn }, cleanName_{ "" }, realName_{ "" }, shortName_{ "" }
 		{}
 
 		// Destruction
@@ -140,6 +151,9 @@ public:
 		// Attributs personnalisés
 		//
 
+		size_t size()
+		{ return attributes_.size(); }
+
 		// Recherche d'un attribut
 		containersList::attrTuple* findAttribute(const char* name){
             if (IS_EMPTY(name)){
@@ -152,14 +166,14 @@ public:
 		containersList::attrTuple* findAttribute(std::string& name);
 
 		// Valeur d'un attribut
-		const char* attribute(const char* aName) {
+		std::string attribute(const char* aName) {
 			std::string name(IS_EMPTY(aName) ? "" : aName);
 			return attribute(name);
 		}
-		const char* attribute(std::string& name){
+		std::string attribute(std::string& name){
             // L'attribut est-il présent ?
             containersList::attrTuple* attr(findAttribute(name));
-            return (nullptr == attr)?nullptr:attr->value().c_str();
+            return (nullptr == attr)?"":attr->value().c_str();
 		}
 
 		// Ajout d'un attribut (et de sa  valeur)
@@ -204,9 +218,13 @@ public:
 	// Vidage de la liste
 	void clear();
 
-	// Nombre d'elements
+	// Nombre de containers gérés
 	size_t size()
 	{ return containers_.size(); }
+
+	// Nombre d'attibuts hérités
+	size_t inheritedAttributes()
+	{ return attributes_.size(); }
 
 	// Attributs
 	//
@@ -216,8 +234,11 @@ public:
 			addAttribute(sName);
 		}
 	}
-	bool addAttribute(std::string& name);
+	bool addAttribute(std::string& name, const char* value = nullptr);
 	const char** getAttributes();
+
+	// Nom LDAP d'un attribut hérité
+	bool getAttributeName(size_t index, std::string& name);
 
 	// Recherche d'une valeur héritée
 	/*
@@ -244,11 +265,11 @@ public:
 	LPLDAPCONTAINER findContainer(std::string& DN)
 	{ return _findContainerByDN(DN.c_str()); }
 
-	// DN d'un container
-    bool _containerDN(std::string& DN);
-
 	// Methodes privées
 protected:
+
+	// DN d'un container
+	bool _containerDN(std::string& DN);
 
 	// Recherches d'un container
 	//
@@ -278,8 +299,8 @@ protected:
 	// Liste des containers
 	deque<LPLDAPCONTAINER>	containers_;
 
-	// Liste des attributs recherchés
-	deque<std::string>		attributes_;
+	// Liste des attributs recherchés (lorsque la valeur est renseignée, il s'agit de la valeur par défaut)
+	deque<attrTuple>		attributes_;
 };
 
 #endif // __LDAP_2_FILE_CONTAINERS_LIST_h__

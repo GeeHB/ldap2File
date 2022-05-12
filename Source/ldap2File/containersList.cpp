@@ -43,6 +43,13 @@ bool containersList::LDAPContainer::add(const char* aName, const char* aValue)
         return false;
     }
 
+#ifdef _DEBUG
+	if (0 == strcmp(aName, "allierBkColour")) {
+		int i(5);
+		i++;
+	}
+#endif // _DEBUG
+
     // L'attribut est-il déja présent ?
     containersList::attrTuple* attr(findAttribute(aName));
     if (nullptr != attr){
@@ -125,6 +132,7 @@ void containersList::chain()
 void containersList::clear()
 {
 	// Suppression de tous les containers
+	//
 	for (deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
 		if ((*it)) {
 			delete (*it);
@@ -133,26 +141,30 @@ void containersList::clear()
 
 	// La liste est vide
 	containers_.clear();
+
+	// Lise des attrbiuts
+	//
+	attributes_.clear();
 }
 
 // Ajout d'un attribut
 //
-bool containersList::addAttribute(std::string& name)
+bool containersList::addAttribute(std::string& name, const char* value)
 {
 	if (0 == name.size()) {
 		return false;
 	}
 
 	// Pas déja présent ?
-	for (deque<std::string>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
-		if ((*it) == name) {
+	for (deque<attrTuple>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
+		if ((*it).name() == name) {
 			// Si !
 			return false;
 		}
 	}
 
 	// Non trouvé dans la liste => on peut l'ajouter
-	attributes_.push_back(name);
+	attributes_.push_back(attrTuple(name.c_str(), value));
 	return true;
 }
 
@@ -166,50 +178,86 @@ const char** containersList::getAttributes()
 	}
 
 	LDAPAttributes myAttributes;
-	for (deque<std::string>::iterator i = attributes_.begin(); i != attributes_.end(); i++) {
-		myAttributes += (*i);
+	for (deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end(); i++) {
+		myAttributes += (*i).name().c_str();
 	}
 
 	// Ok
 	return (const char**)myAttributes;
 }
 
+// Nom LDAP d'un attribut hérité
+//
+bool containersList::getAttributeName(size_t index, std::string& name)
+{
+	// Index valide ?
+	if (index >= attributes_.size()) {
+		return false;
+	}
+
+	// Recherche de la valeur
+	deque<attrTuple>::iterator it = attributes_.begin();
+	it += index;
+	name = (*it).name();
+
+	// Trouvé (si non vide)
+	return (name.size() > 0);
+}
+
+
 // Recherche de la valeur d'un attribut hérité
 //
 bool containersList::getAttributeValue(std:: string& DN, std:: string& attrName, std::string& value)
 {
-    // Pas de nom ...
+	value = "";			// Par défaut l'attribut n'est pas renseingé
+
+	// Pas de nom ...
     if (0 == DN.size() || 0 == attrName.size()){
         return false;
     }
 
     // L'attribut est-il dans la liste des attributs pris en charge ?
-    bool foundAttr(false), foundValue(false);
-
-    for (deque<std::string>::iterator i = attributes_.begin(); i != attributes_.end() && !foundAttr; i++){
-        foundAttr = ((*i) == attrName);
+    attrTuple* pAttr(nullptr);
+    for (deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end() && nullptr == pAttr; i++){
+		if ((*i).name() == attrName) {
+			pAttr = &(*i);	// Je conserve un pointeur sur l'attribut
+		}
     }
 
-    if (foundAttr){
-        // L'attribut est géré
+	// L'attribut est-il géré ?
+	if (nullptr != pAttr){
         // Recherche au niveau de mes containers
         LDAPContainer* predecessor(_firstContainer(DN));
-        const char* val(nullptr);
-        while (predecessor && !foundValue){
+        std::string val("");
+        while (predecessor && 0 == value.size()){
             // Recherche de l'attribut
-            if (nullptr != (val = predecessor->attribute(attrName))){
+            val = predecessor->attribute(attrName);
+ 			if (val.size() > 0){
                 value = val;
-                foundValue = true;
             }
             else{
                 // L'attribut n'est pas géré à ce niveau => on remonte
                 predecessor = predecessor->parent();
             }
-        }
+        } // While
+
+		// L'ai je trouvé ?
+		if (0 == value.size()) {
+			// Non => peut--etre une valeur par défaut ?
+			value = pAttr->value();
+
+#ifdef _DEBUG
+			if (value.size()) {
+				int i(5);
+				i++;
+			}
+#endif // _DEBUG
+
+		}
     }
 
     // Trouvée ?
-    return foundValue;
+    return (value.size() > 0);
 }
 
 // Ajout d'un container
@@ -221,18 +269,42 @@ bool containersList::add(LPLDAPCONTAINER container)
 		return false;
 	}
 
-	// Je ne dois pas déja avoir ce container
-	if (nullptr != _findContainerByName(container->realName())
-		|| nullptr != _findContainerByDN(container->DN())) {
-		// Déjà existant
+	// Le container doit être unique (par son DN)
+	LDAPContainer* prev(nullptr);
+	if (nullptr != (prev = _findContainerByDN(container->DN()))) {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Le container '%s' est déja défini avec le DN : '%s'", container->realName(), container->DN());
+			logs_->add(logs::TRACE_TYPE::ERR, "Le container '%s' est déja défini avec le DN : '%s'", container->realName(), prev->DN());
+			logs_->add(logs::TRACE_TYPE::ERR, "Le container '%s' ne sera pas pris en compte", container->DN());
 		}
+
 		return false;
 	}
 
-	// Ok
-	containers_.push_back(container);
+	// ... il doit aussi être unique par son nom
+	if (nullptr != (prev = _findContainerByName(container->realName()))){
+		// Il existe déja un servie avec ce nom
+		//
+
+		// son DN est plus court => c'est mon container je m'ajoute à la fin
+		if (strlen(prev->DN()) < strlen(container->DN())) {
+			containers_.push_back(container);
+		}
+		else {
+			// Je suis son container, donc je dois être situé "avant" lui dans la liste
+			// le DN est plus court => c'est mon container je m'ajoute au début
+			containers_.push_front(container);
+		}
+	}
+	else {
+		// Ok => je peux l'ajouter
+		containers_.push_back(container);
+	}
+
+#ifdef _WIN32
+	// Sous Windows les comparaisons se font sans accents
+	std::string sName = charUtils::removeAccents(container->realName());
+	container->setRealName(sName);
+#endif // _WIN32
 
 	if (logs_) {
 		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de '%s', DN '%s'", container->realName(), container->DN());

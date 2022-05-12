@@ -587,12 +587,12 @@ typedef struct tagATTRNAMES
 
 // Type de fichier à générer
 //
-class ldapFile
+class LDAPFile
 {
 public:
 
-	ldapFile(){}
-	virtual ~ldapFile() {}
+	LDAPFile(){}
+	virtual ~LDAPFile() {}
 
 	static FILE_TYPE string2FileType(const char* str){
 		if (!IS_EMPTY(str)){
@@ -659,6 +659,10 @@ public:
 	}
 	virtual ~LDAPAttributes()
 	{ _clearBuffer(); }
+
+	// Nombre d'attributs dans la liste
+	size_t size()
+	{ return attributes_.size(); }
 
 	// On repart à 0
 	void empty(){

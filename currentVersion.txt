@@ -37,18 +37,24 @@ BUGS{
 }
 
 22.5.2
-    * le 6 mai 2022
-    - Corrections
+    * le 11 mai 2022
+    	- Corrections
+        	+ Mise en cohérence du nom des classes et nom de fichiers : ldapBrowser devient LDAPBrowser, LDAPAttributes.h, LDAPFile, ...
 		+ Logs ...
-		- Impossible de récupérer les informations sur le serveur d'images dans le fichier de configuration
+		- Regression : Impossible de récupérer les informations sur le serveur d'images dans le fichier de configuration
+		- Fichier de commande : prise en compte de l'OS pour les <Destination>
 	+ Nouvel algorithme pour la gestion de l'héritage des attributs
 		+ ajout de la classe containersList
-		- suppression de servicesList et treeStruct
+		- suppression des classes servicesList et treeStruct
+		+ ldapBrowser::_getServices devient ldapBrowser::_getLDAPContainers
+			+ La méthode est appelée avec chaque fichier
+		+ L'attribut XML "recursivite" devient "heritable"
+	+ Fichier de commande et/ou template : ajout d'une valeur par défaut pour les colonnes (attribut "Defaut" )
 
 22.5.1
-    * le 6 mai 2022
+    * le 6 mai 2022 - Version complète (et non regressive)
     - Corrections mineures
-        - format des sources noramliés
+        - format des sources normalisé
         - Logs : Corrections / Enrichissement
         - Tous les fichiers sont encodés en UTF8 (même celui -ci)
         - Si un agent n'a pas de nom/prénom => on ne l'ajoute pas au fichier de sortie

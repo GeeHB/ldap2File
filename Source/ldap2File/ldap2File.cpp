@@ -44,7 +44,7 @@
 
 #include "sharedConsts.h"
 #include "sFileSystem.h"
-#include "ldapBrowser.h"
+#include "LDAPBrowser.h"
 
 #include "XMLParser.h"
 
@@ -325,7 +325,7 @@ int main(int argc, const char* argv[]) {
 		// Analyse des fichiers de commandes
 		//
 		int currentLaunchTime(0);
-		ldapBrowser requester(&myLogs, &configurationFile);
+		LDAPBrowser requester(&myLogs, &configurationFile);
 		RET_TYPE retType(RET_TYPE::RET_INVALID_FILE);
 		std::string shortName("");
 		while (!done) {
@@ -388,6 +388,10 @@ int main(int argc, const char* argv[]) {
 
 					case RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR:
 						cout << "Critère de recherche invalide";
+						break;
+
+					case RET_TYPE::RET_ERROR_NO_CONTAINER:
+						cout << "Aucun container trouvé dans l'Annuaire";
 						break;
 
 					case RET_TYPE::RET_BLOCKING_ERROR:

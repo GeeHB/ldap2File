@@ -33,7 +33,7 @@
 #include "treeStructure.h"
 
 #include "JScriptConsts.h"
-#include "ldapAttributes.h"
+#include "LDAPAttributes.h"
 
 //
 // Définition de la classe

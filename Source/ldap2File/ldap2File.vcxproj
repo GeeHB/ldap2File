@@ -244,7 +244,7 @@
     <ClCompile Include="folders.cpp" />
     <ClCompile Include="JScriptFile.cpp" />
     <ClCompile Include="ldap2File.cpp" />
-    <ClCompile Include="ldapBrowser.cpp" />
+    <ClCompile Include="LDAPBrowser.cpp" />
     <ClCompile Include="LDAPServer.cpp" />
     <ClCompile Include="LDAPSources.cpp" />
     <ClCompile Include="LDIFFile.cpp" />
@@ -282,8 +282,8 @@
     <ClInclude Include="folders.h" />
     <ClInclude Include="JScriptConsts.h" />
     <ClInclude Include="JScriptFile.h" />
-    <ClInclude Include="ldapAttributes.h" />
-    <ClInclude Include="ldapBrowser.h" />
+    <ClInclude Include="LDAPAttributes.h" />
+    <ClInclude Include="LDAPBrowser.h" />
     <ClInclude Include="LDAPServer.h" />
     <ClInclude Include="LDAPSources.h" />
     <ClInclude Include="LDIFFile.h" />

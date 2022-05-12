@@ -66,13 +66,14 @@
 #define XML_LINK					"Lien"
 #define XML_MULTIVALUE				"Multivalue"
 #define XML_MULTILINE				XML_MULTIVALUE
-#define XML_RECURSE					"Recursivite"
+#define XML_INHERIT					"Heritable"
 #define XML_FORMAT					"Format"
 #define XML_USER					"Utilisateur"
 #define XML_PWD						"mdp"
 #define XML_PORT					"Port"
 #define XML_ACCESS					"Acces"
 #define XML_OPERATOR				"Operateur"
+#define XML_DEFAULT					"Defaut"
 
 // Types d'accès au serveur LDAP
 #define XML_ACCESS_READ				"Lecture"
@@ -169,7 +170,7 @@
 #define XML_CONG_IMG_SERVER_HOST_ATTR	XML_SERVER
 
 #define XML_CONF_IMG_SERVER_FOLDER_NODE	XML_FOLDER
-#define XML_CONF_IMG_SERVER_DEF_NODE	"Defaut"
+#define XML_CONF_IMG_SERVER_DEF_NODE	XML_DEFAULT
 #define DEFAULT_PHOTO					"nophoto.jpg"
 
 //
@@ -194,7 +195,7 @@
 #define XML_SCHEMA_FORMAT_ATTR		XML_FORMAT
 #define FORMAT_NUM					"Num"
 #define FORMAT_STRING				"String"
-#define XML_SCHEMA_RECURSE_ATTR		XML_RECURSE
+#define XML_SCHEMA_INEHRIT_ATTR		XML_INHERIT
 
 // Serveurs destinations
 //
@@ -375,6 +376,7 @@
 #define XML_COLUMN_WIDTH_ATTR		XML_WIDTH
 #define XML_COLUMN_LINK_ATTR		XML_LINK
 #define XML_COLUMN_MULTILINE_ATTR	XML_MULTILINE
+#define XML_COLUMN_DEFAULT_ATTR		XML_DEFAULT
 
 //
 // Organigramme hiérachique

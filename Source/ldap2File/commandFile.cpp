@@ -156,7 +156,7 @@ bool commandFile::_load()
 
 // Informations sur une colonne
 //
-bool commandFile::nextColumn(columnList::COLINFOS& col)
+bool commandFile::nextColumn(columnList::COLINFOS& col, bool getDefVal)
 {
 	// Premier appel ...
 	if (DATA_HANDLER::NONE == columnHandler_){
@@ -172,7 +172,7 @@ bool commandFile::nextColumn(columnList::COLINFOS& col)
 
 	// Je fais tout le temps travailler le fichier inclus ...
 	if (DATA_HANDLER::INCLUDED == columnHandler_){
-		return includedFile_->nextColumn(col);
+		return includedFile_->nextColumn(col, getDefVal);
 	}
 
 	// Sinon je fournis moi même les données
@@ -229,6 +229,14 @@ bool commandFile::nextColumn(columnList::COLINFOS& col)
 		col.dataType_ |= (val == XML_YES)? DATA_TYPE_MULTIVALUED: DATA_TYPE_SINGLEVALUED;
 	}
 
+	// Une valeur par défaut
+	if (getDefVal) {
+		val = xmlColumn_.attribute(XML_COLUMN_DEFAULT_ATTR).value();
+		if (val.size()) {
+			col.defaultValue_ = val;
+		}
+	}
+
 	// Le nom affiché
 	col.name_ = xmlColumn_.first_child().value();
 #ifdef _WIN32
@@ -272,7 +280,7 @@ bool commandFile::outputFileInfos(aliases& aliases, OPFI& fileInfos)
 	}
 
 	// Par contre les serveurs destinations sont eux issus du fichier
-	// inclus (lorsque ce dernier existe et qu'il les contient ...
+	// inclus (lorsque ce dernier existe et qu'il les contient ...)
 	if (includedFile_ && includedFile_->_destinationsInfos(aliases, fileInfos)){
 		return true;
 	}
@@ -293,7 +301,7 @@ bool commandFile::_fileInfos(aliases& aliases, OPFI& fileInfos)
 	// Type du fichier
 	//
 	fileInfos.formatName_ = node.attribute(XML_FORMAT_TYPE_ATTR).value();
-	fileInfos.format_ = ldapFile::string2FileType(fileInfos.formatName_);
+	fileInfos.format_ = LDAPFile::string2FileType(fileInfos.formatName_);
 
 	if (FILE_TYPE::FILE_UNKNOWN_TYPE == fileInfos.format_){
 		return false; // ...
@@ -404,7 +412,13 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 
 		// Si le nom est renseigné, on utilisera la "destination" associée du fichier de configuration
 		if (name.size()){
-			pDestination = new fileDestination(name, "");
+			
+			// Si l'OS est renseigné, il doit être valide
+			string destOS = snode.attribute(XML_DESTINATION_FS_OS_ATTR).value();
+			// Le bon OS ou tous les OS ?
+			if (0 == destOS.size() || expectedOS_ == destOS) {
+				pDestination = new fileDestination(name, "");
+			}
 		}
 		else{
 			if (fType.size() /*&& folder.size()*/){
@@ -493,7 +507,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 										}
 									}
 
-									// Qque soit de le cas, le dossier doit exister
+									// Qque soit le cas, le dossier doit exister
 									if (folder.size()) {
 										bool exists(false);
 										if (!(exists = sFileSystem::exists(folder))) {

@@ -31,7 +31,7 @@
 
 #include "sharedConsts.h"
 #include "sharedTypes.h"
-#include "ldapAttributes.h"			// Liste des attributs LDAP
+#include "LDAPAttributes.h"			// Liste des attributs LDAP
 
 //--------------------------------------------------------------------------
 //--
@@ -71,10 +71,12 @@ public:
 			width_ = colWidth;
 			dataType_ = dType;
 			show_ = true;
-			recurse_ = multipleValues;
+			heritable_ = multipleValues;
 			names_ = NULL;
+			defaultValue_ = "";
 		}
 
+		// Par recopie
 		_COLINFOS(const _COLINFOS& source){
 			orgChartMode_ = source.orgChartMode_;
 			name_ = source.name_;
@@ -82,8 +84,9 @@ public:
 			width_ = source.width_;
 			dataType_ = source.dataType_;
 			show_ = source.show_;
-			recurse_ = source.recurse_;
+			heritable_ = source.heritable_;
 			names_ = source.names_;
+			defaultValue_ = source.defaultValue_;
 		}
 
 		// Destruction
@@ -99,9 +102,10 @@ public:
 			width_ = COL_DEF_WITDH;
 			dataType_ = DATA_TYPE_UNDEFINED;		// Non défini
 			show_ = true;
-			recurse_ = false;
+			heritable_ = false;
 			reserved_ = false;
 			names_ = NULL;
+			defaultValue_ = "";
 		}
 
 		// Ajout à un requête LDAP
@@ -146,6 +150,10 @@ public:
 		bool imageLink()
 		{ return ((orgChartMode_ ? false : dataType_&BASE_TYPE_VALID && (dataType_&DATA_LINK_IMAGE))); }
 
+		// Héritable ?
+		bool heritable()
+		{ return heritable_; }
+
 		// Visible ?
 		bool visible()
 		{ return orgChartMode_?true:show_;}
@@ -156,9 +164,10 @@ public:
 		double			width_;			// Largeur en cm de la colonne (-1 = valeur par defaut)
 		unsigned int	dataType_;		// Type de donnée (entier/chaine, multi/monovalué, lien hypertexte, ...)
 		bool			show_;			// Visible ?
-		bool			recurse_;		// La valeur necessite t'elle un appel recursif ?
+		bool			heritable_;		// La valeur est-elle héritée ?
 		bool			reserved_;		// Mot clé réservé ?
 		LPATTRNAMES		names_;			// Tous les noms de l'attribut
+		string			defaultValue_;	// Valeur par défaut
 	} COLINFOS,* LPCOLINFOS;
 
 	// Gestion du schema
@@ -207,13 +216,13 @@ public:
 	{ return _getColumnByName(searchSchema, colName); }
 	size_t getColumnByName(string& colName, bool searchSchema = false)
 	{ return _getColumnByName(searchSchema, colName.c_str()); }
-	size_t getColumnByType(const char* colType, bool* pRecurse = NULL);
-	size_t getColumnByType(string& colType, bool* pRecurse = NULL)
-	{ return getColumnByType(colType.c_str(), pRecurse); }
+	size_t getColumnByType(const char* colType, bool* pHeritable = NULL);
+	size_t getColumnByType(string& colType, bool* pHeritable = NULL)
+	{ return getColumnByType(colType.c_str(), pHeritable); }
 	size_t getColumnByAttribute(string& colAttr)
 	{ return getColumnByAttribute(colAttr.c_str(), NULL);}
-	size_t getColumnByAttribute(const char* attrVal, bool* pRecurse = NULL)
-	{ return _getColumnByAttribute(false, attrVal, pRecurse);}
+	size_t getColumnByAttribute(const char* attrVal, bool* pHeritable = NULL)
+	{ return _getColumnByAttribute(false, attrVal, pHeritable);}
 	size_t getSchemaColumnByAttribute(const char* attrVal)
 	{ return _getColumnByAttribute(true, attrVal, NULL); }
 	size_t getShemaAttributeByName(const char* attrName)
@@ -244,7 +253,7 @@ protected:
 	void _emptyList(deque<LPCOLINFOS>* list);
 
 	size_t _getColumnByName(bool searchSchema, const char* colName);
-	size_t _getColumnByAttribute(bool searchSchema, const char* attrVal, bool* pRecurse = NULL);
+	size_t _getColumnByAttribute(bool searchSchema, const char* attrVal, bool* pHeritable = NULL);
 	LPCOLINFOS _getColumnByIndex(bool fromSchema, size_t index);
 
 	LPCOLINFOS _type2Attribute(string& columnType)

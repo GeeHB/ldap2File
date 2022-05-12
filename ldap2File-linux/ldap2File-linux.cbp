@@ -65,6 +65,9 @@
 		<Unit filename="../Source/ldap2File/JScriptConsts.h" />
 		<Unit filename="../Source/ldap2File/JScriptFile.cpp" />
 		<Unit filename="../Source/ldap2File/JScriptFile.h" />
+		<Unit filename="../Source/ldap2File/LDAPAttributes.h" />
+		<Unit filename="../Source/ldap2File/LDAPBrowser.cpp" />
+		<Unit filename="../Source/ldap2File/LDAPBrowser.h" />
 		<Unit filename="../Source/ldap2File/LDAPServer.cpp" />
 		<Unit filename="../Source/ldap2File/LDAPServer.h" />
 		<Unit filename="../Source/ldap2File/LDAPSources.cpp" />
@@ -98,8 +101,6 @@
 		<Unit filename="../Source/ldap2File/folders.cpp" />
 		<Unit filename="../Source/ldap2File/folders.h" />
 		<Unit filename="../Source/ldap2File/ldap2File.cpp" />
-		<Unit filename="../Source/ldap2File/ldapBrowser.cpp" />
-		<Unit filename="../Source/ldap2File/ldapBrowser.h" />
 		<Unit filename="../Source/ldap2File/outputFile.cpp" />
 		<Unit filename="../Source/ldap2File/outputFile.h" />
 		<Unit filename="../Source/ldap2File/searchExpr.cpp" />

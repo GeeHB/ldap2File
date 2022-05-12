@@ -46,7 +46,7 @@ typedef unsigned int    UINT;
 
 #endif // _WIN32
 
-#include "ldapAttributes.h"
+#include "LDAPAttributes.h"
 
 // Quelques définitions ...
 #define LDAP_DEF_PORT				LDAP_PORT

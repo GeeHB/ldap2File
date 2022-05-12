@@ -246,7 +246,7 @@ public:
 	bool outputFileInfos(aliases& aliases, OPFI& fileInfos);
 
 	// Colonne(s) du fichier de sortie
-	bool nextColumn(columnList::COLINFOS& col);
+	bool nextColumn(columnList::COLINFOS& col, bool getDefVal = false);
 
 	// Organigramme
 	bool orgChart(ORGCHART&);

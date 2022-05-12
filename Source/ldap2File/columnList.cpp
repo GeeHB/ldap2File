@@ -112,7 +112,7 @@ bool columnList::_append(const char* colName, const char* colType, double colWid
 	}
 
 	// Creation de l'objet
-	LPCOLINFOS column = new COLINFOS(colName, attribute->ldapAttr_.c_str(), (colWidth==COL_DEF_WITDH? attribute->width_:colWidth), dType== DATA_TYPE_UNDEFINED?attribute->dataType_:dType, attribute->recurse_);
+	LPCOLINFOS column = new COLINFOS(colName, attribute->ldapAttr_.c_str(), (colWidth==COL_DEF_WITDH? attribute->width_:colWidth), dType== DATA_TYPE_UNDEFINED?attribute->dataType_:dType, attribute->heritable_);
 	if (NULL != column){
 		// Visible ?
 		column->show_ = (visible?attribute->visible():false);
@@ -204,7 +204,7 @@ bool columnList::append(const COLINFOS& column)
 			col->width_ = (col->width_ == COL_DEF_WITDH ? attribute->width_ : col->width_);
 			col->dataType_ = (col->dataType_ == DATA_TYPE_UNDEFINED ? attribute->dataType_ : col->dataType_);
 			col->ldapAttr_ = attribute->ldapAttr_;
-			col->recurse_ = attribute->recurse_;
+			col->heritable_ = attribute->heritable_;
 		}
 		else{
 			col->ldapAttr_ = "";
@@ -311,17 +311,17 @@ size_t columnList::_getColumnByName(bool searchSchema, const char* colName)
 	return npos;
 }
 
-// Recherche de l'indice d'une colonne à partir du type "Humain" de donnees
+// Recherche de l'indice d'une colonne à partir du type "Humain" de données
 //
-size_t columnList::getColumnByType(const char* colType, bool* pRecurse)
+size_t columnList::getColumnByType(const char* colType, bool* pHeritable)
 {
 	string ldapAttr = type2LDAP(colType);	// Attribut associé
 	if (ldapAttr.size()){
 		size_t colIndex(0);
 		for (deque<LPCOLINFOS>::iterator it = columns_.begin(); it != columns_.end(); it++){
 			if ((*it) && (*it)->ldapAttr_ == ldapAttr){
-				if (pRecurse){
-					(*pRecurse) = (*it)->recurse_;
+				if (pHeritable){
+					(*pHeritable) = (*it)->heritable_;
 				}
 				return colIndex;
 			}
@@ -335,14 +335,14 @@ size_t columnList::getColumnByType(const char* colType, bool* pRecurse)
 
 // Recherche de l'indice d'une colonne a partir de la valeur de l'attribut associé
 //
-size_t columnList::_getColumnByAttribute(bool searchSchema, const char* attrVal, bool* pRecurse)
+size_t columnList::_getColumnByAttribute(bool searchSchema, const char* attrVal, bool* pHeritable)
 {
 	size_t colIndex(0);
 	deque<LPCOLINFOS>* list = (searchSchema ? &attributes_ : &columns_);
 	for (deque<LPCOLINFOS>::iterator it = list->begin(); it != list->end(); it++){
 		if ((*it) && (*it)->ldapAttr_ == attrVal){
-			if (pRecurse){
-				(*pRecurse) = (*it)->recurse_;
+			if (pHeritable){
+				(*pHeritable) = (*it)->heritable_;
 			}
 			return colIndex;
 		}

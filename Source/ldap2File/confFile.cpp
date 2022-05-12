@@ -600,8 +600,8 @@ bool confFile::nextLDAPAttribute(columnList::COLINFOS& col)
 	}
 
 	// Lecture recursive
-	val = schemaExtension_.node()->attribute(XML_SCHEMA_RECURSE_ATTR).value();
-	col.recurse_ = (val.size() && val == XML_YES);
+	val = schemaExtension_.node()->attribute(XML_SCHEMA_INEHRIT_ATTR).value();
+	col.heritable_ = (val.size() && val == XML_YES);
 
 	// Le nom de l'attribut
 	col.ldapAttr_ = schemaExtension_.node()->first_child().value();
