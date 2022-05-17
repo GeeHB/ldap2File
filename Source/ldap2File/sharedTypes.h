@@ -220,49 +220,36 @@ typedef struct _tagSearchCriteria
 }SEARCHCRITERIA,* LPSEARCHCRITERIA;
 
 // Struture de l'arbre LDAP
+//	conservation d'un nom de structure avec les niveaux associés
 //
-typedef struct _tagTREEELEMENT
+typedef struct _tagSTRUCTELEMENT
 {
 	// Constructions
-	_tagTREEELEMENT()
+	_tagSTRUCTELEMENT()
 	{ init(); }
 
-	_tagTREEELEMENT(string& sType, string& sStartWith, size_t prof){
-		init();
+	_tagSTRUCTELEMENT(string& sType, size_t level){
 		type_ = sType;
-		startWith_ = sStartWith;
-		depth_ = prof;
+		level_ = level;
+		next_ = nullptr;
 	}
 
 	// Initialisation des données membres
 	void init(){
 		type_ = "";
-		startWith_ = "";
-		depth_ = DEPTH_NONE;
-		heritableDownTo_ = SIZE_MAX;	// Pas d'héritage
-		colIndex_ = SIZE_MAX;			// non associé
-		colValue_ = "";
+		level_ = DEF_STRUCT_LEVEL;
+		next_ = nullptr;
 	}
 
-	// Nettoyage
-	void clear(){
-		colIndex_ = SIZE_MAX;			// non associé
-		colValue_ = "";
-	}
+	// Une seule valeur ?
+	bool unique()
+	{ return (nullptr == next_); }
 
-	// Héritable ?
-	bool inheritable(size_t level)
-	{ return ((SIZE_MAX == heritableDownTo_) ? false : (level <= heritableDownTo_)); }
-	bool inheritable()
-	{ return ((SIZE_MAX != heritableDownTo_)); }
+	string				type_;				// Type (Nom) de l'élément
+	size_t				level_;				// Profondeur associée
+	_tagSTRUCTELEMENT*	next_;				// Pointeur sur le niveau suivant
 
-	string		type_;				// Type (Nom) de l'élément
-	string		startWith_;			// Tous les éléments de ce type commencent par ...
-	size_t		depth_;				// Profondeur associée
-	size_t		heritableDownTo_;	// Héritable (diff de - 1)?
-	size_t		colIndex_;			// Index de la colonne dans le fichier de sortie
-	string		colValue_;			// Valeur associée à la colonne (lorsque l'index est renseigné)
-}TREEELEMENT, *LPTREEELEMENT;
+}STRUCTELEMENT, *LPSTRUCTELEMENT;
 
 // Objet de base pour les destinations
 //

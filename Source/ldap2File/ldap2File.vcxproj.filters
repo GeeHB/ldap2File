@@ -39,9 +39,6 @@
     <ClCompile Include="CSVFile.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="servicesList.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="agentTree.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -49,9 +46,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="XMLFile.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="treeStructure.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="destinationList.cpp">
@@ -309,6 +303,9 @@
     <ClCompile Include="LDAPBrowser.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="structures.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="columnList.h">
@@ -326,9 +323,6 @@
     <ClInclude Include="CSVFile.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="servicesList.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="agentTree.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -342,9 +336,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="ODSFile.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="treeStructure.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="XMLParser.h">
@@ -438,6 +429,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="LDAPBrowser.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="structures.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

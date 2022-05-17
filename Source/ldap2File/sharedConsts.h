@@ -307,9 +307,10 @@ using namespace jhbTools;
 #define CHAR_CR			0x0D
 #define CHAR_LF			0x0A
 
-// "Profondeur" de l'arborescence
+// "Profondeur" dans l'arborescence
 //
-#define DEPTH_NONE					0
+#define DEF_STRUCT_LEVEL	0
+//#define DEPTH_NONE			0
 
 // Fichier de sortie
 //

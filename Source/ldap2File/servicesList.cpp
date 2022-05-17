@@ -224,7 +224,7 @@ servicesList::LPLDAPSERVICE servicesList::userContainers(const char* userDN)
 	}
 	dn = dn.substr(pos);
 
-	LPTREEELEMENT pElement(NULL);
+	LPSTRUCTELEMENT pElement(NULL);
 
 	// Recherche récursive de tous les containers
 	servicesList::LPLDAPSERVICE container(_findContainerByDN(dn.c_str()));

@@ -619,7 +619,7 @@ bool confFile::nextLDAPAttribute(columnList::COLINFOS& col)
 
 // Définition de la struture de l'arborescence LDAP
 //
-bool confFile::nextStructElement(TREEELEMENT& element)
+bool confFile::nextStructElement(STRUCTELEMENT& element)
 {
 	// A t'on vérifié qu'il était bien formé ?
 	if (IS_EMPTY(paramsRoot_.name())){
@@ -628,7 +628,7 @@ bool confFile::nextStructElement(TREEELEMENT& element)
 
 	// Premier élément ?
 	if (!structureElement_.index()){
-		pugi::xml_node element(paramsRoot_.child(XML_STRUCTURE_NODE));
+		pugi::xml_node element(paramsRoot_.child(XML_STRUCTURES_NODE));
 		if (!IS_EMPTY(element.name())){
 			element = element.child(XML_STRUCTURE_LEVEL_NODE);
 		}
@@ -651,28 +651,9 @@ bool confFile::nextStructElement(TREEELEMENT& element)
 	// Type d'élément
 	element.type_ = structureElement_.node()->attribute(LEVEL_NAME_ATTR).value();
 
-	// Profondeur
-	string val(structureElement_.node()->attribute(LEVEL_DEPTH_ATTR).value());
-	element.depth_ = (val.size() ? atoi(val.c_str()) : DEPTH_NONE);
-
-	// Héritable ?
-	val = structureElement_.node()->attribute(LEVEL_INHERITABLE_ATTR).value();
-	element.heritableDownTo_ = (val.size() ? atoi(val.c_str()) : -1);
-	if (element.heritableDownTo_ <= element.depth_){
-		element.heritableDownTo_ = -1;
-	}
-
-	// La valeur à rechercher dans la description des ou
-	element.startWith_ = structureElement_.node()->first_child().value();
-	if (!element.startWith_.size()){
-		return false;
-	}
-
-	// Sans accents
-#ifdef _WIN32
-	encoder_.convert_fromUTF8(element.startWith_);
-	element.startWith_ = encoder_.removeAccents(element.startWith_);
-#endif // #ifdef _WIN32
+	// Profondeur / Niveau
+	string val(structureElement_.node()->first_child().value());
+	element.level_ = (val.size() ? atoi(val.c_str()) : DEF_STRUCT_LEVEL);
 
 	// Définition suivante
 	structureElement_ = structureElement_.node()->next_sibling(XML_STRUCTURE_LEVEL_NODE);

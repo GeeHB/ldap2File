@@ -35,7 +35,7 @@
 //---------------------------------------------------------------------------
 
 // Version du schéma XML
-#define XML_SCHEMA_VERSION			"2.2"
+#define XML_SCHEMA_VERSION			"2.3"
 
 //
 // Définitions générales
@@ -176,11 +176,9 @@
 //
 // Structure de l'arbre LDAP
 //
-#define XML_STRUCTURE_NODE			"Structure"
+#define XML_STRUCTURES_NODE			"Structures"
 #define XML_STRUCTURE_LEVEL_NODE	"Niveau"
 #define LEVEL_NAME_ATTR				XML_NAME
-#define LEVEL_DEPTH_ATTR			"Profondeur"
-#define LEVEL_INHERITABLE_ATTR		"Heritable"
 
 //
 // Schéma LDAP

@@ -251,10 +251,9 @@
     <ClCompile Include="ODSFile.cpp" />
     <ClCompile Include="outputFile.cpp" />
     <ClCompile Include="searchExpr.cpp" />
-    <ClCompile Include="servicesList.cpp" />
+    <ClCompile Include="structures.cpp" />
     <ClCompile Include="textFile.cpp" />
     <ClCompile Include="titles.cpp" />
-    <ClCompile Include="treeStructure.cpp" />
     <ClCompile Include="vCardFile.cpp" />
     <ClCompile Include="XMLFile.cpp" />
     <ClCompile Include="XMLParser.cpp" />
@@ -292,13 +291,12 @@
     <ClInclude Include="outputFile.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="searchExpr.h" />
-    <ClInclude Include="servicesList.h" />
     <ClInclude Include="sharedConsts.h" />
     <ClInclude Include="sharedTypes.h" />
     <ClInclude Include="stringTokenizer.h" />
+    <ClInclude Include="structures.h" />
     <ClInclude Include="textFile.h" />
     <ClInclude Include="titles.h" />
-    <ClInclude Include="treeStructure.h" />
     <ClInclude Include="vCardFile.h" />
     <ClInclude Include="XMLConsts.h" />
     <ClInclude Include="XMLFile.h" />

@@ -78,7 +78,7 @@ public:
 	bool nextLDAPAttribute(columnList::COLINFOS& col);
 
 	// Définition de la struture de l'arborescence LDAP
-	bool nextStructElement(TREEELEMENT& element);
+	bool nextStructElement(STRUCTELEMENT& element);
 
 	// Serveur(s) destination
 	bool nextDestinationServer(aliases& aliases, fileDestination** pdestination,bool* add);
