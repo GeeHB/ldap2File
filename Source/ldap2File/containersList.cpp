@@ -74,7 +74,7 @@ containersList::attrTuple* containersList::LDAPContainer::findAttribute(std::str
     }
 
     // L'attribut est-il présent ?
-    for (deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end(); i++){
+    for (std::deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end(); i++){
         if ((*i).name() == name){
             // On renvoit un pointeur sur l'attribut
             return &(*i);
@@ -91,14 +91,11 @@ containersList::attrTuple* containersList::LDAPContainer::findAttribute(std::str
 
 // Construction
 //
-containersList::containersList(logs* pLogs)
+containersList::containersList(logs* pLogs, std::string& levelName)
 {
 	// Copie des valeurs
 	logs_ = pLogs;
-
-#ifdef _WIN32
-	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
-#endif // WIN32
+	levelAttrName_ = (0 == levelName.size() ? STR_ATTR_STRUCT_LEVEL : levelName);
 }
 
 // Mise à jour des liens (chainage) entre les différents containers
@@ -108,7 +105,7 @@ void containersList::chain()
 	LDAPContainer *me(nullptr), *prev(nullptr);
 
 	// Parcours de la liste
-	for (deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
+	for (std::deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
 		if ((me = (*it)) && nullptr == me->parent()) {
 			// OU du container du prédecesseur
 			string dn(me->DN());
@@ -133,7 +130,7 @@ void containersList::clear()
 {
 	// Suppression de tous les containers
 	//
-	for (deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
+	for (std::deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
 		if ((*it)) {
 			delete (*it);
 		}
@@ -156,7 +153,7 @@ bool containersList::addAttribute(std::string& name, const char* value)
 	}
 
 	// Pas déja présent ?
-	for (deque<attrTuple>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
+	for (std::deque<attrTuple>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
 		if ((*it).name() == name) {
 			// Si !
 			return false;
@@ -178,7 +175,7 @@ const char** containersList::getAttributes()
 	}
 
 	LDAPAttributes myAttributes;
-	for (deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end(); i++) {
+	for (std::deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end(); i++) {
 		myAttributes += (*i).name().c_str();
 	}
 
@@ -196,7 +193,7 @@ bool containersList::getAttributeName(size_t index, std::string& name)
 	}
 
 	// Recherche de la valeur
-	deque<attrTuple>::iterator it = attributes_.begin();
+	std::deque<attrTuple>::iterator it = attributes_.begin();
 	it += index;
 	name = (*it).name();
 
@@ -218,7 +215,7 @@ bool containersList::getAttributeValue(std:: string& DN, std:: string& attrName,
 
     // L'attribut est-il dans la liste des attributs pris en charge ?
     attrTuple* pAttr(nullptr);
-    for (deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end() && nullptr == pAttr; i++){
+    for (std::deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end() && nullptr == pAttr; i++){
 		if ((*i).name() == attrName) {
 			pAttr = &(*i);	// Je conserve un pointeur sur l'attribut
 		}
@@ -273,8 +270,8 @@ bool containersList::add(LPLDAPCONTAINER container)
 	LDAPContainer* prev(nullptr);
 	if (nullptr != (prev = _findContainerByDN(container->DN()))) {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Le container '%s' est déja défini avec le DN : '%s'", container->realName(), prev->DN());
-			logs_->add(logs::TRACE_TYPE::ERR, "Le container '%s' ne sera pas pris en compte", container->DN());
+			logs_->add(logs::TRACE_TYPE::ERR, "containersList::add - Le container '%s' est déja défini avec le DN : '%s'", container->realName(), prev->DN());
+			logs_->add(logs::TRACE_TYPE::ERR, "containersList::add - Le container '%s' ne sera pas pris en compte", container->DN());
 		}
 
 		return false;
@@ -333,10 +330,71 @@ containersList::LPLDAPCONTAINER containersList::findContainer(string& name, stri
 	return nullptr;
 }
 
-// Recherche d'un container
+// Recherche de tous les sous-conatiners à partir de ..., sur le critère du niveau de la structure
 //
+bool containersList::findSubContainers(string& fromDN, std::set<size_t>& levels, std::deque<LPLDAPCONTAINER>& containers)
+{
+	// Vérification des paramètres
+	//
+	if (0 == levels.size()) {
+		// Pas de sous-niveaux => pas de sous-containers
+		if (logs_) {
+			logs_->add(logs::TRACE_TYPE::ERR, "containersList::findSubContainers - Pas de niveaux pour la recherche de sous-containers");
+		}
+		return false;
+	}
 
-// Par son DN
+	// Container associé au DN
+	LPLDAPCONTAINER fromContainer(findContainer(fromDN));
+	if (nullptr == fromContainer) {
+		// Impossible de trouver le container
+		if (logs_) {
+			logs_->add(logs::TRACE_TYPE::ERR, "containersList::findSubContainers - Impossible de trouver un container dont le DN serait '%s'", fromDN.c_str());
+		}
+		return false;
+	}
+
+	// Quel est mon "niveau"
+	containersList::attrTuple* levelAttr = fromContainer->findAttribute(levelAttrName_);
+	if (nullptr == levelAttr) {
+		if (logs_) {
+			logs_->add(logs::TRACE_TYPE::ERR, "containersList::findSubContainers - Impossible de trouver la valeur de l'attribut '%s' pour '%s'", levelAttrName_.c_str(), fromDN.c_str());
+		}
+		return false;
+	}
+
+	size_t fromLevel = atoi(levelAttr->value().c_str());
+
+
+	// Parcours des containers fils et autres descendants 
+	//
+	LPLDAPCONTAINER childContainer(nullptr);
+	size_t dnSize = fromDN.size();
+	size_t pos(0);
+	string childDN("");
+	for (std::deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
+		if (nullptr != (childContainer = (*it)) &&
+			(childDN = childContainer->DN()).size() >= dnSize &&
+			childDN.npos != (pos = childDN.find(fromDN)) &&
+			pos >= 0) {
+			// Un de mes descendants ...
+			
+			
+			// Est-il au bon niveau ?
+			auto pos = levels.find(fromLevel);
+			if (pos != levels.end())
+			{
+				// oui => je le garde
+				containers.push_back(childContainer);
+			}
+		}
+	}
+	
+	// Des éléments trouvés ?
+	return (containers.size() > 0);
+}
+
+// Recherche d'un container par son DN
 //
 containersList::LPLDAPCONTAINER containersList::_findContainerByDN(const char* DN)
 {
@@ -344,7 +402,7 @@ containersList::LPLDAPCONTAINER containersList::_findContainerByDN(const char* D
 		return nullptr;
 	}
 
-	for (deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
+	for (std::deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
 		if ((*it) && 0 == strcmp((*it)->DN(), DN)) {
 			// J'ai
 			return (*it);
@@ -355,7 +413,7 @@ containersList::LPLDAPCONTAINER containersList::_findContainerByDN(const char* D
 	return nullptr;
 }
 
-// Par son nom
+// ou par son nom
 //
 containersList::LPLDAPCONTAINER containersList::_findContainerByName(const char* name)
 {
@@ -363,7 +421,7 @@ containersList::LPLDAPCONTAINER containersList::_findContainerByName(const char*
 		return nullptr;
 	}
 
-	for (deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
+	for (std::deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
 		if ((*it) && (*it)->equalName(name)) {
 			// J'ai
 			return (*it);

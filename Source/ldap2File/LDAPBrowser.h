@@ -80,7 +80,7 @@ protected:
 	bool _getTitles();
 #endif // __LDAP_USE_ALLIER_TITLES__
 	size_t _simpleLDAPRequest(PCHAR* attributes, commandFile::criterium& sCriterium, const char* searchDN, bool treeSearch, PLDAPControl* serverControls = NULL, PLDAPControl sortControl = NULL);
-	bool _getUserGroups(string& userDN, size_t colID, const char* gID);
+	bool _getUserGroups(std::string& userDN, size_t colID, const char* gID);
 
 	// Organigramme hiérarchique
 	//
@@ -109,7 +109,7 @@ protected:
 	const bool _SCPTransfer(SCPDestination* scpDest);
 
 	// Execution d'une application
-	bool _exec(const string& application, const string& parameters, string& retMessage);
+	bool _exec(const std::string& application, const std::string& parameters, std::string& retMessage);
 
 	// Données membres privees
 	//
@@ -134,8 +134,10 @@ protected:
 #endif // __LDAP_USE_ALLIER_TITLES__
 
 	columnList				cols_;				// Mes colonnes
-	string					managersCol_;		// Nom de la colonne utilisée pour les managers
-	string					managersAttr_;		// Attribut associé
+	std::string				managersCol_;		// Nom de la colonne utilisée pour les managers
+	std::string				managersAttr_;		// Attribut associé
+
+	std::string				levelAttr_;			// Attribut utilisé pour les niveaux des colonnes
 
 	aliases					aliases_;			// Liste des alias
 

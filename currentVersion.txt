@@ -18,6 +18,7 @@ TODO{
     # Logs
         + La classe doit devenir "streamable"
         + Descripteurs de formats (PID, Date, Heure, Niveau ...)
+		? Utilisation de la macro __FUNCTION__ en mode ERR ou full logs
 
 
 	# XML
@@ -29,6 +30,10 @@ TODO{
 	# Exceptions
 	    + Génération d'exceptions par SMTPClient
 	    + Vérification & réecriture SMTPClient
+
+	# Général
+		+ A t'on besoin de std::deque ?
+		+ Pour chaque "liste" déterminer le plus adapté : std::deque, std::list, std::vector, std::set, ...
 }
 
 
@@ -52,6 +57,8 @@ BUGS{
 			+ La méthode est appelée avec chaque fichier
 		+ L'attribut XML "recursivite" devient "heritable"
 	+ Fichier de commande et/ou template : ajout d'une valeur par défaut pour les colonnes (attribut "Defaut" )
+	+ Fichier de conf
+		+ Ajout de l'attribut <Niveau> afin de définir le nom de l'attribut pour modéliser le niveau de chaque structure
 
 22.5.1
     * le 6 mai 2022 - Version complète (et non regressive)

@@ -167,27 +167,49 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	logs_->add(logs::TRACE_TYPE::LOG, "Schéma - %d attributs reconnus", cols_.attributes());
 
 	// On s'assure que la colonne "manager" existe
-	string managersCol = configurationFile_->managersCol();
-	if (0 == managersCol.length()) {
+	string managersColName = configurationFile_->managersColName();
+	if (0 == managersColName.length()) {
 		throw LDAPException("Encadrants : Pas de nom de colonne précisé - <Encadrant Name=\"xxx\" />");
 	}
 
 	size_t index(0);
-	if (cols_.npos == (index = cols_.getShemaAttributeByName(managersCol.c_str()))) {
+	if (cols_.npos == (index = cols_.getShemaAttributeByName(managersColName.c_str()))) {
 		// La colonne n'existe pas !!!
 		string message("Encadrant : La colonne '");
-		message += managersCol;
+		message += managersColName;
 		message += "' n'existe pas dans le schéma";
 		throw LDAPException(message);
 	}
 
 	// Colonne par défaut !
-	managersCol_ = managersCol;
+	managersCol_ = managersColName;
 	managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
-	logs_->add(logs::TRACE_TYPE::NORMAL, "Par défaut, les encadrants sont définis par ('%s', '%s')", managersCol.c_str(), managersAttr_.c_str());
+	logs_->add(logs::TRACE_TYPE::NORMAL, "Par défaut, les encadrants sont définis par ('%s', '%s')", managersColName.c_str(), managersAttr_.c_str());
+
+	// Nom de la colonne pour les niveaux (utilie uniquement si explicitement demandé ...)
+	string levelColName = configurationFile_->LevelColName();
+
+	// La colonne doit-être dans le schéma
+	if (cols_.npos == (index = cols_.getShemaAttributeByName(levelColName.c_str()))) {
+		// Pas dans le schéma => valeur par défaut
+		levelColName = "";
+
+		logs_->add(logs::TRACE_TYPE::ERR, "La colonne de type '%s' n'est pas définie dans le schéma", levelColName.c_str());
+	}
+
+	// Quel le nom de l'attribut
+	levelAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
+
+	if (0 == levelColName.size()) {
+		logs_->add(logs::TRACE_TYPE::NORMAL, "Pas de colonne pour le niveau des structure. Utilisation de la valeur de l'attribut '%s'", STR_ATTR_STRUCT_LEVEL);
+	}
+	else {
+		logs_->add(logs::TRACE_TYPE::NORMAL, "La colonne pour le niveau des structures est '%s', attribut '%s'", levelColName.c_str(), levelAttr_.c_str());
+	}
+
 
 	// Liste des containers
-	if (NULL == (containers_ = new containersList(logs_))) {
+	if (NULL == (containers_ = new containersList(logs_, levelColName))) {
 		// Fin du processus
 		throw LDAPException("Impossible de créer la liste des containers");
 	}
@@ -558,35 +580,45 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	// Y a t'il une rupture ?
 	//
-	size_t containerDepth(0), depth(0);
 	string baseContainer("");
 	commandFile::criterium search;
-	servicesList::LDAPService* pService(NULL);
+	std::set<size_t> levels;
+	containersList::LPLDAPCONTAINER pContainer(nullptr);
+	bool multipleRequests(false);
+
 	if (cmdFile->searchCriteria(&cols_, search)){
 		// Le critère de rupture est-il valide ?
-		if (search.tabType().size() && SIZE_MAX == struct_->levelByType(search.tabType().c_str())){
-			logs_->add(logs::TRACE_TYPE::ERR, "La valeur '%s' ne correspond à aucun type de la structure. Il n'y aura pas de rupture.", search.tabType().c_str());
+		if (search.tabType().size() && structs_.levelsByType(search.tabType().c_str(), levels)){
+			logs_->add(logs::TRACE_TYPE::ERR, "La valeur '%s' ne correspond à aucun type de structures. Il n'y aura pas de rupture.", search.tabType().c_str());
 			search.setTabType("");
 		}
 
+		// Y at'il un container avec ce nom ?
 		string sContainer(search.container());
-		if (search.container().size() && NULL == (pService = services_->findContainer(sContainer, baseContainer, containerDepth))){
+		if (search.container().size() && NULL == (pContainer = containers_->findContainer(sContainer, baseContainer))){
 			logs_->add(logs::TRACE_TYPE::ERR, "Le critère '%s' ne correspond à aucun élément de structure", search.container().c_str());
 			logs_->add(logs::TRACE_TYPE::ERR, "Aucun fichier ne sera généré");
 			return RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR;
 		}
 
-		// Vérification que la rupture a un sens
-		//
-		//size_t requestDepth = services_->depthFromContainerType(search.tabType);
-		string sType(search.tabType());
-		size_t requestDepth(services_->containerDepth(sType));
-		depth = (((containerDepth < requestDepth) && search.container().size())? requestDepth - containerDepth : DEPTH_NONE);
+		// Ce container doit avoir l'attribut 'niveau'
+		containersList::attrTuple* levelAttr = pContainer->findAttribute(levelAttr_);
+		if (nullptr == levelAttr) {
+			if (logs_) {
+				logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver la valeur de l'attribut '%s' pour '%s'", levelAttr_.c_str(), pContainer->DN());
+			}
+		}
+		else {
+			// L'ensemble est ordonné le niveau du container doit donc être <= au niveau du premier élément
+			size_t contLevel = atoi(levelAttr->value().c_str());
+			auto first = levels.begin();
+			multipleRequests = (contLevel <= (*first));
+		}
 	}
 
 	// Nom court du fichier de sortie
-	if (pService) {
-			opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pService->realName(), pService->shortName());
+	if (pContainer) {
+			opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pContainer->realName(), pContainer->shortName());
 	}
 	else {
 		opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), NULL, NULL);
@@ -811,19 +843,18 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	// Gestion de la (ou des) requête(s)
 	//
-	if (DEPTH_NONE != depth){
+	if (multipleRequests){
 		// Plusieurs requetes => plusieurs onglets
 		logs_->add(logs::TRACE_TYPE::LOG, "Recherche de tous les agents dépendants de '%s'", search.container().c_str());
 		logs_->add(logs::TRACE_TYPE::LOG, "Onglet(s) par '%s'", search.tabType().c_str());
 
-		deque<servicesList::LPLDAPSERVICE> services;
-		string sContainer(search.container());
-		if (services_->findSubContainers(baseContainer, sContainer, depth, services)){
+		deque<containersList::LPLDAPCONTAINER> containers;
+		if (containers_->findSubContainers(baseContainer, levels, containers)){
 			// Une requête par sous-container ...
 			bool start(true);
 			size_t agents(0);
 			bool treeSearch(true);
-			for (deque<servicesList::LPLDAPSERVICE>::iterator it = services.begin(); it != services.end(); it++){
+			for (deque<containersList::LPLDAPCONTAINER>::iterator it = containers.begin(); it != containers.end(); it++){
 				// Nom de l'onglet
 				if (start){
 					// On renomme l'onglet courant
@@ -854,7 +885,7 @@ RET_TYPE LDAPBrowser::_createFile()
 		}
 	}
 	else{
-		string tabName(file_->tokenize(cmdFile, search.tabName().c_str(), pService ? pService->realName() : "",  pService ? pService->shortName() : "", DEF_TAB_SHORTNAME));
+		string tabName(file_->tokenize(cmdFile, search.tabName().c_str(), pContainer ? pContainer->realName() : "",  pContainer ? pContainer->shortName() : "", DEF_TAB_SHORTNAME));
 		file_->setSheetName(tabName);
 
 		// Juste une requête avec l'onglet renommé à la demande
@@ -1003,16 +1034,6 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	if (SIZE_MAX == groupID){
 		groupID = cols_.getColumnByType(COL_GROUPS);
 	}
-
-	// Couleur
-	bool heritable(false);
-	size_t colorID(cols_.getColumnByAttribute(STR_ATTR_ALLIER_BK_COLOUR, &heritable));
-
-	// Niveau de structure
-	size_t structLevel(cols_.getColumnByType(COL_STRUCT_LEVEL, &heritable));
-
-	// Site
-	size_t siteID(cols_.getColumnByAttribute(STR_ATTR_ALLIER_SITE, &heritable));
 
 	// Managers
 	bool recurseManager(false);
@@ -1411,7 +1432,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 								}
 							}
 						}
-						
+
 						// Ajout de l'agent dans la structure arborescente
 						if (agents_) {
 							if (NULL != (agent = agents_->add(uid, dn, prenom, nom, email, allierStatus, manager, matricule))) {
@@ -1577,7 +1598,6 @@ bool LDAPBrowser::_getLDAPContainers()
 	}
 
 	string description(""), bkColor(""), shortName(""), fileName(""), site("");
-	unsigned int level(JS_DEF_STRUCT_LEVEL);
 	containersList::LDAPContainer* pContainer(nullptr);
 
 	//
@@ -1608,14 +1628,14 @@ bool LDAPBrowser::_getLDAPContainers()
 						ldapServer_->valueFree(pValue);
 
 						// Ajout de l'attribut et de sa valeur
-						pContainer->add(pAttribute, u8Value.c_str());						
+						pContainer->add(pAttribute, u8Value.c_str());
 					}   // if (NULL ...
 
 					// Prochain attribut
 					pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
 				} // While
 
-				
+
 				// Des attributs ajoutés ?
 				if (pContainer->size()) {
 					containers_->add(pContainer);

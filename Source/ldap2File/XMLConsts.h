@@ -53,7 +53,8 @@
 #define XML_SERVER					"Serveur"
 #define XML_ENVIRONMENT				"Environnement"
 #define XML_OS						"OS"
-#define XML_MANAGER_COL				"Encadrant"
+#define XML_MANAGER					"Encadrant"
+#define XML_LEVEL					"Niveau"
 #define XML_NAME					"Nom"
 #define XML_FILE					"Fichier"
 #define XML_FOLDER					"Dossier"
@@ -123,8 +124,12 @@
 #define ENV_NAME_ATTR				XML_NAME
 
 // Nom de la colonne de l'encadrant
-#define XML_CONF_MANAGER			XML_MANAGER_COL
+#define XML_CONF_MANAGER			XML_MANAGER
 #define MANAGER_NAME_ATTR			XML_NAME
+
+// Nom de la colonne du niveau de la strcuture
+#define XML_CONF_LEVEL				XML_LEVEL
+#define LEVEL_NAME_ATTR				XML_NAME
 
 // Paramètres du serveur LDAP
 #define XML_CONF_LDAP_SOURCES_NODE		"Sources"
@@ -177,7 +182,7 @@
 // Structure de l'arbre LDAP
 //
 #define XML_STRUCTURES_NODE			"Structures"
-#define XML_STRUCTURE_LEVEL_NODE	"Niveau"
+#define XML_STRUCTURE_LEVEL_NODE	XML_LEVEL
 #define LEVEL_NAME_ATTR				XML_NAME
 
 //
@@ -253,7 +258,7 @@
 #define XML_INCLUDE_NODE				"Inclure"
 
 // Nom de la colonne de l'encadrant
-#define XML_CMD_MANAGER					XML_MANAGER_COL
+#define XML_CMD_MANAGER					XML_MANAGER
 #define CMD_MANAGER_NAME_ATTR			XML_NAME
 
 //

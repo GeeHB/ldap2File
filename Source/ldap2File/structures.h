@@ -61,7 +61,7 @@ public:
 	{ return elements_.size(); }
 
 	// Ajout d'un élément
-	bool add(string& type, size_t level) {
+	bool add(std::string& type, size_t level) {
 		STRUCTELEMENT element(type, level);
 		return _add(element);
 	}
@@ -72,21 +72,22 @@ public:
 	{ _add(element); }
 
 	// "Profondeur" / niveau associé à un type de container
-	size_t levelByType(string& type) {
-		LPSTRUCTELEMENT element(_findElementByType(type));
-		return element ? element->level_ : DEF_STRUCT_LEVEL;
-	}
-	size_t levelByType(const char* type) {
-		string inter(type);
-		return levelByType(inter);
+	bool levelsByType(std::string& type, std::set<size_t>& levels);
+	bool levelsByType(const char* type, std::set<size_t>& levels) {
+		if (IS_EMPTY(type)) {
+			return false;
+		}
+
+		std::string inter(type);
+		return levelsByType(inter, levels);
 	}
 
 	// Recherches
-	LPSTRUCTELEMENT elementByType(string& type)
+	LPSTRUCTELEMENT elementByType(std::string& type)
 	{ return _findElementByType(type); }
 	LPSTRUCTELEMENT elementByType(const char* type){
 		if (IS_EMPTY(type)) return NULL;
-		string sType(type);
+		std::string sType(type);
 		return _findElementByType(sType);
 	}
 
@@ -95,10 +96,10 @@ public:
 protected:
 
 	bool _add(STRUCTELEMENT& element);
-	
+
 	// Recherche d'un élément
-	LPSTRUCTELEMENT _findElementByType(string& type);
-	
+	LPSTRUCTELEMENT _findElementByType(std::string& type);
+
 	// Données membres privées
 	//
 protected:

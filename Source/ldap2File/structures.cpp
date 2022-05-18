@@ -48,6 +48,34 @@ void structures::clear()
 	elements_.clear();
 }
 
+// Liste des "niveaux" associés à un type de container
+//
+//	retourne	true si le type de container a été trouvé
+//				dans ce cas levels contient la liste de niveaux associés
+//
+bool structures::levelsByType(std::string& type, std::set<size_t>& levels)
+{
+	if (0 == type.size()) {
+		return false;
+	}
+
+	// La liste est vide !!!
+	levels.clear();
+
+	// Un élément de ce type ?
+	LPSTRUCTELEMENT element(_findElementByType(type));
+	while (element) {
+		// J'ajoute son niveau
+		levels.insert(element->level_);
+
+		// allons voir le suivant ...
+		element = element->next_;
+	}
+
+	// La liste est vide ???
+	return (levels.size() > 0 );
+}
+
 // Ajout d'un élément
 //
 bool structures::_add(STRUCTELEMENT& element)
@@ -86,7 +114,7 @@ bool structures::_add(STRUCTELEMENT& element)
 			}
 			return false;
 		}
-		
+
 		// ... chainage arriêre
 		nElement->next_ = found;
 
@@ -120,7 +148,7 @@ bool structures::_add(STRUCTELEMENT& element)
 
 // Recherche d'un élément
 //
-LPSTRUCTELEMENT structures::_findElementByType(string& type)
+LPSTRUCTELEMENT structures::_findElementByType(std::string& type)
 {
 	if (0 == type.size()) {
 		return nullptr;

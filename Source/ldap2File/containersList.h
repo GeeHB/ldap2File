@@ -194,24 +194,24 @@ public:
 	protected:
 		// Données membres
 		//
-		LDAPContainer*		parent_;			// Mon container
-		std::string			DN_;
+		LDAPContainer*			parent_;		// Mon container parent
+		std::string				DN_;
 
 		// Attributs obligatoires
 		//
-		std::string			cleanName_;		// Nom long sans accents
-		std::string			realName_;		// Nom long "complet"
-		std::string			shortName_;		// Nom court
+		std::string				cleanName_;		// Nom long sans accents
+		std::string				realName_;		// Nom long "complet"
+		std::string				shortName_;		// Nom court
 
 		// Les autres attributs
-		deque<attrTuple>	attributes_;
+		std::deque<attrTuple>	attributes_;
 	};
 
 	typedef LDAPContainer* LPLDAPCONTAINER;
 
 	// Construction et destruction
 	//
-	containersList(logs* pLogs);
+	containersList(logs* pLogs, std::string& levelAttr);
 	virtual ~containersList()
 	{ clear(); }
 
@@ -222,7 +222,7 @@ public:
 	size_t size()
 	{ return containers_.size(); }
 
-	// Nombre d'attibuts hérités
+	// Nombre d'attributs hérités
 	size_t inheritedAttributes()
 	{ return attributes_.size(); }
 
@@ -241,15 +241,6 @@ public:
 	bool getAttributeName(size_t index, std::string& name);
 
 	// Recherche d'une valeur héritée
-	/*
-	bool getAttributeValue(const char* attrName, std::string& value){
-        if (IS-EMPTY(attrName)){
-            return false;   // Pas de nom => pas de valeur
-        }
-
-        std::string name(attrName);
-        return getAttributeValue((name, value);
-    }*/
     bool getAttributeValue(std:: string& DN, std:: string& attrName, std::string& value);
 
 	// Ajout d'un container
@@ -264,6 +255,9 @@ public:
 	// Recherche par son DN
 	LPLDAPCONTAINER findContainer(std::string& DN)
 	{ return _findContainerByDN(DN.c_str()); }
+
+	// Recherche de tous les sous-conatiners à partir de ..., sur le critère du niveau de la structure
+	bool findSubContainers(string& fromDN, std::set<size_t>& levels, std::deque<LPLDAPCONTAINER>& containers);
 
 	// Methodes privées
 protected:
@@ -290,17 +284,15 @@ protected:
 	//
 protected:
 
-	logs* logs_;
+	logs*						logs_;
 
-#ifdef _WIN32
-	charUtils				encoder_;
-#endif // _WIN32
+	std::string					levelAttrName_;		// Nom de l'attribut utilisé pour modéliser le niveau d'une structure
 
 	// Liste des containers
-	deque<LPLDAPCONTAINER>	containers_;
+	std::deque<LPLDAPCONTAINER>	containers_;
 
 	// Liste des attributs recherchés (lorsque la valeur est renseignée, il s'agit de la valeur par défaut)
-	deque<attrTuple>		attributes_;
+	std::deque<attrTuple>		attributes_;
 };
 
 #endif // __LDAP_2_FILE_CONTAINERS_LIST_h__

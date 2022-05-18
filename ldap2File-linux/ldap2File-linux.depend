@@ -1588,7 +1588,7 @@
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma86.h
 	"Types.h"
 
-1652367868 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldap2File.cpp
+1652367947 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldap2File.cpp
 	"sharedConsts.h"
 	"sFileSystem.h"
 	"LDAPBrowser.h"
@@ -1596,7 +1596,7 @@
 	<dirent.h>
 	<ctime>
 
-1652270027 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedConsts.h
+1652855142 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedConsts.h
 	<RegEntry.h>
 	<iostream>
 	<string>
@@ -1605,6 +1605,7 @@
 	<vector>
 	<deque>
 	<list>
+	<set>
 	"folders.h"
 	<time.h>
 	<direct.h>
@@ -1649,7 +1650,7 @@
 	<string>
 	<commonTypes.h>
 
-1652350758 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLConsts.h
+1652866528 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLConsts.h
 
 1652367632 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.h
 	<winldap.h>
@@ -1662,7 +1663,7 @@
 
 1613040623 /home/jhb/Nextcloud/dev/cpp/Common/directory/directoryAttr.h
 
-1652345671 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedTypes.h
+1652855015 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedTypes.h
 	"charUtils.h"
 	"aliases.h"
 	"fileActions.h"
@@ -1685,7 +1686,7 @@
 	"destinationList.h"
 	"titles.h"
 
-1651856564 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.h
+1652867855 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.h
 	"sharedConsts.h"
 	"sharedTypes.h"
 	"XMLParser.h"
@@ -1821,7 +1822,7 @@
 	"commandFile.h"
 	"sFileSystem.h"
 
-1652262923 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.cpp
+1652866917 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.cpp
 	"confFile.h"
 	"sFileSystem.h"
 
@@ -2914,27 +2915,26 @@
 	<cstdio>
 	<fts.h>
 
-1652367664 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/containersList.h
+1652881423 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/containersList.h
 	"sharedConsts.h"
 	"JScriptConsts.h"
 	"LDAPAttributes.h"
 
-1652367153 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/containersList.cpp
+1652892408 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/containersList.cpp
 	"containersList.h"
 	"sharedTypes.h"
 
 1652367575 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPAttributes.h
 	"./directory/directoryAttr.h"
 
-1652367927 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPBrowser.h
+1652892031 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPBrowser.h
 	"sharedConsts.h"
 	"confFile.h"
 	"agentTree.h"
 	"outputFile.h"
 	"LDAPSources.h"
-	"servicesList.h"
-	"treeStructure.h"
 	"containersList.h"
+	"structures.h"
 	"destinationList.h"
 	"titles.h"
 
@@ -2954,4 +2954,8 @@
 	<memory>
 	<stdexcept>
 	<array>
+
+1652893179 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/structures.h
+	"sharedConsts.h"
+	"sharedTypes.h"
 

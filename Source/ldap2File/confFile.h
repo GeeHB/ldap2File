@@ -57,9 +57,12 @@ public:
 	//
 
 	// Colonne des managers
-	string managersCol()
-	{ return managersCol_; }
+	std::string managersColName()
+	{ return managersColName_; }
 
+	// Colonne du niveau des strctures
+	std::string LevelColName()
+	{ return levelColName_;}
 
 	// Fichier de Logs de sortie
 	bool logInfos(LOGINFOS& dst);
@@ -68,7 +71,7 @@ public:
 	bool nextLDAPServer(LDAPServer** dst);
 
 	// Environnement par défaut
-	string environment()
+	std::string environment()
 	{ return environment_; }
 
 	// Serveur pour les images
@@ -100,8 +103,9 @@ protected:
 	// Initialisation
 	void _init(){
 		fileRead_ = false;		// Pas encore lu
-		commandFile_ = NULL;
-		managersCol_ = "";		// Pas de manager !!!
+		commandFile_ = nullptr;
+		managersColName_ = "";		// Pas de manager !!!
+		levelColName_ = "";
 	}
 
 	// Ouverture
@@ -118,11 +122,12 @@ protected:
 	//
 protected:
 
-	bool				fileRead_;		// Le fichier source a t'il été lu ?
+	bool				fileRead_;			// Le fichier source a t'il été lu ?
 
-	commandFile*		commandFile_;	// Fichier de commandes
-	string				managersCol_;	// Nom de la colonne qui contiendra le DN des managers
-	string				environment_;	// Nom de l'environnement (peut être vide)
+	commandFile*		commandFile_;		// Fichier de commandes
+	std::string			managersColName_;	// Nom de la colonne qui contiendra le DN des managers
+	std::string			levelColName_;		// Nom de la colonne qui maintiendra le niveau de la structure
+	std::string			environment_;		// Nom de l'environnement (peut être vide)
 
 
 	// Gestion de la structure de l'arborescence

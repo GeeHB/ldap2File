@@ -726,7 +726,13 @@ bool confFile::_load()
 	// Colonne des managers
 	childNode = paramsRoot_.child(XML_CONF_MANAGER);
 	if (!IS_EMPTY(childNode.name())) {
-		managersCol_ = childNode.attribute(MANAGER_NAME_ATTR).value();
+		managersColName_ = childNode.attribute(MANAGER_NAME_ATTR).value();
+	}
+
+	// Colonne du niveau des structures
+	childNode = paramsRoot_.child(XML_CONF_LEVEL);
+	if (!IS_EMPTY(childNode.name())) {
+		levelColName_ = childNode.attribute(LEVEL_NAME_ATTR).value();
 	}
 
 	// Ok

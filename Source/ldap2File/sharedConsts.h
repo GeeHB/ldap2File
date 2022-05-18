@@ -139,6 +139,7 @@
 #include <vector>
 #include <deque>
 #include <list>
+#include <set>
 using namespace std;
 
 // Gestion des dossiers de l'application
