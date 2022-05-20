@@ -63,11 +63,8 @@ public:
 	// Destruction
 	virtual ~JScriptFile();
 
-	// Initialisation(s)
-	virtual bool init();
-
 	// Création / initialisation(s)
-	virtual bool create();
+	virtual bool initialize();
 
 	// Colonnes "obligatoires"
 	virtual void getOwnColumns(deque<OWNCOL>& colNames){
@@ -130,6 +127,9 @@ public:
 	// Méthodes privées
 	//
 private:
+
+	// Initialisation(s)
+	virtual bool _init();
 
 	// Un attrribut LDAP
 	typedef struct tagJSATTRIBUTE{

@@ -184,7 +184,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	// Colonne par défaut !
 	managersCol_ = managersColName;
 	managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
-	logs_->add(logs::TRACE_TYPE::NORMAL, "Par défaut, les encadrants sont définis par ('%s', '%s')", managersColName.c_str(), managersAttr_.c_str());
+	logs_->add(logs::TRACE_TYPE::NORMAL, "Les encadrants sont définis par {'%s', '%s'}", managersColName.c_str(), managersAttr_.c_str());
 
 	// Nom de la colonne pour les niveaux (utilie uniquement si explicitement demandé ...)
 	string levelColName = configurationFile_->LevelColName();
@@ -204,7 +204,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 		logs_->add(logs::TRACE_TYPE::NORMAL, "Pas de colonne pour le niveau des structure. Utilisation de la valeur de l'attribut '%s'", STR_ATTR_STRUCT_LEVEL);
 	}
 	else {
-		logs_->add(logs::TRACE_TYPE::NORMAL, "La colonne pour le niveau des structures est '%s', attribut '%s'", levelColName.c_str(), levelAttr_.c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "Le niveau des structures est défini par {'%s', '%s'}", levelColName.c_str(), levelAttr_.c_str());
 	}
 
 
@@ -218,15 +218,12 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	//
 	structs_.setLogs(logs_);
 	STRUCTELEMENT element;
-	size_t levels(0);
 	while (configurationFile_->nextStructElement(element)) {
 		// Un élément de plus pour modéliser l'arborescence
-		if (structs_.add(element)) {
-			levels++;
-		}
+		structs_.add(element);
 	}
 
-	logs_->add(logs::TRACE_TYPE::LOG, "%d éléments de structure dans le fichier de configuration pour %d niveaux différents", structs_.size(), levels);
+	logs_->add(logs::TRACE_TYPE::LOG, "%d éléments de structure dans le fichier de configuration pour %d niveaux différents", structs_.uniques(), structs_.size());
 }
 
 // Destruction
@@ -575,55 +572,6 @@ RET_TYPE LDAPBrowser::_createFile()
 		logs_->add(logs::TRACE_TYPE::LOG, "Les encadrants sont modélisés par ('%s', '%s')" , managersCol_.c_str(), managersAttr_.c_str());
 	}
 
-	// Nombre d'agents
-	size_t agentsCount(0);
-
-	// Y a t'il une rupture ?
-	//
-	string baseContainer("");
-	commandFile::criterium search;
-	std::set<size_t> levels;
-	containersList::LPLDAPCONTAINER pContainer(nullptr);
-	bool multipleRequests(false);
-
-	if (cmdFile->searchCriteria(&cols_, search)){
-		// Le critère de rupture est-il valide ?
-		if (search.tabType().size() && structs_.levelsByType(search.tabType().c_str(), levels)){
-			logs_->add(logs::TRACE_TYPE::ERR, "La valeur '%s' ne correspond à aucun type de structures. Il n'y aura pas de rupture.", search.tabType().c_str());
-			search.setTabType("");
-		}
-
-		// Y at'il un container avec ce nom ?
-		string sContainer(search.container());
-		if (search.container().size() && NULL == (pContainer = containers_->findContainer(sContainer, baseContainer))){
-			logs_->add(logs::TRACE_TYPE::ERR, "Le critère '%s' ne correspond à aucun élément de structure", search.container().c_str());
-			logs_->add(logs::TRACE_TYPE::ERR, "Aucun fichier ne sera généré");
-			return RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR;
-		}
-
-		// Ce container doit avoir l'attribut 'niveau'
-		containersList::attrTuple* levelAttr = pContainer->findAttribute(levelAttr_);
-		if (nullptr == levelAttr) {
-			if (logs_) {
-				logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver la valeur de l'attribut '%s' pour '%s'", levelAttr_.c_str(), pContainer->DN());
-			}
-		}
-		else {
-			// L'ensemble est ordonné le niveau du container doit donc être <= au niveau du premier élément
-			size_t contLevel = atoi(levelAttr->value().c_str());
-			auto first = levels.begin();
-			multipleRequests = (contLevel <= (*first));
-		}
-	}
-
-	// Nom court du fichier de sortie
-	if (pContainer) {
-			opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pContainer->realName(), pContainer->shortName());
-	}
-	else {
-		opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), NULL, NULL);
-	}
-
 	// Création du générateur de fichier de sortie
 	//
 	switch (opfi.format_) {
@@ -713,15 +661,8 @@ RET_TYPE LDAPBrowser::_createFile()
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
 
-	// Initialisation du fichier (création des entetes)
-	if (!file_->create()) {
-		logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'initialisation du fichier de sortie");
-		return RET_TYPE::RET_BLOCKING_ERROR;
-	}
-
 	// Les attributs (ie. les colonnes)
-	//
-    deque<outputFile::OWNCOL> ownCols;
+	deque<outputFile::OWNCOL> ownCols;
     file_->getOwnColumns(ownCols);
     for (deque<outputFile::OWNCOL>::iterator it = ownCols.begin(); it != ownCols.end(); it++){
 #ifdef _DEBUG
@@ -729,6 +670,12 @@ RET_TYPE LDAPBrowser::_createFile()
 #endif // _DEBUG
         cols_.append((*it).name_.c_str(), (*it).type_.c_str());
     }
+
+	// Initialisation du fichier (création des entetes)
+	if (!file_->initialize()) {
+		logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de l'initialisation du fichier de sortie");
+		return RET_TYPE::RET_BLOCKING_ERROR;
+	}
 
 	logs_->add(logs::TRACE_TYPE::LOG, "%d colonnes à créer", cols_.size());
 
@@ -748,6 +695,72 @@ RET_TYPE LDAPBrowser::_createFile()
 
 		logs_->add(logs::TRACE_TYPE::LOG, "%d containers récupérés", containers_->size());
 		logs_->add(logs::TRACE_TYPE::LOG, "%d attribut(s) hérité(s)", containers_->inheritedAttributes());
+	}
+
+	// Y a t'il une rupture ?
+	//
+	string baseContainer("");
+	commandFile::criterium search;
+	std::set<size_t> levels;
+	containersList::LPLDAPCONTAINER pContainer(nullptr);
+	bool multipleRequests(false);
+
+	if (cmdFile->searchCriteria(&cols_, search)) {
+		// Le critère de rupture est-il valide ?
+		if (search.tabType().size() && structs_.levelsByType(search.tabType().c_str(), levels)) {
+			logs_->add(logs::TRACE_TYPE::ERR, "La valeur '%s' ne correspond à aucun type de structures. Il n'y aura pas de rupture.", search.tabType().c_str());
+			search.setTabType("");
+		}
+
+		// Y at'il un container avec ce nom ?
+		string sContainer(search.container());
+		if (sContainer.size()) {
+			if (nullptr == (pContainer = containers_->findContainer(sContainer, baseContainer))) {
+				logs_->add(logs::TRACE_TYPE::ERR, "Le critère '%s' ne correspond à aucun élément de structure", search.container().c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Aucun fichier ne sera généré");
+				return RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR;
+			}
+			else {
+			    // Il y a un critère de rupture !!!
+				if(search.tabType().size()){
+                    // Ce container doit avoir l'attribut 'niveau' si on désire une rupture
+                    containersList::attrTuple* levelAttr = pContainer->findAttribute(levelAttr_);
+                    if (nullptr == levelAttr) {
+                        if (logs_) {
+                            logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver la valeur de l'attribut '%s' pour '%s'", levelAttr_.c_str(), pContainer->DN());
+                        }
+                    }
+                    else {
+                        // L'ensemble est ordonné le niveau du container doit donc être <= au niveau du premier élément
+                        size_t contLevel = atoi(levelAttr->value().c_str());
+                        if (levels.size()) {
+                            auto first = levels.begin();
+                            multipleRequests = (contLevel <= (*first));
+                        }
+                        else {
+                            multipleRequests = false;
+                        }
+                  }
+                }
+			}
+		}
+	}
+
+	// Nom court du fichier de sortie
+	if (pContainer) {
+		opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pContainer->realName(), pContainer->shortName());
+	}
+	else {
+		opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), NULL, NULL);
+	}
+
+	// -> mise à jour du nom du fichier
+	file_->setFileName(opfi.name_, true);
+
+	// Création du fichier
+	if (!file_->create()) {
+		logs_->add(logs::TRACE_TYPE::ERR, "Erreur lors de la création du fichier de sortie");
+		return RET_TYPE::RET_BLOCKING_ERROR;
 	}
 
 	// Je peux maintenant générer la requête
@@ -843,6 +856,9 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	// Gestion de la (ou des) requête(s)
 	//
+
+	size_t agentsCount(0);		// Nombre d'agents récupérés
+
 	if (multipleRequests){
 		// Plusieurs requetes => plusieurs onglets
 		logs_->add(logs::TRACE_TYPE::LOG, "Recherche de tous les agents dépendants de '%s'", search.container().c_str());
@@ -950,9 +966,9 @@ RET_TYPE LDAPBrowser::_createFile()
 				// Une copie de fichier
 				//case DEST_TYPE::DEST_FS_WINDOWS:{
 				case DEST_TYPE::DEST_FS: {
-					//  fullName = sFileSystem::merge(dest->folder(), opfi.name_);
 					string name = sFileSystem::split(file_->fileName());
 					fullName = sFileSystem::merge(dest->folder(), name);
+					//fullName = sFileSystem::merge(dest->folder(), opfi.name_);
 
 					if (!sFileSystem::copy_file(file_->fileName(), fullName.c_str())){
 						atLeastOneError = true;
@@ -1627,8 +1643,13 @@ bool LDAPBrowser::_getLDAPContainers()
 #endif // UTF8_ENCODE_INPUTS
 						ldapServer_->valueFree(pValue);
 
-						// Ajout de l'attribut et de sa valeur
-						pContainer->add(pAttribute, u8Value.c_str());
+						if (!encoder_.stricmp(pAttribute, STR_ATTR_DESCRIPTION)) {
+							pContainer->setRealName(u8Value);
+						}
+						else {
+							// Ajout de l'attribut et de sa valeur
+							pContainer->add(pAttribute, u8Value.c_str());
+						}
 					}   // if (NULL ...
 
 					// Prochain attribut
@@ -2284,7 +2305,7 @@ void LDAPBrowser::_handlePostGenActions(OPFI& opfi)
 
 								// On remplace le nom du fichier "source" par celui généré
 								//
-								file_->setFileName(output);					// dans le "fichier" le nom complet
+								file_->setFileName(output, false);			// dans le "fichier" le nom complet
 								opfi.name_ = sFileSystem::split(output);	// le nom court
 
 								logs_->add(logs::TRACE_TYPE::NORMAL, "\t- Renomamge du fichier de sortie en : %s", output.c_str());							}

@@ -92,7 +92,15 @@ public:
 	{ return  (elements_ - 1); }        // Suppression de l'entêe dans le décompte des lignes
 
 	// Création / initialisation(s)
-	virtual bool create();
+	virtual bool initialize(){
+		// La couleur des lignes doit-elle etre alternee ?
+		alternateRowCol_ = (templateFile_.npos != templateFile_.find(XML_TEMPLATE_FILE_ALTERNATE));
+
+		// OK
+		return true;
+	}
+	virtual bool create()				// Ouverture du fichier
+	{ return XMLFile::_init();}
 
 	// Noms des fichiers
 	virtual void defaultContentFileName(string& dest, bool ShortName = true);

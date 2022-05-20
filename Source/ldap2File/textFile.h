@@ -58,7 +58,7 @@ public:
 	void setSeparators(const char* valSep = STR_FR_SEP, const char* valEOL = NULL);
 
 	// Création / initialisation(s)
-	virtual bool create();
+	virtual bool initialize();
 
 	// Ajout d'une valeur (avec changement de colonne)
 	virtual bool add(string& value);

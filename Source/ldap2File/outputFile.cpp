@@ -89,6 +89,38 @@ outputFile::~outputFile()
 	}
 }
 
+// Changement de nom
+//
+void outputFile::setFileName(string& source, bool keepPath)
+{
+	if (keepPath) {
+		// Conservation de l'ancien chemin
+		string oPath("");
+		string oName(sFileSystem::split(fileName_, oPath));
+
+		// En cas d'erreur ...
+		if (0 == oPath.size()) {
+			// Pas de dossier à l'origine
+			fileName_ = source;
+		}
+		else {
+			// Le "nouveau" nom n'a donc pas de chenmin ...
+			string nPath("");
+			string nName(sFileSystem::split(source, nPath));
+
+			// Pas de nom en destination ???
+			if (0 != nName.size()) {
+				// Nouveau nom ...
+				fileName_ = sFileSystem::merge(oPath, nName);
+			}
+		}
+	}
+	else {
+		// On écrase !
+		fileName_ = source;
+	}
+}
+
 // Type du fichier
 //
 void outputFile::_setFileType(FILE_TYPE fileType, bool newFile)

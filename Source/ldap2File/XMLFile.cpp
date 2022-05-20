@@ -82,7 +82,7 @@ XMLFile::XMLFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::ISO_8859_15);
 #endif // _WIN32
 	// La ligne est vide
-	line_ = NULL;
+	line_ = nullptr;
 	values_ = 0;
 	colIndex_ = 0;
 }
@@ -102,7 +102,7 @@ XMLFile::~XMLFile()
 
 // Initialisation(s)
 //
-bool XMLFile::init(){
+bool XMLFile::_init(){
 	// Preparation de la matrice en mémoire
 	values_ = columns_->size();
 	if (NULL == (line_ = new XMLFile::XMLCELL[values_])){

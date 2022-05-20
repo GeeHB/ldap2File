@@ -15,9 +15,9 @@ TODO{
 	        + intlStr(languageID)
 	        + intlStr::getString(strID)
 
-    # Logs
-        + La classe doit devenir "streamable"
-        + Descripteurs de formats (PID, Date, Heure, Niveau ...)
+    	# Logs
+    	    + La classe doit devenir "streamable"
+       	    + Descripteurs de formats (PID, Date, Heure, Niveau ...)
 		? Utilisation de la macro __FUNCTION__ en mode ERR ou full logs
 
 
@@ -32,8 +32,9 @@ TODO{
 	    + Vérification & réecriture SMTPClient
 
 	# Général
-		+ A t'on besoin de std::deque ?
+		+ Vérifier que std::set est bien ordonné par ordre croissant (sinon le coder ...)
 		+ Pour chaque "liste" déterminer le plus adapté : std::deque, std::list, std::vector, std::set, ...
+		+ Quelles sont les constantes XML/LDAP nécessaires ? Idéalement presque aucune !
 }
 
 
@@ -42,11 +43,13 @@ BUGS{
 }
 
 22.5.2
-    * le 11 mai 2022
-    	- Corrections
-        	+ Mise en cohérence du nom des classes et nom de fichiers : ldapBrowser devient LDAPBrowser, LDAPAttributes.h, LDAPFile, ...
+    * le 20 mai 2022
+    	+ Mise en cohérence du nom des classes et nom de fichiers : ldapBrowser devient LDAPBrowser, LDAPAttributes.h, LDAPFile, ...
 		+ Logs ...
-		- Regression : Impossible de récupérer les informations sur le serveur d'images dans le fichier de configuration
+		- Regressions
+			- Impossible de récupérer les informations sur le serveur d'images dans le fichier de configuration
+			- Cas des "colonnes" vides dans un fichier ODS
+			- Pas de tokenisation dans le nom du fichier de sortie
 		- Fichier de commande : prise en compte de l'OS pour les <Destination>
 	+ Nouvel algorithme pour la gestion de l'héritage des attributs
 		+ ajout des classes 
@@ -58,7 +61,7 @@ BUGS{
 		+ L'attribut XML "recursivite" devient "heritable"
 	+ Fichier de commande et/ou template : ajout d'une valeur par défaut pour les colonnes (attribut "Defaut" )
 	+ Fichier de conf
-		+ Ajout de l'attribut <Niveau> afin de définir le nom de l'attribut pour modéliser le niveau de chaque structure
+		+ Ajout de la valeur <Parametres>\<Niveau> afin de définir le nom de l'attribut pour modéliser le niveau de chaque structure
 
 22.5.1
     * le 6 mai 2022 - Version complète (et non regressive)

@@ -208,7 +208,9 @@ public:
     }
 
 	// Création du fichier / initialisation(s)
-	virtual bool create() = 0;
+	virtual bool initialize() = 0;
+	virtual bool create()
+	{ return true; }
 
 	// Nom du fichier
 	void rename(const string& sName){
@@ -242,9 +244,9 @@ public:
 	{ return elements_; }
 
 	// Changement de nom
-	void setFileName(string& source) {
+	void setFileName(string& source, bool keepPath);/* {
 		fileName_ = source;
-	}
+	}*/
 
 	// Un autre fichier pour gérer du contenu?
 	// ou le même ...

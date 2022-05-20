@@ -84,7 +84,7 @@ public:
 	virtual ~vCardFile() {}
 
 	// Création du fichier
-	virtual bool create();
+	virtual bool initialize();
 
 	// Paramètres spécifiques
 	virtual bool getOwnParameters();

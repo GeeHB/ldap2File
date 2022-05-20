@@ -66,9 +66,6 @@ public:
 	// Destruction
 	virtual ~XMLFile();
 
-	// Initialisation(s)
-	virtual bool init();
-
 	// Noms des fichiers
 	virtual void defaultContentFileName(string& dest, bool ShortName = true)
 	{}
@@ -118,6 +115,9 @@ public:
 	//
 protected:
 
+	// Initialisation(s)
+	bool _init();
+	
 	void _emptyLine();
 
 	// Gestion du fichier XML

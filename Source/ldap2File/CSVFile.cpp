@@ -70,18 +70,18 @@ CSVFile::~CSVFile()
 
 // Création / initialisation(s)
 //
-bool CSVFile::create()
+bool CSVFile::initialize()
 {
 	// Préparation de la matrice en mémoire
 	values_ = columns_->size();
-	if (NULL == (line_ = new VALUE[values_])){
+	if (NULL == (line_ = new VALUE[values_])) {
 		throw LDAPException("CSVFile - Impossible d'allouer de la mémoire pour la modélisation d'une ligne");
 	}
 
 	// Création de l'entête
 	_addHeader();
 
-	return textFile::create();
+	return textFile::initialize();
 }
 
 // Lecture des paramètres "personnels" dans le fichier de conf

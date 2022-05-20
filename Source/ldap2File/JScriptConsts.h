@@ -65,13 +65,12 @@
 #define JS_DEF_STRUCT_LEVEL         0xFFFFFFFF      // Pas de niveau
 
 // pour mémoire ...
-#define JS_BK_COLOR_MAIRE_DGS		_T("#00919e")
-#define JS_BK_COLOR_CABINET			_T("#832769")
-#define JS_BK_COLOR_DGA_SP			_T("#d8127d")		// Services à la population
-#define JS_BK_COLOR_DGA_ST			_T("#00a3da")		// Services Techniques
-#define JS_BK_COLOR_DGA_DU			_T("#84bf41")		// Développement Urbain
-#define JS_BK_COLOR_DGA_R			_T("#e36e2a")		// Ressources
-#define JS_BK_COLOR_CCAS			_T("#532b7a")		// CCAS
+#define JS_BK_COLOR_PCD_DGS		_T("#00699c")
+#define JS_BK_COLOR_CABINET		_T("#8291a9")
+#define JS_BK_COLOR_CHARGES_MISSION	_T("#3a8bb3")
+#define JS_BK_COLOR_DGA_SOLIDARITES	_T("#dc674c")		// Solidarités
+#define JS_BK_COLOR_DGA_RESSOURCES	_T("#41bbb8")
+#define JS_BK_COLOR_DGA_DEV_ATTRACT	_T("#e6c260")
 
 
 // Elements de syntaxe

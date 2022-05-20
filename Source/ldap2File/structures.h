@@ -43,9 +43,9 @@ public:
 	// Construction et destruction
 	//
 	structures()
-	{ logs_ = nullptr;}
+	{ logs_ = nullptr; uniques_ = 0; }
 	structures(logs* pLogs)
-	{ logs_ = pLogs; }
+	{ logs_ = pLogs; uniques_ = 0; }
 	virtual ~structures()
 	{ clear(); }
 
@@ -59,6 +59,8 @@ public:
 	// Nombre d'elements
 	size_t size()
 	{ return elements_.size(); }
+	size_t uniques()	// Nombre d'éléments différents
+	{ return uniques_; }
 
 	// Ajout d'un élément
 	bool add(std::string& type, size_t level) {
@@ -106,6 +108,7 @@ protected:
 
 	logs*					logs_;
 	deque<LPSTRUCTELEMENT>	elements_;	// Liste des éléments de structure
+	size_t					uniques_;	// Nombre d'éléments uniques
 };
 
 #endif // __LDAP_2_FILE_LDAP_STRUCTURES_h__

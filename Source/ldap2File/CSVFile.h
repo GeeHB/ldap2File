@@ -57,7 +57,7 @@ public:
 	 }
 
 	// Création / initialisation(s)
-	virtual bool create();
+	virtual bool initialize();
 
 	// Un autre fichier pour gérer du contenu?
 	virtual orgChartFile* addOrgChartFile(bool flatMode, bool fullMode, bool& newFile);

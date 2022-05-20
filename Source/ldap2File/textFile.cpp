@@ -83,7 +83,7 @@ void textFile::setSeparators(const char* valSep, const char* valEOL)
 
 // Initialisation(s)
 //
-bool textFile::create(){
+bool textFile::initialize(){
 	currentLine_ = "";
 
 	// Ok

@@ -45,7 +45,9 @@ void structures::clear()
 		}
 	}
 
+	// La liste est vide
 	elements_.clear();
+	uniques_ = 0;
 }
 
 // Liste des "niveaux" associés à un type de container
@@ -81,8 +83,7 @@ bool structures::levelsByType(std::string& type, std::set<size_t>& levels)
 bool structures::_add(STRUCTELEMENT& element)
 {
 	// Quelques vérifications
-	if (DEF_STRUCT_LEVEL == element.level_ || !element.type_.size())
-	{
+	if (DEF_STRUCT_LEVEL == element.level_ || !element.type_.size()){
 		// ???
 		return false;
 	}
@@ -141,6 +142,9 @@ bool structures::_add(STRUCTELEMENT& element)
 		if (logs_) {
 			logs_->add(logs::TRACE_TYPE::DBG, "Ajout de l'élément de structure {%s,%d}", element.type_.c_str(), element.level_);
 		}
+		
+		// C'est un nouvel élément
+		uniques_++;
 	}
 
 	return true;

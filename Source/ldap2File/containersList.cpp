@@ -304,7 +304,7 @@ bool containersList::add(LPLDAPCONTAINER container)
 #endif // _WIN32
 
 	if (logs_) {
-		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de '%s', DN '%s'", container->realName(), container->DN());
+		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de \"%s\", DN '%s'", container->realName(), container->DN());
 	}
 
 	return true;
@@ -366,7 +366,7 @@ bool containersList::findSubContainers(string& fromDN, std::set<size_t>& levels,
 	size_t fromLevel = atoi(levelAttr->value().c_str());
 
 
-	// Parcours des containers fils et autres descendants 
+	// Parcours des containers fils et autres descendants
 	//
 	LPLDAPCONTAINER childContainer(nullptr);
 	size_t dnSize = fromDN.size();
@@ -378,8 +378,8 @@ bool containersList::findSubContainers(string& fromDN, std::set<size_t>& levels,
 			childDN.npos != (pos = childDN.find(fromDN)) &&
 			pos >= 0) {
 			// Un de mes descendants ...
-			
-			
+
+
 			// Est-il au bon niveau ?
 			auto pos = levels.find(fromLevel);
 			if (pos != levels.end())
@@ -389,7 +389,7 @@ bool containersList::findSubContainers(string& fromDN, std::set<size_t>& levels,
 			}
 		}
 	}
-	
+
 	// Des éléments trouvés ?
 	return (containers.size() > 0);
 }
@@ -428,7 +428,7 @@ containersList::LPLDAPCONTAINER containersList::_findContainerByName(const char*
 		}
 	}
 
-	// Non trouve
+	// Non trouvé
 	return nullptr;
 }
 

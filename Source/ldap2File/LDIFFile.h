@@ -66,8 +66,8 @@ public:
 	// Destruction
 	virtual ~LDIFFile() {}
 
-	// Création du fichier
-	virtual bool create();
+	// Initilialisation du fichier
+	virtual bool initialize();
 
 	// Paramètres spécifiques
 	virtual bool getOwnParameters();

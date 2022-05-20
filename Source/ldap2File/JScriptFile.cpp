@@ -98,11 +98,11 @@ JScriptFile::~JScriptFile()
 
 // Initialisation(s)
 //
-bool JScriptFile::create(){
+bool JScriptFile::initialize(){
 	bool ret(textFile::create());
 
 	if (ret){
-	    ret = init();
+	    ret = _init();
 	}
 
 	return ret;
@@ -110,7 +110,7 @@ bool JScriptFile::create(){
 
 // Initialisation(s)
 //
-bool JScriptFile::init()
+bool JScriptFile::_init()
 {
 	// Serveur d'images
 	if (false == configurationFile_->imagesServer(photoServer_)) {

@@ -131,7 +131,7 @@ bool vCardFile::getOwnParameters()
 
 // Création du fichier / initialisations
 //
-bool vCardFile::create()
+bool vCardFile::initialize()
 {
 	// Création d'une ligne vierge
 	_newLine();

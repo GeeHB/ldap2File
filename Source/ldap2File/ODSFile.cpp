@@ -351,22 +351,6 @@ ODSFile::ODSFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 ODSFile::~ODSFile()
 {}
 
-// Création / initialisation(s)
-//
-bool ODSFile::create()
-{
-	// Intialisations et ouverture du fichier
-	//
-	if (!XMLFile::init()){
-		return false;
-	}
-
-	// La couleur des lignes doit-elle etre alternee ?
-	alternateRowCol_ = (templateFile_.npos != templateFile_.find(XML_TEMPLATE_FILE_ALTERNATE));
-
-	// OK
-	return true;
-}
 
 // Noms des fichiers
 //
@@ -492,6 +476,26 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 				else{
 					// Il n'y a pas de valeurs
 					// on regarde si les valeurs suivantes sont aussi vides
+					size_t nextValid(1 + colIndex);
+					while (nextValid < colMax && 0 == line_[nextValid]._value.size()) {
+						nextValid++;
+					}
+
+					// J'en ai plusieurs
+					if (nextValid > (1 + colIndex)) {
+						sValue = charUtils::itoa(nextValid - colIndex);
+						cell.append_attribute(ODS_CELL_REPEATED_ATTR) = sValue.c_str();
+					}
+
+					// Ai je atteint la fin du tableau ?
+					colIndex = (nextValid >= columns_->size() ? nextValid : nextValid - 1);
+				}
+
+				// Une autre valeur ?
+				pCell = pCell->_next;
+					/*
+					// Il n'y a pas de valeurs
+					// on regarde si les valeurs suivantes sont aussi vides
 					size_t nextValid(1+colIndex);
 					while (nextValid < colMax && 0 ==line_[nextValid]._value.size()){
 						nextValid++;
@@ -504,11 +508,17 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 					}
 
 					// Ai je atteint la fin du tableau ?
-					colIndex = (nextValid >= (colMax -1) ? nextValid : nextValid - 1);
+					if (nextValid >= (colMax - 1)) {
+						colIndex = colMax;
+						pCell = nullptr;
+					}
+					else {
+						colIndex = nextValid - 1;
+					}
 				}
 
 				// Une autre valeur ?
-				pCell = pCell->_next;
+				pCell = pCell? pCell->_next : nullptr; */
 			}
 		}
 	}

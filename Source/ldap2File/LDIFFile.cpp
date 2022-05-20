@@ -216,7 +216,7 @@ bool LDIFFile::getOwnParameters()
 
 // Création du fichier / initialisations
 //
-bool LDIFFile::create()
+bool LDIFFile::initialize()
 {
 	// Création d'une ligne vierge
 	_newLine();
