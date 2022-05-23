@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 //--
-//--	FICHIER	: containersList.cpp
+//--	FICHIER	: containers.cpp
 //--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Implémentation de la classe containersList
+//--			Implémentation de la classe containers
 //--			Gestion des container LDAP pour mettre en place l'héritage
 //--			d'attributs
 //--
@@ -27,16 +27,46 @@
 //--
 //---------------------------------------------------------------------------
 
-#include "containersList.h"
+#include "containers.h"
 #include "sharedTypes.h"
 
 //
-//	containersList:LDAPContainer : un container LDAP
+//	containers:LDAPContainer : un container LDAP
 //
+
+// Nom "huumain" du container
+//
+void containers::LDAPContainer::setRealName(std::string& name)
+{
+	// On conserve le nom
+	realName_ = name;
+
+	// Sous Windows les comparaisons se font sans accents
+#ifdef _WIN32
+	std::string cName = charUtils::removeAccents(name);
+	cleanName_ = cName;
+#endif // _WIN32
+}
+
+// Egalité
+//  S'agit'il du container recherché (par son nom)
+//
+bool containers::LDAPContainer::equalName(const char* value)
+{
+    if (IS_EMPTY(value)){
+        return (0 == realName_.size());
+    }
+
+#ifdef _WIN32
+    return ((cleanName_ == value) || (realName_ == value));
+#else
+    return ((realName_ == value));
+#endif // WIN32
+}
 
 // Ajout d'une valeur à un attribut
 //
-bool containersList::LDAPContainer::add(const char* aName, const char* aValue)
+bool containers::LDAPContainer::add(const char* aName, const char* aValue)
 {
     // Vérification des paramètres
     if (IS_EMPTY(aName) || IS_EMPTY(aValue)){
@@ -51,7 +81,7 @@ bool containersList::LDAPContainer::add(const char* aName, const char* aValue)
 #endif // _DEBUG
 
     // L'attribut est-il déja présent ?
-    containersList::attrTuple* attr(findAttribute(aName));
+    containers::attrTuple* attr(findAttribute(aName));
     if (nullptr != attr){
         // Mise à jour de la valeur
         attr->setValue(aValue);
@@ -59,7 +89,7 @@ bool containersList::LDAPContainer::add(const char* aName, const char* aValue)
     }
 
     // Non prrésent => Création d'un nouvel attribut
-    attributes_.push_back(containersList::attrTuple(aName, aValue));
+    attributes_.push_back(containers::attrTuple(aName, aValue));
 
     // Ajouté avec succès
     return true;
@@ -67,7 +97,7 @@ bool containersList::LDAPContainer::add(const char* aName, const char* aValue)
 
 // Recherche d'un attribut par son nom
 //
-containersList::attrTuple* containersList::LDAPContainer::findAttribute(std::string& name)
+containers::attrTuple* containers::LDAPContainer::findAttribute(std::string& name)
 {
     if (0 == name.size()){
         return nullptr;
@@ -86,12 +116,12 @@ containersList::attrTuple* containersList::LDAPContainer::findAttribute(std::str
 }
 
 //
-//	containersList : gestion de tous les containers
+//	containers : gestion de tous les containers
 //
 
 // Construction
 //
-containersList::containersList(logs* pLogs, std::string& levelName)
+containers::containers(logs* pLogs, std::string& levelName)
 {
 	// Copie des valeurs
 	logs_ = pLogs;
@@ -100,7 +130,7 @@ containersList::containersList(logs* pLogs, std::string& levelName)
 
 // Mise à jour des liens (chainage) entre les différents containers
 //
-void containersList::chain()
+void containers::chain()
 {
 	LDAPContainer *me(nullptr), *prev(nullptr);
 
@@ -126,7 +156,7 @@ void containersList::chain()
 
 // Vidage
 //
-void containersList::clear()
+void containers::clear()
 {
 	// Suppression de tous les containers
 	//
@@ -146,7 +176,7 @@ void containersList::clear()
 
 // Ajout d'un attribut
 //
-bool containersList::addAttribute(std::string& name, const char* value)
+bool containers::addAttribute(std::string& name, const char* value)
 {
 	if (0 == name.size()) {
 		return false;
@@ -167,7 +197,7 @@ bool containersList::addAttribute(std::string& name, const char* value)
 
 // Tableau des attributs
 //
-const char** containersList::getAttributes()
+const char** containers::getAttributes()
 {
 	// Pas d'attributs ?
 	if (0 == attributes_.size()) {
@@ -185,7 +215,7 @@ const char** containersList::getAttributes()
 
 // Nom LDAP d'un attribut hérité
 //
-bool containersList::getAttributeName(size_t index, std::string& name)
+bool containers::getAttributeName(size_t index, std::string& name)
 {
 	// Index valide ?
 	if (index >= attributes_.size()) {
@@ -204,7 +234,7 @@ bool containersList::getAttributeName(size_t index, std::string& name)
 
 // Recherche de la valeur d'un attribut hérité
 //
-bool containersList::getAttributeValue(std:: string& DN, std:: string& attrName, std::string& value)
+bool containers::getAttributeValue(std:: string& DN, std:: string& attrName, std::string& value)
 {
 	value = "";			// Par défaut l'attribut n'est pas renseingé
 
@@ -260,7 +290,7 @@ bool containersList::getAttributeValue(std:: string& DN, std:: string& attrName,
 // Ajout d'un container
 //
 //
-bool containersList::add(LPLDAPCONTAINER container)
+bool containers::add(LPLDAPCONTAINER container)
 {
 	if (nullptr == container) {
 		return false;
@@ -270,8 +300,8 @@ bool containersList::add(LPLDAPCONTAINER container)
 	LDAPContainer* prev(nullptr);
 	if (nullptr != (prev = _findContainerByDN(container->DN()))) {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "containersList::add - Le container '%s' est déja défini avec le DN : '%s'", container->realName(), prev->DN());
-			logs_->add(logs::TRACE_TYPE::ERR, "containersList::add - Le container '%s' ne sera pas pris en compte", container->DN());
+			logs_->add(logs::TRACE_TYPE::ERR, "containers::add - Le container '%s' est déja défini avec le DN : '%s'", container->realName(), prev->DN());
+			logs_->add(logs::TRACE_TYPE::ERR, "containers::add - Le container '%s' ne sera pas pris en compte", container->DN());
 		}
 
 		return false;
@@ -297,12 +327,6 @@ bool containersList::add(LPLDAPCONTAINER container)
 		containers_.push_back(container);
 	}
 
-#ifdef _WIN32
-	// Sous Windows les comparaisons se font sans accents
-	std::string sName = charUtils::removeAccents(container->realName());
-	container->setRealName(sName);
-#endif // _WIN32
-
 	if (logs_) {
 		logs_->add(logs::TRACE_TYPE::DBG, "Ajout de \"%s\", DN '%s'", container->realName(), container->DN());
 	}
@@ -312,7 +336,7 @@ bool containersList::add(LPLDAPCONTAINER container)
 
 // Recherche d'un container par son nom
 //
-containersList::LPLDAPCONTAINER containersList::findContainer(string& name, string& DN)
+containers::LPLDAPCONTAINER containers::findContainer(string& name, string& DN)
 {
 	LPLDAPCONTAINER container(nullptr);
 #ifdef _WIN32
@@ -332,14 +356,14 @@ containersList::LPLDAPCONTAINER containersList::findContainer(string& name, stri
 
 // Recherche de tous les sous-conatiners à partir de ..., sur le critère du niveau de la structure
 //
-bool containersList::findSubContainers(string& fromDN, std::set<size_t>& levels, std::deque<LPLDAPCONTAINER>& containers)
+bool containers::findSubContainers(string& fromDN, std::set<size_t>& levels, std::deque<LPLDAPCONTAINER>& containers)
 {
 	// Vérification des paramètres
 	//
 	if (0 == levels.size()) {
 		// Pas de sous-niveaux => pas de sous-containers
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "containersList::findSubContainers - Pas de niveaux pour la recherche de sous-containers");
+			logs_->add(logs::TRACE_TYPE::ERR, "containers::findSubContainers - Pas de niveaux pour la recherche de sous-containers");
 		}
 		return false;
 	}
@@ -349,22 +373,23 @@ bool containersList::findSubContainers(string& fromDN, std::set<size_t>& levels,
 	if (nullptr == fromContainer) {
 		// Impossible de trouver le container
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "containersList::findSubContainers - Impossible de trouver un container dont le DN serait '%s'", fromDN.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "containers::findSubContainers - Impossible de trouver un container dont le DN serait '%s'", fromDN.c_str());
 		}
 		return false;
 	}
 
-	// Quel est mon "niveau"
-	containersList::attrTuple* levelAttr = fromContainer->findAttribute(levelAttrName_);
+
+	// Quel est son "niveau"
+	containers::attrTuple* levelAttr = fromContainer->findAttribute(levelAttrName_);
 	if (nullptr == levelAttr) {
 		if (logs_) {
-			logs_->add(logs::TRACE_TYPE::ERR, "containersList::findSubContainers - Impossible de trouver la valeur de l'attribut '%s' pour '%s'", levelAttrName_.c_str(), fromDN.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "containers::findSubContainers - Impossible de trouver l'attribut '%s' pour le container '%s'", levelAttrName_.c_str(), fromDN.c_str());
 		}
 		return false;
 	}
 
-	size_t fromLevel = atoi(levelAttr->value().c_str());
-
+	size_t fromLevel(atoi(levelAttr->value().c_str()));	// "Mon" niveau
+	size_t childLevel(0);
 
 	// Parcours des containers fils et autres descendants
 	//
@@ -378,14 +403,22 @@ bool containersList::findSubContainers(string& fromDN, std::set<size_t>& levels,
 			childDN.npos != (pos = childDN.find(fromDN)) &&
 			pos >= 0) {
 			// Un de mes descendants ...
-
-
 			// Est-il au bon niveau ?
-			auto pos = levels.find(fromLevel);
-			if (pos != levels.end())
-			{
-				// oui => je le garde
-				containers.push_back(childContainer);
+
+			// Quel est son "niveau" ?
+			containers::attrTuple* levelAttr = childContainer->findAttribute(levelAttrName_);
+			if (nullptr != levelAttr) {
+
+				childLevel = atoi(levelAttr->value().c_str());
+
+				// Recherche dans la liste des niveaux autorisés
+				auto pos = levels.find(childLevel);
+				if (childLevel == fromLevel ||
+					pos != levels.end())
+				{
+					// oui => je le garde
+					containers.push_back(childContainer);
+				}
 			}
 		}
 	}
@@ -396,7 +429,7 @@ bool containersList::findSubContainers(string& fromDN, std::set<size_t>& levels,
 
 // Recherche d'un container par son DN
 //
-containersList::LPLDAPCONTAINER containersList::_findContainerByDN(const char* DN)
+containers::LPLDAPCONTAINER containers::_findContainerByDN(const char* DN)
 {
 	if (IS_EMPTY(DN)) {
 		return nullptr;
@@ -415,7 +448,7 @@ containersList::LPLDAPCONTAINER containersList::_findContainerByDN(const char* D
 
 // ou par son nom
 //
-containersList::LPLDAPCONTAINER containersList::_findContainerByName(const char* name)
+containers::LPLDAPCONTAINER containers::_findContainerByName(const char* name)
 {
 	if (IS_EMPTY(name)) {
 		return nullptr;
@@ -434,7 +467,7 @@ containersList::LPLDAPCONTAINER containersList::_findContainerByName(const char*
 
 // En partant d'un DN "fils"
 //
-containersList::LPLDAPCONTAINER containersList::_firstContainer(string& DN)
+containers::LPLDAPCONTAINER containers::_firstContainer(string& DN)
 {
 	string dn(DN);
 	LPLDAPCONTAINER parent(nullptr);
@@ -452,7 +485,7 @@ containersList::LPLDAPCONTAINER containersList::_firstContainer(string& DN)
 
 // DN d'un container
 //
-bool containersList::_containerDN(std::string& DN)
+bool containers::_containerDN(std::string& DN)
 {
     size_t pos = DN.find(LDAP_PREFIX_OU, 1);
     if (DN.npos != pos) {

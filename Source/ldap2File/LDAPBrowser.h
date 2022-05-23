@@ -37,7 +37,7 @@
 
 #include "LDAPSources.h"
 
-#include "containersList.h"
+#include "containers.h"
 #include "structures.h"
 
 #include "destinationList.h"
@@ -126,7 +126,7 @@ protected:
 
 	logs*					logs_;				// Logs
 
-	containersList*			containers_;		// Containers (svc, direction, etc...)
+	containers*			containers_;		// Containers (svc, direction, etc...)
 	structures				structs_;			// Structures et niveaux associés
 
 #ifdef __LDAP_USE_ALLIER_TITLES__

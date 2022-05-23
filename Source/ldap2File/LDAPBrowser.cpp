@@ -209,7 +209,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 
 
 	// Liste des containers
-	if (NULL == (containers_ = new containersList(logs_, levelColName))) {
+	if (NULL == (containers_ = new containers(logs_, levelAttr_))) {
 		// Fin du processus
 		throw LDAPException("Impossible de créer la liste des containers");
 	}
@@ -679,6 +679,25 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	logs_->add(logs::TRACE_TYPE::LOG, "%d colonnes à créer", cols_.size());
 
+	// Une rupture ?
+	commandFile::criterium search;
+	bool searchCriterium(cmdFile->searchCriteria(&cols_, search));
+
+	if (searchCriterium && 0 != search.tabType().size()) {
+		// Une rupture => il faut ajouter la colonne sur le niveau
+		if (0 == levelAttr_.c_str()) {
+			logs_->add(logs::TRACE_TYPE::ERR, "Le critère `Niveau' pour les structures n'est pas défini. Impossible d'appliquer uen rupture");
+			return RET_TYPE::RET_INVALID_PARAMETERS;
+		}
+
+		// J'ajoute la colonne si nécessaire
+		if (cols_.npos == cols_.getColumnByType(COL_STRUCT_LEVEL)) {
+			cols_.append(COL_STRUCT_LEVEL);
+
+			logs_->add(logs::TRACE_TYPE::LOG, "Rupture - Ajout d'une colonne de type \'%s\'", COL_STRUCT_LEVEL);
+		}
+	}
+
 	// Maintenant que j'ai la liste des colonnes,
 	// je peux déterminer si j'ai besoin d'attributs hérités
 	if (!_getLDAPContainers()) {
@@ -700,15 +719,14 @@ RET_TYPE LDAPBrowser::_createFile()
 	// Y a t'il une rupture ?
 	//
 	string baseContainer("");
-	commandFile::criterium search;
 	std::set<size_t> levels;
-	containersList::LPLDAPCONTAINER pContainer(nullptr);
+	containers::LPLDAPCONTAINER pContainer(nullptr);
 	bool multipleRequests(false);
 
-	if (cmdFile->searchCriteria(&cols_, search)) {
+	if (searchCriterium) {
 		// Le critère de rupture est-il valide ?
-		if (search.tabType().size() && structs_.levelsByType(search.tabType().c_str(), levels)) {
-			logs_->add(logs::TRACE_TYPE::ERR, "La valeur '%s' ne correspond à aucun type de structures. Il n'y aura pas de rupture.", search.tabType().c_str());
+		if (!search.tabType().size() || !structs_.levelsByType(search.tabType().c_str(), levels)) {
+			logs_->add(logs::TRACE_TYPE::ERR, "La valeur '%s' ne correspond à aucun type de structure. Il n'y aura pas de rupture.", search.tabType().c_str());
 			search.setTabType("");
 		}
 
@@ -723,9 +741,11 @@ RET_TYPE LDAPBrowser::_createFile()
 			else {
 			    // Il y a un critère de rupture !!!
 				if(search.tabType().size()){
-                    // Ce container doit avoir l'attribut 'niveau' si on désire une rupture
-                    containersList::attrTuple* levelAttr = pContainer->findAttribute(levelAttr_);
-                    if (nullptr == levelAttr) {
+
+					// Ce container doit avoir l'attribut 'niveau' si on désire une rupture
+                    containers::attrTuple* levelAttr = pContainer->findAttribute(levelAttr_);
+
+					if (nullptr == levelAttr) {
                         if (logs_) {
                             logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver la valeur de l'attribut '%s' pour '%s'", levelAttr_.c_str(), pContainer->DN());
                         }
@@ -864,13 +884,13 @@ RET_TYPE LDAPBrowser::_createFile()
 		logs_->add(logs::TRACE_TYPE::LOG, "Recherche de tous les agents dépendants de '%s'", search.container().c_str());
 		logs_->add(logs::TRACE_TYPE::LOG, "Onglet(s) par '%s'", search.tabType().c_str());
 
-		deque<containersList::LPLDAPCONTAINER> containers;
+		deque<containers::LPLDAPCONTAINER> containers;
 		if (containers_->findSubContainers(baseContainer, levels, containers)){
 			// Une requête par sous-container ...
 			bool start(true);
 			size_t agents(0);
 			bool treeSearch(true);
-			for (deque<containersList::LPLDAPCONTAINER>::iterator it = containers.begin(); it != containers.end(); it++){
+			for (deque<containers::LPLDAPCONTAINER>::iterator it = containers.begin(); it != containers.end(); it++){
 				// Nom de l'onglet
 				if (start){
 					// On renomme l'onglet courant
@@ -890,7 +910,7 @@ RET_TYPE LDAPBrowser::_createFile()
 #ifdef _DEBUG
                 string cName(search.container()), rName((*it)->realName());
 #endif // _DEBUG
-				treeSearch = search.container() != (*it)->realName();
+				treeSearch = !(*it)->equalName(search.container().c_str());
 				agents = _simpleLDAPRequest(pAttributes, search, (*it)->DN(),treeSearch,  srvControls, sortControl);
 				logs_->add(logs::TRACE_TYPE::NORMAL, "Ajout de l'onglet '%s' avec %d agent(s)", (*it)->realName(), agents);
 				agentsCount += agents;
@@ -1614,7 +1634,7 @@ bool LDAPBrowser::_getLDAPContainers()
 	}
 
 	string description(""), bkColor(""), shortName(""), fileName(""), site("");
-	containersList::LDAPContainer* pContainer(nullptr);
+	containers::LDAPContainer* pContainer(nullptr);
 
 	//
 	// Transfert des données dans la liste
@@ -1627,7 +1647,7 @@ bool LDAPBrowser::_getLDAPContainers()
 		// Le DN doit êtrevalide
 		if (NULL != (pDN = ldapServer_->getDn(pEntry))){
 			// Nouveau container
-			if (nullptr == (pContainer = new containersList::LDAPContainer(pDN))) {
+			if (nullptr == (pContainer = new containers::LDAPContainer(pDN))) {
 				logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer un objet LDAPContainer pour `%s`", pDN);
 			}
 			else {

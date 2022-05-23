@@ -35,6 +35,7 @@ TODO{
 		+ Vérifier que std::set est bien ordonné par ordre croissant (sinon le coder ...)
 		+ Pour chaque "liste" déterminer le plus adapté : std::deque, std::list, std::vector, std::set, ...
 		+ Quelles sont les constantes XML/LDAP nécessaires ? Idéalement presque aucune !
+		+ Gestion / appartenance aux groupes ?
 }
 
 
@@ -44,24 +45,27 @@ BUGS{
 
 22.5.2
     * le 20 mai 2022
-    	+ Mise en cohérence du nom des classes et nom de fichiers : ldapBrowser devient LDAPBrowser, LDAPAttributes.h, LDAPFile, ...
-		+ Logs ...
-		- Regressions
-			- Impossible de récupérer les informations sur le serveur d'images dans le fichier de configuration
-			- Cas des "colonnes" vides dans un fichier ODS
-			- Pas de tokenisation dans le nom du fichier de sortie
-		- Fichier de commande : prise en compte de l'OS pour les <Destination>
+    + Mise en cohérence du nom des classes et nom de fichiers : ldapBrowser devient LDAPBrowser, LDAPAttributes.h, LDAPFile, ...
+	+ Logs ...
+	- Regressions
+		- Impossible de récupérer les informations sur le serveur d'images dans le fichier de configuration
+		- Cas des "colonnes" vides dans un fichier ODS
+		- Pas de tokenisation dans le nom du fichier de sortie
 	+ Nouvel algorithme pour la gestion de l'héritage des attributs
 		+ ajout des classes 
-			+ containersList : Liste des containers "héritables" dans l'Annuaire
+			+ containers : Liste des containers "héritables" dans l'Annuaire
 			+ structures : Eléments de structure définis par leur niveau
 		- suppression des classes servicesList et treeStruct
 		+ ldapBrowser::_getServices devient ldapBrowser::_getLDAPContainers
 			+ La méthode est appelée avec chaque fichier
 		+ L'attribut XML "recursivite" devient "heritable"
-	+ Fichier de commande et/ou template : ajout d'une valeur par défaut pour les colonnes (attribut "Defaut" )
+	+ Fichier de commande et/ou template
+		+ Prise en compte de l'OS pour les <Destination>
+		+ ajout d'une valeur par défaut pour les colonnes (attribut "Defaut" )
 	+ Fichier de conf
 		+ Ajout de la valeur <Parametres>\<Niveau> afin de définir le nom de l'attribut pour modéliser le niveau de chaque structure
+		+ Ajout de la section <Structures> pour la gestion des rupture ("SERVICE" = niveau 4 par ex.)
+		- Dispartion de la section <Structure> => le niveau est défini par un attribut de l'annuaire au niveau des containers
 
 22.5.1
     * le 6 mai 2022 - Version complète (et non regressive)

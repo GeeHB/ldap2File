@@ -443,6 +443,7 @@ int main(int argc, const char* argv[]) {
 	catch (LDAPException& e) {
 		// Une ereur bloquante
 		myLogs.add(logs::TRACE_TYPE::ERR, e.what());
+		cout << "Erreur bloquante. Arrêt des traitements" << endl;
 		retCode = 1;
 	}
 	catch (...) {

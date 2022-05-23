@@ -240,9 +240,11 @@ bool XMLParser::_load()
         message += fileName_;
         message += " n'existe pas ou est vide";
 
+		/*
 		if (logs_) {
             logs_->add(logs::TRACE_TYPE::ERR, message.c_str());
         }
+        */
 
         throw LDAPException(message);
 

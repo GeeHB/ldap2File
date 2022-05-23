@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------
 //--
-//--	FICHIER	: LDAPContainersList.h
+//--	FICHIER	: LDAPcontainers.h
 //--
 //--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--			Définition de la classe containersList
+//--			Définition de la classe containers
 //--			Gestion des container LDAP pour mettre en place l'héritage
 //--			d'attributs
 //--
@@ -38,7 +38,7 @@
 //
 // Définition de la classe
 //
-class containersList
+class containers
 {
 	// Méthodes publiques
 public:
@@ -104,7 +104,12 @@ public:
 	public:
 		// Construction
 		LDAPContainer(const char* dn)
-			: parent_{ nullptr }, DN_{ dn }, cleanName_{ "" }, realName_{ "" }, shortName_{ "" }
+#ifdef WIN32
+			: parent_{ nullptr }, DN_{ dn }, cleanName_{ "" }, realName_{ "" }, shortName_{""}
+#else
+            : parent_{ nullptr }, DN_{ dn }, realName_{ "" }, shortName_{""}
+
+#endif // WIN32
 		{}
 
 		// Destruction
@@ -131,15 +136,15 @@ public:
 		// Nom
 		const char* realName()
 		{ return realName_.c_str(); }
-		void setRealName(std::string& name) {
-			realName_ = name;
-		}
+		void setRealName(std::string& name);
 
+#ifdef WIN32
 		const char* cleanName()
 		{ return cleanName_.c_str(); }
 		void setCleanName(std::string& name) {
 			cleanName_ = name;
 		}
+#endif // WIN32
 
 		const char* shortName()
 		{ return shortName_.c_str(); }
@@ -155,7 +160,7 @@ public:
 		{ return attributes_.size(); }
 
 		// Recherche d'un attribut
-		containersList::attrTuple* findAttribute(const char* name){
+		containers::attrTuple* findAttribute(const char* name){
             if (IS_EMPTY(name)){
                 return nullptr;
             }
@@ -163,7 +168,7 @@ public:
 		    std::string sName(name);
 		    return findAttribute((sName));
 		}
-		containersList::attrTuple* findAttribute(std::string& name);
+		containers::attrTuple* findAttribute(std::string& name);
 
 		// Valeur d'un attribut
 		std::string attribute(const char* aName) {
@@ -172,7 +177,7 @@ public:
 		}
 		std::string attribute(std::string& name){
             // L'attribut est-il présent ?
-            containersList::attrTuple* attr(findAttribute(name));
+            containers::attrTuple* attr(findAttribute(name));
             return (nullptr == attr)?"":attr->value().c_str();
 		}
 
@@ -180,14 +185,13 @@ public:
 		bool add(const char* aName, const char* aValue);
 
 		// Parent
-		containersList::LDAPContainer* parent()
+		containers::LDAPContainer* parent()
 		{ return parent_;}
-		void setParent(containersList::LDAPContainer* parent)
+		void setParent(containers::LDAPContainer* parent)
 		{ parent_ = parent; }
 
 		// Egalité
-		bool equalName(const char* value)
-		{ return ((cleanName_ == value) || (realName_ == value)); }
+		bool equalName(const char* value);
 		bool equalName(string& value)
 		{ return equalName(value.c_str()); }
 
@@ -199,7 +203,9 @@ public:
 
 		// Attributs obligatoires
 		//
+#ifdef WIN32
 		std::string				cleanName_;		// Nom long sans accents
+#endif // #ifdef WIN32
 		std::string				realName_;		// Nom long "complet"
 		std::string				shortName_;		// Nom court
 
@@ -211,8 +217,8 @@ public:
 
 	// Construction et destruction
 	//
-	containersList(logs* pLogs, std::string& levelAttr);
-	virtual ~containersList()
+	containers(logs* pLogs, std::string& levelAttr);
+	virtual ~containers()
 	{ clear(); }
 
 	// Vidage de la liste
