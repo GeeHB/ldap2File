@@ -23,16 +23,12 @@ TODO{
 
 	# XML
 	    + pugi::XML Utilisation des XPaths et des predicates
-	    + Utilisation optionnelle du schéma
-	        + "oui" => récupération dans le fichier ldapConf
-	        + "non" => utilisation d'un attribut des container (par ex. allierNiveauStruct)
 
 	# Exceptions
 	    + Génération d'exceptions par SMTPClient
 	    + Vérification & réecriture SMTPClient
 
 	# Général
-		+ Vérifier que std::set est bien ordonné par ordre croissant (sinon le coder ...)
 		+ Pour chaque "liste" déterminer le plus adapté : std::deque, std::list, std::vector, std::set, ...
 		+ Quelles sont les constantes XML/LDAP nécessaires ? Idéalement presque aucune !
 		+ Gestion / appartenance aux groupes ?
@@ -52,7 +48,7 @@ BUGS{
 		- Cas des "colonnes" vides dans un fichier ODS
 		- Pas de tokenisation dans le nom du fichier de sortie
 	+ Nouvel algorithme pour la gestion de l'héritage des attributs
-		+ ajout des classes 
+		+ ajout des classes
 			+ containers : Liste des containers "héritables" dans l'Annuaire
 			+ structures : Eléments de structure définis par leur niveau
 		- suppression des classes servicesList et treeStruct
@@ -64,6 +60,7 @@ BUGS{
 		+ ajout d'une valeur par défaut pour les colonnes (attribut "Defaut" )
 	+ Fichier de conf
 		+ Ajout de la valeur <Parametres>\<Niveau> afin de définir le nom de l'attribut pour modéliser le niveau de chaque structure
+		+ Ajout de la valeur <Parametres>\<Nom-Court> afin de définir le nom de l'attribut qui donne le nom court d'un container
 		+ Ajout de la section <Structures> pour la gestion des rupture ("SERVICE" = niveau 4 par ex.)
 		- Dispartion de la section <Structure> => le niveau est défini par un attribut de l'annuaire au niveau des containers
 

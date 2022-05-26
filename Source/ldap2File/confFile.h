@@ -61,8 +61,12 @@ public:
 	{ return managersColName_; }
 
 	// Colonne du niveau des strctures
-	std::string LevelColName()
+	std::string levelColName()
 	{ return levelColName_;}
+
+	// Colonne pour le nom-court des strctures
+	std::string shortNameColName()
+	{ return shortNameColName_; }
 
 	// Fichier de Logs de sortie
 	bool logInfos(LOGINFOS& dst);
@@ -106,6 +110,7 @@ protected:
 		commandFile_ = nullptr;
 		managersColName_ = "";		// Pas de manager !!!
 		levelColName_ = "";
+		shortNameColName_ = "";
 	}
 
 	// Ouverture
@@ -122,13 +127,13 @@ protected:
 	//
 protected:
 
-	bool				fileRead_;			// Le fichier source a t'il été lu ?
+	bool			fileRead_;			// Le fichier source a t'il été lu ?
 
-	commandFile*		commandFile_;		// Fichier de commandes
-	std::string			managersColName_;	// Nom de la colonne qui contiendra le DN des managers
-	std::string			levelColName_;		// Nom de la colonne qui maintiendra le niveau de la structure
-	std::string			environment_;		// Nom de l'environnement (peut être vide)
-
+	commandFile*	commandFile_;		// Fichier de commandes
+	std::string		managersColName_;	// Nom de la colonne qui contiendra le DN des managers
+	std::string		levelColName_;		// Nom de la colonne qui maintiendra le niveau de la structure
+	std::string		shortNameColName_;	// Col. pour le nom-court des containers
+	std::string		environment_;		// Nom de l'environnement (peut être vide)
 
 	// Gestion de la structure de l'arborescence
 	XMLParser::XMLNode	structureElement_;

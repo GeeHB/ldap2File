@@ -116,7 +116,7 @@ containers::attrTuple* containers::LDAPContainer::findAttribute(std::string& nam
 }
 
 //
-//	containers : gestion de tous les containers
+//	containers : gestion de tous les containers LDAP
 //
 
 // Construction

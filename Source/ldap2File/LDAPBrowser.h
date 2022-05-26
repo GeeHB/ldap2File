@@ -137,7 +137,8 @@ protected:
 	std::string				managersCol_;		// Nom de la colonne utilisée pour les managers
 	std::string				managersAttr_;		// Attribut associé
 
-	std::string				levelAttr_;			// Attribut utilisé pour les niveaux des colonnes
+	std::string				levelAttr_;			// Attribut utilisé pour les niveaux des containers
+	std::string				shortNameAttr_;		// Attribut utilisé pour le nom-court d'un container
 
 	aliases					aliases_;			// Liste des alias
 

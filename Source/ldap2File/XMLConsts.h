@@ -56,6 +56,7 @@
 #define XML_MANAGER					"Encadrant"
 #define XML_LEVEL					"Niveau"
 #define XML_NAME					"Nom"
+#define XML_SHORTNAME				"Nom-Court"
 #define XML_FILE					"Fichier"
 #define XML_FOLDER					"Dossier"
 #define XML_DESTINATION				"Destination"
@@ -130,6 +131,10 @@
 // Nom de la colonne du niveau de la strcuture
 #define XML_CONF_LEVEL				XML_LEVEL
 #define LEVEL_NAME_ATTR				XML_NAME
+
+// Nom de la colonne pour le nom-court d'un container
+#define XML_CONF_SHORTNAME			XML_SHORTNAME
+#define SHORTNAME_NAME_ATTR			XML_NAME
 
 // Paramètres du serveur LDAP
 #define XML_CONF_LDAP_SOURCES_NODE		"Sources"

@@ -735,6 +735,12 @@ bool confFile::_load()
 		levelColName_ = childNode.attribute(LEVEL_NAME_ATTR).value();
 	}
 
+	// Nom-court des containers
+	childNode = paramsRoot_.child(XML_CONF_SHORTNAME);
+	if (!IS_EMPTY(childNode.name())) {
+		shortNameColName_ = childNode.attribute(SHORTNAME_NAME_ATTR).value();
+	}
+
 	// Ok
 	fileRead_ = true;
 

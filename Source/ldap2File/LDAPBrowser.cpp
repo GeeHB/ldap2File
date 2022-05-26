@@ -186,27 +186,50 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
 	logs_->add(logs::TRACE_TYPE::NORMAL, "Les encadrants sont définis par {'%s', '%s'}", managersColName.c_str(), managersAttr_.c_str());
 
-	// Nom de la colonne pour les niveaux (utilie uniquement si explicitement demandé ...)
-	string levelColName = configurationFile_->LevelColName();
+	// Gestion des niveaux des structures 
+	//	utile uniquement si explicitement demandé ou pour les ruptures
+	//
+	string colName(configurationFile_->levelColName());
 
-	// La colonne doit-être dans le schéma
-	if (cols_.npos == (index = cols_.getShemaAttributeByName(levelColName.c_str()))) {
-		// Pas dans le schéma => valeur par défaut
-		levelColName = "";
+	if (colName.size()) {
+		// La colonne doit-être dans le schéma
+		if (cols_.npos == (index = cols_.getShemaAttributeByName(colName.c_str()))) {
+			// Pas dans le schéma => valeur par défaut
+			colName = "";
 
-		logs_->add(logs::TRACE_TYPE::ERR, "La colonne de type '%s' n'est pas définie dans le schéma", levelColName.c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "La colonne de type '%s' n'est pas définie dans le schéma", colName.c_str());
+		}
+
+		// Quel le nom de l'attribut
+		levelAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
 	}
 
-	// Quel le nom de l'attribut
-	levelAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
-
-	if (0 == levelColName.size()) {
-		logs_->add(logs::TRACE_TYPE::NORMAL, "Pas de colonne pour le niveau des structure. Utilisation de la valeur de l'attribut '%s'", STR_ATTR_STRUCT_LEVEL);
+	if (0 == colName.size()) {
+		logs_->add(logs::TRACE_TYPE::NORMAL, "Pas de colonne pour le niveau des structures. Utilisation de la valeur de l'attribut '%s'", STR_ATTR_STRUCT_LEVEL);
 	}
 	else {
-		logs_->add(logs::TRACE_TYPE::NORMAL, "Le niveau des structures est défini par {'%s', '%s'}", levelColName.c_str(), levelAttr_.c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "Le niveau des structures est défini par {'%s', '%s'}", colName.c_str(), levelAttr_.c_str());
 	}
 
+	// Nom-court des containers
+	//
+	colName = configurationFile_->shortNameColName();
+	if (colName.size() > 0) {
+		// La colonne doit-être dans le schéma
+		if (cols_.npos == (index = cols_.getShemaAttributeByName(colName.c_str()))) {
+			// Pas dans le schéma => valeur par défaut
+			colName = "";
+
+			logs_->add(logs::TRACE_TYPE::ERR, "La colonne de type '%s' n'est pas définie dans le schéma", colName.c_str());
+		}
+
+		// Quel le nom de l'attribut
+		shortNameAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
+
+		if (0 != colName.size()){
+			logs_->add(logs::TRACE_TYPE::NORMAL, "Le nom-court est défini par {'%s', '%s'}", colName.c_str(), shortNameAttr_.c_str());
+		}
+	}
 
 	// Liste des containers
 	if (NULL == (containers_ = new containers(logs_, levelAttr_))) {
@@ -690,7 +713,7 @@ RET_TYPE LDAPBrowser::_createFile()
 			return RET_TYPE::RET_INVALID_PARAMETERS;
 		}
 
-		// J'ajoute la colonne si nécessaire
+		// J'ajoute la colonne "Niveau" si nécessaire
 		if (cols_.npos == cols_.getColumnByType(COL_STRUCT_LEVEL)) {
 			cols_.append(COL_STRUCT_LEVEL);
 
@@ -1598,7 +1621,15 @@ bool LDAPBrowser::_getLDAPContainers()
 #endif // DEBUG
 
 	// On ajoute quelques éléments ...
+	//
 	myAttributes += STR_ATTR_DESCRIPTION;			    // Nom complet de l'OU
+
+	// Le nom court ?
+	bool wantShortName(false);
+	if (shortNameAttr_.size()) {
+		myAttributes += shortNameAttr_;
+		wantShortName = true;
+	}
 
 	// Génération de la requête
 	searchExpr expression(SEARCH_EXPR_OPERATOR_AND);
@@ -1667,8 +1698,13 @@ bool LDAPBrowser::_getLDAPContainers()
 							pContainer->setRealName(u8Value);
 						}
 						else {
-							// Ajout de l'attribut et de sa valeur
-							pContainer->add(pAttribute, u8Value.c_str());
+							if (wantShortName && !encoder_.stricmp(pAttribute, shortNameAttr_.c_str())) {
+								pContainer->setShortName(u8Value);
+							}
+							else {
+								// Ajout de l'attribut et de sa valeur
+								pContainer->add(pAttribute, u8Value.c_str());
+							}
 						}
 					}   // if (NULL ...
 
