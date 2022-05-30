@@ -82,6 +82,9 @@ protected:
 	size_t _simpleLDAPRequest(PCHAR* attributes, commandFile::criterium& sCriterium, const char* searchDN, bool treeSearch, PLDAPControl* serverControls = NULL, PLDAPControl sortControl = NULL);
 	bool _getUserGroups(std::string& userDN, size_t colID, const char* gID);
 
+	// Recherche d'une colonne par son nom et retour de l'attribut LDAP associé (si il existe)
+	bool _colName2LDAPAttribute(keyValTuple&, const char*);
+
 	// Organigramme hiérarchique
 	//
 	void _generateOrgChart();
@@ -111,6 +114,7 @@ protected:
 	// Execution d'une application
 	bool _exec(const std::string& application, const std::string& parameters, std::string& retMessage);
 
+
 	// Données membres privees
 	//
 protected:
@@ -126,7 +130,7 @@ protected:
 
 	logs*					logs_;				// Logs
 
-	containers*			containers_;		// Containers (svc, direction, etc...)
+	containers*				containers_;		// Containers (svc, direction, etc...)
 	structures				structs_;			// Structures et niveaux associés
 
 #ifdef __LDAP_USE_ALLIER_TITLES__

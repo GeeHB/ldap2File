@@ -76,7 +76,6 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	orgFile_ = NULL;
 	logs_ = pLogs;
 	cmdLineFile_ = NULL;
-	managersCol_ = managersAttr_ = "";
 	ldapServer_ = NULL;
 
 #ifdef __LDAP_USE_ALLIER_TITLES__
@@ -113,6 +112,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	}
 
 	// Alias
+	//
 	configurationFile_->appAliases(aliases_);
 	logs_->add(logs::TRACE_TYPE::LOG, "%d alias défini(s)", aliases_.size());
 	aliases::alias* palias(NULL);
@@ -166,73 +166,31 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 
 	logs_->add(logs::TRACE_TYPE::LOG, "Schéma - %d attributs reconnus", cols_.attributes());
 
-	// On s'assure que la colonne "manager" existe
-	string managersColName = configurationFile_->managersColName();
-	if (0 == managersColName.length()) {
-		throw LDAPException("Encadrants : Pas de nom de colonne précisé - <Encadrant Name=\"xxx\" />");
-	}
-
-	size_t index(0);
-	if (cols_.npos == (index = cols_.getShemaAttributeByName(managersColName.c_str()))) {
-		// La colonne n'existe pas !!!
-		string message("Encadrant : La colonne '");
-		message += managersColName;
-		message += "' n'existe pas dans le schéma";
-		throw LDAPException(message);
-	}
-
-	// Colonne par défaut !
-	managersCol_ = managersColName;
-	managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
-	logs_->add(logs::TRACE_TYPE::NORMAL, "Les encadrants sont définis par {'%s', '%s'}", managersColName.c_str(), managersAttr_.c_str());
-
-	// Gestion des niveaux des structures 
-	//	utile uniquement si explicitement demandé ou pour les ruptures
+	// Attributs organisationnels
 	//
-	string colName(configurationFile_->levelColName());
+	configurationFile_->orgAttrs(orgAttrs_);
 
-	if (colName.size()) {
-		// La colonne doit-être dans le schéma
-		if (cols_.npos == (index = cols_.getShemaAttributeByName(colName.c_str()))) {
-			// Pas dans le schéma => valeur par défaut
-			colName = "";
+	logs_->add(logs::TRACE_TYPE::NORMAL, "Attributs organisationnels");
 
-			logs_->add(logs::TRACE_TYPE::ERR, "La colonne de type '%s' n'est pas définie dans le schéma", colName.c_str());
-		}
+	// Si le nom de la colonne est renseigné, on cherche l'attribut associé
+	//	... pour chacun
+	_colName2LDAPAttribute(orgAttrs_.manager_, ORG_ATTR_MANAGER);
+	_colName2LDAPAttribute(orgAttrs_.level_, ORG_ATTR_LEVEL);
+	_colName2LDAPAttribute(orgAttrs_.shortName_, ORG_ATTR_SHORTNAME);
+	_colName2LDAPAttribute(orgAttrs_.id_, ORG_ATTR_ID);
 
-		// Quel le nom de l'attribut
-		levelAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
+	// Pas de niveau
+	if (0 == orgAttrs_.level_.value().size()) {
+		logs_->add(logs::TRACE_TYPE::LOG, "Pas de 'niveau'. L'héritage des valeurs et les ruptures seront impossibles");
 	}
 
-	if (0 == colName.size()) {
-		logs_->add(logs::TRACE_TYPE::NORMAL, "Pas de colonne pour le niveau des structures. Utilisation de la valeur de l'attribut '%s'", STR_ATTR_STRUCT_LEVEL);
-	}
-	else {
-		logs_->add(logs::TRACE_TYPE::NORMAL, "Le niveau des structures est défini par {'%s', '%s'}", colName.c_str(), levelAttr_.c_str());
-	}
-
-	// Nom-court des containers
-	//
-	colName = configurationFile_->shortNameColName();
-	if (colName.size() > 0) {
-		// La colonne doit-être dans le schéma
-		if (cols_.npos == (index = cols_.getShemaAttributeByName(colName.c_str()))) {
-			// Pas dans le schéma => valeur par défaut
-			colName = "";
-
-			logs_->add(logs::TRACE_TYPE::ERR, "La colonne de type '%s' n'est pas définie dans le schéma", colName.c_str());
-		}
-
-		// Quel le nom de l'attribut
-		shortNameAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
-
-		if (0 != colName.size()){
-			logs_->add(logs::TRACE_TYPE::NORMAL, "Le nom-court est défini par {'%s', '%s'}", colName.c_str(), shortNameAttr_.c_str());
-		}
+	// Pas de managers
+	if (0 == orgAttrs_.manager_.value().size()) {
+		logs_->add(logs::TRACE_TYPE::LOG, "Pas de 'manager'. Impossible de reconstituer un organigramme hiérarchique");
 	}
 
 	// Liste des containers
-	if (NULL == (containers_ = new containers(logs_, levelAttr_))) {
+	if (NULL == (containers_ = new containers(logs_, orgAttrs_.level_.value().c_str()))) {
 		// Fin du processus
 		throw LDAPException("Impossible de créer la liste des containers");
 	}
@@ -391,35 +349,31 @@ RET_TYPE LDAPBrowser::browse()
 	logs_->add(logs::TRACE_TYPE::LOG, "%d colonne(s) demandée(s)", cols_.size());
 
 
-	// Organigramme
+	// Organigramme hiérarchique
 	cmdFile->orgChart(orgChart_);
 
-	// Le(s) manager(s)
-	bool recurseManager(false);
-	size_t colManager(cols_.getColumnByType(managersCol_.c_str(), &recurseManager));
-	size_t colManagerID(cols_.getColumnBySchemaName(COL_MANAGER_MATRICULE));
-	if (cols_.npos == colManager){
-		// Il faut qu'il y ait une colonne manager si il y a un organigramme !!!
-		if (orgChart_.generate_){
-			recurseManager = false;
-			cols_.append(managersCol_.c_str());
-			colManager = cols_.size() - 1;
+	// Il faut qu'il y ait une colonne manager si il y a un organigramme !!!
+	if (orgChart_.generate_) {
+		if (0 == orgAttrs_.manager_.value().size()) {
+			// Pas d'attribut => pas d'organigramme
+			logs_->add(logs::TRACE_TYPE::ERR, "La valeur de  '<%s><%s>' non défini. L'organigramme ne peut être généré", XML_CONF_ORG_NODE, XML_CONF_ORG_MANAGER);
+			orgChart_.generate_ = false;
+		}
+		else {
+			// Ajout de la colonne (si elle n'est pas déja prise en compte)
+			cols_.append(orgAttrs_.manager_.key().c_str());
 		}
 	}
 
-	// Si on demande le matricule des managers, il faut les managers et donc les matricules ...
-	if (cols_.npos != colManagerID){
-		cols_.append(COL_MATRICULE);
-	}
-
 	// Arborescence et/ou managers
+	size_t colManager(cols_.getColumnByType(orgAttrs_.manager_.key().c_str()));
 	if (cols_.npos != colManager){
 		if (NULL == (agents_ = new agentTree(&encoder_, logs_, ldapServer_, ldapServer_->usersDN()))){
 			logs_->add(logs::TRACE_TYPE::ERR, "Pas d'onglet 'arborescence' - Impossible d'allouer de la mémoire");
 		}
 		else{
 			// Informations pour les requêtes sur les managers
-			agents_->setManagerSearchMode(managersAttr_, recurseManager, (cols_.npos != colManagerID));
+			agents_->setManagerSearchMode(orgAttrs_.manager_.value(), false, false);
 		}
 	}
 
@@ -575,26 +529,6 @@ RET_TYPE LDAPBrowser::_createFile()
 		return RET_TYPE::RET_ERROR_NO_DESTINATION;
 	}
 
-	// Quelle sera la colonne pour les managers
-	if (opfi.managersCol_.length() && managersCol_ != opfi.managersCol_) {
-		// Elle doit exister !!!
-		size_t index;
-		if (cols_.npos == (index = cols_.getShemaAttributeByName(opfi.managersCol_.c_str()))) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Encadrants : La colonne '%s' n'existe pas dans le fichier '%s'", opfi.managersCol_.c_str(), cmdFile->fileName());
-
-			// On continue avec la valeur par défaut
-		}
-		else {
-			// On utilise la colonne
-			managersCol_ = opfi.managersCol_;
-
-			// Récupération de l'attribut LDAP associé
-			managersAttr_ = cols_.getColumnByIndex(index, true)->ldapAttr_;
-		}
-
-		logs_->add(logs::TRACE_TYPE::LOG, "Les encadrants sont modélisés par ('%s', '%s')" , managersCol_.c_str(), managersAttr_.c_str());
-	}
-
 	// Création du générateur de fichier de sortie
 	//
 	switch (opfi.format_) {
@@ -708,8 +642,8 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	if (searchCriterium && 0 != search.tabType().size()) {
 		// Une rupture => il faut ajouter la colonne sur le niveau
-		if (0 == levelAttr_.c_str()) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Le critère `Niveau' pour les structures n'est pas défini. Impossible d'appliquer uen rupture");
+		if (0 == orgAttrs_.level_.value().c_str()) {
+			logs_->add(logs::TRACE_TYPE::ERR, "Le critère `%s' pour les structures n'est pas défini. Impossible d'appliquer une rupture", XML_CONF_ORG_LEVEL);
 			return RET_TYPE::RET_INVALID_PARAMETERS;
 		}
 
@@ -766,11 +700,10 @@ RET_TYPE LDAPBrowser::_createFile()
 				if(search.tabType().size()){
 
 					// Ce container doit avoir l'attribut 'niveau' si on désire une rupture
-                    containers::attrTuple* levelAttr = pContainer->findAttribute(levelAttr_);
-
+					keyValTuple* levelAttr = pContainer->findAttribute(orgAttrs_.level_.value().c_str());
 					if (nullptr == levelAttr) {
                         if (logs_) {
-                            logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver la valeur de l'attribut '%s' pour '%s'", levelAttr_.c_str(), pContainer->DN());
+                            logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver la valeur de l'attribut '%s' pour '%s'", orgAttrs_.level_.value().c_str(), pContainer->DN());
                         }
                     }
                     else {
@@ -1095,9 +1028,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	}
 
 	// Managers
-	bool recurseManager(false);
-	size_t colManager(cols_.getColumnByType(managersCol_, &recurseManager));
-	size_t colManagerID = (colManager==cols_.npos? cols_.npos:cols_.getColumnBySchemaName(COL_MANAGER_MATRICULE));
+	bool wantManagers(0 != orgAttrs_.manager_.value().size());
 
 	// Le remplaçant
 	//size_t colRemplacement = cols_.getColumnByType(STR_ATTR_ALLIER_REMPLACEMENT);
@@ -1282,8 +1213,6 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 			// Transfert des données dans le fichier
 			//
 
-			recurseManager = false;
-
 			// JHB
 			// => utilisé pour vérifier que l'utilisateur n'est pas dans une sous-branche
 			// lorsque les recherches de type LDAP_SCOPE_BASE ne fonctionnenet pas
@@ -1375,7 +1304,8 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 											if (!encoder_.stricmp(pAttribute, STR_ATTR_MANAGER) ||
 												!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_MANAGER)){
 											*/
-											if (!encoder_.stricmp(pAttribute, managersAttr_.c_str())) {
+											if (wantManagers &&
+												!encoder_.stricmp(pAttribute, orgAttrs_.manager_.value().c_str())) {
 												manager = u8Value;
 											}
 											else {
@@ -1509,6 +1439,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 								}
 							}
 
+							/*
 							// Dois je ajouter une colonne manager(s) ?
 							if (cols_.npos != colManager && agents_) {
 								// Récupération des managers
@@ -1522,7 +1453,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 									strManagers = agents_->getManager(dn);
 									file_->addAt(colManager, strManagers);
 								}
-							}
+							}*/
 						}
 
 						// Lorsque le poste est vacant, il n'y a plus de prénom ni d'adresse mail
@@ -1626,10 +1557,12 @@ bool LDAPBrowser::_getLDAPContainers()
 
 	// Le nom court ?
 	bool wantShortName(false);
-	if (shortNameAttr_.size()) {
-		myAttributes += shortNameAttr_;
+	if (orgAttrs_.shortName_.value().size()) {
+		myAttributes += orgAttrs_.shortName_.value().c_str();
 		wantShortName = true;
 	}
+
+	// Le niveau
 
 	// Génération de la requête
 	searchExpr expression(SEARCH_EXPR_OPERATOR_AND);
@@ -1698,7 +1631,7 @@ bool LDAPBrowser::_getLDAPContainers()
 							pContainer->setRealName(u8Value);
 						}
 						else {
-							if (wantShortName && !encoder_.stricmp(pAttribute, shortNameAttr_.c_str())) {
+							if (wantShortName && !encoder_.stricmp(pAttribute, orgAttrs_.shortName_.value().c_str())) {
 								pContainer->setShortName(u8Value);
 							}
 							else {
@@ -2395,7 +2328,7 @@ bool LDAPBrowser::_exec(const string& application, const string& parameters, str
 
 	if (0 == application.length()) {
 		retMessage = "LDAPBrowser::_exec - Pas d'application à lancer";
-		return false;
+return false;
 	}
 
 	// C'est parti ...
@@ -2427,7 +2360,7 @@ bool LDAPBrowser::_exec(const string& application, const string& parameters, str
 		else {
 			// Le process est terminé, mais quid de son code retour ?
 			BOOL status(GetExitCodeProcess(pi.hProcess, &exitCode));
-			if (FALSE == status || (TRUE == status && 0 != exitCode)){
+			if (FALSE == status || (TRUE == status && 0 != exitCode)) {
 				// une erreur quelconque ...
 				retMessage = "Erreur lors de l'exécution de l'application. Code retour : ";
 				retMessage += charUtils::itoa(exitCode);
@@ -2449,34 +2382,34 @@ bool LDAPBrowser::_exec(const string& application, const string& parameters, str
 		retMessage += errStr;
 	}
 #else
-    string cmdLine(application);
-    if (0 != parameters.size()){
-        cmdLine += " ";
-        cmdLine += parameters;
-    }
+	string cmdLine(application);
+	if (0 != parameters.size()) {
+		cmdLine += " ";
+		cmdLine += parameters;
+	}
 
 	// Lancement de la commande
 	//std::system(cmdLine.c_str());
 
 	char buffer[1024];
-    string result("");
-    unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmdLine.c_str(), "r"), pclose);
-    if (!pipe) {
-        retMessage = "Erreur popen : impossible d'exécuter la commande.";
-    }
-    else{
-        // Récupération du flux de sortie
-        while (fgets(buffer, 1024, pipe.get()) != nullptr) {
-            result += buffer;
-        }
+	string result("");
+	unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmdLine.c_str(), "r"), pclose);
+	if (!pipe) {
+		retMessage = "Erreur popen : impossible d'exécuter la commande.";
+	}
+	else {
+		// Récupération du flux de sortie
+		while (fgets(buffer, 1024, pipe.get()) != nullptr) {
+			result += buffer;
+		}
 
-        // Tout s'est bien déroulé (du moins pas de plantage)
-        // les informations complémentaires sont dans le message de retour qui sera poussé dans les logs
-        retMessage = result;
+		// Tout s'est bien déroulé (du moins pas de plantage)
+		// les informations complémentaires sont dans le message de retour qui sera poussé dans les logs
+		retMessage = result;
 
-        size_t len(retMessage.size());
-        if (len && '\n' == retMessage[len - 1]){
-            // Retrait du saut de ligne final
+		size_t len(retMessage.size());
+		if (len && '\n' == retMessage[len - 1]) {
+			// Retrait du saut de ligne final
 			if ('\n' == retMessage[len - 1]) {
 				retMessage.resize(len - 1);
 			}
@@ -2488,10 +2421,40 @@ bool LDAPBrowser::_exec(const string& application, const string& parameters, str
 
 		}
 		*/
-    }
+	}
 #endif // _WIN32
 
 	// Ok ?
 	return valid;
 }
+
+// Recherche d'une colonne par son nom et retour de l'attribut LDAP associé (si il existe)
+//
+bool LDAPBrowser::_colName2LDAPAttribute(keyValTuple& tuple, const char* comment)
+{
+	// Devrait suffire !
+	assert(!IS_EMPTY(comment));
+
+	// Par défaut ...
+	bool valid(false);
+	tuple.setValue("");
+
+	if (tuple.key().size()) {
+		// On s'assure que la colonne existe
+		size_t index(0);
+		if (cols_.npos != (index = cols_.getShemaAttributeByName(tuple.key().c_str()))) {
+			// La colonne existe => récupération de l'attribut LDAP associé
+			tuple.setValue(cols_.getColumnByIndex(index, true)->ldapAttr_.c_str());
+		}
+
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s - Définis par {'%s', '%s'}", comment, tuple.key().c_str(), tuple.value().c_str());
+	}
+	else {
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s - Non défini", comment);
+	}
+
+	// Tout à fonctionné comme il faut ?
+	return valid;
+}
+
 // EOF

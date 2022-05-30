@@ -333,6 +333,13 @@ using namespace jhbTools;
 // Structure
 //
 
+// Attributs organisationnels
+//
+#define ORG_ATTR_MANAGER			"Manager"
+#define ORG_ATTR_LEVEL				"Niveau des structures"
+#define ORG_ATTR_SHORTNAME			"Nom court des containers"
+#define ORG_ATTR_ID					"Identifiant"
+
 //
 // Nom des colonnes
 //

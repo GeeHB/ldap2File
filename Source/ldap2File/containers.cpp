@@ -125,7 +125,15 @@ containers::containers(logs* pLogs, std::string& levelName)
 {
 	// Copie des valeurs
 	logs_ = pLogs;
-	levelAttrName_ = (0 == levelName.size() ? STR_ATTR_STRUCT_LEVEL : levelName);
+	//levelAttrName_ = (0 == levelName.size() ? STR_ATTR_STRUCT_LEVEL : levelName);
+	levelAttrName_ = levelName;
+}
+
+containers::containers(logs* pLogs, const char* levelAttr)
+{
+    // Copie des valeurs
+    logs_ = pLogs;
+    levelAttrName_ = IS_EMPTY(levelAttr)?"":levelAttr;
 }
 
 // Mise à jour des liens (chainage) entre les différents containers
@@ -358,6 +366,11 @@ containers::LPLDAPCONTAINER containers::findContainer(string& name, string& DN)
 //
 bool containers::findSubContainers(string& fromDN, std::set<size_t>& levels, std::deque<LPLDAPCONTAINER>& containers)
 {
+	// Pas d'attributs pour la profondeur => pas d'héritage possible
+	if (0 == levelAttrName_.size()) {
+		return false;
+	}
+
 	// Vérification des paramètres
 	//
 	if (0 == levels.size()) {

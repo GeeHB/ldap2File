@@ -63,6 +63,7 @@ BUGS{
 			+ <Niveau> afin de définir le nom de l'attribut pour modéliser le niveau de chaque structure
 			+ <Nom-Court> afin de définir le nom de l'attribut qui donne le nom court d'un container
 			+ <Encadrant> : Le N+1, le manager, ...
+			+ <Identifiant>
 		+ Ajout de la section <Structures> pour la gestion des rupture ("SERVICE" = niveau 4 par ex.)
 		- Dispartion de la section <Structure> => le niveau est défini par un attribut de l'annuaire au niveau des containers
 

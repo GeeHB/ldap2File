@@ -302,6 +302,12 @@ void confFile::orgAttrs(ORGATTRNAMES& orgAttrs)
         if (!IS_EMPTY(childNode.name())) {
             orgAttrs.shortName_.setKey(childNode.attribute(ORG_SHORTNAME_NAME_ATTR).value());
         }
+
+		// Identifiant
+		childNode = paramsRoot_.child(XML_CONF_ORG_ID);
+		if (!IS_EMPTY(childNode.name())) {
+			orgAttrs.id_.setKey(childNode.attribute(ORG_ID_NAME_ATTR).value());
+		}
 	}
 }
 

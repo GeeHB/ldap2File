@@ -141,6 +141,10 @@
 #define XML_CONF_ORG_SHORTNAME		XML_SHORTNAME
 #define ORG_SHORTNAME_NAME_ATTR		XML_NAME
 
+// Identifiant
+#define XML_CONF_ORG_ID				"Identifiant"
+#define ORG_ID_NAME_ATTR			XML_NAME
+
 //
 // Paramètres du serveur LDAP
 //

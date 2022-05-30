@@ -93,6 +93,7 @@ public:
 		}
 #endif // WIN32
 
+        // Nom court
 		const char* shortName()
 		{ return shortName_.c_str(); }
         void setShortName(std::string& name) {
@@ -162,9 +163,12 @@ public:
 
 	typedef LDAPContainer* LPLDAPCONTAINER;
 
-	// Construction et destruction
+	// Constructions
 	//
 	containers(logs* pLogs, std::string& levelAttr);
+	containers(logs* pLogs, const char* levelAttr);
+
+	// Destruction
 	virtual ~containers()
 	{ clear(); }
 

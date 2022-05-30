@@ -527,9 +527,7 @@ public:
     }
     // On peut changer la valeur
     void setValue(const char* value) {
-        if (!IS_EMPTY(value)) {
-            value_ = value;
-        }
+        value_ = value;
     }
 
     // Méthodes privées
@@ -555,12 +553,14 @@ typedef struct tagORGATTRNAMES
         manager_.init();
         level_.init();
         shortName_.init();
+		id_.init();
     }
 
     // Données membres
     keyValTuple manager_;
     keyValTuple level_;
     keyValTuple shortName_;
+	keyValTuple id_;
 }ORGATTRNAMES,* LPORGATTRNAMES;
 
 // Information(s) sur un fichier de sortie
