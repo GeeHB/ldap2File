@@ -134,11 +134,15 @@ protected:
 #endif // __LDAP_USE_ALLIER_TITLES__
 
 	columnList				cols_;				// Mes colonnes
+	/*
 	std::string				managersCol_;		// Nom de la colonne utilisée pour les managers
 	std::string				managersAttr_;		// Attribut associé
 
 	std::string				levelAttr_;			// Attribut utilisé pour les niveaux des containers
 	std::string				shortNameAttr_;		// Attribut utilisé pour le nom-court d'un container
+    */
+
+    ORGATTRNAMES            orgAttrs_;          // Attributs "réservés"
 
 	aliases					aliases_;			// Liste des alias
 

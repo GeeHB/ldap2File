@@ -31,6 +31,7 @@
 #define __LDAP_2_FILE_CONTAINERS_LIST_h__ 1
 
 #include "sharedConsts.h"
+#include "sharedTypes.h"
 
 #include "JScriptConsts.h"
 #include "LDAPAttributes.h"
@@ -42,60 +43,6 @@ class containers
 {
 	// Méthodes publiques
 public:
-
-	// Un tuple {attribut, valeur}
-	class attrTuple
-	{
-		// Méthodes publiques
-		//
-	public:
-
-		// Constructions
-		attrTuple(const char* name, const char* value) {
-			if (!IS_EMPTY(name)) {
-				name_ = name;
-				value_ = IS_EMPTY(value)?"":value;
-			}
-			else {
-				// ???
-				name_ = value_ = "";
-			}
-		}
-
-		attrTuple(std::string& name, std::string& value) {
-			if (name.size()>0) {
-				name_ = name;
-				value_ = value;
-			}
-			else {
-				// ???
-				name_ = value_ = "";
-			}
-		}
-
-		// Destruction
-		virtual ~attrTuple()
-		{}
-
-		// Accès
-		std::string name() {
-			return name_;
-		}
-		std::string value() {
-			return value_;
-		}
-		// On peut changer la valeur
-		void setValue(const char* value) {
-			if (!IS_EMPTY(value)) {
-				value_ = value;
-			}
-		}
-
-		// Méthodes privées
-	protected:
-			std::string		name_;
-			std::string		value_;
-	};
 
 	// Un "container" dans l'Annuaire
 	//
@@ -160,7 +107,7 @@ public:
 		{ return attributes_.size(); }
 
 		// Recherche d'un attribut
-		containers::attrTuple* findAttribute(const char* name){
+		keyValTuple* findAttribute(const char* name){
             if (IS_EMPTY(name)){
                 return nullptr;
             }
@@ -168,7 +115,7 @@ public:
 		    std::string sName(name);
 		    return findAttribute((sName));
 		}
-		containers::attrTuple* findAttribute(std::string& name);
+		keyValTuple* findAttribute(std::string& name);
 
 		// Valeur d'un attribut
 		std::string attribute(const char* aName) {
@@ -177,7 +124,7 @@ public:
 		}
 		std::string attribute(std::string& name){
             // L'attribut est-il présent ?
-            containers::attrTuple* attr(findAttribute(name));
+            keyValTuple* attr(findAttribute(name));
             return (nullptr == attr)?"":attr->value().c_str();
 		}
 
@@ -210,7 +157,7 @@ public:
 		std::string				shortName_;		// Nom court
 
 		// Les autres attributs
-		std::deque<attrTuple>	attributes_;
+		std::deque<keyValTuple>	attributes_;
 	};
 
 	typedef LDAPContainer* LPLDAPCONTAINER;
@@ -298,7 +245,7 @@ protected:
 	std::deque<LPLDAPCONTAINER>	containers_;
 
 	// Liste des attributs recherchés (lorsque la valeur est renseignée, il s'agit de la valeur par défaut)
-	std::deque<attrTuple>		attributes_;
+	std::deque<keyValTuple>		attributes_;
 };
 
 #endif // __LDAP_2_FILE_CONTAINERS_LIST_h__

@@ -124,19 +124,26 @@
 #define ENV_NAME_ATTR				XML_NAME
 #define ENV_NAME_ATTR				XML_NAME
 
+//
+// Organisation
+//
+#define XML_CONF_ORG_NODE			"Organisation"
+
 // Nom de la colonne de l'encadrant
-#define XML_CONF_MANAGER			XML_MANAGER
-#define MANAGER_NAME_ATTR			XML_NAME
+#define XML_CONF_ORG_MANAGER		XML_MANAGER
+#define ORG_MANAGER_NAME_ATTR		XML_NAME
 
 // Nom de la colonne du niveau de la strcuture
-#define XML_CONF_LEVEL				XML_LEVEL
-#define LEVEL_NAME_ATTR				XML_NAME
+#define XML_CONF_ORG_LEVEL			XML_LEVEL
+#define ORG_LEVEL_NAME_ATTR			XML_NAME
 
 // Nom de la colonne pour le nom-court d'un container
-#define XML_CONF_SHORTNAME			XML_SHORTNAME
-#define SHORTNAME_NAME_ATTR			XML_NAME
+#define XML_CONF_ORG_SHORTNAME		XML_SHORTNAME
+#define ORG_SHORTNAME_NAME_ATTR		XML_NAME
 
+//
 // Paramètres du serveur LDAP
+//
 #define XML_CONF_LDAP_SOURCES_NODE		"Sources"
 #define XML_CONF_LDAP_NODE				"LDAP"
 #define XML_CONF_LDAP_HOST_ATTR			XML_SERVER
@@ -261,10 +268,6 @@
 
 // Inclusion
 #define XML_INCLUDE_NODE				"Inclure"
-
-// Nom de la colonne de l'encadrant
-#define XML_CMD_MANAGER					XML_MANAGER
-#define CMD_MANAGER_NAME_ATTR			XML_NAME
 
 //
 // Format

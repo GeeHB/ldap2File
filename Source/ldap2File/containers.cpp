@@ -81,7 +81,7 @@ bool containers::LDAPContainer::add(const char* aName, const char* aValue)
 #endif // _DEBUG
 
     // L'attribut est-il déja présent ?
-    containers::attrTuple* attr(findAttribute(aName));
+    keyValTuple* attr(findAttribute(aName));
     if (nullptr != attr){
         // Mise à jour de la valeur
         attr->setValue(aValue);
@@ -89,7 +89,7 @@ bool containers::LDAPContainer::add(const char* aName, const char* aValue)
     }
 
     // Non prrésent => Création d'un nouvel attribut
-    attributes_.push_back(containers::attrTuple(aName, aValue));
+    attributes_.push_back(keyValTuple(aName, aValue));
 
     // Ajouté avec succès
     return true;
@@ -97,14 +97,14 @@ bool containers::LDAPContainer::add(const char* aName, const char* aValue)
 
 // Recherche d'un attribut par son nom
 //
-containers::attrTuple* containers::LDAPContainer::findAttribute(std::string& name)
+keyValTuple* containers::LDAPContainer::findAttribute(std::string& name)
 {
     if (0 == name.size()){
         return nullptr;
     }
 
     // L'attribut est-il présent ?
-    for (std::deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end(); i++){
+    for (std::deque<keyValTuple>::iterator i = attributes_.begin(); i != attributes_.end(); i++){
         if ((*i).name() == name){
             // On renvoit un pointeur sur l'attribut
             return &(*i);
@@ -183,7 +183,7 @@ bool containers::addAttribute(std::string& name, const char* value)
 	}
 
 	// Pas déja présent ?
-	for (std::deque<attrTuple>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
+	for (std::deque<keyValTuple>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
 		if ((*it).name() == name) {
 			// Si !
 			return false;
@@ -191,7 +191,7 @@ bool containers::addAttribute(std::string& name, const char* value)
 	}
 
 	// Non trouvé dans la liste => on peut l'ajouter
-	attributes_.push_back(attrTuple(name.c_str(), value));
+	attributes_.push_back(keyValTuple(name.c_str(), value));
 	return true;
 }
 
@@ -205,7 +205,7 @@ const char** containers::getAttributes()
 	}
 
 	LDAPAttributes myAttributes;
-	for (std::deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end(); i++) {
+	for (std::deque<keyValTuple>::iterator i = attributes_.begin(); i != attributes_.end(); i++) {
 		myAttributes += (*i).name().c_str();
 	}
 
@@ -223,7 +223,7 @@ bool containers::getAttributeName(size_t index, std::string& name)
 	}
 
 	// Recherche de la valeur
-	std::deque<attrTuple>::iterator it = attributes_.begin();
+	std::deque<keyValTuple>::iterator it = attributes_.begin();
 	it += index;
 	name = (*it).name();
 
@@ -244,8 +244,8 @@ bool containers::getAttributeValue(std:: string& DN, std:: string& attrName, std
     }
 
     // L'attribut est-il dans la liste des attributs pris en charge ?
-    attrTuple* pAttr(nullptr);
-    for (std::deque<attrTuple>::iterator i = attributes_.begin(); i != attributes_.end() && nullptr == pAttr; i++){
+    keyValTuple* pAttr(nullptr);
+    for (std::deque<keyValTuple>::iterator i = attributes_.begin(); i != attributes_.end() && nullptr == pAttr; i++){
 		if ((*i).name() == attrName) {
 			pAttr = &(*i);	// Je conserve un pointeur sur l'attribut
 		}
@@ -380,7 +380,7 @@ bool containers::findSubContainers(string& fromDN, std::set<size_t>& levels, std
 
 
 	// Quel est son "niveau"
-	containers::attrTuple* levelAttr = fromContainer->findAttribute(levelAttrName_);
+	keyValTuple* levelAttr = fromContainer->findAttribute(levelAttrName_);
 	if (nullptr == levelAttr) {
 		if (logs_) {
 			logs_->add(logs::TRACE_TYPE::ERR, "containers::findSubContainers - Impossible de trouver l'attribut '%s' pour le container '%s'", levelAttrName_.c_str(), fromDN.c_str());
@@ -406,7 +406,7 @@ bool containers::findSubContainers(string& fromDN, std::set<size_t>& levels, std
 			// Est-il au bon niveau ?
 
 			// Quel est son "niveau" ?
-			containers::attrTuple* levelAttr = childContainer->findAttribute(levelAttrName_);
+			keyValTuple* levelAttr = childContainer->findAttribute(levelAttrName_);
 			if (nullptr != levelAttr) {
 
 				childLevel = atoi(levelAttr->value().c_str());

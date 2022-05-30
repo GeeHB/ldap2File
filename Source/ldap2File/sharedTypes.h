@@ -467,6 +467,102 @@ protected:
 	aliases::alias* alias_;		// Alias vers une commande (ou rien ...)
 };
 
+// Un tuple {Nom, valeur}
+//
+class keyValTuple
+{
+    // Méthodes publiques
+    //
+public:
+
+    // Constructions
+    keyValTuple(){
+        init();
+    }
+    keyValTuple(const char* key, const char* value) {
+        if (!IS_EMPTY(key)) {
+            key_ = key;
+            value_ = IS_EMPTY(value)?"":value;
+        }
+        else {
+            // ???
+            key_ = value_ = "";
+        }
+    }
+
+    keyValTuple(std::string& key, std::string& value) {
+        if (key.size()>0) {
+            key_ = key;
+            value_ = value;
+        }
+        else {
+            // ???
+            key_ = value_ = "";
+        }
+    }
+
+    // Destruction
+    virtual ~keyValTuple()
+    {}
+
+    // Nettoyage
+    void init(){
+        key_ = value_ = "";
+    }
+
+    // Accès
+    std::string name() {
+        return key_;
+    }
+    std::string key() {
+        return key_;
+    }
+    std::string value() {
+        return value_;
+    }
+    void setKey(const char* key){
+    if (!IS_EMPTY(key)) {
+            key_ = key;
+        }
+    }
+    // On peut changer la valeur
+    void setValue(const char* value) {
+        if (!IS_EMPTY(value)) {
+            value_ = value;
+        }
+    }
+
+    // Méthodes privées
+protected:
+    std::string		key_;
+    std::string		value_;
+};
+
+// Attributs réservés (ie. structurants pour l'organisation)
+//
+typedef struct tagORGATTRNAMES
+{
+    // Constrcution
+    tagORGATTRNAMES()
+    { init(); }
+
+    // Destruction
+    virtual ~tagORGATTRNAMES()
+    {}
+
+    // Initialisation
+    void init(){
+        manager_.init();
+        level_.init();
+        shortName_.init();
+    }
+
+    // Données membres
+    keyValTuple manager_;
+    keyValTuple level_;
+    keyValTuple shortName_;
+}ORGATTRNAMES,* LPORGATTRNAMES;
+
 // Information(s) sur un fichier de sortie
 //
 typedef struct tagOUTPUTFILEINFOS
@@ -476,7 +572,7 @@ typedef struct tagOUTPUTFILEINFOS
 	{ init(); }
 
 	// Destruction
-	~tagOUTPUTFILEINFOS(){
+	virtual ~tagOUTPUTFILEINFOS(){
 		for (deque<fileDestination*>::iterator it = dests_.begin(); it != dests_.end(); it++){
 			if (*it) {
 				delete (*it);
@@ -492,7 +588,7 @@ typedef struct tagOUTPUTFILEINFOS
 	void init(){
 		format_= FILE_TYPE::FILE_UNKNOWN_TYPE;
 		sheetNameLen_ = -1;
-		/*extension_ = */formatName_ = name_ = templateFile_ = managersCol_ = "";
+		/*extension_ = */formatName_ = name_ = templateFile_ = "";
 		showHeader_ = true;
 	}
 
@@ -513,7 +609,6 @@ typedef struct tagOUTPUTFILEINFOS
 	bool					showHeader_;
 	int 					sheetNameLen_;		// Longueur max. en caractères du nom d'un onglet (-1 = pas de limite)
 	fileActions				actions_;
-	string					managersCol_;		// Nom de la colonne pour les managers (peut surcharger la donnée du fichier de conf)
 	deque<fileDestination*>	dests_;
 }OPFI,* LPOPFI;
 

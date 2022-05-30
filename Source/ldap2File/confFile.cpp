@@ -234,7 +234,7 @@ bool confFile::imagesServer(IMGSERVER& dst)
 	if (IS_EMPTY(element.name())) {
 		return false;
 	}
-	
+
 	XMLParser::XMLNode baseNode(&element, XML_CONF_IMG_SERVER_NODE);
 	std::string env("");
 	pugi::xml_node myNode = _findFirstNode(&baseNode, XML_CONF_IMG_SERVER_NODE, XML_CONF_ENV_NODE, &env);
@@ -273,6 +273,36 @@ bool confFile::imagesServer(IMGSERVER& dst)
 
 	// Ok
 	return true;
+}
+
+// Attributs spécifiques à l'ogranisation
+//
+void confFile::orgAttrs(ORGATTRNAMES& orgAttrs)
+{
+    orgAttrs.init();
+
+    // Lecture des valeurs
+	//
+	pugi::xml_node node = paramsRoot_.child(XML_CONF_ORG_NODE);
+	if (!IS_EMPTY(node.name())){
+		// Colonne des encadrants
+        pugi::xml_node childNode = paramsRoot_.child(XML_CONF_ORG_MANAGER);
+        if (!IS_EMPTY(childNode.name())) {
+            orgAttrs.manager_.setKey(childNode.attribute(ORG_MANAGER_NAME_ATTR).value());
+        }
+
+        // Colonne du niveau des structures
+        childNode = paramsRoot_.child(XML_CONF_ORG_LEVEL);
+        if (!IS_EMPTY(childNode.name())) {
+            orgAttrs.level_.setKey(childNode.attribute(ORG_LEVEL_NAME_ATTR).value());
+        }
+
+        // Nom-court des containers
+        childNode = paramsRoot_.child(XML_CONF_ORG_SHORTNAME);
+        if (!IS_EMPTY(childNode.name())) {
+            orgAttrs.shortName_.setKey(childNode.attribute(ORG_SHORTNAME_NAME_ATTR).value());
+        }
+	}
 }
 
 // Liste des aliases
@@ -721,24 +751,6 @@ bool confFile::_load()
 	if (!IS_EMPTY(childNode.name())) {
 		//environment_ = childNode.first_child().value();
 		environment_ = childNode.attribute(ENV_NAME_ATTR).value();
-	}
-
-	// Colonne des managers
-	childNode = paramsRoot_.child(XML_CONF_MANAGER);
-	if (!IS_EMPTY(childNode.name())) {
-		managersColName_ = childNode.attribute(MANAGER_NAME_ATTR).value();
-	}
-
-	// Colonne du niveau des structures
-	childNode = paramsRoot_.child(XML_CONF_LEVEL);
-	if (!IS_EMPTY(childNode.name())) {
-		levelColName_ = childNode.attribute(LEVEL_NAME_ATTR).value();
-	}
-
-	// Nom-court des containers
-	childNode = paramsRoot_.child(XML_CONF_SHORTNAME);
-	if (!IS_EMPTY(childNode.name())) {
-		shortNameColName_ = childNode.attribute(SHORTNAME_NAME_ATTR).value();
 	}
 
 	// Ok

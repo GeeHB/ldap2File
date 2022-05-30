@@ -272,13 +272,6 @@ bool commandFile::outputFileInfos(aliases& aliases, OPFI& fileInfos)
 		}
 	}
 
-	// Encadrant
-	//
-	pugi::xml_node snode = paramsRoot_.child(XML_CMD_MANAGER);
-	if (!IS_EMPTY(snode.name())) {
-		fileInfos.managersCol_ = snode.attribute(CMD_MANAGER_NAME_ATTR).value();
-	}
-
 	// Par contre les serveurs destinations sont eux issus du fichier
 	// inclus (lorsque ce dernier existe et qu'il les contient ...)
 	if (includedFile_ && includedFile_->_destinationsInfos(aliases, fileInfos)){
@@ -412,7 +405,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 
 		// Si le nom est renseigné, on utilisera la "destination" associée du fichier de configuration
 		if (name.size()){
-			
+
 			// Si l'OS est renseigné, il doit être valide
 			string destOS = snode.attribute(XML_DESTINATION_FS_OS_ATTR).value();
 			// Le bon OS ou tous les OS ?
