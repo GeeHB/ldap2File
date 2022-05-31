@@ -202,9 +202,11 @@ public:
         // Dans tous les cas, il faut l'ID de l'agent, son prénom, son nom, le statut du compte
 	    //
 	    colNames.clear();       // On part avec une liste vide !
+	    /*
 	    colNames.push_back(COL_AGENT_UID);
 	    colNames.push_back(COL_PRENOM);
 	    colNames.push_back(COL_NOM);
+	    */
     }
 
 	// Création du fichier / initialisation(s)

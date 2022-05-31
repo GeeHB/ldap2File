@@ -45,14 +45,14 @@ outputFile::outputFile(const LPOPFI fileInfos, columnList* columns, confFile* co
 	// Le fichier de configuration existe ainsi que les pointeurs associés !!!
 	//
 	if (NULL == configurationFile) {
-		throw LDAPException("outputFile::outputFile - Pas de fichier de configuration");
+		throw LDAPException("outputFile::outputFile - Pas de fichier de configuration", RET_TYPE::RET_INVALID_FILE);
 	}
 
 	folders_ = configurationFile->getFolders();
 	logs_ = configurationFile->getLogs();
 
 	if (NULL == folders_ || NULL == logs_) {
-		throw LDAPException("outputFile::outputFile - Erreur dans les paramètres");
+		throw LDAPException("outputFile::outputFile - Erreur dans les paramètres", RET_TYPE::RET_INVALID_PARAMETERS);
 	}
 
 	columns_ = columns;
@@ -237,7 +237,7 @@ void outputFile::shift(int offset, treeCursor& ascendants)
 string outputFile::tokenize(commandFile* cmdFile, const char* source, const char* fullName, const char* shortName, const char* def)
 {
 	if (IS_EMPTY(source)) {
-		throw LDAPException("[outputFile::tokenize] Paramètres invalides");
+		throw LDAPException("[outputFile::tokenize] Paramètres invalides", RET_TYPE::RET_INVALID_PARAMETERS);
 	}
 
 	// Quelque chose à faire ?

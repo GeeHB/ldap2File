@@ -106,7 +106,7 @@ bool XMLFile::_init(){
 	// Preparation de la matrice en mémoire
 	values_ = columns_->size();
 	if (NULL == (line_ = new XMLFile::XMLCELL[values_])){
-		throw LDAPException("Impossible d'allouer de la mémoire pour la modélisation d'une ligne");
+		throw LDAPException("Impossible d'allouer de la mémoire pour la modélisation d'une ligne", RET_TYPE::RET_ALLOCATION_ERROR);
 	}
 
 	// Modèle
@@ -223,7 +223,7 @@ bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 			current = next;
 		}
 		else{
-			throw LDAPException("Impossible d'allouer de la mémoire pour les cellules multivaluées");
+			throw LDAPException("Impossible d'allouer de la mémoire pour les cellules multivaluées", RET_TYPE::RET_ALLOCATION_ERROR);
 		}
 	}
 

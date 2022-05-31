@@ -104,8 +104,7 @@ public:
 		// Attributs personnalisés
 		//
 
-		size_t size()
-		{ return attributes_.size(); }
+		size_t size();
 
 		// Recherche d'un attribut
 		keyValTuple* findAttribute(const char* name){

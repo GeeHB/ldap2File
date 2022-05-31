@@ -75,7 +75,7 @@ bool CSVFile::initialize()
 	// Préparation de la matrice en mémoire
 	values_ = columns_->size();
 	if (NULL == (line_ = new VALUE[values_])) {
-		throw LDAPException("CSVFile - Impossible d'allouer de la mémoire pour la modélisation d'une ligne");
+		throw LDAPException("CSVFile - Impossible d'allouer de la mémoire pour la modélisation d'une ligne", RET_TYPE::RET_ALLOCATION_ERROR);
 	}
 
 	// Création de l'entête

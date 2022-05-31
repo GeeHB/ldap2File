@@ -65,7 +65,7 @@
 LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 {
 	if (!configurationFile || !pLogs){
-		throw LDAPException("Erreur d'initialisation");
+		throw LDAPException("Erreur d'initialisation", RET_TYPE::RET_INVALID_PARAMETERS);
 	}
 
 	// Initialisation des données membres
@@ -101,7 +101,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 		string error("Erreur de paramètre. L'environnement'");
 		error += envName;
 		error+="' n'est pas défini dans le fichier de configuration";
-		throw LDAPException(error);
+		throw LDAPException(error, RET_TYPE::RET_INCOMPLETE_FILE);
 	}
 
 	if (envName.size()) {
@@ -161,7 +161,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 
 	if (!cols_.attributes()){
 		// Fin du processus
-		throw LDAPException("Aucun attribut n'a été défini dans le schéma");
+		throw LDAPException("Aucun attribut n'a été défini dans le schéma", RET_TYPE::RET_INCOMPLETE_FILE);
 	}
 
 	logs_->add(logs::TRACE_TYPE::LOG, "Schéma - %d attributs reconnus", cols_.attributes());
@@ -177,7 +177,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	_colName2LDAPAttribute(orgAttrs_.manager_, ORG_ATTR_MANAGER);
 	_colName2LDAPAttribute(orgAttrs_.level_, ORG_ATTR_LEVEL);
 	_colName2LDAPAttribute(orgAttrs_.shortName_, ORG_ATTR_SHORTNAME);
-	_colName2LDAPAttribute(orgAttrs_.id_, ORG_ATTR_ID);
+	//_colName2LDAPAttribute(orgAttrs_.id_, ORG_ATTR_ID);
 
 	// Pas de niveau
 	if (0 == orgAttrs_.level_.value().size()) {
@@ -192,7 +192,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	// Liste des containers
 	if (NULL == (containers_ = new containers(logs_, orgAttrs_.level_.value().c_str()))) {
 		// Fin du processus
-		throw LDAPException("Impossible de créer la liste des containers");
+		throw LDAPException("Impossible de créer la liste des containers", RET_TYPE::RET_ALLOCATION_ERROR);
 	}
 
 	// Récupération de la liste des associations {NOM GENERIQUE DE STRUCTURE, Niveau}
@@ -348,7 +348,6 @@ RET_TYPE LDAPBrowser::browse()
 	// Liste des colonnes demandées
 	logs_->add(logs::TRACE_TYPE::LOG, "%d colonne(s) demandée(s)", cols_.size());
 
-
 	// Organigramme hiérarchique
 	cmdFile->orgChart(orgChart_);
 
@@ -356,7 +355,7 @@ RET_TYPE LDAPBrowser::browse()
 	if (orgChart_.generate_) {
 		if (0 == orgAttrs_.manager_.value().size()) {
 			// Pas d'attribut => pas d'organigramme
-			logs_->add(logs::TRACE_TYPE::ERR, "La valeur de  '<%s><%s>' non défini. L'organigramme ne peut être généré", XML_CONF_ORG_NODE, XML_CONF_ORG_MANAGER);
+			logs_->add(logs::TRACE_TYPE::ERR, "La valeur de  '<%s><%s>' n'est pas définie. L'organigramme ne peut être généré", XML_CONF_ORG_NODE, XML_CONF_ORG_MANAGER);
 			orgChart_.generate_ = false;
 		}
 		else {
@@ -641,18 +640,27 @@ RET_TYPE LDAPBrowser::_createFile()
 	bool searchCriterium(cmdFile->searchCriteria(&cols_, search));
 
 	if (searchCriterium && 0 != search.tabType().size()) {
-		// Une rupture => il faut ajouter la colonne sur le niveau
-		if (0 == orgAttrs_.level_.value().c_str()) {
-			logs_->add(logs::TRACE_TYPE::ERR, "Le critère `%s' pour les structures n'est pas défini. Impossible d'appliquer une rupture", XML_CONF_ORG_LEVEL);
-			return RET_TYPE::RET_INVALID_PARAMETERS;
-		}
 
-		// J'ajoute la colonne "Niveau" si nécessaire
-		if (cols_.npos == cols_.getColumnByType(COL_STRUCT_LEVEL)) {
-			cols_.append(COL_STRUCT_LEVEL);
-
-			logs_->add(logs::TRACE_TYPE::LOG, "Rupture - Ajout d'une colonne de type \'%s\'", COL_STRUCT_LEVEL);
+		// Il faut que l'on sache récupérer le niveau !!!
+		if (0 == orgAttrs_.level_.value().size()){
+		    logs_->add(logs::TRACE_TYPE::ERR, "Le critère `%s' n'est pas défini. Impossible d'appliquer la rupture", XML_CONF_ORG_LEVEL);
+		    search.setTabType("");
+		    searchCriterium = false;
 		}
+		else{
+            // Une rupture => il faut ajouter la colonne sur le niveau
+            if (0 == orgAttrs_.level_.value().c_str()) {
+                logs_->add(logs::TRACE_TYPE::ERR, "Le critère `%s' pour les structures n'est pas défini. Impossible d'appliquer une rupture", XML_CONF_ORG_LEVEL);
+                return RET_TYPE::RET_INVALID_PARAMETERS;
+            }
+
+            // J'ajoute la colonne "Niveau" si nécessaire
+            if (cols_.npos == cols_.getColumnByType(orgAttrs_.level_.key().c_str())) {
+                cols_.append(COL_STRUCT_LEVEL);
+
+                logs_->add(logs::TRACE_TYPE::LOG, "Rupture - Ajout d'une colonne de type \'%s\'", orgAttrs_.level_.key().c_str());
+            }
+        }
 	}
 
 	// Maintenant que j'ai la liste des colonnes,
@@ -682,9 +690,10 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	if (searchCriterium) {
 		// Le critère de rupture est-il valide ?
-		if (!search.tabType().size() || !structs_.levelsByType(search.tabType().c_str(), levels)) {
+		if (search.tabType().size() && !structs_.levelsByType(search.tabType().c_str(), levels)) {
 			logs_->add(logs::TRACE_TYPE::ERR, "La valeur '%s' ne correspond à aucun type de structure. Il n'y aura pas de rupture.", search.tabType().c_str());
 			search.setTabType("");
+			searchCriterium = false;
 		}
 
 		// Y at'il un container avec ce nom ?
@@ -724,10 +733,13 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	// Nom court du fichier de sortie
 	if (pContainer) {
-		opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pContainer->realName(), pContainer->shortName());
+		if (0 == orgAttrs_.shortName_.value().size()) {
+		    logs_->add(logs::TRACE_TYPE::ERR, "Pas de nom court pour les containers. Le nom des fichiers de sortie ne pourra pas être généré");
+	    }
+        opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pContainer->realName(), pContainer->shortName());
 	}
-	else {
-		opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), NULL, NULL);
+	else{
+        opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), NULL, NULL);
 	}
 
 	// -> mise à jour du nom du fichier
@@ -1543,17 +1555,16 @@ bool LDAPBrowser::_getLDAPContainers()
 		}
 	}
 
+	/*
 	if (0 == myAttributes.size()) {
 		// Pas d'attributs à récupérer => pas besoin de récupérer les containers
 		return true;
 	}
-
-#ifdef _DEBUG
-#endif // DEBUG
+	*/
 
 	// On ajoute quelques éléments ...
 	//
-	myAttributes += STR_ATTR_DESCRIPTION;			    // Nom complet de l'OU
+	myAttributes += STR_ATTR_DESCRIPTION;			    // Nom complet de l'OUcontainers
 
 	// Le nom court ?
 	bool wantShortName(false);
@@ -2447,7 +2458,7 @@ bool LDAPBrowser::_colName2LDAPAttribute(keyValTuple& tuple, const char* comment
 			tuple.setValue(cols_.getColumnByIndex(index, true)->ldapAttr_.c_str());
 		}
 
-		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s - Définis par {'%s', '%s'}", comment, tuple.key().c_str(), tuple.value().c_str());
+		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s - {%s, %s}", comment, tuple.key().c_str(), tuple.value().size()?tuple.value().c_str():"non défini");
 	}
 	else {
 		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s - Non défini", comment);

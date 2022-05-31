@@ -200,6 +200,11 @@ public:
 	//
 	virtual bool save();
 
+	// Dernière erreur
+	//
+	RET_TYPE lastErrorCode()
+	{ return lastError_; }
+
 	// Méthodes privées
 	//
 protected:
@@ -244,6 +249,9 @@ protected:
 
 	// Logs
 	logs*			    logs_;
+
+	// Erreur
+	RET_TYPE            lastError_;         // Dernière erreur
 };
 
 #endif // __LDAP_2_FILE_XML_PARSER_h__

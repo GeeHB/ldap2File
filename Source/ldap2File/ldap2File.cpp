@@ -191,7 +191,7 @@ int main(int argc, const char* argv[]) {
 		// Le dossier des logs doit exister (on a auparavant tenté de le créer s'il n'existait pas)
 		folders::folder* logFolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS);
 		if (NULL == logFolder) {
-			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée");
+			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée", RET_TYPE::RET_ACCESS_ERROR);
 		}
 
 		cout << "Programme : " << fullAppName << endl;
@@ -328,10 +328,10 @@ int main(int argc, const char* argv[]) {
 		LDAPBrowser requester(&myLogs, &configurationFile);
 		RET_TYPE retType(RET_TYPE::RET_INVALID_FILE);
 		std::string shortName("");
-		while (!done) {
+		while (!done && 0 == retCode) {
 			currentLaunchTime = _getTickCount();
 
-			for (list<string>::iterator it = files.begin(); it != files.end(); it++) {
+			for (list<string>::iterator it = files.begin(); 0 == retCode && it != files.end(); it++) {
 
                 _now();
 
@@ -343,7 +343,7 @@ int main(int argc, const char* argv[]) {
 				retType = RET_TYPE::RET_INVALID_FILE;
 
 				// Génération du fichier en question
-				if (configurationFile.openCommandFile((*it).c_str()) &&
+				if (configurationFile.openCommandFile((*it).c_str(), retType) &&
 					RET_TYPE::RET_OK == (retType = requester.browse())) {
 					cout << " - [ok]";
 					filesGenerated++;
@@ -351,8 +351,24 @@ int main(int argc, const char* argv[]) {
 				else {
 					cout << " - [ko] - ";
 					switch (retType) {
+					case RET_TYPE::RET_ACCESS_ERROR:
+                        cout << "Erreur d'accès";
+					    break;
+
+                    case RET_TYPE::RET_ALLOCATION_ERROR:
+                        cout << "Erreur d'allocation mémoire";
+					    break;
+
 					case RET_TYPE::RET_INVALID_FILE:
 					    cout << "Le fichier n'existe pas ou est vide";
+					    break;
+
+                    case RET_TYPE::RET_INCOMPLETE_FILE:
+                        cout << "Le fichier (conf ou commande) n'est pas complet";
+					    break;
+
+                    case RET_TYPE::RET_INVALID_XML_VERSION:
+					    cout << "Version XML incorrecte dans les fichiers";
 					    break;
 
 					case RET_TYPE::RET_INVALID_PARAMETERS:
@@ -383,7 +399,7 @@ int main(int argc, const char* argv[]) {
 						break;
 
 					case RET_TYPE::RET_UNABLE_TO_SAVE:
-						cout << "Erreur de fichier";
+						cout << "Erreur de sauvegarde de fichier";
 						break;
 
 					case RET_TYPE::RET_NO_SUCH_CONTAINER_ERROR:
@@ -399,8 +415,8 @@ int main(int argc, const char* argv[]) {
 						cout << "Erreur(s) bloquante(s)";
 						retCode = 1;
 						break;
-					}
-				}
+					} // switch
+				} // else
 
 				cout << endl;
 
@@ -413,7 +429,7 @@ int main(int argc, const char* argv[]) {
 					// Il ne peut pas y avoir d'analyse régulière ...
 					freq = 0;
 				}
-			}
+			} // for
 
 			if (freq) {
 				// On attend un peu

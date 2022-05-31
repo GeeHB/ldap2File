@@ -45,7 +45,7 @@ agentTree::agentTree(charUtils* encoder, logs* pLogs, LDAPServer* lServer, const
 {
 	if (!encoder || !pLogs || !lServer){
 		// Fin du processus
-		throw LDAPException("Erreur lors de l'initialisation du gestionnaire d'organigramme");
+		throw LDAPException("Erreur lors de l'initialisation du gestionnaire d'organigramme", RET_TYPE::RET_INVALID_PARAMETERS);
 	}
 
 	// Initialisation des données membres
@@ -302,7 +302,7 @@ string agentTree::_getAscendantsString(const char* dnAgent, bool withMe, string*
 LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 {
 	if (!managersAttribute_.length()) {
-		throw LDAPException("agentTree - Pas d'attribut LDAP pour la recherche du ou des managers");
+		throw LDAPException("agentTree - Pas d'attribut LDAP pour la recherche du ou des managers", RET_TYPE::RET_INCOMPLETE_FILE);
 	}
 
 	if (!encoder_->stricmp(dnAgent, NO_AGENT_DN)){

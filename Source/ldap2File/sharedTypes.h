@@ -553,14 +553,14 @@ typedef struct tagORGATTRNAMES
         manager_.init();
         level_.init();
         shortName_.init();
-		id_.init();
+		//id_.init();
     }
 
     // Données membres
     keyValTuple manager_;
     keyValTuple level_;
     keyValTuple shortName_;
-	keyValTuple id_;
+	//keyValTuple id_;
 }ORGATTRNAMES,* LPORGATTRNAMES;
 
 // Information(s) sur un fichier de sortie
@@ -617,18 +617,32 @@ typedef struct tagOUTPUTFILEINFOS
 //
 #include <exception>
 
+// Exception "personnelle"
+//
 class LDAPException : public exception
 {
 public:
-	LDAPException(const char* why)
-	{ reason_ = IS_EMPTY(why)?"Erreur inconnue":why; }
-	LDAPException(string& why)
-	{ reason_ = why; }
+	// Constructions
+	//
+	LDAPException(const char* why, RET_TYPE ret = RET_TYPE::RET_UNKWNOWN){
+	    errorCode_ = ret;
+	    reason_ = IS_EMPTY(why)?"Erreur inconnue":why;
+    }
+	LDAPException(string& why, RET_TYPE ret = RET_TYPE::RET_UNKWNOWN){
+	    errorCode_ = ret;
+	    reason_ = why;
+    }
+
+    // Accès
+    //
 	virtual const char* what() const throw()
 	{ return reason_.c_str(); }
+	virtual RET_TYPE code() const throw()
+	{ return errorCode_; }
 
 protected:
-	string reason_;
+	RET_TYPE    errorCode_;  // Code retour
+	string      reason_;    // Message "humain"
 };
 
 // Noms d'un attribut

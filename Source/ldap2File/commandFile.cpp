@@ -74,6 +74,8 @@ bool commandFile::_open()
 //
 bool commandFile::_load()
 {
+	lastError_ = RET_TYPE::RET_OK;
+
 	// Chargement du fichier ...
 	if (false == XMLParser::_load()){
 	    return false;
@@ -88,6 +90,7 @@ bool commandFile::_load()
 			logs_->add(logs::TRACE_TYPE::ERR, e.what());
 		}
 
+		lastError_ = e.code();
 		return false;
 	}
 
@@ -747,7 +750,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 
 	// Il faut qu'il y ait une expression régulière ...
 	if (NULL == baseReg){
-		throw LDAPException("Erreur mémoire lors de la création des critères LDAP");
+		throw LDAPException("Erreur mémoire lors de la création des critères LDAP", RET_TYPE::RET_INVALID_PARAMETERS);
 	}
 
 	search.setsearchExpression(baseReg);

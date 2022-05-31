@@ -37,7 +37,7 @@
 XMLParser::XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool loadComments)
 {
 	if (IS_EMPTY(rootName)) {
-		throw LDAPException("XMLParser - Pas de nom pour la racine");
+		throw LDAPException("XMLParser - Pas de nom pour la racine", RET_TYPE::RET_INCOMPLETE_FILE);
 	}
 
 	// Initialisation des paramètres
@@ -57,6 +57,7 @@ XMLParser::XMLParser(const char* rootName, folders* pFolders, logs* pLogs, bool 
 
 	// Traces & logs
 	logs_ = pLogs;
+	lastError_ = RET_TYPE::RET_OK;      // Par d'erreur (pour l'instant)
 }
 
 // Vérification de la version
@@ -70,7 +71,7 @@ void XMLParser::checkProtocol(const string& parametersNode)
 		string msg("Le fichier '");
 		msg += fileName_;
 		msg += "' n'est pas dans le bon format";
-		throw LDAPException(msg);
+		throw LDAPException(msg, RET_TYPE::RET_INVALID_FILE);
 	}
 
 	// Version du protocole
@@ -83,7 +84,7 @@ void XMLParser::checkProtocol(const string& parametersNode)
 		msg += currentVersion;
 		msg += " - Version attendue : ";
 		msg += XML_CONF_VERSION_VAL;
-		throw LDAPException(msg);
+		throw LDAPException(msg, RET_TYPE::RET_INVALID_XML_VERSION);
 	}
 
 	// On se positionne à la "racine" des paramètres
@@ -95,7 +96,7 @@ void XMLParser::checkProtocol(const string& parametersNode)
 		msg += " dans le fichier '";
 		msg += fileName_;
 		msg += "'";;
-		throw LDAPException(msg);
+		throw LDAPException(msg, RET_TYPE::RET_INCOMPLETE_FILE);
 	}
 
 	// Si je suis arrivé ici c'est que tout est correct !
@@ -227,7 +228,7 @@ bool XMLParser::_load()
 		    logs_->add(logs::TRACE_TYPE::ERR, message.c_str());
         }
 
-		throw LDAPException(message);
+		throw LDAPException(message, RET_TYPE::RET_INCOMPLETE_FILE);
 
 		// ???
 		return false;
@@ -246,7 +247,7 @@ bool XMLParser::_load()
         }
         */
 
-        throw LDAPException(message);
+        throw LDAPException(message, RET_TYPE::RET_INCOMPLETE_FILE);
 
         // !!!
 		return false;

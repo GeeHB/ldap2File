@@ -71,7 +71,7 @@ bool confFile::open(const char* confFile)
 
 // Fichier(s) de commandes
 //
-bool confFile::openCommandFile(const char* cmdFile)
+bool confFile::openCommandFile(const char* cmdFile, RET_TYPE& code)
 {
 	if (IS_EMPTY(cmdFile)){
 		return false;
@@ -87,6 +87,7 @@ bool confFile::openCommandFile(const char* cmdFile)
 	if (!(commandFile_ = new commandFile(cmdFile, folders_, logs_, false))
 		|| !commandFile_->isValid()){
 		// Pb d'allocation ou d'initialisation
+		code = commandFile_->lastErrorCode();
 		return false;
 	}
 
@@ -286,28 +287,29 @@ void confFile::orgAttrs(ORGATTRNAMES& orgAttrs)
 	pugi::xml_node node = paramsRoot_.child(XML_CONF_ORG_NODE);
 	if (!IS_EMPTY(node.name())){
 		// Colonne des encadrants
-        pugi::xml_node childNode = paramsRoot_.child(XML_CONF_ORG_MANAGER);
+        pugi::xml_node childNode = node.child(XML_CONF_ORG_MANAGER);
         if (!IS_EMPTY(childNode.name())) {
             orgAttrs.manager_.setKey(childNode.attribute(ORG_MANAGER_NAME_ATTR).value());
         }
 
         // Colonne du niveau des structures
-        childNode = paramsRoot_.child(XML_CONF_ORG_LEVEL);
+        childNode = node.child(XML_CONF_ORG_LEVEL);
         if (!IS_EMPTY(childNode.name())) {
             orgAttrs.level_.setKey(childNode.attribute(ORG_LEVEL_NAME_ATTR).value());
         }
 
         // Nom-court des containers
-        childNode = paramsRoot_.child(XML_CONF_ORG_SHORTNAME);
+        childNode = node.child(XML_CONF_ORG_SHORTNAME);
         if (!IS_EMPTY(childNode.name())) {
             orgAttrs.shortName_.setKey(childNode.attribute(ORG_SHORTNAME_NAME_ATTR).value());
         }
 
 		// Identifiant
+		/*
 		childNode = paramsRoot_.child(XML_CONF_ORG_ID);
 		if (!IS_EMPTY(childNode.name())) {
 			orgAttrs.id_.setKey(childNode.attribute(ORG_ID_NAME_ATTR).value());
-		}
+		}*/
 	}
 }
 
@@ -718,6 +720,8 @@ bool confFile::_open()
 //
 bool confFile::_load()
 {
+	lastError_ = RET_TYPE::RET_OK;
+
 	// Chargement du fichier ...
 	XMLParser::_load();
 
@@ -729,6 +733,8 @@ bool confFile::_load()
 		if (logs_) {
 			logs_->add(logs::TRACE_TYPE::ERR, e.what());
 		}
+
+		lastError_ = e.code();
     }
     catch(...){
         return false;

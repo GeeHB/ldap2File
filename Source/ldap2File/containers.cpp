@@ -34,6 +34,25 @@
 //	containers:LDAPContainer : un container LDAP
 //
 
+// Nombre d'attributs gérés
+//
+size_t containers::LDAPContainer::size()
+{
+    size_t count(attributes_.size());    // Attributs dans ma liste
+
+    // Un nom ?
+    if (realName_.size()){
+        count++;
+    }
+
+    // Un nom court ?
+    if (shortName_.size()){
+        count++;
+    }
+
+    return count;
+}
+
 // Nom "huumain" du container
 //
 void containers::LDAPContainer::setRealName(std::string& name)

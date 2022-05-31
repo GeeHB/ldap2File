@@ -86,7 +86,7 @@ public:
 
 	// Fichier(s) de commandes
 	//
-	bool openCommandFile(const char* cmdFile);
+	bool openCommandFile(const char* cmdFile, RET_TYPE& code);
 	commandFile* cmdFile()
 	{ return commandFile_; }
 
