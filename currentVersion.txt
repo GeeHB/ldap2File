@@ -39,8 +39,8 @@ BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
 
-22.5.2
-    * le 20 mai 2022
+22.6.2
+    * le 1er juin 2022
     + Mise en cohérence du nom des classes et nom de fichiers : ldapBrowser devient LDAPBrowser, LDAPAttributes.h, LDAPFile, ...
 	+ Logs ...
 	- Regressions
