@@ -292,6 +292,12 @@ void confFile::orgAttrs(ORGATTRNAMES& orgAttrs)
             orgAttrs.manager_.setKey(childNode.attribute(ORG_MANAGER_NAME_ATTR).value());
         }
 
+		// Colonne des responsables de structure
+		childNode = node.child(XML_CONF_ORG_STRUCT_MANAGER);
+		if (!IS_EMPTY(childNode.name())) {
+			orgAttrs.containerManager_.setKey(childNode.attribute(ORG_STRUCT_MANAGER_NAME_ATTR).value());
+		}
+
         // Colonne du niveau des structures
         childNode = node.child(XML_CONF_ORG_LEVEL);
         if (!IS_EMPTY(childNode.name())) {

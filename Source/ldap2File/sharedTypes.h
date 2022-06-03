@@ -168,6 +168,7 @@ typedef struct tagORGCHART
 		nodeFormat_ = DEF_ORGTAB_NODE_FORMAT;
 		flat_ = true;
 		sheetName_ = DEF_ORGTAB_NAME;
+		byStruct_ = true;
 	}
 
 	// Données
@@ -176,6 +177,7 @@ typedef struct tagORGCHART
 	string	nodeFormat_;	// format du noeud
 	bool	flat_;			// Organigramme plat (mode TXT) ?
 	string	sheetName_;		// Nom de l'onglet
+	bool    byStruct_;      // Basé sur la structure de l'arborescence (ou sur la hiérachie par défaut)
 }ORGCHART, *LPORGCHART;
 
 // Critères pour la recherche
@@ -551,6 +553,7 @@ typedef struct tagORGATTRNAMES
     // Initialisation
     void init(){
         manager_.init();
+		containerManager_.init();
         level_.init();
         shortName_.init();
 		//id_.init();
@@ -558,6 +561,7 @@ typedef struct tagORGATTRNAMES
 
     // Données membres
     keyValTuple manager_;
+	keyValTuple containerManager_;
     keyValTuple level_;
     keyValTuple shortName_;
 	//keyValTuple id_;

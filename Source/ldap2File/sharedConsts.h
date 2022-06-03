@@ -125,7 +125,7 @@
 #define REG_LDAP2FILE_VER_DEF	""
 #endif // _WIN32
 
-// Expressions régulières
+// Expressions de recherche
 //
 #define SEARCH_EXPR_LDAP		"JHB - Découpage des requêtes"
 #define SEARCH_EXPR_MINIMAL		"JHB - Objets de type utilisateur"
@@ -203,8 +203,7 @@ using namespace jhbTools;
 
 // Quelques valeurs ...
 //
-#define STR_VACANT_POST				"Poste vacant"
-#define SERVICE_ADMINISTRATION		"Administration"	// Les agents sans service mais dans une direction
+#define STR_VACANT_JOB				"Poste vacant"
 
 // Onglets
 //
@@ -335,10 +334,11 @@ using namespace jhbTools;
 
 // Attributs organisationnels
 //
-#define ORG_ATTR_MANAGER			"Manager"
-#define ORG_ATTR_LEVEL				"Niveau des structures"
-#define ORG_ATTR_SHORTNAME			"Nom court des containers"
-#define ORG_ATTR_ID					"Identifiant"
+#define STR_ORG_ATTR_MANAGER		"Responsable hiérarchique"
+#define STR_ORG_ATTR_STRUCT_MANAGER	"Responsable de structure"
+#define STR_ORG_ATTR_LEVEL			"Niveau des structures"
+#define STR_ORG_ATTR_SHORTNAME		"Nom court des structures"
+#define STR_ORG_ATTR_ID				"Identifiant"
 
 //
 // Nom des colonnes
@@ -389,8 +389,11 @@ enum class FILE_TYPE { FILE_UNKNOWN_TYPE = 0, FILE_TXT = 0, FILE_CSV, FILE_XLS, 
 //enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS_WINDOWS = 1, DEST_FS_MACOS = 2, DEST_FS_LINUX = 2, DEST_EMAIL, DEST_FTP, DEST_SCP };
 enum class DEST_TYPE { DEST_UNKNOWN = 0, DEST_FS = 1, DEST_FILE_SYSTEM = 1, DEST_EMAIL, DEST_FTP, DEST_SCP };
 
-// Retours
+// Codes retour
 enum class RET_TYPE {RET_OK = 0, RET_UNKWNOWN, RET_INVALID_FILE, RET_INVALID_XML_VERSION, RET_INVALID_PARAMETERS, RET_INCOMPLETE_FILE, RET_ACCESS_ERROR, RET_ALLOCATION_ERROR, RET_ERROR_NO_DESTINATION, RET_BLOCKING_ERROR,RET_NON_BLOCKING_ERROR,RET_LDAP_ERROR,RET_UNABLE_TO_SAVE, RET_FILE_TO_DELETE, RET_NO_SUCH_CONTAINER_ERROR, RET_INVALID_OUTPUT_FORMAT, RET_ERROR_NO_CONTAINER };
+
+// Statut du manager (pour les containers)
+enum class MANAGER_STATUS {MAYBE = 0 , EXIST = 1, DOESNT_EXIST};
 
 #endif /* _LDAP_2_FILE_SHARED_CONSTS_h__ */
 

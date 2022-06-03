@@ -35,7 +35,7 @@
 
 //----------------------------------------------------------------------
 //--
-//-- Implémentation de la classe
+//-- Implémentation de la classe agnetTree
 //--
 //----------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ agentTree::~agentTree()
 {
 	// Libération de la liste des agents
 	//
-	for (deque<LPAGENTINFOS>::iterator agentIT = agents_.begin(); agentIT != agents_.end(); agentIT++){
+	for (agentIterator agentIT = agents_.begin(); agentIT != agents_.end(); agentIT++){
 		if (*agentIT){
 			// Libération de l'objet
 			delete (*agentIT);
@@ -78,24 +78,44 @@ agentTree::~agentTree()
 	}
 }
 
-// Ajout
+// Ajouts
 //
-LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, string& nom, string& email, unsigned int status, string& manager, string& matricule, bool deducted)
+
+// ... d'un agent déjà crée
+//
+bool agentTree::add(LPAGENTINFOS agent)
+{
+    if (nullptr == agent){
+        return false;
+    }
+
+    // On pourrait ajouter des vérifications avant d'ajouter l'agent à la liste
+
+    // Ajout à la liste
+    agents_.push_back(agent);
+
+    // Ajouté
+    return true;
+}
+
+// D'un nouvel agent à partir de ses données
+//
+LPAGENTINFOS agentTree::add(unsigned int uid, string& agentDN, string& prenom, string& nom, string& email, unsigned int status, string& manager, string& matricule, bool deducted)
 {
 	// L'agent a t'il déja été ajouté ?
-	LPAGENTINFOS agent = _findAgent(dnAgent, uid);
+	LPAGENTINFOS agent = _findAgent(agentDN, uid);
 #ifdef _DEBUG
-	if ("uid=benrached.n,ou=[01399]DRH,ou=[00004]DGS,ou=[00003]AdD,ou=[00001]CDdl,ou=users,dc=allier,dc=fr" == dnAgent) {
+	if ("uid=benrached.n,ou=[01399]DRH,ou=[00004]DGS,ou=[00003]AdD,ou=[00001]CDdl,ou=users,dc=allier,dc=fr" == agentDN) {
 		int i(5);
 		i++;
 	}
 #endif
 	if (agent){
 		if (agent->uid() == uid &&			// Même uid pour 2 DN différents !!!
-			dnAgent != agent->dn()) {
+			agentDN != agent->DN()) {
 
 			if (logs_){
-				logs_->add(logs::TRACE_TYPE::ERR, "Au moins deux agents ont (uidNumber = %d) : %s et %s", uid, dnAgent.c_str(), agent->dn().c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Au moins deux agents ont (uidNumber = %d) : %s et %s", uid, agentDN.c_str(), agent->DN().c_str());
 			}
 
 			return NULL;
@@ -106,7 +126,7 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, s
 	}
 	else{
 		// Création d'un nouvel agent
-		if (NULL == (agent = new agentInfos(uid, dnAgent.c_str(), prenom, nom, email, status, deducted))){
+		if (NULL == (agent = new agentInfos(uid, agentDN.c_str(), prenom, nom, email, status, deducted))){
 			// Impossible d'allouer de la mémoire
 			return NULL;
 		}
@@ -129,7 +149,7 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& dnAgent, string& prenom, s
 		}
 		else{
 			if (logs_){
-				logs_->add(logs::TRACE_TYPE::ERR, "Le manager de '%s' n'existe pas", dnAgent.c_str());
+				logs_->add(logs::TRACE_TYPE::ERR, "Le manager de '%s' n'existe pas", agentDN.c_str());
 			}
 		}
 	}
@@ -144,7 +164,7 @@ void agentTree::findOtherDNIds()
 {
 	// Parcours de la liste des agents
 	agentInfos* agent(NULL);
-	for (deque<LPAGENTINFOS>::iterator agentIT = agents_.begin(); agentIT != agents_.end(); agentIT++){
+	for (agentIterator agentIT = agents_.begin(); agentIT != agents_.end(); agentIT++){
 		if (NULL != (agent = (*agentIT))
 			&& !agent->autoAdded()){
 			_findOtherDNIds(agent);
@@ -170,7 +190,7 @@ void agentTree::_findOtherDNIds(agentInfos* agent)
 	while (pointer != otherJobs->end()){
 		if (NULL != (other = (*pointer)) && NO_AGENT_UID == other->id_){
 			// Le lien n'a pas été fait => recherche dans la liste
-			if (NULL == (pOther = _findAgent(other->dn_, NO_AGENT_UID))
+			if (NULL == (pOther = _findAgent(other->DN_, NO_AGENT_UID))
 				|| ((pOther != NULL) && pOther->autoAdded())){
 				// L'agent n'est pas dans la liste mémoire
 				//other->dn_ = "";
@@ -203,10 +223,10 @@ LPAGENTINFOS agentTree::_findAgent(const char* dnAgent, unsigned int uid)
 			i++;
 		}
 #endif // _DEBUG
-		for (deque<LPAGENTINFOS>::iterator agentIT = agents_.begin(); agentIT != agents_.end(); agentIT++){
+		for (agentIterator agentIT = agents_.begin(); agentIT != agents_.end(); agentIT++){
 			if (*agentIT &&
 				((uid != NO_AGENT_UID && (*agentIT)->uid() == uid)
-					|| (*agentIT)->dn() == dnAgent)
+					|| (*agentIT)->DN() == dnAgent)
 				){
 				// Trouvé
 				return (*agentIT);
@@ -218,11 +238,38 @@ LPAGENTINFOS agentTree::_findAgent(const char* dnAgent, unsigned int uid)
 	return NULL;
 }
 
+// ... d'agent(s) apparteanant à un container
+//
+LPAGENTINFOS agentTree::findAgentIn(string& containerDN, size_t& from)
+{
+    // Indice hors liste ?
+	if (from > agents_.size()){
+        from = agents_.size();
+    }
+
+	agentIterator it = (agents_.begin() + from);
+
+    // Recherche itérative à partir de "from"
+    while (it != agents_.end()){
+        if ((*it)->containerDN() == containerDN){
+            // Dans le container recherché !
+            return (*it);
+        }
+
+        // Non -> on va vérifier avec l'agent suivant
+        from++;
+		it++;
+    }
+
+    // Non trouvé
+    return nullptr;
+}
+
 // "Super" managers
 //
 LPAGENTINFOS agentTree::_findManager(LPAGENTINFOS from, bool fullMode)
 {
-	deque<LPAGENTINFOS>::iterator agentIT = agents_.begin();
+	agentIterator agentIT = agents_.begin();
 
 	// On se positionne dans la liste à partir de "from"
 	if (from){
@@ -481,18 +528,34 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 
 //----------------------------------------------------------------------
 //--
-//-- Classe agent
+//-- Classe agentInfos
 //--
 //----------------------------------------------------------------------
 
-// Construction
+// Constructions
 //
-agentInfos::agentInfos(unsigned int uid, const char* dn, string& prenom, string& nom, string& email, unsigned int status, bool autoAdded)
+agentInfos::agentInfos(unsigned int uid, const char* DN, const char* nom)
+{
+    // Initialisation des données membres
+	//
+	uid_ = id_ = uid;
+	DN_ = DN;
+	nom_ = nom;
+	prenom_ = email_ = "";
+	autoAdded_ = true;
+	ownData_ = NULL;
+	replacedBy_ = NULL;
+	replace_ = NULL;
+	manager_.init();
+	status_ = 0;
+}
+
+agentInfos::agentInfos(unsigned int uid, const char* DN, string& prenom, string& nom, string& email, unsigned int status, bool autoAdded)
 {
 	// Initialisation des données membres
 	//
 	uid_ = uid;
-	dn_ = dn;
+	DN_ = DN;
 	prenom_ = prenom;
 	nom_ = nom;
 	email_ = email;
@@ -502,13 +565,6 @@ agentInfos::agentInfos(unsigned int uid, const char* dn, string& prenom, string&
 	replace_ = NULL;
 	manager_.init();
 	status_ = status;
-
-#ifdef _DEBUG
-	if (uid == 17281){
-		int i(5);
-		i++;
-	}
-#endif // _DEBUG
 }
 
 // Libération
@@ -526,6 +582,20 @@ agentInfos::~agentInfos()
 	}
 }
 
+// DN de mon container
+//
+string agentInfos::containerDN()
+{
+    string parentDN("");
+    size_t pos(DN_.find(LDAP_PREFIX_OU));
+
+    if (DN_.npos != pos){
+        parentDN = DN_.substr(pos);
+    }
+
+    return parentDN;
+}
+
 // Insertion d'un agent dans l'arborescence
 //
 //		Les agents sont classés par ordre alphabétique du nom
@@ -540,7 +610,6 @@ void agentInfos::setParent(agentInfos* pAgent)
 
 		return;
 	}
-
 
 	if (pAgent == this ||		// Je ne suis pas mon manager ...
 		pAgent == manager_.parent_){		// Déja fait !
@@ -633,7 +702,7 @@ string agentInfos::_display(string& format)
 	//
 	if (full.npos != (pos = full.find(TOKEN_NODE_NAME))){
 		if (isVacant()){
-			inter = STR_VACANT_POST;
+			inter = STR_VACANT_JOB;
 		}
 		else{
 			inter = prenom_ + " " + nom_;
@@ -758,10 +827,10 @@ void agentInfos::addOtherDNs(deque<string>& dns)
 bool agentInfos::addOtherDN(const char* dn)
 {
 	if (!IS_EMPTY(dn) &&
-		dn_ != dn){
+		DN_ != dn){
 		// Déja ce DN ?
 		for (deque<OTHERJOB*>::iterator it = otherJobs_.begin(); it != otherJobs_.end(); it++){
-			if (*it && (*it)->dn_ == dn){
+			if (*it && (*it)->DN_ == dn){
 				return false;
 			}
 		}
@@ -775,11 +844,11 @@ bool agentInfos::addOtherDN(const char* dn)
 	return false;
 }
 
-bool agentInfos::setOtherDNId(const char* dn, unsigned int id)
+bool agentInfos::setOtherDNId(const char* DN, unsigned int id)
 {
-	if (!IS_EMPTY(dn)){
+	if (!IS_EMPTY(DN)){
 		for (deque<OTHERJOB*>::iterator it = otherJobs_.begin(); it != otherJobs_.end(); it++){
-			if (*it && (*it)->dn_ == dn){
+			if (*it && (*it)->DN_ == DN){
 				// Je l'ai !!!
 				(*it)->id_ = id;
 				return true;

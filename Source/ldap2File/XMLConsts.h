@@ -128,10 +128,16 @@
 // Organisation
 //
 #define XML_CONF_ORG_NODE			"Organisation"
+#define ORG_TYPE_ATTR               XML_TYPE
+#define ORG_TYPE_STRUCT             "Organisationnel"
 
 // Nom de la colonne de l'encadrant
 #define XML_CONF_ORG_MANAGER		XML_MANAGER
 #define ORG_MANAGER_NAME_ATTR		XML_NAME
+
+// Nom de la colonne pour le responsable de la structure
+#define XML_CONF_ORG_STRUCT_MANAGER		"ResponsableStruct"
+#define ORG_STRUCT_MANAGER_NAME_ATTR	XML_NAME
 
 // Nom de la colonne du niveau de la strcuture
 #define XML_CONF_ORG_LEVEL			XML_LEVEL

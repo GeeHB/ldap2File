@@ -170,14 +170,15 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	//
 	configurationFile_->orgAttrs(orgAttrs_);
 
-	logs_->add(logs::TRACE_TYPE::NORMAL, "Attributs organisationnels");
+	logs_->add(logs::TRACE_TYPE::NORMAL, "Attributs organisationnels:");
 
 	// Si le nom de la colonne est renseigné, on cherche l'attribut associé
 	//	... pour chacun
-	_colName2LDAPAttribute(orgAttrs_.manager_, ORG_ATTR_MANAGER);
-	_colName2LDAPAttribute(orgAttrs_.level_, ORG_ATTR_LEVEL);
-	_colName2LDAPAttribute(orgAttrs_.shortName_, ORG_ATTR_SHORTNAME);
-	//_colName2LDAPAttribute(orgAttrs_.id_, ORG_ATTR_ID);
+	_colName2LDAPAttribute(orgAttrs_.manager_, STR_ORG_ATTR_MANAGER);
+	_colName2LDAPAttribute(orgAttrs_.containerManager_, STR_ORG_ATTR_STRUCT_MANAGER);
+	_colName2LDAPAttribute(orgAttrs_.level_, STR_ORG_ATTR_LEVEL);
+	_colName2LDAPAttribute(orgAttrs_.shortName_, STR_ORG_ATTR_SHORTNAME);
+	//_colName2LDAPAttribute(orgAttrs_.id_, STR_ORG_ATTR_ID);
 
 	// Pas de niveau
 	if (0 == orgAttrs_.level_.value().size()) {
@@ -907,7 +908,7 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	// Organigramme
 	if (orgChart_.generate_){
-		_generateOrgChart();
+		_generateOrgChart(baseContainer);
 	}
 
 	bool atLeastOneError(false);		// Au moins une erreur (non bloquante)
@@ -1471,7 +1472,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 						// Lorsque le poste est vacant, il n'y a plus de prénom ni d'adresse mail
 						if (ALLIER_STATUS_VACANT == (allierStatus & ALLIER_STATUS_VACANT)) {
 							file_->removeAt(cols_.getColumnByType(COL_PRENOM));
-							file_->replaceAt(cols_.getColumnByType(COL_NOM), STR_VACANT_POST);
+							file_->replaceAt(cols_.getColumnByType(COL_NOM), STR_VACANT_JOB);
 							file_->removeAt(cols_.getColumnByAttribute(STR_ATTR_EMAIL));
 						}
 
@@ -1573,7 +1574,12 @@ bool LDAPBrowser::_getLDAPContainers()
 		wantShortName = true;
 	}
 
-	// Le niveau
+	// Le manager de chaque container est-il demandé ?
+	bool wantManagers(false);
+	if (orgAttrs_.containerManager_.value().size()) {
+		myAttributes += orgAttrs_.containerManager_.value().c_str();
+		wantManagers = true;
+	}
 
 	// Génération de la requête
 	searchExpr expression(SEARCH_EXPR_OPERATOR_AND);
@@ -1601,7 +1607,7 @@ bool LDAPBrowser::_getLDAPContainers()
 	PCHAR pAttribute(NULL);
 	PCHAR* pValue(NULL);
 	PCHAR pDN(NULL);
-	std::string u8Value;
+	std::string u8Value, manager;
 
 	ULONG svcCount(ldapServer_->countEntries(searchResult));
 	if (logs_){
@@ -1615,6 +1621,9 @@ bool LDAPBrowser::_getLDAPContainers()
 	// Transfert des données dans la liste
 	//
 	for (ULONG index(0); index < svcCount; index++){
+
+		manager = "";
+
 		// Première valeur ?
 		pEntry = (!index ? ldapServer_->firstEntry(searchResult) : ldapServer_->nextEntry(pEntry));
 		pAttribute = ldapServer_->firstAttribute(pEntry, &pBer);
@@ -1646,9 +1655,14 @@ bool LDAPBrowser::_getLDAPContainers()
 								pContainer->setShortName(u8Value);
 							}
 							else {
-								// Ajout de l'attribut et de sa valeur
-								pContainer->add(pAttribute, u8Value.c_str());
-							}
+                                if (wantManagers && !encoder_.stricmp(pAttribute, orgAttrs_.containerManager_.value().c_str())) {
+                                    manager = u8Value;
+                                }
+                                else {
+                                    // Ajout de l'attribut et de sa valeur
+                                    pContainer->add(pAttribute, u8Value.c_str());
+                                }
+                            }
 						}
 					}   // if (NULL ...
 
@@ -1660,6 +1674,9 @@ bool LDAPBrowser::_getLDAPContainers()
 				// Des attributs ajoutés ?
 				if (pContainer->size()) {
 					containers_->add(pContainer);
+
+                    // Statut du manager
+                    pContainer->setManager(wantManagers? (manager.size()?MANAGER_STATUS::EXIST:MANAGER_STATUS::DOESNT_EXIST): MANAGER_STATUS::MAYBE);
 				}
 				else {
 					// Crée mais vide => à supprimer
@@ -1982,9 +1999,9 @@ bool LDAPBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 	return true;
 }
 
-// Organigramme hiérarchique
+// Organigramme hiérarchique (ou organisationnel)
 //
-void LDAPBrowser::_generateOrgChart()
+void LDAPBrowser::_generateOrgChart(std::string& baseContainer)
 {
 	assert(file_);
 
@@ -2014,11 +2031,90 @@ void LDAPBrowser::_generateOrgChart()
 		_generateGraphicalOrgChart(orgFile_);
 	}
 
+	// Organigramme organisationnel ?
+	if (0 != orgAttrs_.containerManager_.value().size()){
+	    _managersForEmptyContainers(baseContainer);
+	}
+
+    // Fin des traitements
 	orgFile_->closeOrgChartFile();
 
 	if (!newFile){
 		orgFile_ = NULL;	// Plus besoin de garder le pointeur ...
 	}
+}
+
+// Complément de traitement si organisationnel (basé sur les services et directions)
+//
+void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
+{
+    if (0 == containers_->size() ||
+        0 == orgAttrs_.containerManager_.value().size()){
+        // Les managers de structure ne sont pas demandés ou il n'y a pas de structure en mémoire => rien à faire
+        return;
+    }
+
+    // Il s'agit de trouver les containers n'ayant pas de manager et pour lesquels un remplacement est effectué
+    //
+
+    // 1. Identifier les containers sans manager (sachant que l'on ne les demande pas toujours !)
+    containers::LDAPContainer* container(nullptr);
+    std::string containerdDN("");
+    size_t pos(0), baseSize(baseContainer.size()), agentIndex(0);
+    LPAGENTINFOS pAgent(nullptr), current(nullptr);
+    for (size_t index = 0; index < containers_->size(); index++){
+        container = containers_->at(index);
+
+        // Est-ce un sous-container du container de base ?
+        if ((containerdDN = container->DN()).size() >= baseSize &&
+			containerdDN.npos != (pos = containerdDN.find(baseContainer)) &&
+			pos >= 0 &&
+            false == container->hasManager()){
+#ifdef _DEBUG
+            logs_->add(logs::TRACE_TYPE::LOG, "'%s' n'a pas de manager", container->realName());
+#endif // _DEBUG
+
+            // 2. Trouver les agents situés dans ce container (s'ils existent)
+            agentIndex = 0;
+            if (nullptr != (current = agents_->findAgentIn(containerdDN, agentIndex))){
+                // Un premier agent => création du compte vacant
+                if (nullptr != (pAgent = new agentInfos(agents_->size(), containerdDN.c_str(), STR_VACANT_JOB))){
+                    // Copie "light" des atrtributs sources
+                    pAgent->setOwnData(current->ownData()->lightCopy());
+
+                    // 3. Insérer le nouvel agent comme "manager" des agents du container (ie. on fait sauter le remplacement)
+#ifdef _DEBUG
+                    LPAGENTINFOS parent = current->parent();
+#endif // _DEBUG
+                    pAgent->setParent(current->parent());   // Je récupère son prédecesseur
+
+                    // Mise à jour des liens de l'agent courant
+                    current->setParent(pAgent);
+                }
+#ifdef _DEBUG
+                logs_->add(logs::TRACE_TYPE::LOG, "\t- '%s' en premier", current->DN().c_str());
+#endif // _DEBUG
+
+                // D'autres agents ?
+				agentIndex++;
+                while (nullptr != (current = agents_->findAgentIn(containerdDN, agentIndex))){
+                    // Changement de container parent
+                    current->setParent(pAgent);
+					agentIndex++;
+#ifdef _DEBUG
+                    logs_->add(logs::TRACE_TYPE::LOG, "\t- '%s'", current->DN().c_str());
+#endif // _DEBUG
+                }
+
+                // Ajout à la liste du nouvel agent maintenant que les liens sont établis
+                agents_->add(pAgent);
+#ifdef _DEBUG
+                    logs_->add(logs::TRACE_TYPE::LOG, "Ajout du compte id=%d", pAgent->id());
+#endif // _DEBUG
+            }
+
+        }
+    }
 }
 
 //
@@ -2039,8 +2135,8 @@ void LDAPBrowser::_generateFlatOrgChart(orgChartFile* orgFile)
 	LPAGENTINFOS agent(NULL);
 	while (NULL != (agent =agents_->managerOf(agent, orgChart_.full_))){
 		// Ajout de la racine
-		if ((agent->dn() != NO_AGENT_DN)		// Pas la peine d'afficher les erreurs si il n'y en a pas
-			|| (agent->dn() == NO_AGENT_DN && NULL != agent->firstChild())){
+		if (NO_AGENT_DN != (agent->DN())		// Pas la peine d'afficher les erreurs si il n'y en a pas
+			|| (NO_AGENT_DN == agent->DN()  && NULL != agent->firstChild())){
 			logs_->add(logs::TRACE_TYPE::DBG, "Ajout de la racine '%s'", agent->display(orgChart_.nodeFormat_).c_str());
 			_addOrgRoot(orgFile, ascendants, agent);
 
@@ -2080,7 +2176,7 @@ void LDAPBrowser::_addOrgLeaf(orgChartFile* orgFile, orgChartFile::treeCursor& a
 		// Nouvelle ligne ?
 		if (child->isAgent()){
 #ifdef _DEBUG
-			string dn = child->dn();
+			string dn = child->DN();
 			if (dn.find("uid=henry-barnaudiere") != dn.npos) {
 				int i(5);
 				i++;

@@ -172,15 +172,30 @@ private:
 			otherAttributes_.clear();
 		}
 
+		// Copie "non conforme"
+		// utilisée pour la création des postes vacants
+		virtual JSData* lightCopy(){
+		    JSData* copyData(new JSData);
+		    if (nullptr != copyData){
+                // On conserve les couleurs
+                copyData->bkColor_ = bkColor_;
+                copyData->containerColor_ = containerColor_;
+
+                // et l'opacité
+                copyData->groupOpacity_ = groupOpacity_;
+		    }
+
+		    // On retourne la copie (ou un pointeur vide)
+		    return copyData;
+		}
+
 		// Ajout d'un attribut et de sa valeur
 		void newAttribute(string& attrName, string& attrValue, bool quoted = true);
-		void newAttribute(string& attrName, const char* attrValue, bool quoted = true)
-		{
+		void newAttribute(string& attrName, const char* attrValue, bool quoted = true){
 			string val = (IS_EMPTY(attrValue) ? "" : attrValue);
 			newAttribute(attrName, val, quoted);
 		}
-		void newAttribute(const char* attrName, const char* attrValue, bool quoted = true)
-		{
+		void newAttribute(const char* attrName, const char* attrValue, bool quoted = true){
 			if (!IS_EMPTY(attrName)){
 				string name(attrName);
 				string val = (IS_EMPTY(attrValue) ? "" : attrValue);

@@ -85,9 +85,12 @@ protected:
 	// Recherche d'une colonne par son nom et retour de l'attribut LDAP associé (si il existe)
 	bool _colName2LDAPAttribute(keyValTuple&, const char*);
 
-	// Organigramme hiérarchique
+	// Organigramme hiérarchique (ou organisationnel)
 	//
-	void _generateOrgChart();
+	void _generateOrgChart(std::string& baseContainer);
+
+	// Complément de traitement si organisationnel (basé sur les services et directions)
+	void _managersForEmptyContainers(std::string& baseContainer);
 
 	// A plat
 	void _generateFlatOrgChart(orgChartFile* orgFile);
@@ -138,13 +141,7 @@ protected:
 #endif // __LDAP_USE_ALLIER_TITLES__
 
 	columnList				cols_;				// Mes colonnes
-	/*
-	std::string				managersCol_;		// Nom de la colonne utilisée pour les managers
-	std::string				managersAttr_;		// Attribut associé
 
-	std::string				levelAttr_;			// Attribut utilisé pour les niveaux des containers
-	std::string				shortNameAttr_;		// Attribut utilisé pour le nom-court d'un container
-    */
 
     ORGATTRNAMES            orgAttrs_;          // Attributs "réservés"
 

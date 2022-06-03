@@ -781,6 +781,12 @@ bool commandFile::orgChart(ORGCHART& oChart)
 		return false;
 	}
 
+	// Organisationnel ou hiérarchique ?
+    string val = node.attribute(ORG_TYPE_ATTR).value();
+    if (val == ORG_TYPE_STRUCT){
+        oChart.byStruct_ = true;
+    }
+
 	pugi::xml_node child;
 	string value("");
 

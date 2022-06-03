@@ -48,6 +48,7 @@
 
 class agentInfos;
 typedef agentInfos* LPAGENTINFOS;
+typedef deque<LPAGENTINFOS>::iterator agentIterator;
 
 //----------------------------------------------------------------------
 //--
@@ -68,9 +69,10 @@ public:
 	virtual ~agentTree();
 
 	// Ajouts
-	LPAGENTINFOS add(unsigned int uid, string& dnAgent, string& prenom, string& nom, string& mail, unsigned int status, string& manager, string& matricule, bool deducted = false);
-	LPAGENTINFOS add(unsigned int uid, const char* dnAgent, const char* prenom, const char* nom = _T(""), const char* mail = _T(""), unsigned int status = ALLIER_STATUS_EMPTY, const char* manager = NULL, const char* matricule = NULL, bool deducted = false){
-		string bd(dnAgent), bp(prenom), bn(nom), bm(manager?manager:""), bmail(mail), bmat(IS_EMPTY(matricule)?"":matricule);
+	bool add(LPAGENTINFOS agent);
+	LPAGENTINFOS add(unsigned int uid, string& agentDN, string& prenom, string& nom, string& mail, unsigned int status, string& manager, string& matricule, bool deducted = false);
+	LPAGENTINFOS add(unsigned int uid, const char* agentDN, const char* prenom, const char* nom = _T(""), const char* mail = _T(""), unsigned int status = ALLIER_STATUS_EMPTY, const char* manager = NULL, const char* matricule = NULL, bool deducted = false){
+		string bd(agentDN), bp(prenom), bn(nom), bm(manager?manager:""), bmail(mail), bmat(IS_EMPTY(matricule)?"":matricule);
 		return add(uid, bd, bp, bn, bmail, status, bm, bmat, deducted);
 	}
 
@@ -91,10 +93,14 @@ public:
 	{ return _findManager(from, fullView); }
 
 	// Recherches
+	//
 	LPAGENTINFOS findAgentByDN(const char* dn)
 	{ return (IS_EMPTY(dn)?NULL: _getAgentFromLDAP(dn)); }
 	LPAGENTINFOS findAgentByDN(const string& dn)
 	{ return findAgentByDN(dn.c_str()); }
+
+	// ... d'agent(s) dans un container
+	LPAGENTINFOS findAgentIn(string& containerDN, size_t& from);
 
 	// Mise en forme
 	string getFullAscendingString(string& agent)
@@ -120,15 +126,15 @@ private:
 
 	// Recherche
 	//
-	LPAGENTINFOS _findAgent(const char* dnAgent, unsigned int uid);
-	LPAGENTINFOS _findAgent(string& dnAgent, unsigned int uid)
-	{ return _findAgent(dnAgent.c_str(), uid); }
-	string _getAscendantsString(const char* dnAgent, bool withMe, string* managerID);
-	string _getAscendantsString(string& dnAgent, bool withMe, string* managerID)
-	{ return _getAscendantsString(dnAgent.c_str(), withMe, managerID); }
-	LPAGENTINFOS _getAgentFromLDAP(const char* dnAgent);
-	LPAGENTINFOS _getAgentFromLDAP(string& dnAgent)
-	{ return _getAgentFromLDAP(dnAgent.c_str()); }
+	LPAGENTINFOS _findAgent(const char* agentDN, unsigned int uid);
+	LPAGENTINFOS _findAgent(string& agentDN, unsigned int uid)
+	{ return _findAgent(agentDN.c_str(), uid); }
+	string _getAscendantsString(const char* agentDN, bool withMe, string* managerID);
+	string _getAscendantsString(string& agentDN, bool withMe, string* managerID)
+	{ return _getAscendantsString(agentDN.c_str(), withMe, managerID); }
+	LPAGENTINFOS _getAgentFromLDAP(const char* agentDN);
+	LPAGENTINFOS _getAgentFromLDAP(string& agentDN)
+	{ return _getAgentFromLDAP(agentDN.c_str()); }
 	LPAGENTINFOS _findManager(LPAGENTINFOS from, bool fullMode);
 
 	// Données membres privées
@@ -172,10 +178,15 @@ public:
 		// Destruction
 		virtual ~agentDatas()
 		{}
+
+		// Copie "non conforme"
+		// utilisée pour la création des postes vacants
+		virtual agentDatas* lightCopy() = 0;
 	};
 
-	// Construction
-	agentInfos(unsigned int uid, const char* dn, string& prenom, string& nom, string& email, unsigned int status, bool autoAdded);
+	// Constructions
+	agentInfos(unsigned int uid, const char* DN, string& prenom, string& nom, string& email, unsigned int status, bool autoAdded);
+	agentInfos(unsigned int uid, const char* DN, const char* nom);
 
 	// Libération
 	virtual ~agentInfos();
@@ -184,12 +195,10 @@ public:
 	//
 	unsigned int uid()
 	{ return uid_; }
-	string dn()
-	{ return dn_; }
 	string prenom()
 	{ return (isVacant()?string(""):prenom_); }
 	string nom()
-	{ return (isVacant()?string("STR_VACANT_POST"):nom_); }
+	{ return (isVacant()?string("STR_VACANT_JOB"):nom_); }
 	string email()
 	{ return email_;}
 	string display( string& format);
@@ -210,6 +219,12 @@ public:
 			matricule_ = value;
 		}
 	}
+
+	// DN
+	//
+	string DN()
+	{ return DN_; }
+	string containerDN();
 
 	// Statut
 	void setStatus(unsigned int status)
@@ -286,11 +301,11 @@ public:
 	// Un autre poste ...
 	typedef struct _OTHERJOB
 	{
-		_OTHERJOB(const char* dn){
-			dn_ = (IS_EMPTY(dn) ? "" : dn);
+		_OTHERJOB(const char* DN){
+			DN_ = (IS_EMPTY(DN) ? "" : DN);
 			id_ = NO_AGENT_UID;
 		}
-		string dn_;					// Le DN de l'agent
+		string DN_;					// Le DN de l'agent
 		unsigned int id_;		// son autre identifiant
 	}OTHERJOB;
 
@@ -334,15 +349,15 @@ private:
 		LPAGENTINFOS	nextSibling_;	// Le prochain frere
 	} LINKS;
 
-	unsigned int	uid_;		// Issu de LDAP
-	unsigned int	id_;
-	string				dn_;
+	unsigned int	    uid_;		// Issu de LDAP
+	unsigned int	    id_;
+	string				DN_;
 	string				prenom_;
 	string				nom_;
 	string				email_;
 	string				matricule_;
 
-	unsigned int	status_;		// Statut "SMH" du poste
+	unsigned int	    status_;		// Statut "SMH" du poste
 
 	agentDatas*			ownData_;		// Données personnelles
 
@@ -353,7 +368,6 @@ private:
 	LINKS				manager_;		// "Liste" des managers
 
 										// Remplacement
-	//
 	LPAGENTINFOS		replacedBy_;	// Mon remplaçcant
 	LPAGENTINFOS		replace_;		// Je remplace ...
 

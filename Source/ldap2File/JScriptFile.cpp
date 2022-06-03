@@ -125,7 +125,8 @@ bool JScriptFile::_init()
 		logs_->add(logs::TRACE_TYPE::LOG, "Serveur d'images - Pas d'environnement particulier");
 	}
 	else {
-		logs_->add(logs::TRACE_TYPE::LOG, "Serveur d'images -  Environnement \'%s\'", photoServer_.environment_.c_str());
+		logs_->add(logs::TRACE_TYPE::LOG, "Serveur d'images :");
+		logs_->add(logs::TRACE_TYPE::LOG, "\t-  Environnement \'%s\'", photoServer_.environment_.c_str());
 		logs_->add(logs::TRACE_TYPE::NORMAL, "\t-  URL : \'%s\'", photoServer_.host_.c_str());
 		logs_->add(logs::TRACE_TYPE::NORMAL, "\t-  Dossier : \'%s\'", photoServer_.folder_.c_str());
 		logs_->add(logs::TRACE_TYPE::NORMAL, "\t-  Photo par défaut : \'%s\'", photoServer_.nophoto_.c_str());
@@ -516,16 +517,16 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 	// Ajout des autres données
 	//
 	size_t count(0);
-	JSData* other = (JSData*)agent->ownData();
-	if (other){
-		other->newAttribute(JS_LABEL_PHOTO, photoServer_.URL(photoServer_.shortFileName(other->photo_).c_str()).c_str());
+	JSData* otherDatas((JSData*)agent->ownData());
+	if (otherDatas){
+		otherDatas->newAttribute(JS_LABEL_PHOTO, photoServer_.URL(photoServer_.shortFileName(otherDatas->photo_).c_str()).c_str());
 
-		other->newAttribute(JS_LABEL_CONTAINER_COLOR, other->containerColor_.c_str());
-		other->newAttribute(JS_LABEL_BK_COLOR, other->bkColor_.c_str());
+		otherDatas->newAttribute(JS_LABEL_CONTAINER_COLOR, otherDatas->containerColor_.c_str());
+		otherDatas->newAttribute(JS_LABEL_BK_COLOR, otherDatas->bkColor_.c_str());
 
 		// Tous les attributs dans l'ordre demandé ...
 		JSATTRIBUTE* pAttribute(NULL);
-		for (deque<JSATTRIBUTE*>::iterator it = other->otherAttributes_.begin(); it != other->otherAttributes_.end(); it++){
+		for (deque<JSATTRIBUTE*>::iterator it = otherDatas->otherAttributes_.begin(); it != otherDatas->otherAttributes_.end(); it++){
 			if (NULL != (pAttribute = (*it))){
 #ifdef _DEBUG
                 string name(pAttribute->name_);

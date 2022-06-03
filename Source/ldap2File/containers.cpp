@@ -361,6 +361,22 @@ bool containers::add(LPLDAPCONTAINER container)
 	return true;
 }
 
+// Accès par indice
+//
+/*
+containers::LPLDAPCONTAINER containers::at(size_t index)
+{
+    containers::LPLDAPCONTAINER container(nullptr);
+
+    if (index < containers_.size()){
+        container = *(containers_.begin() + index);
+    }
+
+    // Retour
+    return container;
+}
+*/
+
 // Recherche d'un container par son nom
 //
 containers::LPLDAPCONTAINER containers::findContainer(string& name, string& DN)
@@ -412,7 +428,7 @@ bool containers::findSubContainers(string& fromDN, std::set<size_t>& levels, std
 
 
 	// Quel est son "niveau"
-	keyValTuple* levelAttr = fromContainer->findAttribute(levelAttrName_);
+	keyValTuple* levelAttr(fromContainer->findAttribute(levelAttrName_));
 	if (nullptr == levelAttr) {
 		if (logs_) {
 			logs_->add(logs::TRACE_TYPE::ERR, "containers::findSubContainers - Impossible de trouver l'attribut '%s' pour le container '%s'", levelAttrName_.c_str(), fromDN.c_str());
@@ -426,7 +442,7 @@ bool containers::findSubContainers(string& fromDN, std::set<size_t>& levels, std
 	// Parcours des containers fils et autres descendants
 	//
 	LPLDAPCONTAINER childContainer(nullptr);
-	size_t dnSize = fromDN.size();
+	size_t dnSize(fromDN.size());
 	size_t pos(0);
 	string childDN("");
 	for (std::deque<LPLDAPCONTAINER>::iterator it = containers_.begin(); it != containers_.end(); it++) {
@@ -519,7 +535,7 @@ containers::LPLDAPCONTAINER containers::_firstContainer(string& DN)
 //
 bool containers::_containerDN(std::string& DN)
 {
-    size_t pos = DN.find(LDAP_PREFIX_OU, 1);
+    size_t pos(DN.find(LDAP_PREFIX_OU, 1));
     if (DN.npos != pos) {
         DN = DN.substr(pos);
         return true;

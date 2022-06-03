@@ -292,7 +292,7 @@ bool CSVFile::saveLine(bool header, LPAGENTINFOS agent)
 		// Ajout de la ligne courante à la liste des lignes "ecrites"
 		if (currentLine.size() && !clearLine_) {
 #ifdef _DEBUG
-			if (0 != strstr(currentLine.c_str(), STR_VACANT_POST)) {
+			if (0 != strstr(currentLine.c_str(), STR_VACANT_JOB)) {
 				int i(5);
 				i++;
 			}
@@ -301,7 +301,7 @@ bool CSVFile::saveLine(bool header, LPAGENTINFOS agent)
 			bool add(true);
 
 			// Un poste vacant
-			if (0 != strstr(currentLine.c_str(), STR_VACANT_POST)) {
+			if (0 != strstr(currentLine.c_str(), STR_VACANT_JOB)) {
 				add = showVacant_;
 			}
 

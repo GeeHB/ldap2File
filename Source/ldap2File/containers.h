@@ -100,6 +100,14 @@ public:
 			shortName_ = name;
 		}
 
+		// Manager associé au container
+		//
+
+		void setManager(MANAGER_STATUS status)
+		{ manager_ = status; }
+		bool hasManager()
+		{ return manager_ == MANAGER_STATUS::EXIST; }
+
         //
 		// Attributs personnalisés
 		//
@@ -143,6 +151,7 @@ public:
 		{ return equalName(value.c_str()); }
 
 	protected:
+
 		// Données membres
 		//
 		LDAPContainer*			parent_;		// Mon container parent
@@ -155,6 +164,7 @@ public:
 #endif // #ifdef WIN32
 		std::string				realName_;		// Nom long "complet"
 		std::string				shortName_;		// Nom court
+		MANAGER_STATUS          manager_;       // Un manager ?
 
 		// Les autres attributs
 		std::deque<keyValTuple>	attributes_;
@@ -199,11 +209,22 @@ public:
 	// Recherche d'une valeur héritée
     bool getAttributeValue(std:: string& DN, std:: string& attrName, std::string& value);
 
-	// Ajout d'un container
+    // Containers
+    //
+
+    // Ajout d'un container
 	bool add(LPLDAPCONTAINER container);
 
 	// Mise à jour des liens (chainage) entre les différents containers
 	void chain();
+
+	// Accès
+	//
+
+	// Par indice
+	LPLDAPCONTAINER at(size_t index){
+	    return ((index < size())? *(containers_.begin() + index): nullptr);
+	}
 
 	// Recherche d'un container par son nom
 	LPLDAPCONTAINER findContainer(std::string& name, std::string& DN);

@@ -32,12 +32,20 @@ TODO{
 		+ Pour chaque "liste" déterminer le plus adapté : std::deque, std::list, std::vector, std::set, ...
 		+ Quelles sont les constantes XML/LDAP nécessaires ? Idéalement presque aucune !
 		+ Gestion / appartenance aux groupes ?
+		+ Gestion des titres plus générique !!!!
 }
 
 
 BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
+
+22.6.2
+    * xxx juin 2022
+    + Organigramme des services
+		+ Atributs organisationnel : Responsable de la structure : <ResponsableStruct>
+		+ Ajout des postes vaccants pour les managers absents
+
 
 22.6.2
     * le 1er juin 2022
