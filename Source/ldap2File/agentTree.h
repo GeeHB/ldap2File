@@ -182,6 +182,9 @@ public:
 		// Copie "non conforme"
 		// utilisée pour la création des postes vacants
 		virtual agentDatas* lightCopy() = 0;
+
+		// Remplacement / suppression d'un attribut
+		virtual void replace(const char* name, const char* value = nullptr) = 0;
 	};
 
 	// Constructions
@@ -274,7 +277,7 @@ public:
 
 	// Liste chainée
 	//
-	void setParent(agentInfos* pAgent);
+	void setParent(agentInfos* pAgent, const char* localAttr = nullptr);
 	agentInfos* parent(){
 		return manager_.parent_;
 	}
@@ -315,6 +318,16 @@ public:
 
 	bool addOtherDN(const char* dn);
 	bool setOtherDNId(const char* dn, unsigned int id);
+
+	//
+	// Gestion de l'arborescence 
+	// 
+	
+	// Sortie de l'arboresence
+	void freeBranch();
+
+	// Retrait d'une branche fille
+	bool removeBranch(const agentInfos* branch);
 
 	// Opérateurs
 	bool operator == (agentInfos& right) const

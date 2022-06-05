@@ -468,6 +468,13 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 	//
 	string line("");
 
+#ifdef _DEBUG
+	if (agent && agent->uid() == 21) {
+		int i(5);
+		i++;
+	}
+#endif // _DEBUG
+
 	// id
 	//_add(line, JS_LABEL_UID, agent->uid());
 	_add(line, JS_LABEL_UID, agent->id());
@@ -615,17 +622,56 @@ void JScriptFile::_add(string& line, const char* label, int value)
 // JScriptFile::JSDATA
 //
 
+// Copie "non conforme"
+// utilisée pour la création des postes vacants
+//
+JScriptFile::JSData* JScriptFile::JSData::lightCopy() {
+	JSData* copyData(new JScriptFile::JSData);
+	if (nullptr != copyData) {
+		// On conserve les couleurs
+		copyData->bkColor_ = bkColor_;
+		copyData->containerColor_ = containerColor_;
+		copyData->groupOpacity_ = groupOpacity_;
+
+		// Les attributs complémentaires
+		JSATTRIBUTE* pAttribute(nullptr);
+		for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); it != otherAttributes_.end(); it++) {
+			if (nullptr != (pAttribute = (*it))) {
+				copyData->newAttribute((*it)->name_, (*it)->value_, (*it)->quoted_);
+			}
+		}
+	}
+
+	// On retourne la copie (ou un pointeur vide)
+	return copyData;
+}
+
+// Remplacement / suppression d'un attribut
+//
+void JScriptFile::JSData::replace(const char* name, const char* value)
+{
+	JSATTRIBUTE* pAttribute(nullptr);
+	for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); it != otherAttributes_.end(); it++) {
+		if (nullptr != (pAttribute = (*it)) && pAttribute->name_ == name) {
+			// Je l'ai ...
+			if (IS_EMPTY(value)) {
+				// Suppression
+				otherAttributes_.erase(it);
+			}
+			else {
+				// Remplacement
+				pAttribute->value_ = value;
+			}
+
+			// Terminé
+			return;
+		}
+	}
+}
+
 // Ajout d'un attribut et de sa valeur
 //
 void JScriptFile::JSData::newAttribute(string& attrName, string& attrValue, bool quoted){
-
-#ifdef _DEBUG
-        if (attrName == "structLevel"){
-				int i(5);
-				i++;
-        }
-#endif // _DEBUG
-
 
 	if (attrName.size()){
 		// Ai je déja cet attribut en mémoire ?

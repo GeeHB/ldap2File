@@ -76,7 +76,7 @@ public:
     }
 
 	// Enregistrement de la ligne courante
-	virtual bool saveLine(bool header = false, LPAGENTINFOS agent = NULL);
+	virtual bool saveLine(bool header = false, LPAGENTINFOS agent = nullptr);
 
 	// Ajout d'une valeur (avec changement de colonne)
 	virtual bool add(string& value)
@@ -162,9 +162,9 @@ private:
 		// Destruction
 		virtual ~JSData()
 		{
-			JSATTRIBUTE* pAttribute(NULL);
+			JSATTRIBUTE* pAttribute(nullptr);
 			for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); it != otherAttributes_.end(); it++){
-				if (NULL != (pAttribute = (*it))){
+				if (nullptr != (pAttribute = (*it))){
 					delete pAttribute;
 				}
 			}
@@ -174,20 +174,10 @@ private:
 
 		// Copie "non conforme"
 		// utilisée pour la création des postes vacants
-		virtual JSData* lightCopy(){
-		    JSData* copyData(new JSData);
-		    if (nullptr != copyData){
-                // On conserve les couleurs
-                copyData->bkColor_ = bkColor_;
-                copyData->containerColor_ = containerColor_;
+		virtual JSData* lightCopy();
 
-                // et l'opacité
-                copyData->groupOpacity_ = groupOpacity_;
-		    }
-
-		    // On retourne la copie (ou un pointeur vide)
-		    return copyData;
-		}
+		// Remplacement / suppression d'un attribut
+		virtual void replace(const char* name, const char* value = nullptr);
 
 		// Ajout d'un attribut et de sa valeur
 		void newAttribute(string& attrName, string& attrValue, bool quoted = true);

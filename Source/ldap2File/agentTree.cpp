@@ -85,7 +85,7 @@ agentTree::~agentTree()
 //
 bool agentTree::add(LPAGENTINFOS agent)
 {
-    if (nullptr == agent){
+    if (nullptr== agent){
         return false;
     }
 
@@ -118,7 +118,7 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& agentDN, string& prenom, s
 				logs_->add(logs::TRACE_TYPE::ERR, "Au moins deux agents ont (uidNumber = %d) : %s et %s", uid, agentDN.c_str(), agent->DN().c_str());
 			}
 
-			return NULL;
+			return nullptr;
 		}
 
 		// oui
@@ -126,9 +126,9 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& agentDN, string& prenom, s
 	}
 	else{
 		// Création d'un nouvel agent
-		if (NULL == (agent = new agentInfos(uid, agentDN.c_str(), prenom, nom, email, status, deducted))){
+		if (nullptr == (agent = new agentInfos(uid, agentDN.c_str(), prenom, nom, email, status, deducted))){
 			// Impossible d'allouer de la mémoire
-			return NULL;
+			return nullptr;
 		}
 
 		agent->setMatricule(matricule);
@@ -140,9 +140,9 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& agentDN, string& prenom, s
 
 	// Qui est son manager ?
 	//
-	LPAGENTINFOS pManager(NULL);
+	LPAGENTINFOS pManager(nullptr);
 	if (manager.size()){
-		if (NULL != (pManager = _getAgentFromLDAP(manager))){
+		if (nullptr != (pManager = _getAgentFromLDAP(manager))){
 			if (pManager){
 				agent->setParent(pManager/*, true*/);
 			}
@@ -163,9 +163,9 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& agentDN, string& prenom, s
 void agentTree::findOtherDNIds()
 {
 	// Parcours de la liste des agents
-	agentInfos* agent(NULL);
+	agentInfos* agent(nullptr);
 	for (agentIterator agentIT = agents_.begin(); agentIT != agents_.end(); agentIT++){
-		if (NULL != (agent = (*agentIT))
+		if (nullptr != (agent = (*agentIT))
 			&& !agent->autoAdded()){
 			_findOtherDNIds(agent);
 		}
@@ -174,24 +174,24 @@ void agentTree::findOtherDNIds()
 
 void agentTree::_findOtherDNIds(agentInfos* agent)
 {
-	deque<agentInfos::OTHERJOB*>* otherJobs(NULL);
+	deque<agentInfos::OTHERJOB*>* otherJobs(nullptr);
 
 	// Rien à faire ?
-	if (NULL == agent
-		|| NULL == (otherJobs = agent->getOtherDNs())
+	if (nullptr == agent
+		|| nullptr == (otherJobs = agent->getOtherDNs())
 		|| 0 == otherJobs->size()){
 		return;
 	}
 
 	// Parcours de la liste
 	deque<agentInfos::OTHERJOB*>::iterator pointer(otherJobs->begin());
-	agentInfos::OTHERJOB* other(NULL);
-	agentInfos* pOther(NULL);
+	agentInfos::OTHERJOB* other(nullptr);
+	agentInfos* pOther(nullptr);
 	while (pointer != otherJobs->end()){
-		if (NULL != (other = (*pointer)) && NO_AGENT_UID == other->id_){
+		if (nullptr != (other = (*pointer)) && NO_AGENT_UID == other->id_){
 			// Le lien n'a pas été fait => recherche dans la liste
-			if (NULL == (pOther = _findAgent(other->DN_, NO_AGENT_UID))
-				|| ((pOther != NULL) && pOther->autoAdded())){
+			if (nullptr == (pOther = _findAgent(other->DN_, NO_AGENT_UID))
+				|| ((pOther != nullptr) && pOther->autoAdded())){
 				// L'agent n'est pas dans la liste mémoire
 				//other->dn_ = "";
 				pointer = otherJobs->erase(pointer);
@@ -235,7 +235,7 @@ LPAGENTINFOS agentTree::_findAgent(const char* dnAgent, unsigned int uid)
 	}
 
 	// Non trouvé
-	return NULL;
+	return nullptr;
 }
 
 // ... d'agent(s) apparteanant à un container
@@ -280,15 +280,15 @@ LPAGENTINFOS agentTree::_findManager(LPAGENTINFOS from, bool fullMode)
 		// trouvé ?
 		if (agentIT++ == agents_.end()){
 			// non
-			return NULL;
+			return nullptr;
 		}
 	}
 
 	// Maintenant on cherche ...
-	LPAGENTINFOS cAgent(NULL), cParent(NULL);
+	LPAGENTINFOS cAgent(nullptr), cParent(nullptr);
 	while (agentIT != agents_.end()){
 		cAgent = (*agentIT);
-		cParent = (cAgent ? cAgent->parent() : NULL);
+		cParent = (cAgent ? cAgent->parent() : nullptr);
 
 		if (cAgent &&
 			(
@@ -305,7 +305,7 @@ LPAGENTINFOS agentTree::_findManager(LPAGENTINFOS from, bool fullMode)
 	}
 
 	// Non trouvé
-	return NULL;
+	return nullptr;
 }
 
 
@@ -319,7 +319,7 @@ string agentTree::_getAscendantsString(const char* dnAgent, bool withMe, string*
 	LPAGENTINFOS agent = _findAgent(dnAgent, NO_AGENT_UID);
 	if (!withMe){
 		// je passe à mon premier ancètre
-		agent = (agent ? agent->parent() : NULL);
+		agent = (agent ? agent->parent() : nullptr);
 	}
 	while (agent){
 		// Déja un prédecesseur ?
@@ -337,7 +337,7 @@ string agentTree::_getAscendantsString(const char* dnAgent, bool withMe, string*
 		}
 
 		// Le prédédecesseur
-		agent = (recurseManagers_ ? agent->parent() : NULL);
+		agent = (recurseManagers_ ? agent->parent() : nullptr);
 	}
 
 	// Terminé
@@ -353,7 +353,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 	}
 
 	if (!encoder_->stricmp(dnAgent, NO_AGENT_DN)){
-		return NULL;
+		return nullptr;
 	}
 
 	// L'agent en question est-il déja en mémoire ?
@@ -386,7 +386,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 
 	// Execution de la requete
 	//
-	LDAPMessage* searchResult(NULL);
+	LDAPMessage* searchResult(nullptr);
 	ULONG retCode = ldapServer_->searchS((char*)baseDN_.c_str(), LDAP_SCOPE_SUBTREE, (char*)(const char*)expression, (char**)(const char**)myAttributes, 0, &searchResult);
 
 	// Je n'ai plus besoin de la liste ...
@@ -399,13 +399,13 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 		if (logs_){
 			logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d lors de la recherche d'un manager : '%s'", retCode, ldapServer_->err2string(retCode).c_str());
 		}
-		return NULL;
+		return nullptr;
 	}
 
-	LDAPMessage* pEntry(NULL);
-	BerElement* pBer(NULL);
-	PCHAR pAttribute(NULL);
-	PCHAR* pValue(NULL);
+	LDAPMessage* pEntry(nullptr);
+	BerElement* pBer(nullptr);
+	PCHAR pAttribute(nullptr);
+	PCHAR* pValue(nullptr);
 	std::string u8Value;
 
 	string prenom("");
@@ -420,7 +420,7 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 
 	if (0 == agentCount){
 		// L'agent recherche n'existe pas ...
-		agent = NULL;
+		agent = nullptr;
 
 		if (logs_){
 			logs_->add(logs::TRACE_TYPE::ERR, "Il n'y a pas d'agent dont le DN est :'%s'", dnAgent);
@@ -429,14 +429,14 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 	else{
 		// On ne s'interesse qu'à la première valeur
 		// d'ailleurs il ne devrait y en avoir qu'un'
-		if (NULL != (pEntry = ldapServer_->firstEntry(searchResult))){
+		if (nullptr != (pEntry = ldapServer_->firstEntry(searchResult))){
 			pAttribute = ldapServer_->firstAttribute(pEntry, &pBer);
 
 			// Parcours par colonnes
 			//
 			while (pAttribute){
-				if (NULL != (pValue = ldapServer_->getValues(pEntry, pAttribute))){
-					if (NULL != *pValue) {
+				if (nullptr != (pValue = ldapServer_->getValues(pEntry, pAttribute))){
+					if (nullptr != *pValue) {
 #ifdef UTF8_ENCODE_INPUTS
 						u8Value = encoder_.toUTF8(*pValue);
 #else
@@ -487,17 +487,17 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 
 					// Prochain attribut
 					pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
-				} // pValue != NULL
+				} // pValue != nullptr
 #ifdef _DEBUG
 				else {
-					if (pValue && *pValue == NULL) {
+					if (pValue && *pValue == nullptr) {
 						// Attribut existant mais vide => on passe à l'attribut suivant
 						pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
 					}
 				}
 #endif
 			} // while
-		} // pEntry != NULL;
+		} // pEntry != nullptr;
 	}
 	// Libérations
 	//
@@ -512,17 +512,17 @@ LPAGENTINFOS agentTree::_getAgentFromLDAP(const char* dnAgent)
 		// Si le responsable est l'agent, risque de boucle ...
 		if (manager == dnAgent){
 			manager = "";
-			//return NULL;
+			//return nullptr;
 		}
 
 		agent = add(uid, dnAgent, prenom.c_str(), nom.c_str(), email.c_str(), allierStatus, manager.c_str(), matricule.c_str(), true);
 	}
 	else{
 		// Le manager n'existe pas ...
-		agent = NULL;
+		agent = nullptr;
 	}
 
-	// On retourne un pointeur sur l'agent (ou sur NULL)
+	// On retourne un pointeur sur l'agent (ou sur nullptr)
 	return agent;
 }
 
@@ -540,12 +540,12 @@ agentInfos::agentInfos(unsigned int uid, const char* DN, const char* nom)
 	//
 	uid_ = id_ = uid;
 	DN_ = DN;
-	nom_ = nom;
-	prenom_ = email_ = "";
-	autoAdded_ = true;
-	ownData_ = NULL;
-	replacedBy_ = NULL;
-	replace_ = NULL;
+	prenom_ = nom_ = nom;
+	prenom_ = "";
+	autoAdded_ = false;		// Si == true => pas dans l'organigramme
+	ownData_ = nullptr;
+	replacedBy_ = nullptr;
+	replace_ = nullptr;
 	manager_.init();
 	status_ = 0;
 }
@@ -560,9 +560,9 @@ agentInfos::agentInfos(unsigned int uid, const char* DN, string& prenom, string&
 	nom_ = nom;
 	email_ = email;
 	autoAdded_ = autoAdded;
-	ownData_ = NULL;
-	replacedBy_ = NULL;
-	replace_ = NULL;
+	ownData_ = nullptr;
+	replacedBy_ = nullptr;
+	replace_ = nullptr;
 	manager_.init();
 	status_ = status;
 }
@@ -601,12 +601,12 @@ string agentInfos::containerDN()
 //		Les agents sont classés par ordre alphabétique du nom
 //		il faut positionner les 3 liens
 //
-void agentInfos::setParent(agentInfos* pAgent)
+void agentInfos::setParent(agentInfos* pAgent, const char* localAttr)
 {
-	if (NULL == pAgent){
+	if (nullptr == pAgent){
 		// Pas de parent ...
-		manager_.parent_ = NULL;
-		manager_.nextSibling_ = NULL;
+		manager_.parent_ = nullptr;
+		manager_.nextSibling_ = nullptr;
 
 		return;
 	}
@@ -618,10 +618,13 @@ void agentInfos::setParent(agentInfos* pAgent)
 
 	// Mon père
 	manager_.parent_ = pAgent;
+	if (!IS_EMPTY(localAttr) && ownData_){
+		ownData_->replace(localAttr, pAgent->DN().c_str());
+	}
 
-	agentInfos* child(NULL);
-	agentInfos* prev(NULL);
-	if (NULL == (child = pAgent->firstChild())){
+	agentInfos* child(nullptr);
+	agentInfos* prev(nullptr);
+	if (nullptr == (child = pAgent->firstChild())){
 		// Seul dans la fratrie ...
 		pAgent->setFirstChild(this);
 		return;
@@ -645,7 +648,7 @@ void agentInfos::setParent(agentInfos* pAgent)
 	}
 
 	// Il y a quelqu'un après moi => insertion
-	// ou pas ( = NULL)
+	// ou pas ( = nullptr)
 	setNextSibling(child);
 }
 
@@ -781,6 +784,13 @@ size_t agentInfos::childs()
 //
 size_t agentInfos::descendants()
 {
+#ifdef _DEBUG
+	if (39 == id_) {
+		int i(5);
+		i++;
+	}
+#endif // _DEBUG
+
 	// Décompte du nombre de feuilles à partir de mes enfants
 	size_t count(0);
 	LPAGENTINFOS child = firstChild();
@@ -860,7 +870,20 @@ bool agentInfos::setOtherDNId(const char* DN, unsigned int id)
 	return false;
 }
 
-// Moi > membre droit ?
+// Pointeur sur les données "personnelles"
+//
+agentInfos::agentDatas* agentInfos::setOwnData(agentInfos::agentDatas* pData)
+{
+	if (pData != ownData_) {
+		if (ownData_) {
+			delete ownData_;
+		}
+		ownData_ = pData;
+	}
+	return ownData_;
+}
+
+// Comparaison : Moi > membre droit ?
 //
 bool agentInfos::_sup(agentInfos& right) const
 {
@@ -879,17 +902,61 @@ bool agentInfos::_sup(agentInfos& right) const
 	return true;
 }
 
-// Pointeur sur les données "personnelles"
+// Sortie de l'arboresence
 //
-agentInfos::agentDatas* agentInfos::setOwnData(agentInfos::agentDatas* pData)
+void agentInfos::freeBranch()
 {
-	if (pData != ownData_){
-		if (ownData_){
-			delete ownData_;
-		}
-		ownData_ = pData;
+	// Pointeur sur mon père
+	agentInfos* father(parent());
+
+	// Je n'ai plus de père ...
+	manager_.parent_ = nullptr;
+
+	// Mon père a une branche en moins
+	father->removeBranch(this);
+
+	// Je n'ai plus de frère
+	manager_.nextSibling_ = nullptr;
+}
+
+// Retrait d'une branche fille
+//
+bool agentInfos::removeBranch(const agentInfos* branch)
+{
+	// Une branche ?
+	if (nullptr == branch || this == branch) {
+		return false;
 	}
-	return ownData_;
+
+	// Parcours de toutes mes branches filles
+	agentInfos *prev(nullptr), *child(firstChild());
+	while (child) {
+		// Celle recherchée ?
+		if (child == branch) {
+
+			// Première branche fille ?
+			if (nullptr == prev) {
+				setFirstChild(child->nextSibling());		// Nouvelle première branche
+			}
+			else {
+				// Cette branche est au mileu du buisson
+
+				// ... lien de la précédente branche
+				prev->setNextSibling(child->nextSibling());
+			}
+
+			// Retrait effectué
+			return true;
+		}
+		else {
+			// Non => allons voir la suivante
+			prev = child;
+			child = child->nextSibling();
+		}
+	}
+
+	// Rien n'a été fait (ie. pas une de mes branches filles directes)
+	return false;
 }
 
 // EOF

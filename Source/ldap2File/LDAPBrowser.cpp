@@ -2024,16 +2024,16 @@ void LDAPBrowser::_generateOrgChart(std::string& baseContainer)
 	// On passe en mode non formaté
 	cols_.orgChartMode(orgFile_->orgChartMode());
 
+    // Organigramme organisationnel ?
+	if (0 != orgAttrs_.containerManager_.value().size()){
+	    _managersForEmptyContainers(baseContainer);
+	}
+
 	if (orgChart_.flat_){
 		_generateFlatOrgChart(orgFile_);
 	}
 	else{
 		_generateGraphicalOrgChart(orgFile_);
-	}
-
-	// Organigramme organisationnel ?
-	if (0 != orgAttrs_.containerManager_.value().size()){
-	    _managersForEmptyContainers(baseContainer);
 	}
 
     // Fin des traitements
@@ -2079,35 +2079,50 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
             if (nullptr != (current = agents_->findAgentIn(containerdDN, agentIndex))){
                 // Un premier agent => création du compte vacant
                 if (nullptr != (pAgent = new agentInfos(agents_->size(), containerdDN.c_str(), STR_VACANT_JOB))){
-                    // Copie "light" des atrtributs sources
+
+                    // Copie "light" des attributs sources
                     pAgent->setOwnData(current->ownData()->lightCopy());
 
                     // 3. Insérer le nouvel agent comme "manager" des agents du container (ie. on fait sauter le remplacement)
-#ifdef _DEBUG
-                    LPAGENTINFOS parent = current->parent();
-#endif // _DEBUG
                     pAgent->setParent(current->parent());   // Je récupère son prédecesseur
 
-                    // Mise à jour des liens de l'agent courant
-                    current->setParent(pAgent);
+					// L'agent courant n'a plus de manager ...
+					current->freeBranch();
+															
+					// Mise à jour des liens de l'agent courant
+                    current->setParent(pAgent, "responsable");
                 }
 #ifdef _DEBUG
                 logs_->add(logs::TRACE_TYPE::LOG, "\t- '%s' en premier", current->DN().c_str());
+				LPAGENTINFOS fChild = current;
 #endif // _DEBUG
 
                 // D'autres agents ?
 				agentIndex++;
                 while (nullptr != (current = agents_->findAgentIn(containerdDN, agentIndex))){
                     // Changement de container parent
-                    current->setParent(pAgent);
+					current->freeBranch();
+					current->setParent(pAgent, "responsable");
 					agentIndex++;
 #ifdef _DEBUG
                     logs_->add(logs::TRACE_TYPE::LOG, "\t- '%s'", current->DN().c_str());
+
 #endif // _DEBUG
                 }
 
                 // Ajout à la liste du nouvel agent maintenant que les liens sont établis
                 agents_->add(pAgent);
+
+				// Remplacement de la valeur des attributs
+				pAgent->ownData()->replace("prenom", STR_VACANT_JOB);
+				pAgent->ownData()->replace("description", "vu");
+				pAgent->ownData()->replace("nom", STR_VACANT_JOB);
+				pAgent->ownData()->replace("email", "email");
+				pAgent->ownData()->replace("mobile", "mobile");
+				pAgent->ownData()->replace("phone", "phone");
+				pAgent->ownData()->replace("secondaryPhone");
+				//file_->removeAt(cols_.getColumnByAttribute(STR_ATTR_MOBILE));
+				//file_->removeAt(cols_.getColumnByAttribute(STR_ATTR_TELEPHONE));
 #ifdef _DEBUG
                     logs_->add(logs::TRACE_TYPE::LOG, "Ajout du compte id=%d", pAgent->id());
 #endif // _DEBUG
