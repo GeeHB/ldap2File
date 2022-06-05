@@ -611,10 +611,7 @@ void JScriptFile::_add(string& line, const char* label, string& value, bool quot
 void JScriptFile::_add(string& line, const char* label, int value)
 {
 	// Conversion en chaine
-	stringstream str;
-	str << value;
-	string bidon;
-	str >> bidon;
+	string bidon(charUtils::itoa(value));
 	return _add(line, label, bidon, false);
 }
 
@@ -628,11 +625,6 @@ void JScriptFile::_add(string& line, const char* label, int value)
 JScriptFile::JSData* JScriptFile::JSData::lightCopy() {
 	JSData* copyData(new JScriptFile::JSData);
 	if (nullptr != copyData) {
-		// On conserve les couleurs
-		copyData->bkColor_ = bkColor_;
-		copyData->containerColor_ = containerColor_;
-		copyData->groupOpacity_ = groupOpacity_;
-
 		// Les attributs complémentaires
 		JSATTRIBUTE* pAttribute(nullptr);
 		for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); it != otherAttributes_.end(); it++) {
@@ -646,22 +638,50 @@ JScriptFile::JSData* JScriptFile::JSData::lightCopy() {
 	return copyData;
 }
 
-// Remplacement / suppression d'un attribut
+// Remplacement d'un attribut
 //
-void JScriptFile::JSData::replace(const char* name, const char* value)
+void JScriptFile::JSData::_replace(const char* name, bool create, const char* value, bool quote)
 {
+	// Une variable "directe"
+	if (0 == charUtils::stricmp(name, "itemTitleColor")){
+        bkColor_ = value;
+	    return;
+	}
+
+	// Recherche dans la liste
+	//
 	JSATTRIBUTE* pAttribute(nullptr);
 	for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); it != otherAttributes_.end(); it++) {
 		if (nullptr != (pAttribute = (*it)) && pAttribute->name_ == name) {
 			// Je l'ai ...
-			if (IS_EMPTY(value)) {
-				// Suppression
-				otherAttributes_.erase(it);
-			}
-			else {
+			if (!IS_EMPTY(value)) {
 				// Remplacement
 				pAttribute->value_ = value;
 			}
+
+			// Terminé
+			return;
+		}
+	}
+
+	// Non trouvé ?
+	// faut'il le créer ?
+	if (create) {
+		newAttribute((const char*)name, value, quote);
+	}
+}
+
+// Suppression d'un attribut
+//
+void JScriptFile::JSData::remove(const char* name)
+{
+	// Recherche dans la liste
+	//
+	JSATTRIBUTE* pAttribute(nullptr);
+	for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); it != otherAttributes_.end(); it++) {
+		if (nullptr != (pAttribute = (*it)) && pAttribute->name_ == name) {
+			// Suppression
+			otherAttributes_.erase(it);
 
 			// Terminé
 			return;

@@ -546,7 +546,7 @@ agentInfos::agentInfos(unsigned int uid, const char* DN, const char* nom)
 	ownData_ = nullptr;
 	replacedBy_ = nullptr;
 	replace_ = nullptr;
-	manager_.init();
+	links_.init();
 	status_ = 0;
 }
 
@@ -563,7 +563,7 @@ agentInfos::agentInfos(unsigned int uid, const char* DN, string& prenom, string&
 	ownData_ = nullptr;
 	replacedBy_ = nullptr;
 	replace_ = nullptr;
-	manager_.init();
+	links_.init();
 	status_ = status;
 }
 
@@ -601,26 +601,23 @@ string agentInfos::containerDN()
 //		Les agents sont classés par ordre alphabétique du nom
 //		il faut positionner les 3 liens
 //
-void agentInfos::setParent(agentInfos* pAgent, const char* localAttr)
+void agentInfos::setParent(agentInfos* pAgent)
 {
 	if (nullptr == pAgent){
 		// Pas de parent ...
-		manager_.parent_ = nullptr;
-		manager_.nextSibling_ = nullptr;
+		links_.parent_ = nullptr;
+		links_.nextSibling_ = nullptr;
 
 		return;
 	}
 
 	if (pAgent == this ||		// Je ne suis pas mon manager ...
-		pAgent == manager_.parent_){		// Déja fait !
+		pAgent == links_.parent_){		// Déja fait !
 		return;
 	}
 
 	// Mon père
-	manager_.parent_ = pAgent;
-	if (!IS_EMPTY(localAttr) && ownData_){
-		ownData_->replace(localAttr, pAgent->DN().c_str());
-	}
+	links_.parent_ = pAgent;
 
 	agentInfos* child(nullptr);
 	agentInfos* prev(nullptr);
@@ -910,13 +907,13 @@ void agentInfos::freeBranch()
 	agentInfos* father(parent());
 
 	// Je n'ai plus de père ...
-	manager_.parent_ = nullptr;
+	links_.parent_ = nullptr;
 
 	// Mon père a une branche en moins
 	father->removeBranch(this);
 
 	// Je n'ai plus de frère
-	manager_.nextSibling_ = nullptr;
+	links_.nextSibling_ = nullptr;
 }
 
 // Retrait d'une branche fille

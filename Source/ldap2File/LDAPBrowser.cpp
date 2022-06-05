@@ -2088,9 +2088,9 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
 
 					// L'agent courant n'a plus de manager ...
 					current->freeBranch();
-															
+
 					// Mise à jour des liens de l'agent courant
-                    current->setParent(pAgent, "responsable");
+                    current->setParent(pAgent);
                 }
 #ifdef _DEBUG
                 logs_->add(logs::TRACE_TYPE::LOG, "\t- '%s' en premier", current->DN().c_str());
@@ -2102,7 +2102,7 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
                 while (nullptr != (current = agents_->findAgentIn(containerdDN, agentIndex))){
                     // Changement de container parent
 					current->freeBranch();
-					current->setParent(pAgent, "responsable");
+					current->setParent(pAgent);
 					agentIndex++;
 #ifdef _DEBUG
                     logs_->add(logs::TRACE_TYPE::LOG, "\t- '%s'", current->DN().c_str());
@@ -2117,12 +2117,12 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
 				pAgent->ownData()->replace("prenom", STR_VACANT_JOB);
 				pAgent->ownData()->replace("description", "vu");
 				pAgent->ownData()->replace("nom", STR_VACANT_JOB);
+				pAgent->ownData()->replace("status", ALLIER_STATUS_VACANT, true);
+				pAgent->ownData()->replace("itemTitleColor", JS_DEF_STATUS_NO_COLOR, true);
 				pAgent->ownData()->replace("email", "email");
 				pAgent->ownData()->replace("mobile", "mobile");
 				pAgent->ownData()->replace("phone", "phone");
-				pAgent->ownData()->replace("secondaryPhone");
-				//file_->removeAt(cols_.getColumnByAttribute(STR_ATTR_MOBILE));
-				//file_->removeAt(cols_.getColumnByAttribute(STR_ATTR_TELEPHONE));
+				pAgent->ownData()->remove("secondaryPhone");
 #ifdef _DEBUG
                     logs_->add(logs::TRACE_TYPE::LOG, "Ajout du compte id=%d", pAgent->id());
 #endif // _DEBUG

@@ -294,10 +294,7 @@ public:
 	bool add(const char* value)
 	{ string sValue(value); return add(sValue); }
 	virtual bool add(int value){
-		stringstream str;
-		str << value;
-		string bidon;
-		str >> bidon;
+		string bidon(charUtils::itoa(value));
 		return add(bidon);
 	}
 
@@ -311,10 +308,7 @@ public:
 	bool addAt(size_t colIndex, char* value)
 	{ string sValue(IS_EMPTY(value)?"":value); return addAt(colIndex, sValue);}
 	virtual bool addAt(size_t colIndex, int value){
-		stringstream str;
-		str << value;
-		string bidon;
-		str >> bidon;
+		string bidon(charUtils::itoa(value));
 		return addAt(colIndex, bidon);
 	}
 

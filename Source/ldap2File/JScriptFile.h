@@ -177,7 +177,13 @@ private:
 		virtual JSData* lightCopy();
 
 		// Remplacement / suppression d'un attribut
-		virtual void replace(const char* name, const char* value = nullptr);
+		virtual void replace(const char* name, const char* value, bool create = false)
+		{ _replace(name, create, value, true); }
+		virtual void replace(const char* name, unsigned int value, bool create = false){
+		    string sValue(charUtils::itoa(value));
+		    _replace(name, create, sValue.c_str(), false);
+		}
+		virtual void remove(const char* name);
 
 		// Ajout d'un attribut et de sa valeur
 		void newAttribute(string& attrName, string& attrValue, bool quoted = true);
@@ -203,6 +209,10 @@ private:
 
 		// Autres éléments ...
 		deque<JSATTRIBUTE*>	otherAttributes_;
+
+	protected:
+		// Méthodes privées
+		void _replace(const char* name, bool create, const char* value, bool quote);
 	};
 
 	// Groupe

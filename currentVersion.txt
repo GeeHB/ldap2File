@@ -40,9 +40,11 @@ BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
 
-22.6.2
+22.6.3
     * xxx juin 2022
-    + Organigramme des services
+	+ Corrections mineures
+		- Remplacement des appels de stringstream par charUtils::
+    + Générarion de l'organigramme des services
 		+ Atributs organisationnel : Responsable de la structure : <ResponsableStruct>
 		+ Ajout des postes vaccants pour les managers absents
 

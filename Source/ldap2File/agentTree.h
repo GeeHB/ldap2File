@@ -184,7 +184,9 @@ public:
 		virtual agentDatas* lightCopy() = 0;
 
 		// Remplacement / suppression d'un attribut
-		virtual void replace(const char* name, const char* value = nullptr) = 0;
+		virtual void replace(const char* name, const char* value, bool create = false) = 0;
+		virtual void replace(const char* name, unsigned int value, bool create = false) = 0;
+		virtual void remove(const char* name) = 0;
 	};
 
 	// Constructions
@@ -277,21 +279,21 @@ public:
 
 	// Liste chainée
 	//
-	void setParent(agentInfos* pAgent, const char* localAttr = nullptr);
+	void setParent(agentInfos* pAgent);
 	agentInfos* parent(){
-		return manager_.parent_;
+		return links_.parent_;
 	}
 	void setNextSibling(agentInfos* pAgent){
-		manager_.nextSibling_ = pAgent;
+		links_.nextSibling_ = pAgent;
 	}
 	agentInfos* nextSibling(){
-		return manager_.nextSibling_;
+		return links_.nextSibling_;
 	}
 	void setFirstChild(agentInfos* pAgent){
-		manager_.firstChild_ = pAgent;
+		links_.firstChild_ = pAgent;
 	}
 	agentInfos* firstChild(){
-		return manager_.firstChild_;
+		return links_.firstChild_;
 	}
 
 	// Nombre de descendants
@@ -320,9 +322,9 @@ public:
 	bool setOtherDNId(const char* dn, unsigned int id);
 
 	//
-	// Gestion de l'arborescence 
-	// 
-	
+	// Gestion de l'arborescence
+	//
+
 	// Sortie de l'arboresence
 	void freeBranch();
 
@@ -378,7 +380,7 @@ private:
 	bool				autoAdded_;
 
 	// Liens
-	LINKS				manager_;		// "Liste" des managers
+	LINKS				links_;		    // Accès aux 3 chainages (parent, 1ère enfant, frère)
 
 										// Remplacement
 	LPAGENTINFOS		replacedBy_;	// Mon remplaçcant
