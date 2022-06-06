@@ -654,10 +654,10 @@ void JScriptFile::JSData::_replace(const char* name, bool create, const char* va
 	for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); it != otherAttributes_.end(); it++) {
 		if (nullptr != (pAttribute = (*it)) && pAttribute->name_ == name) {
 			// Je l'ai ...
-			if (!IS_EMPTY(value)) {
-				// Remplacement
-				pAttribute->value_ = value;
-			}
+			//if (!IS_EMPTY(value)) {
+            // Remplacement
+            pAttribute->value_ = value;
+			//}
 
 			// Terminé
 			return;

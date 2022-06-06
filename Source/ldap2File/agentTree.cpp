@@ -138,13 +138,13 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& agentDN, string& prenom, s
 		agents_.push_back(agent);
 	}
 
-	// Qui est son manager ?
+	// Qui est son "père" ?
 	//
 	LPAGENTINFOS pManager(nullptr);
 	if (manager.size()){
 		if (nullptr != (pManager = _getAgentFromLDAP(manager))){
 			if (pManager){
-				agent->setParent(pManager/*, true*/);
+				agent->attachBranch(pManager/*, true*/);
 			}
 		}
 		else{
@@ -598,10 +598,9 @@ string agentInfos::containerDN()
 
 // Insertion d'un agent dans l'arborescence
 //
-//		Les agents sont classés par ordre alphabétique du nom
-//		il faut positionner les 3 liens
+//		Les "fils" sont classés par ordre alphabétique du nom
 //
-void agentInfos::setParent(agentInfos* pAgent)
+void agentInfos::attachBranch(agentInfos* pAgent)
 {
 	if (nullptr == pAgent){
 		// Pas de parent ...
@@ -899,9 +898,9 @@ bool agentInfos::_sup(agentInfos& right) const
 	return true;
 }
 
-// Sortie de l'arboresence
+// Sortie de l'arboresence d'une branche
 //
-void agentInfos::freeBranch()
+void agentInfos::detachBranch()
 {
 	// Pointeur sur mon père
 	agentInfos* father(parent());

@@ -2084,25 +2084,21 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
                     pAgent->setOwnData(current->ownData()->lightCopy());
 
                     // 3. Insérer le nouvel agent comme "manager" des agents du container (ie. on fait sauter le remplacement)
-                    pAgent->setParent(current->parent());   // Je récupère son prédecesseur
+                    pAgent->attachBranch(current->parent());   // Je récupère son prédecesseur
 
 					// L'agent courant n'a plus de manager ...
-					current->freeBranch();
+					current->detachBranch();
 
 					// Mise à jour des liens de l'agent courant
-                    current->setParent(pAgent);
+                    current->attachBranch(pAgent);
                 }
-#ifdef _DEBUG
-                logs_->add(logs::TRACE_TYPE::LOG, "\t- '%s' en premier", current->DN().c_str());
-				LPAGENTINFOS fChild = current;
-#endif // _DEBUG
 
                 // D'autres agents ?
 				agentIndex++;
                 while (nullptr != (current = agents_->findAgentIn(containerdDN, agentIndex))){
                     // Changement de container parent
-					current->freeBranch();
-					current->setParent(pAgent);
+					current->detachBranch();
+					current->attachBranch(pAgent);
 					agentIndex++;
 #ifdef _DEBUG
                     logs_->add(logs::TRACE_TYPE::LOG, "\t- '%s'", current->DN().c_str());
@@ -2114,14 +2110,14 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
                 agents_->add(pAgent);
 
 				// Remplacement de la valeur des attributs
-				pAgent->ownData()->replace("prenom", STR_VACANT_JOB);
-				pAgent->ownData()->replace("description", "vu");
+				pAgent->ownData()->empty("prenom");
+				pAgent->ownData()->replace("description", "Responsable");
 				pAgent->ownData()->replace("nom", STR_VACANT_JOB);
-				pAgent->ownData()->replace("status", ALLIER_STATUS_VACANT, true);
+				pAgent->ownData()->empty("status");
 				pAgent->ownData()->replace("itemTitleColor", JS_DEF_STATUS_NO_COLOR, true);
-				pAgent->ownData()->replace("email", "email");
-				pAgent->ownData()->replace("mobile", "mobile");
-				pAgent->ownData()->replace("phone", "phone");
+				pAgent->ownData()->empty("email");
+				pAgent->ownData()->empty("mobile");
+				pAgent->ownData()->empty("phone");
 				pAgent->ownData()->remove("secondaryPhone");
 #ifdef _DEBUG
                     logs_->add(logs::TRACE_TYPE::LOG, "Ajout du compte id=%d", pAgent->id());

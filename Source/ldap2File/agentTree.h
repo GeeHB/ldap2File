@@ -183,9 +183,14 @@ public:
 		// utilisée pour la création des postes vacants
 		virtual agentDatas* lightCopy() = 0;
 
-		// Remplacement / suppression d'un attribut
+		// Remplacement d'un attribut
 		virtual void replace(const char* name, const char* value, bool create = false) = 0;
 		virtual void replace(const char* name, unsigned int value, bool create = false) = 0;
+
+        // Si l'attribut existe, on le vide
+		virtual void empty(const char* name) = 0;
+
+		// Suppression d'un attribut
 		virtual void remove(const char* name) = 0;
 	};
 
@@ -277,18 +282,32 @@ public:
 	void setAutoAdded(bool autoAdded)
 	{ autoAdded_ = autoAdded; }
 
-	// Liste chainée
+	// Gestion de l'arborescence (et des 3 listes chainées)
 	//
-	void setParent(agentInfos* pAgent);
+
+	// Mise en place d'une branche
+	void attachBranch(agentInfos* branch);
+	void setParent(agentInfos* branch)
+	{ attachBranch(branch); }
 	agentInfos* parent(){
 		return links_.parent_;
 	}
+
+	// Sortie de l'arboresence d'une branche
+	void detachBranch();
+
+	// Retrait d'une branche fille
+	bool removeBranch(const agentInfos* branch);
+
+    // Prochain fils
 	void setNextSibling(agentInfos* pAgent){
 		links_.nextSibling_ = pAgent;
 	}
 	agentInfos* nextSibling(){
 		return links_.nextSibling_;
 	}
+
+	// Premier fils
 	void setFirstChild(agentInfos* pAgent){
 		links_.firstChild_ = pAgent;
 	}
@@ -320,16 +339,6 @@ public:
 
 	bool addOtherDN(const char* dn);
 	bool setOtherDNId(const char* dn, unsigned int id);
-
-	//
-	// Gestion de l'arborescence
-	//
-
-	// Sortie de l'arboresence
-	void freeBranch();
-
-	// Retrait d'une branche fille
-	bool removeBranch(const agentInfos* branch);
 
 	// Opérateurs
 	bool operator == (agentInfos& right) const

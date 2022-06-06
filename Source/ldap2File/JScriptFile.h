@@ -176,13 +176,19 @@ private:
 		// utilisée pour la création des postes vacants
 		virtual JSData* lightCopy();
 
-		// Remplacement / suppression d'un attribut
+		// Remplacement d'un attribut
 		virtual void replace(const char* name, const char* value, bool create = false)
 		{ _replace(name, create, value, true); }
 		virtual void replace(const char* name, unsigned int value, bool create = false){
 		    string sValue(charUtils::itoa(value));
 		    _replace(name, create, sValue.c_str(), false);
 		}
+
+		// Si l'attribut existe, on le vide
+		virtual void empty(const char* name)
+		{ _replace(name, false, "", false); }
+
+		// Suppression d'un attribut
 		virtual void remove(const char* name);
 
 		// Ajout d'un attribut et de sa valeur
