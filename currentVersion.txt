@@ -41,10 +41,10 @@ BUGS{
 }
 
 22.6.3
-    * xxx juin 2022
+    * 7 juin 2022
 	+ Corrections mineures
 		- Remplacement des appels de stringstream par charUtils::
-    + Générarion de l'organigramme des services
+    + Génération de l'organigramme des services
 		+ Atributs organisationnel : Responsable de la structure : <ResponsableStruct>
 		+ Ajout des postes vaccants pour les managers absents
 
