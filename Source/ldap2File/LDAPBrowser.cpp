@@ -2070,9 +2070,8 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
 			containerdDN.npos != (pos = containerdDN.find(baseContainer)) &&
 			pos >= 0 &&
             false == container->hasManager()){
-#ifdef _DEBUG
-            logs_->add(logs::TRACE_TYPE::LOG, "'%s' n'a pas de manager", container->realName());
-#endif // _DEBUG
+
+            logs_->add(logs::TRACE_TYPE::DBG, "'%s' n'a pas de manager", container->realName());
 
             // 2. Trouver les agents situés dans ce container (s'ils existent)
             agentIndex = 0;
@@ -2100,10 +2099,8 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
 					current->detachBranch();
 					current->attachBranch(pAgent);
 					agentIndex++;
-#ifdef _DEBUG
-                    logs_->add(logs::TRACE_TYPE::LOG, "\t- '%s'", current->DN().c_str());
 
-#endif // _DEBUG
+                    logs_->add(logs::TRACE_TYPE::DBG, "\t+ '%s'", current->DN().c_str());
                 }
 
                 // Ajout à la liste du nouvel agent maintenant que les liens sont établis
@@ -2119,9 +2116,8 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
 				pAgent->ownData()->empty("mobile");
 				pAgent->ownData()->empty("phone");
 				pAgent->ownData()->remove("secondaryPhone");
-#ifdef _DEBUG
-                    logs_->add(logs::TRACE_TYPE::LOG, "Ajout du compte id=%d", pAgent->id());
-#endif // _DEBUG
+
+                logs_->add(logs::TRACE_TYPE::DBG, "Ajout du compte-container id=%d", pAgent->id());
             }
 
         }

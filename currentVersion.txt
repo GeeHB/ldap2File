@@ -40,8 +40,13 @@ BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
 
-22.6.3
+22.6.4
     * 7 juin 2022
+	+ Corrections mineures
+
+
+22.6.3
+    * 7 juin 2022 - version intermédiaire
 	+ Corrections mineures
 		- Remplacement des appels de stringstream par charUtils::
     + Génération de l'organigramme des services

@@ -48,45 +48,53 @@
 #define XML_NO						"non"
 #endif // XML_YES
 
-#define XML_ADD						"Ajout"
-#define XML_ALIAS					"Alias"
-#define XML_SERVER					"Serveur"
-#define XML_ENVIRONMENT				"Environnement"
-#define XML_OS						"OS"
-#define XML_MANAGER					"Encadrant"
-#define XML_LEVEL					"Niveau"
-#define XML_NAME					"Nom"
-#define XML_SHORTNAME				"Nom-Court"
-#define XML_FILE					"Fichier"
-#define XML_FOLDER					"Dossier"
-#define XML_DESTINATION				"Destination"
-#define XML_DESCRIPTION				"Description"
-#define XML_TAB						"Onglet"
-#define XML_ATTRIBUTE				"Attribut"
-#define XML_TYPE					"Type"
-#define XML_WIDTH					"Largeur"
-#define XML_LINK					"Lien"
-#define XML_MULTIVALUE				"Multivalue"
-#define XML_MULTILINE				XML_MULTIVALUE
-#define XML_INHERIT					"Heritable"
-#define XML_FORMAT					"Format"
-#define XML_USER					"Utilisateur"
-#define XML_PWD						"mdp"
-#define XML_PORT					"Port"
-#define XML_ACCESS					"Acces"
-#define XML_OPERATOR				"Operateur"
+
 #define XML_DEFAULT					"Defaut"
+
+#define XML_ACCESS					"Acces"
 
 // Types d'accès au serveur LDAP
 #define XML_ACCESS_READ				"Lecture"
 #define XML_ACCESS_WRITE			"Ecriture"
 
+#define XML_ADD						"Ajout"
+#define XML_ALIAS					"Alias"
+#define XML_ATTRIBUTE				"Attribut"
+#define XML_COLUMN					"Colonne"
+#define XML_ENVIRONMENT				"Environnement"
+#define XML_DESCRIPTION				"Description"
+#define XML_DESTINATION				"Destination"
+#define XML_FILE					"Fichier"
+#define XML_FOLDER					"Dossier"
+#define XML_FORMAT					"Format"
+#define XML_INHERIT					"Heritable"
+#define XML_LEVEL					"Niveau"
+
+#define XML_LINK					"Lien"
+
 // Types de liens hyper-texte
-//
 #define XML_LINK_NONE				"aucun"
 #define XML_LINK_EMAIL				"email"
 #define XML_LINK_HTTP				"http"
 #define XML_LINK_IMAGE				"image"
+
+
+#define XML_MANAGER					"Encadrant"
+
+#define XML_MULTILINE				"Multivalue"
+#define XML_MULTIVALUE				XML_MULTILINE
+
+#define XML_NAME					"Nom"
+#define XML_OPERATOR				"Operateur"
+#define XML_OS						"OS"
+#define XML_PORT					"Port"
+#define XML_PWD						"mdp"
+#define XML_SERVER					"Serveur"
+#define XML_SHORTNAME				"Nom-Court"
+#define XML_TAB						"Onglet"
+#define XML_TYPE					"Type"
+#define XML_USER					"Utilisateur"
+#define XML_WIDTH					"Largeur"
 
 //---------------------------------------------------------------------------
 //--
@@ -213,7 +221,8 @@
 #define XML_SCHEMA_NODE				"Schema"
 #define XML_SCHEMA_ATTRIBUTE_NODE	XML_ATTRIBUTE
 
-#define XML_SCHEMA_TYPE_ATTR		XML_TYPE
+#define XML_SCHEMA_COL_ATTR			XML_COLUMN
+#define XML_SCHEMA_LDAP_ATTR		"ldap"
 #define XML_SCHEMA_WIDTH_ATTR		XML_WIDTH
 #define XML_SCHEMA_LINK_ATTR		XML_LINK
 #define XML_SCHEMA_MULTILINE_ATTR	XML_MULTILINE
@@ -221,6 +230,13 @@
 #define FORMAT_NUM					"Num"
 #define FORMAT_STRING				"String"
 #define XML_SCHEMA_INEHRIT_ATTR		XML_INHERIT
+
+#define XML_SCHEMA_ROLE_NODE		"Role"
+
+// Rôle(s) reconnu(s)
+#define ROLE_MANAGER				"Encadrant"				// Le N+1 d'un agent
+#define ROLE_STRUCT_MANAGER			"ResponsableStruct"		// Le responsable d'une structur~e
+#define ROLE_SHORTNAME				"NomCourt"				// Nom court d'un container
 
 // Serveurs destinations
 //
@@ -391,7 +407,7 @@
 #define XML_HEADER_NODE				"Entete"
 
 // Une colonne
-#define XML_COLUMN_NODE				"Colonne"
+#define XML_COLUMN_NODE				XML_COLUMN
 
 #define XML_COLUMN_TYPE_ATTR		XML_TYPE
 #define XML_COLUMN_WIDTH_ATTR		XML_WIDTH

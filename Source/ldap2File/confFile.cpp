@@ -619,9 +619,19 @@ bool confFile::nextLDAPAttribute(columnList::COLINFOS& col)
 	// Lecture des informations pour la colonne
 	//
 
-	// Type de colonne
-	string val(schemaExtension_.node()->attribute(XML_SCHEMA_TYPE_ATTR).value());
+	// Nom / type de colonne
+	string val(schemaExtension_.node()->attribute(XML_SCHEMA_COL_ATTR).value());
 	col.name_ = (val.size() ? val : TYPE_NONE);
+
+	// Le nom de l'attribut LDAP associé
+	/*
+	col.ldapAttr_ = schemaExtension_.node()->first_child().value();
+	*/
+	val = schemaExtension_.node()->attribute(XML_SCHEMA_LDAP_ATTR).value();
+	col.ldapAttr_ = val;
+	if (!col.ldapAttr_.size()) {
+		return false;
+	}
 
 	// Largeur
 	val = schemaExtension_.node()->attribute(XML_SCHEMA_WIDTH_ATTR).value();
@@ -646,12 +656,6 @@ bool confFile::nextLDAPAttribute(columnList::COLINFOS& col)
 	// Lecture recursive
 	val = schemaExtension_.node()->attribute(XML_SCHEMA_INEHRIT_ATTR).value();
 	col.heritable_ = (val.size() && val == XML_YES);
-
-	// Le nom de l'attribut
-	col.ldapAttr_ = schemaExtension_.node()->first_child().value();
-	if (!col.ldapAttr_.size()){
-		return false;
-	}
 
 	// Definition suivante
 	schemaExtension_ = schemaExtension_.node()->next_sibling(XML_SCHEMA_ATTRIBUTE_NODE);
