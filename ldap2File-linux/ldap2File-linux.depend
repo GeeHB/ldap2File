@@ -1588,7 +1588,7 @@
 1593162728 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ZipLib/extlibs/lzma/Lzma86.h
 	"Types.h"
 
-1654607084 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldap2File.cpp
+1654795125 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/ldap2File.cpp
 	"sharedConsts.h"
 	"sFileSystem.h"
 	"LDAPBrowser.h"
@@ -1596,7 +1596,7 @@
 	<dirent.h>
 	<ctime>
 
-1654607084 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedConsts.h
+1654865812 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedConsts.h
 	<RegEntry.h>
 	<iostream>
 	<string>
@@ -1606,6 +1606,7 @@
 	<deque>
 	<list>
 	<set>
+	<map>
 	"folders.h"
 	<time.h>
 	<direct.h>
@@ -1650,7 +1651,7 @@
 	<string>
 	<commonTypes.h>
 
-1654675292 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLConsts.h
+1654865809 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/XMLConsts.h
 
 1654607084 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPServer.h
 	<winldap.h>
@@ -1663,7 +1664,7 @@
 
 1613040623 /home/jhb/Nextcloud/dev/cpp/Common/directory/directoryAttr.h
 
-1654607084 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedTypes.h
+1654867131 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/sharedTypes.h
 	"charUtils.h"
 	"aliases.h"
 	"fileActions.h"
@@ -1686,7 +1687,7 @@
 	"destinationList.h"
 	"titles.h"
 
-1654607084 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.h
+1654867170 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.h
 	"sharedConsts.h"
 	"sharedTypes.h"
 	"XMLParser.h"
@@ -1822,7 +1823,7 @@
 	"commandFile.h"
 	"sFileSystem.h"
 
-1654689743 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.cpp
+1654867184 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/confFile.cpp
 	"confFile.h"
 	"sFileSystem.h"
 
@@ -2724,7 +2725,7 @@
 1654607084 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/aliases.cpp
 	"aliases.h"
 
-1654607084 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/aliases.h
+1654694369 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/aliases.h
 	"stringTokenizer.h"
 
 1622640001 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/Common/charUtils.cpp
@@ -2927,7 +2928,7 @@
 1654067068 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPAttributes.h
 	"./directory/directoryAttr.h"
 
-1654607084 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPBrowser.h
+1654867208 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPBrowser.h
 	"sharedConsts.h"
 	"confFile.h"
 	"agentTree.h"
@@ -2935,10 +2936,11 @@
 	"LDAPSources.h"
 	"containers.h"
 	"structures.h"
+	"roles.h"
 	"destinationList.h"
 	"titles.h"
 
-1654607084 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPBrowser.cpp
+1654866694 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/LDAPBrowser.cpp
 	"LDAPBrowser.h"
 	"searchExpr.h"
 	"CSVFile.h"
@@ -2972,4 +2974,10 @@
 	"sharedTypes.h"
 	"JScriptConsts.h"
 	"LDAPAttributes.h"
+
+1654864222 /home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/roles.h
+
+1654866854 source:/home/jhb/Nextcloud/dev/cpp/ldap2File/Source/ldap2File/roles.cpp
+	"sharedTypes.h"
+	"roles.h"
 

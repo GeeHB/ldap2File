@@ -141,14 +141,40 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 		}
 	}
 
+	// Tableau des rôles
+	//
+	roles_.setLogs(logs_);
+
+	// Ajout du nom des rôles gérés
+	//	seuls ces rôles seront acceptés
+	roles_ += ROLE_MANAGER;
+	roles_ += ROLE_STRUCT_MANAGER;
+	roles_ += ROLE_STRUCT_LEVEL;
+	roles_ += ROLE_SHORTNAME;
+
 	// Schéma LDAP
 	//
 	columnList::COLINFOS attribute;
-	while (configurationFile_->nextLDAPAttribute(attribute)){
+	vector<string> rNames;
+	while (configurationFile_->nextLDAPAttribute(attribute, rNames)){
 		if (!cols_.reservedColName(attribute.name_)){
 			// Extension du schéma
 			if (cols_.extendSchema(attribute)){
 				logs_->add(logs::TRACE_TYPE::DBG, "Schéma - la colonne '%s' correspond à l'attribut '%s'", attribute.name_.c_str(), attribute.ldapAttr_.c_str());
+
+				// Des rôles ?
+				for (vector<string>::iterator i = rNames.begin(); i != rNames.end(); i++) {
+					// Création du rôle pour l'attribut
+					roles_.add((*i), attribute.name_, attribute.ldapAttr_);
+				}
+
+#ifdef _DEBUG
+				size_t count = roles_.size();
+				if (count) {
+					int i(5);
+					i++;
+				}
+#endif // _DEBUG
 			}
 			else{
 				logs_->add(logs::TRACE_TYPE::ERR, "Schéma - Impossible d'ajouter la colonne '%s'", attribute.name_.c_str());
@@ -165,33 +191,42 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	}
 
 	logs_->add(logs::TRACE_TYPE::LOG, "Schéma - %d attributs reconnus", cols_.attributes());
+	logs_->add(logs::TRACE_TYPE::LOG, "Schéma - %d rôles renseignés (sur %d)", roles_.filled(), roles_.size());
 
-	// Attributs organisationnels
+	// Rôles !
 	//
-	configurationFile_->orgAttrs(orgAttrs_);
-
-	logs_->add(logs::TRACE_TYPE::NORMAL, "Attributs organisationnels:");
-
-	// Si le nom de la colonne est renseigné, on cherche l'attribut associé
-	//	... pour chacun
-	_colName2LDAPAttribute(orgAttrs_.manager_, STR_ORG_ATTR_MANAGER);
-	_colName2LDAPAttribute(orgAttrs_.containerManager_, STR_ORG_ATTR_STRUCT_MANAGER);
-	_colName2LDAPAttribute(orgAttrs_.level_, STR_ORG_ATTR_LEVEL);
-	_colName2LDAPAttribute(orgAttrs_.shortName_, STR_ORG_ATTR_SHORTNAME);
-	//_colName2LDAPAttribute(orgAttrs_.id_, STR_ORG_ATTR_ID);
-
-	// Pas de niveau
-	if (0 == orgAttrs_.level_.value().size()) {
-		logs_->add(logs::TRACE_TYPE::LOG, "Pas de 'niveau'. L'héritage des valeurs et les ruptures seront impossibles");
+	keyValTuple* role(roles_[ROLE_MANAGER]);
+	if (nullptr != role) {
+		logs_->add(logs::TRACE_TYPE::TRC, "\t+ %s défini par {%s, %s}", STR_ROLE_MANAGER, role->key().c_str(), role->value().c_str());
+	}
+	else {
+		logs_->add(logs::TRACE_TYPE::TRC, "\t- %s non défini. Pas d'organigramme hiérachique possible.", STR_ROLE_MANAGER);
 	}
 
-	// Pas de managers
-	if (0 == orgAttrs_.manager_.value().size()) {
-		logs_->add(logs::TRACE_TYPE::LOG, "Pas de 'manager'. Impossible de reconstituer un organigramme hiérarchique");
+	if (nullptr != (role = roles_[ROLE_STRUCT_MANAGER])) {
+		logs_->add(logs::TRACE_TYPE::TRC, "\t+ %s défini par {%s, %s}", STR_ROLE_STRUCT_MANAGER, role->key().c_str(), role->value().c_str());
+	}
+	else {
+		logs_->add(logs::TRACE_TYPE::TRC, "\t- %s non défini. Pas d'organigramme hiérachique des services.", STR_ROLE_STRUCT_MANAGER);
+	}
+
+	if (nullptr != (role = roles_[XML_LEVEL])) {
+		logs_->add(logs::TRACE_TYPE::TRC, "\t+ %s défini par {%s, %s}", STR_ROLE_LEVEL, role->key().c_str(), role->value().c_str());
+	}
+	else {
+		logs_->add(logs::TRACE_TYPE::TRC, "\t- %s non défini. Pas d'organigramme possible.", XML_LEVEL);
+	}
+
+	if (nullptr != (role = roles_[XML_SHORTNAME])) {
+		logs_->add(logs::TRACE_TYPE::TRC, "\t+ %s défini par {%s, %s}", STR_ROLE_SHORTNAME, role->key().c_str(), role->value().c_str());
+	}
+	else {
+		logs_->add(logs::TRACE_TYPE::TRC, "\t- %s non défini. Pas de génération automatique du nom du fichier.", XML_SHORTNAME);
 	}
 
 	// Liste des containers
-	if (NULL == (containers_ = new containers(logs_, orgAttrs_.level_.value().c_str()))) {
+	role = roles_[ROLE_STRUCT_LEVEL];
+	if (nullptr == role || nullptr == (containers_ = new containers(logs_, role->value().c_str()))) {
 		// Fin du processus
 		throw LDAPException("Impossible de créer la liste des containers", RET_TYPE::RET_ALLOCATION_ERROR);
 	}
@@ -353,29 +388,32 @@ RET_TYPE LDAPBrowser::browse()
 	cmdFile->orgChart(orgChart_);
 
 	// Il faut qu'il y ait une colonne manager si il y a un organigramme !!!
-	if (orgChart_.generate_) {
-		if (0 == orgAttrs_.manager_.value().size()) {
-			// Pas d'attribut => pas d'organigramme
-			logs_->add(logs::TRACE_TYPE::ERR, "La valeur de  '<%s><%s>' n'est pas définie. L'organigramme ne peut être généré", XML_CONF_ORG_NODE, XML_CONF_ORG_MANAGER);
-			orgChart_.generate_ = false;
-		}
-		else {
-			// Ajout de la colonne (si elle n'est pas déja prise en compte)
-			cols_.append(orgAttrs_.manager_.key().c_str());
-		}
-	}
+	keyValTuple* role(roles_[ROLE_MANAGER]);
+	if (role){
+        if (orgChart_.generate_) {
+            if (0 == role->value().size()) {
+                // Pas d'attribut => pas d'organigramme
+                logs_->add(logs::TRACE_TYPE::ERR, "La valeur de  '<%s><%s>' n'est pas définie. L'organigramme ne peut être généré", XML_CONF_ORG_NODE, XML_CONF_ORG_MANAGER);
+                orgChart_.generate_ = false;
+            }
+            else {
+                // Ajout de la colonne (si elle n'est pas déja prise en compte)
+                cols_.append(role->key().c_str());
+            }
+        }
 
-	// Arborescence et/ou managers
-	size_t colManager(cols_.getColumnByType(orgAttrs_.manager_.key().c_str()));
-	if (cols_.npos != colManager){
-		if (NULL == (agents_ = new agentTree(&encoder_, logs_, ldapServer_, ldapServer_->usersDN()))){
-			logs_->add(logs::TRACE_TYPE::ERR, "Pas d'onglet 'arborescence' - Impossible d'allouer de la mémoire");
-		}
-		else{
-			// Informations pour les requêtes sur les managers
-			agents_->setManagerSearchMode(orgAttrs_.manager_.value(), false, false);
-		}
-	}
+        // Arborescence et/ou managers
+        size_t colManager(cols_.getColumnByType(role->key().c_str()));
+        if (cols_.npos != colManager){
+            if (NULL == (agents_ = new agentTree(&encoder_, logs_, ldapServer_, ldapServer_->usersDN()))){
+                logs_->add(logs::TRACE_TYPE::ERR, "Pas d'onglet 'arborescence' - Impossible d'allouer de la mémoire");
+            }
+            else{
+                // Informations pour les requêtes sur les managers
+                agents_->setManagerSearchMode(role->value(), false, false);
+            }
+        }
+    }
 
 	// Création du fichier
 	//
@@ -643,23 +681,24 @@ RET_TYPE LDAPBrowser::_createFile()
 	if (searchCriterium && 0 != search.tabType().size()) {
 
 		// Il faut que l'on sache récupérer le niveau !!!
-		if (0 == orgAttrs_.level_.value().size()){
+		keyValTuple* role(roles_[ROLE_STRUCT_LEVEL]);
+		if (role && role->value().size()){
 		    logs_->add(logs::TRACE_TYPE::ERR, "Le critère `%s' n'est pas défini. Impossible d'appliquer la rupture", XML_CONF_ORG_LEVEL);
 		    search.setTabType("");
 		    searchCriterium = false;
 		}
 		else{
             // Une rupture => il faut ajouter la colonne sur le niveau
-            if (0 == orgAttrs_.level_.value().c_str()) {
+            if (0 == role->value().c_str()) {
                 logs_->add(logs::TRACE_TYPE::ERR, "Le critère `%s' pour les structures n'est pas défini. Impossible d'appliquer une rupture", XML_CONF_ORG_LEVEL);
                 return RET_TYPE::RET_INVALID_PARAMETERS;
             }
 
             // J'ajoute la colonne "Niveau" si nécessaire
-            if (cols_.npos == cols_.getColumnByType(orgAttrs_.level_.key().c_str())) {
+            if (cols_.npos == cols_.getColumnByType(role->key().c_str())) {
                 cols_.append(COL_STRUCT_LEVEL);
 
-                logs_->add(logs::TRACE_TYPE::LOG, "Rupture - Ajout d'une colonne de type \'%s\'", orgAttrs_.level_.key().c_str());
+                logs_->add(logs::TRACE_TYPE::LOG, "Rupture - Ajout d'une colonne de type \'%s\'", role->key().c_str());
             }
         }
 	}
@@ -710,10 +749,11 @@ RET_TYPE LDAPBrowser::_createFile()
 				if(search.tabType().size()){
 
 					// Ce container doit avoir l'attribut 'niveau' si on désire une rupture
-					keyValTuple* levelAttr = pContainer->findAttribute(orgAttrs_.level_.value().c_str());
+					keyValTuple* role(roles_[ROLE_STRUCT_LEVEL]);
+					keyValTuple* levelAttr = role?pContainer->findAttribute(role->value().c_str()):nullptr;
 					if (nullptr == levelAttr) {
                         if (logs_) {
-                            logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver la valeur de l'attribut '%s' pour '%s'", orgAttrs_.level_.value().c_str(), pContainer->DN());
+                            logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver la valeur de l'attribut '%s' pour '%s'", role?role->value().c_str():ROLE_STRUCT_LEVEL, pContainer->DN());
                         }
                     }
                     else {
@@ -734,10 +774,7 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	// Nom court du fichier de sortie
 	if (pContainer) {
-		if (0 == orgAttrs_.shortName_.value().size()) {
-		    logs_->add(logs::TRACE_TYPE::ERR, "Pas de nom court pour les containers. Le nom des fichiers de sortie ne pourra pas être généré");
-	    }
-        opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pContainer->realName(), pContainer->shortName());
+		opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pContainer->realName(), pContainer->shortName());
 	}
 	else{
         opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), NULL, NULL);
@@ -1041,7 +1078,8 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	}
 
 	// Managers
-	bool wantManagers(0 != orgAttrs_.manager_.value().size());
+	keyValTuple* role = roles_[ROLE_MANAGER];
+	string managersAttr((role && 0 != role->value().size())?role->key():"");
 
 	// Le remplaçant
 	//size_t colRemplacement = cols_.getColumnByType(STR_ATTR_ALLIER_REMPLACEMENT);
@@ -1317,8 +1355,8 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 											if (!encoder_.stricmp(pAttribute, STR_ATTR_MANAGER) ||
 												!encoder_.stricmp(pAttribute, STR_ATTR_ALLIER_MANAGER)){
 											*/
-											if (wantManagers &&
-												!encoder_.stricmp(pAttribute, orgAttrs_.manager_.value().c_str())) {
+											if (managersAttr.size() &&
+												!encoder_.stricmp(pAttribute, managersAttr.c_str())) {
 												manager = u8Value;
 											}
 											else {
@@ -1568,17 +1606,19 @@ bool LDAPBrowser::_getLDAPContainers()
 	myAttributes += STR_ATTR_DESCRIPTION;			    // Nom complet de l'OUcontainers
 
 	// Le nom court ?
-	bool wantShortName(false);
-	if (orgAttrs_.shortName_.value().size()) {
-		myAttributes += orgAttrs_.shortName_.value().c_str();
-		wantShortName = true;
+	string shortNameAttr("");
+	keyValTuple* role(roles_[ROLE_SHORTNAME]);
+	if (role && role->value().size()) {
+		myAttributes += role->value().c_str();
+		shortNameAttr = role->key();
 	}
 
 	// Le manager de chaque container est-il demandé ?
-	bool wantManagers(false);
-	if (orgAttrs_.containerManager_.value().size()) {
-		myAttributes += orgAttrs_.containerManager_.value().c_str();
-		wantManagers = true;
+	string managersAttr("");
+	role = roles_[ROLE_STRUCT_MANAGER];
+	if (role && role->value().size()) {
+		myAttributes += role->value().c_str();
+		managersAttr = role->key();
 	}
 
 	// Génération de la requête
@@ -1651,11 +1691,11 @@ bool LDAPBrowser::_getLDAPContainers()
 							pContainer->setRealName(u8Value);
 						}
 						else {
-							if (wantShortName && !encoder_.stricmp(pAttribute, orgAttrs_.shortName_.value().c_str())) {
+							if (shortNameAttr.size() && !encoder_.stricmp(pAttribute, shortNameAttr.c_str())) {
 								pContainer->setShortName(u8Value);
 							}
 							else {
-                                if (wantManagers && !encoder_.stricmp(pAttribute, orgAttrs_.containerManager_.value().c_str())) {
+                                if (managersAttr.size() && !encoder_.stricmp(pAttribute, managersAttr.c_str())) {
                                     manager = u8Value;
                                 }
                                 else {
@@ -1676,7 +1716,7 @@ bool LDAPBrowser::_getLDAPContainers()
 					containers_->add(pContainer);
 
                     // Statut du manager
-                    pContainer->setManager(wantManagers? (manager.size()?MANAGER_STATUS::EXIST:MANAGER_STATUS::DOESNT_EXIST): MANAGER_STATUS::MAYBE);
+                    pContainer->setManager(managersAttr.size()? (manager.size()?MANAGER_STATUS::EXIST:MANAGER_STATUS::DOESNT_EXIST): MANAGER_STATUS::MAYBE);
 				}
 				else {
 					// Crée mais vide => à supprimer
@@ -1999,57 +2039,13 @@ bool LDAPBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 	return true;
 }
 
-// Organigramme hiérarchique (ou organisationnel)
-//
-void LDAPBrowser::_generateOrgChart(std::string& baseContainer)
-{
-	assert(file_);
-
-	// Je veux générer l'organigramme
-	bool newFile(true);
-	orgFile_ = NULL;
-	if (NULL == (orgFile_ = file_->addOrgChartFile(orgChart_.flat_, orgChart_.full_, newFile))){
-		if (!newFile && !orgFile_){
-			logs_->add(logs::TRACE_TYPE::LOG, "Pas de génération d'organigramme");
-		}
-		return;
-	}
-
-	logs_->add(logs::TRACE_TYPE::LOG, "Génération de l'organigramme");
-
-	if (!orgFile_->createOrgSheet(orgChart_.sheetName_)){
-		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ajouter un onglet");
-	}
-
-	// On passe en mode non formaté
-	cols_.orgChartMode(orgFile_->orgChartMode());
-
-    // Organigramme organisationnel ?
-	if (0 != orgAttrs_.containerManager_.value().size()){
-	    _managersForEmptyContainers(baseContainer);
-	}
-
-	if (orgChart_.flat_){
-		_generateFlatOrgChart(orgFile_);
-	}
-	else{
-		_generateGraphicalOrgChart(orgFile_);
-	}
-
-    // Fin des traitements
-	orgFile_->closeOrgChartFile();
-
-	if (!newFile){
-		orgFile_ = NULL;	// Plus besoin de garder le pointeur ...
-	}
-}
-
 // Complément de traitement si organisationnel (basé sur les services et directions)
 //
 void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
 {
+    keyValTuple* role(roles_[ROLE_STRUCT_MANAGER]);
     if (0 == containers_->size() ||
-        0 == orgAttrs_.containerManager_.value().size()){
+        nullptr == role || 0 == role->value().size()){
         // Les managers de structure ne sont pas demandés ou il n'y a pas de structure en mémoire => rien à faire
         return;
     }
@@ -2122,6 +2118,53 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
 
         }
     }
+}
+
+
+// Organigramme hiérarchique (ou organisationnel)
+//
+void LDAPBrowser::_generateOrgChart(std::string& baseContainer)
+{
+	assert(file_);
+
+	// Je veux générer l'organigramme
+	bool newFile(true);
+	orgFile_ = NULL;
+	if (NULL == (orgFile_ = file_->addOrgChartFile(orgChart_.flat_, orgChart_.full_, newFile))){
+		if (!newFile && !orgFile_){
+			logs_->add(logs::TRACE_TYPE::LOG, "Pas de génération d'organigramme");
+		}
+		return;
+	}
+
+	logs_->add(logs::TRACE_TYPE::LOG, "Génération de l'organigramme");
+
+	if (!orgFile_->createOrgSheet(orgChart_.sheetName_)){
+		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ajouter un onglet");
+	}
+
+	// On passe en mode non formaté
+	cols_.orgChartMode(orgFile_->orgChartMode());
+
+    // Organigramme organisationnel ?
+    keyValTuple* role(roles_[ROLE_STRUCT_MANAGER]);
+	if (role && 0 != role->value().size()){
+	    _managersForEmptyContainers(baseContainer);
+	}
+
+	if (orgChart_.flat_){
+		_generateFlatOrgChart(orgFile_);
+	}
+	else{
+		_generateGraphicalOrgChart(orgFile_);
+	}
+
+    // Fin des traitements
+	orgFile_->closeOrgChartFile();
+
+	if (!newFile){
+		orgFile_ = NULL;	// Plus besoin de garder le pointeur ...
+	}
 }
 
 //
@@ -2539,35 +2582,6 @@ return false;
 #endif // _WIN32
 
 	// Ok ?
-	return valid;
-}
-
-// Recherche d'une colonne par son nom et retour de l'attribut LDAP associé (si il existe)
-//
-bool LDAPBrowser::_colName2LDAPAttribute(keyValTuple& tuple, const char* comment)
-{
-	// Devrait suffire !
-	assert(!IS_EMPTY(comment));
-
-	// Par défaut ...
-	bool valid(false);
-	tuple.setValue("");
-
-	if (tuple.key().size()) {
-		// On s'assure que la colonne existe
-		size_t index(0);
-		if (cols_.npos != (index = cols_.getShemaAttributeByName(tuple.key().c_str()))) {
-			// La colonne existe => récupération de l'attribut LDAP associé
-			tuple.setValue(cols_.getColumnByIndex(index, true)->ldapAttr_.c_str());
-		}
-
-		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s - {%s, %s}", comment, tuple.key().c_str(), tuple.value().size()?tuple.value().c_str():"non défini");
-	}
-	else {
-		logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s - Non défini", comment);
-	}
-
-	// Tout à fonctionné comme il faut ?
 	return valid;
 }
 

@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: aliases.h
 //--
-//--	AUTEUR	: J�r�me Henry-Barnaudi�re - JHB
+//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -12,7 +12,7 @@
 //--
 //--	DESCRIPTION:
 //--
-//--		D�finition des objets :
+//--		Définition des objets :
 //--					- alias
 //--					- aliases (liste d'alias)
 //--
@@ -23,7 +23,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	14/05/2021 - JHB - Cr�ation
+//--	14/05/2021 - JHB - Création
 //--
 //--	07/06/2022 - JHB - Version 22.6.3
 //--
@@ -42,16 +42,16 @@
 
 // aliases - Liste des alias
 //		Une alias est un nom qui pointe vers une application
-//		L'alias permet de ne plus d�pendre du syst�me d'exploitation
+//		L'alias permet de ne plus dépendre du système d'exploitation
 //
 class aliases
 {
-	// D�finitions publiques
+	// Définitions publiques
 public:
 	// Un alias ...
 	class alias : public stringTokenizer
 	{
-		// M�thodes publiques
+		// Méthodes publiques
 	public:
 
 		// Construction
@@ -64,7 +64,7 @@ public:
 		// Destruction
 		virtual ~alias() {}
 
-		// Accc�s
+		// Acccès
 		const char* application() {
 			return application_.c_str();
 		}
@@ -83,18 +83,18 @@ public:
 			command_ = command;
 		}
 
-		// V�rification
+		// Vérification
 		bool exists()
 		{ return sFileSystem::exists(application_); }
 
-		// Donn�es membres priv�es
+		// Données membres privées
 	protected:
 		std::string name_;
 		std::string application_;		// Le binaire
-		std::string command_;			// La ligne de commande associ�e (peut �tre vide)
+		std::string command_;			// La ligne de commande associée (peut être vide)
 	};
 
-	// M�thodes publiques
+	// Méthodes publiques
 public:
 
 	// Construction
@@ -124,7 +124,7 @@ public:
 		return aliases_.size();
 	}
 
-	// Acc�s
+	// Accès
 	alias* operator[](size_t index);
 
 	// Nettoyage
@@ -132,12 +132,12 @@ public:
 		_clear();
 	}
 
-	// M�thodes priv�es
+	// Méthodes privées
 protected:
 
 	void _clear();
 
-	// Donn�es membres priv�es
+	// Données membres privées
 protected:
 
 	// les alias ...

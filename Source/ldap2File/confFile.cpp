@@ -276,49 +276,6 @@ bool confFile::imagesServer(IMGSERVER& dst)
 	return true;
 }
 
-// Attributs spécifiques à l'ogranisation
-//
-void confFile::orgAttrs(ORGATTRNAMES& orgAttrs)
-{
-    orgAttrs.init();
-
-    // Lecture des valeurs
-	//
-	pugi::xml_node node = paramsRoot_.child(XML_CONF_ORG_NODE);
-	if (!IS_EMPTY(node.name())){
-		// Colonne des encadrants
-        pugi::xml_node childNode = node.child(XML_CONF_ORG_MANAGER);
-        if (!IS_EMPTY(childNode.name())) {
-            orgAttrs.manager_.setKey(childNode.attribute(ORG_MANAGER_NAME_ATTR).value());
-        }
-
-		// Colonne des responsables de structure
-		childNode = node.child(XML_CONF_ORG_STRUCT_MANAGER);
-		if (!IS_EMPTY(childNode.name())) {
-			orgAttrs.containerManager_.setKey(childNode.attribute(ORG_STRUCT_MANAGER_NAME_ATTR).value());
-		}
-
-        // Colonne du niveau des structures
-        childNode = node.child(XML_CONF_ORG_LEVEL);
-        if (!IS_EMPTY(childNode.name())) {
-            orgAttrs.level_.setKey(childNode.attribute(ORG_LEVEL_NAME_ATTR).value());
-        }
-
-        // Nom-court des containers
-        childNode = node.child(XML_CONF_ORG_SHORTNAME);
-        if (!IS_EMPTY(childNode.name())) {
-            orgAttrs.shortName_.setKey(childNode.attribute(ORG_SHORTNAME_NAME_ATTR).value());
-        }
-
-		// Identifiant
-		/*
-		childNode = paramsRoot_.child(XML_CONF_ORG_ID);
-		if (!IS_EMPTY(childNode.name())) {
-			orgAttrs.id_.setKey(childNode.attribute(ORG_ID_NAME_ATTR).value());
-		}*/
-	}
-}
-
 // Liste des aliases
 //
 bool confFile::appAliases(aliases& aliases)
@@ -590,8 +547,11 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 
 // Schéma LDAP reconnu
 //
-bool confFile::nextLDAPAttribute(columnList::COLINFOS& col)
+bool confFile::nextLDAPAttribute(columnList::COLINFOS& col, std::vector<std::string>& rNames)
 {
+	// Dans tous les cas, la liste des noms de rôles est vide
+	rNames.clear();
+
 	// A t'on vérifié qu'il était bien formé ?
 	if (IS_EMPTY(paramsRoot_.name())){
 		return false;
@@ -609,6 +569,9 @@ bool confFile::nextLDAPAttribute(columnList::COLINFOS& col)
 
 	// Est-ce bien un attribut ?
 	if (0 != strcmp(schemaExtension_.node()->name(), XML_SCHEMA_ATTRIBUTE_NODE)){
+#ifdef _DEBUG
+		std::string name = schemaExtension_.node()->name();
+#endif // _DEBUG
 		// Non => on arrête l'énumération
 		return false;
 	}
@@ -631,6 +594,21 @@ bool confFile::nextLDAPAttribute(columnList::COLINFOS& col)
 	col.ldapAttr_ = val;
 	if (!col.ldapAttr_.size()) {
 		return false;
+	}
+
+	// Y a t'il des rôles ?
+    pugi::xml_node subNode = schemaExtension_.node()->child(XML_SCHEMA_ROLE_NODE);
+	std::string rName("");
+	while (!IS_EMPTY(subNode.name())){
+        // Nom du rôle
+        rName = subNode.first_child().value();
+
+		if (rName.size()) {
+			rNames.push_back(rName);	// Ajout à la liste
+		}
+
+        // Rôle suivant
+        subNode = subNode.next_sibling(XML_SCHEMA_ROLE_NODE);
 	}
 
 	// Largeur
@@ -657,8 +635,9 @@ bool confFile::nextLDAPAttribute(columnList::COLINFOS& col)
 	val = schemaExtension_.node()->attribute(XML_SCHEMA_INEHRIT_ATTR).value();
 	col.heritable_ = (val.size() && val == XML_YES);
 
-	// Definition suivante
-	schemaExtension_ = schemaExtension_.node()->next_sibling(XML_SCHEMA_ATTRIBUTE_NODE);
+	// Définition suivante
+	//schemaExtension_ = schemaExtension_.node()->next_sibling(XML_SCHEMA_ATTRIBUTE_NODE);
+	schemaExtension_ = schemaExtension_.node()->next_sibling();
 
 	// Ok (pour celui là)
 	col.setValid(true);

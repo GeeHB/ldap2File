@@ -140,6 +140,7 @@
 #include <deque>
 #include <list>
 #include <set>
+#include <map>
 using namespace std;
 
 // Gestion des dossiers de l'application
@@ -331,14 +332,6 @@ using namespace jhbTools;
 //
 // Structure
 //
-
-// Attributs organisationnels
-//
-#define STR_ORG_ATTR_MANAGER		"Responsable hiérarchique"
-#define STR_ORG_ATTR_STRUCT_MANAGER	"Responsable de structure"
-#define STR_ORG_ATTR_LEVEL			"Niveau des structures"
-#define STR_ORG_ATTR_SHORTNAME		"Nom court des structures"
-#define STR_ORG_ATTR_ID				"Identifiant"
 
 //
 // Nom des colonnes

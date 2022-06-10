@@ -43,7 +43,10 @@ BUGS{
 22.6.4
     * 7 juin 2022
 	+ Corrections mineures
-
+        - Affichages de la console
+    + Organigramme des services
+        + Ajout de la classe roles pour les gestions des rôles réservés
+        + 4 rôles possibles : manager, manager de structure, niveau de structure et Nom court de la structure
 
 22.6.3
     * 7 juin 2022 - version intermédiaire

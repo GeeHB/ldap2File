@@ -40,6 +40,8 @@
 #include "containers.h"
 #include "structures.h"
 
+#include "roles.h"
+
 #include "destinationList.h"
 
 #ifdef __LDAP_USE_ALLIER_TITLES__
@@ -81,9 +83,6 @@ protected:
 #endif // __LDAP_USE_ALLIER_TITLES__
 	size_t _simpleLDAPRequest(PCHAR* attributes, commandFile::criterium& sCriterium, const char* searchDN, bool treeSearch, PLDAPControl* serverControls = NULL, PLDAPControl sortControl = NULL);
 	bool _getUserGroups(std::string& userDN, size_t colID, const char* gID);
-
-	// Recherche d'une colonne par son nom et retour de l'attribut LDAP associé (si il existe)
-	bool _colName2LDAPAttribute(keyValTuple&, const char*);
 
 	// Organigramme hiérarchique (ou organisationnel)
 	//
@@ -141,11 +140,9 @@ protected:
 #endif // __LDAP_USE_ALLIER_TITLES__
 
 	columnList				cols_;				// Mes colonnes
+	roles					roles_;				// Liste des rôles
 
-
-    ORGATTRNAMES            orgAttrs_;          // Attributs "réservés"
-
-	aliases					aliases_;			// Liste des alias
+    aliases					aliases_;			// Liste des alias
 
 	destinationList			servers_;			// Serveurs destination
 	fileDestination*		cmdLineFile_;		// Fichier destination en ligne de commande

@@ -250,6 +250,7 @@
     <ClCompile Include="LDIFFile.cpp" />
     <ClCompile Include="ODSFile.cpp" />
     <ClCompile Include="outputFile.cpp" />
+    <ClCompile Include="roles.cpp" />
     <ClCompile Include="searchExpr.cpp" />
     <ClCompile Include="structures.cpp" />
     <ClCompile Include="textFile.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="ODSFile.h" />
     <ClInclude Include="outputFile.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="roles.h" />
     <ClInclude Include="searchExpr.h" />
     <ClInclude Include="sharedConsts.h" />
     <ClInclude Include="sharedTypes.h" />

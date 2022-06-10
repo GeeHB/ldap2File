@@ -658,17 +658,8 @@ bool _updateConfigurationFile(string path)
 	// Trouvé ?
 	if (!IS_EMPTY(childNode.name())) {
 		string val = childNode.first_child().value();
-#ifdef _DEBUG
-		cout << "Dossier de l'application : " << val << endl;
-#endif // _DEBUG
-
 		// Le dossier doit exister !
 		if (!val.length() || !sFileSystem::exists(val)) {
-
-#ifdef _DEBUG
-			cout << "\t- Le dossier n'existe pas,  mise à jour avec '" << path << "'" << endl;
-#endif // _DEBUG
-
 			// Mise à jour
 			childNode.first_child().set_value(path.c_str());
 			update = true;
@@ -703,10 +694,6 @@ bool _updateConfigurationFile(string path)
 	if (!IS_EMPTY(childNode.name())) {
 		string val = childNode.first_child().value();
 
-#ifdef _DEBUG
-		cout << "Dossier des logs : " << val << endl;
-#endif // _DEBUG
-
 		if (folders::isSubFolder(val)) {
 			// C'est un nom court
 			val = sFileSystem::merge(baseFolder, val);
@@ -722,9 +709,10 @@ bool _updateConfigurationFile(string path)
 			update = true;
 		}
 #ifdef _DEBUG
+		/*
 		else {
 			cout << "Logs : Utilisation du dossier '" << val << "'" << endl;
-		}
+		}*/
 	}
 	else {
 		// Il n'existe pas => rien à faire

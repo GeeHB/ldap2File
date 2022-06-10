@@ -67,6 +67,7 @@
 #define XML_FILE					"Fichier"
 #define XML_FOLDER					"Dossier"
 #define XML_FORMAT					"Format"
+#define XML_ID						"Identifiant"
 #define XML_INHERIT					"Heritable"
 #define XML_LEVEL					"Niveau"
 
@@ -90,7 +91,7 @@
 #define XML_PORT					"Port"
 #define XML_PWD						"mdp"
 #define XML_SERVER					"Serveur"
-#define XML_SHORTNAME				"Nom-Court"
+#define XML_SHORTNAME				"NomCourt"
 #define XML_TAB						"Onglet"
 #define XML_TYPE					"Type"
 #define XML_USER					"Utilisateur"
@@ -156,7 +157,7 @@
 #define ORG_SHORTNAME_NAME_ATTR		XML_NAME
 
 // Identifiant
-#define XML_CONF_ORG_ID				"Identifiant"
+#define XML_CONF_ORG_ID				XML_ID
 #define ORG_ID_NAME_ATTR			XML_NAME
 
 //
@@ -234,9 +235,22 @@
 #define XML_SCHEMA_ROLE_NODE		"Role"
 
 // Rôle(s) reconnu(s)
-#define ROLE_MANAGER				"Encadrant"				// Le N+1 d'un agent
+//
+#define ROLE_MANAGER				XML_MANAGER				// Le N+1 d'un agent
+#define STR_ROLE_MANAGER			"Responsable hiérarchique"
+
+#define ROLE_STRUCT_LEVEL           XML_LEVEL               // Niveau d'une structure
+#define STR_ROLE_LEVEL				"Niveau des structures"
+
 #define ROLE_STRUCT_MANAGER			"ResponsableStruct"		// Le responsable d'une structur~e
-#define ROLE_SHORTNAME				"NomCourt"				// Nom court d'un container
+#define STR_ROLE_STRUCT_MANAGER		"Responsable de structure"
+
+#define ROLE_SHORTNAME				XML_SHORTNAME			// Nom court d'un container
+#define STR_ROLE_SHORTNAME			"Nom court des structures"
+
+#define ROLE_ID						XML_ID				// Identifiant numérique
+#define STR_ORG_ATTR_ID				XML_ID
+
 
 // Serveurs destinations
 //

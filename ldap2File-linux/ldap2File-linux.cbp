@@ -103,6 +103,8 @@
 		<Unit filename="../Source/ldap2File/ldap2File.cpp" />
 		<Unit filename="../Source/ldap2File/outputFile.cpp" />
 		<Unit filename="../Source/ldap2File/outputFile.h" />
+		<Unit filename="../Source/ldap2File/roles.cpp" />
+		<Unit filename="../Source/ldap2File/roles.h" />
 		<Unit filename="../Source/ldap2File/searchExpr.cpp" />
 		<Unit filename="../Source/ldap2File/searchExpr.h" />
 		<Unit filename="../Source/ldap2File/sharedConsts.h" />

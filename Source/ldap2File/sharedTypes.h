@@ -508,64 +508,36 @@ public:
     {}
 
     // Nettoyage
-    void init(){
-        key_ = value_ = "";
-    }
+    void init()
+    { key_ = value_ = ""; }
 
     // Accès
-    std::string name() {
-        return key_;
-    }
-    std::string key() {
-        return key_;
-    }
-    std::string value() {
-        return value_;
-    }
+    //
+    std::string name()
+    { return key_; }
+    std::string key()
+    { return key_; }
     void setKey(const char* key){
-    if (!IS_EMPTY(key)) {
-            key_ = key;
-        }
+		if (!IS_EMPTY(key)) {
+				key_ = key;
+			}
     }
-    // On peut changer la valeur
-    void setValue(const char* value) {
-        value_ = value;
-    }
+	void setKey(std::string& key)
+    { setKey(key.c_str()); }
 
-    // Méthodes privées
+    std::string value()
+    { return value_; }
+    void setValue(const char* value)
+    { value_ = value; }
+    void setValue(std::string& value)
+    { setValue(value.c_str()); }
+
+
+    // Données membres
 protected:
     std::string		key_;
     std::string		value_;
 };
-
-// Attributs réservés (ie. structurants pour l'organisation)
-//
-typedef struct tagORGATTRNAMES
-{
-    // Constrcution
-    tagORGATTRNAMES()
-    { init(); }
-
-    // Destruction
-    virtual ~tagORGATTRNAMES()
-    {}
-
-    // Initialisation
-    void init(){
-        manager_.init();
-		containerManager_.init();
-        level_.init();
-        shortName_.init();
-		//id_.init();
-    }
-
-    // Données membres
-    keyValTuple manager_;
-	keyValTuple containerManager_;
-    keyValTuple level_;
-    keyValTuple shortName_;
-	//keyValTuple id_;
-}ORGATTRNAMES,* LPORGATTRNAMES;
 
 // Information(s) sur un fichier de sortie
 //

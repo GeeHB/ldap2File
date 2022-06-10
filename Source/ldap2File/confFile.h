@@ -70,7 +70,7 @@ public:
 	bool imagesServer(IMGSERVER& dst);
 
 	// Définition du schema
-	bool nextLDAPAttribute(columnList::COLINFOS& col);
+	bool nextLDAPAttribute(columnList::COLINFOS& col, std::vector<std::string>& rNames);
 
 	// Définition de la struture de l'arborescence LDAP
 	bool nextStructElement(STRUCTELEMENT& element);
@@ -80,9 +80,6 @@ public:
 
 	// Liste des aliases
 	bool appAliases(aliases& aliases);
-
-	// Attributs spécifiques à l'ogranisation
-	void orgAttrs(ORGATTRNAMES& orgAttrs);
 
 	// Fichier(s) de commandes
 	//
