@@ -363,6 +363,8 @@ orgChartFile* JScriptFile::addOrgChartFile(bool flatMode, bool fullMode, bool& n
 	// Liste des agents
 	//
 	file_ << "var "<< (const char*)JS_VAR_AGENTS << " = [";
+	file_.flush();
+
 	newFile_ = true;
 
 	// moi !
@@ -377,6 +379,7 @@ void JScriptFile::closeOrgChartFile()
 	if (file_.is_open()){
 		// Fin de la liste des agents
 		file_ << eol_ << "];" << eol_;
+		file_.flush();
 
 		bool first(true);
 

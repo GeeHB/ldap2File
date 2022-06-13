@@ -44,9 +44,15 @@ BUGS{
     * 7 juin 2022
 	+ Corrections mineures
         - Affichages de la console
-    + Organigramme des services
-        + Ajout de la classe roles pour les gestions des rôles réservés
-        + 4 rôles possibles : manager, manager de structure, niveau de structure et Nom court de la structure
+		- Logs plus précis
+    + XML - Version 2.4
+	+ Organigramme des services et/ou hiérarchique
+        + Défini dans les templates ou fichiers de conf. par <Fichier><Organigramme Type={"", "Organisationnel"}>
+			! Il faut que le format de sortie le supporte (uniquement js. pour cette version)
+		+ Ajout de la classe roles pour les gestions des rôles réservés
+			+ 4 rôles possibles : manager, manager de structure, niveau de structure et Nom court de la structure
+			+ Définition au niveau du schéma. Par ex. : <Role>encadrant</Role>
+		- Suppression de la section <Organisation>
 
 22.6.3
     * 7 juin 2022 - version intermédiaire

@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	:	columnList.cpp
 //--
-//--	AUTEUR	:	JÈrÙme Henry-BarnaudiËre (JHB)
+//--	AUTEUR	:	J√©r√¥me Henry-Barnaudi√®re (JHB)
 //--
 //--	PROJET	: ldap2File
 //--
@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	18/12/2015 - JHB - CrÈation
+//--	18/12/2015 - JHB - Cr√©ation
 //--
 //--	07/06/2022 - JHB - Version 22.6.3
 //--
@@ -38,13 +38,13 @@
 //
 columnList::columnList()
 {
-	// Initialisation des donnÈes membres
+	// Initialisation des donn√©es membres
 	//
 	npos = -1;
 	orgMode_ = false;
 	lastError_ = "";
 
-	// Noms rÈservÈs
+	// Noms r√©serv√©s
 	extendSchema(COL_OWN_DEF);
 	extendSchema(COL_GROUP, STR_ATTR_GROUP_ID_NUMBER);
 	extendSchema(COL_GROUPS, STR_ATTR_GROUP_ID_NUMBER, true);
@@ -66,13 +66,13 @@ bool columnList::orgChartMode(bool orgMode)
 }
 
 // Ajout d'une colonne
-//	en gÈnÈral ajout des colonnes invisibles mais nÈcessaires
+//	en g√©n√©ral ajout des colonnes invisibles mais n√©cessaires
 //
 bool columnList::_append(const char* colName, const char* colType, double colWidth, unsigned int dType, bool visible)
 {
 	// Verifications
 	if (IS_EMPTY(colName) || IS_EMPTY(colType)){
-		lastError_ = "ParamËtres invalides";
+		lastError_ = "Param√®tres invalides";
 		return false;
 	}
 
@@ -85,15 +85,15 @@ bool columnList::_append(const char* colName, const char* colType, double colWid
 	if (charUtils::stricmp(colType, COL_OWN_DEF)){
 		// A t'on deja ajoute cette colonne ?
 		if (npos != getColumnByType(colType)){
-			// Oui => donc rien ‡ ajouter
-			lastError_ = "Colonne dÈja ajoutÈe";
+			// Oui => donc rien √† ajouter
+			lastError_ = "Colonne d√©ja ajout√©e";
 			return false;
 		}
 
 		// Est-elle d'un type reconnu ?
 		if (!(attribute = _type2Attribute(colType))){
-			// Type non gÈrÈ
-			lastError_ = "Le type de la colonne n'est pas dÈfini dans le schÈma";
+			// Type non g√©r√©
+			lastError_ = "Le type de la colonne n'est pas d√©fini dans le sch√©ma";
 			return false;
 		}
 	}
@@ -104,10 +104,10 @@ bool columnList::_append(const char* colName, const char* colType, double colWid
 	}
 #endif // _DEBUG
 
-	// Dans tous les cas le "nom" de la colonne doit-Ítre unique (pour Èviter les confusions)
+	// Dans tous les cas le "nom" de la colonne doit-√™tre unique (pour √©viter les confusions)
 	//
 	if (npos != getColumnByName(colName)){
-		lastError_ = "La colonne existe dÈj‡";
+		lastError_ = "La colonne existe d√©j√†";
 		return false;
 	}
 
@@ -147,7 +147,7 @@ bool columnList::append(const COLINFOS& column)
 {
 	// Verifications
 	if (!column.name_.size() || !column.ldapAttr_.size()){
-		lastError_ = "ParamËtres incorrects";
+		lastError_ = "Param√®tres incorrects";
 		return false;
 	}
 
@@ -161,26 +161,28 @@ bool columnList::append(const COLINFOS& column)
 		if (npos != getColumnByType(column.ldapAttr_.c_str())){
 			// dans le cas de colonnes exclusives (manager-managers ou encadrant-encadrants)
 			// la premiere colonne prend la place !
-			lastError_ = "Une colonne pour cet attribut LDAP a dÈj‡ ÈtÈ ajoutÈe";
+			lastError_ = "Une colonne pour cet attribut LDAP a d√©j√† √©t√© ajout√©e";
 			return false;
 		}
 
 		// Est-elle d'un type reconnu ?
 		if (!(attribute = _type2Attribute(column.ldapAttr_.c_str()))){
-			// Type non gÈrÈ
-			lastError_ = "Le type de la colonne n'est pas dÈfini dans le schÈma";
+			// Type non g√©r√©
+			lastError_ = "L'attribut LDAP pour les colonnes de type '";
+			lastError_+= column.ldapAttr_;
+			lastError_ += "' n'est pas d√©fini dans le sch√©ma";
 			return false;
 		}
 	}
 
-	// Dans tous les cas le "nom" de la colonne doit-Ítre unique (pour Èviter les confusions)
+	// Dans tous les cas le "nom" de la colonne doit-√™tre unique (pour √©viter les confusions)
 	//
 	if (npos != getColumnByName(column.name_.c_str())){
-		lastError_ = "Une colonne avec ce nom existe dÈj‡";
+		lastError_ = "Une colonne avec ce nom existe d√©j√†";
 		return false;
 	}
 
-	// CrÈation de l'objet
+	// Cr√©ation de l'objet
 	LPCOLINFOS col = new COLINFOS(column);
 	if (NULL != col){
 		// Noms de l'attribut
@@ -229,7 +231,7 @@ void columnList::remove(size_t index)
 		return;
 	}
 
-	// RÈcupÈration du pointeur
+	// R√©cup√©ration du pointeur
 	deque<LPCOLINFOS>::iterator it = columns_.begin();
 	it+=index;
 
@@ -244,10 +246,10 @@ void columnList::remove(size_t index)
 //
 void columnList::empty(bool emptySchema)
 {
-	// Suppression des colonnes demandÈes
+	// Suppression des colonnes demand√©es
 	_emptyList(&columns_);
 
-	// Suppression des colonnes reconnues (schÈma)
+	// Suppression des colonnes reconnues (sch√©ma)
 	if (emptySchema){
 		_emptyList(&attributes_);
 	}
@@ -270,7 +272,7 @@ void columnList::_emptyList(deque<LPCOLINFOS>* list)
 	}
 }
 
-// Recherches et accËs
+// Recherches et acc√®s
 //
 
 size_t columnList::getColumnBySchemaName(const char* colSchemaName)
@@ -282,13 +284,13 @@ size_t columnList::getColumnBySchemaName(const char* colSchemaName)
 	size_t colIndex(0);
 	for (deque<LPCOLINFOS>::iterator it = columns_.begin(); it != columns_.end(); it++){
 		if ((*it) && (*it)->names_ && (*it)->names_->schemaName_ == colSchemaName){
-			// TrouvÈ
+			// Trouv√©
 			return colIndex;
 		}
 		colIndex++;
 	}
 
-	// Non trouvÈ
+	// Non trouv√©
 	return npos;
 }
 
@@ -307,15 +309,15 @@ size_t columnList::_getColumnByName(bool searchSchema, const char* colName)
 		colIndex++;
 	}
 
-	// Non trouvÈ
+	// Non trouv√©
 	return npos;
 }
 
-// Recherche de l'indice d'une colonne ‡ partir du type "Humain" de donnÈes
+// Recherche de l'indice d'une colonne √† partir du type "Humain" de donn√©es
 //
 size_t columnList::getColumnByType(const char* colType, bool* pHeritable)
 {
-	string ldapAttr = type2LDAP(colType);	// Attribut associÈ
+	string ldapAttr = type2LDAP(colType);	// Attribut associ√©
 	if (ldapAttr.size()){
 		size_t colIndex(0);
 		for (deque<LPCOLINFOS>::iterator it = columns_.begin(); it != columns_.end(); it++){
@@ -329,11 +331,11 @@ size_t columnList::getColumnByType(const char* colType, bool* pHeritable)
 		}
 	}
 
-	// Non trouvÈe
+	// Non trouv√©e
 	return npos;
 }
 
-// Recherche de l'indice d'une colonne a partir de la valeur de l'attribut associÈ
+// Recherche de l'indice d'une colonne a partir de la valeur de l'attribut associ√©
 //
 size_t columnList::_getColumnByAttribute(bool searchSchema, const char* attrVal, bool* pHeritable)
 {
@@ -353,7 +355,7 @@ size_t columnList::_getColumnByAttribute(bool searchSchema, const char* attrVal,
 	return npos;
 }
 
-// AccËs a une colonne
+// Acc√®s a une colonne
 //
 columnList::LPCOLINFOS columnList::_getColumnByIndex(bool fromSchema, size_t index)
 {
@@ -372,7 +374,7 @@ columnList::LPCOLINFOS columnList::_getColumnByIndex(bool fromSchema, size_t ind
 }
 
 //
-// Gestion du schÈma
+// Gestion du sch√©ma
 //
 bool columnList::extendSchema(const COLINFOS& attribute)
 {
@@ -386,15 +388,15 @@ bool columnList::extendSchema(const COLINFOS& attribute)
 	}
 
 	// le nom de la colonne est unique
-	// et il ne doit correspondre ‡ aucun attribut LDAP gÈrÈ
+	// et il ne doit correspondre √† aucun attribut LDAP g√©r√©
 	if (npos != _getColumnByName(true, attribute.name_.c_str())
 		|| npos != _getColumnByAttribute(true, attribute.name_.c_str())
 		){
-		// L'attribut est dÈja pris en charge
+		// L'attribut est d√©ja pris en charge
 		return false;
 	}
 
-	// CrÈation de l'objet
+	// Cr√©ation de l'objet
 	LPCOLINFOS col = new COLINFOS(attribute);
 	if (NULL != col){
 		// Ajout a la liste
@@ -406,17 +408,17 @@ bool columnList::extendSchema(const COLINFOS& attribute)
 	return false;
 }
 
-// Ajout d'une colonne rÈservÈe
+// Ajout d'une colonne r√©serv√©e
 //
 bool columnList::extendSchema(const char* colName, const char* colAttr, bool multivalued)
 {
 	// le nom de la colonne est unique
 	if (npos != _getColumnByName(true, colName)){
-		// L'attribut est dÈja pris en charge
+		// L'attribut est d√©ja pris en charge
 		return false;
 	}
 
-	// CrÈation de l'objet
+	// Cr√©ation de l'objet
 	LPCOLINFOS col = new COLINFOS;
 	if (NULL != col){
 		// Ajout a la liste
@@ -441,7 +443,7 @@ string columnList::type2LDAP(const char* colType)
 	return (attribute ? attribute->ldapAttr_ : "");
 }
 
-// Nom rÈservÈ ?
+// Nom r√©serv√© ?
 //
 bool columnList::reservedColName(const char* colName)
 {

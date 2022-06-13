@@ -516,7 +516,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 							else {
 								if (logs_) {
 								    if (!exists){
-									    logs_->add(logs::TRACE_TYPE::NORMAL, "Destination - Le dossier %s n'existe pas", folder.c_str());
+									    logs_->add(logs::TRACE_TYPE::NORMAL, "Destination ignorée - Le dossier '%s' n'existe pas", folder.c_str());
                                     }
                                     else{
                                         logs_->add(logs::TRACE_TYPE::ERR, "Destination - Impossible de créer l'objet fileDestination pour '%s'", folder.c_str());

@@ -686,18 +686,12 @@ RET_TYPE LDAPBrowser::_createFile()
 
 		// Il faut que l'on sache récupérer le niveau !!!
 		keyValTuple* role(roles_[ROLE_STRUCT_LEVEL]);
-		if (role && role->value().size()){
+		if (!role || !role->value().size()){
 		    logs_->add(logs::TRACE_TYPE::ERR, "Le critère `%s' n'est pas défini. Impossible d'appliquer la rupture", XML_CONF_ORG_LEVEL);
 		    search.setTabType("");
 		    searchCriterium = false;
 		}
 		else{
-            // Une rupture => il faut ajouter la colonne sur le niveau
-            if (0 == role->value().c_str()) {
-                logs_->add(logs::TRACE_TYPE::ERR, "Le critère `%s' pour les structures n'est pas défini. Impossible d'appliquer une rupture", XML_CONF_ORG_LEVEL);
-                return RET_TYPE::RET_INVALID_PARAMETERS;
-            }
-
             // J'ajoute la colonne "Niveau" si nécessaire
             if (cols_.npos == cols_.getColumnByType(role->key().c_str())) {
                 cols_.append(COL_STRUCT_LEVEL);
@@ -2080,7 +2074,9 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
                 if (nullptr != (pAgent = new agentInfos(agents_->size(), containerdDN.c_str(), STR_VACANT_JOB))){
 
                     // Copie "light" des attributs sources
-                    pAgent->setOwnData(current->ownData()->lightCopy());
+					if (current->ownData()) {
+						pAgent->setOwnData(current->ownData()->lightCopy());
+					}
 
                     // 3. Insérer le nouvel agent comme "manager" des agents du container (ie. on fait sauter le remplacement)
                     pAgent->attachBranchTo(current->parent());   // Je récupère son prédecesseur
@@ -2107,15 +2103,17 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
                 agents_->add(pAgent);
 
 				// Remplacement de la valeur des attributs
-				pAgent->ownData()->empty("prenom");
-				pAgent->ownData()->replace("description", "Responsable");
-				pAgent->ownData()->replace("nom", STR_VACANT_JOB);
-				pAgent->ownData()->empty("status");
-				pAgent->ownData()->replace("itemTitleColor", JS_DEF_STATUS_NO_COLOR, true);
-				pAgent->ownData()->empty("email");
-				pAgent->ownData()->empty("mobile");
-				pAgent->ownData()->empty("phone");
-				pAgent->ownData()->remove("secondaryPhone");
+				if (pAgent->ownData()) {
+					pAgent->ownData()->empty("prenom");
+					pAgent->ownData()->replace("description", "Responsable");
+					pAgent->ownData()->replace("nom", STR_VACANT_JOB);
+					pAgent->ownData()->empty("status");
+					pAgent->ownData()->replace("itemTitleColor", JS_DEF_STATUS_NO_COLOR, true);
+					pAgent->ownData()->empty("email");
+					pAgent->ownData()->empty("mobile");
+					pAgent->ownData()->empty("phone");
+					pAgent->ownData()->remove("secondaryPhone");
+				}
 
                 logs_->add(logs::TRACE_TYPE::DBG, "Ajout du compte-container id=%d", pAgent->id());
             }
@@ -2151,9 +2149,14 @@ void LDAPBrowser::_generateOrgChart(std::string& baseContainer)
 	cols_.orgChartMode(orgFile_->orgChartMode());
 
     // Organigramme organisationnel ?
-    keyValTuple* role(roles_[ROLE_STRUCT_MANAGER]);
-	if (role && 0 != role->value().size()){
-	    _managersForEmptyContainers(baseContainer);
+	if (orgChart_.byStruct_) {
+		keyValTuple* role(roles_[ROLE_STRUCT_MANAGER]);
+		if (role && 0 != role->value().size()) {
+			_managersForEmptyContainers(baseContainer);
+		}
+		else {
+			logs_->add(logs::TRACE_TYPE::ERR, "Le rôle '%' n'est pas défini. Pas d'organigramme des services", ROLE_STRUCT_MANAGER);
+		}
 	}
 
 	if (orgChart_.flat_){

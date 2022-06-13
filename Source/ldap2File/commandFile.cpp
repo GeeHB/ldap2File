@@ -783,20 +783,16 @@ bool commandFile::orgChart(ORGCHART& oChart)
 
 	// Organisationnel ou hiérarchique ?
     string val = node.attribute(ORG_TYPE_ATTR).value();
-    if (val == ORG_TYPE_STRUCT){
-        oChart.byStruct_ = true;
-    }
+	oChart.byStruct_ = (val == ORG_TYPE_STRUCT);
 
-	pugi::xml_node child;
-	string value("");
 
 	oChart.generate_ = true;
 
 	// Organigramme complet ?
-	child = node.child(XML_ORGCHART_FULL_NODE);
+	pugi::xml_node child(node.child(XML_ORGCHART_FULL_NODE));
 	if (!IS_EMPTY(child.name())){
-		value = child.first_child().value();
-		oChart.full_ = (value != XML_NO);
+		val = child.first_child().value();
+		oChart.full_ = (val != XML_NO);
 	}
 
 	// Affichage des détails ?
@@ -820,12 +816,12 @@ bool commandFile::orgChart(ORGCHART& oChart)
 	// Nom de l'onglet
 	child = node.child(XML_ORGCHART_TAB_NODE);
 	if (!IS_EMPTY(child.name())){
-		value = child.first_child().value();
-		if (value.size()){
+		val = child.first_child().value();
+		if (val.size()){
 #ifdef _WIN32
-			encoder_.convert_fromUTF8(value);
+			encoder_.convert_fromUTF8(val);
 #endif // #ifdef _WIN32
-			oChart.sheetName_ = value;
+			oChart.sheetName_ = val;
 		}
 	}
 

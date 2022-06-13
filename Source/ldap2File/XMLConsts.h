@@ -35,7 +35,7 @@
 //---------------------------------------------------------------------------
 
 // Version du schéma XML
-#define XML_SCHEMA_VERSION			"2.3"
+#define XML_SCHEMA_VERSION			"2.4"
 
 //
 // Définitions générales

@@ -168,7 +168,7 @@ typedef struct tagORGCHART
 		nodeFormat_ = DEF_ORGTAB_NODE_FORMAT;
 		flat_ = true;
 		sheetName_ = DEF_ORGTAB_NAME;
-		byStruct_ = true;
+		byStruct_ = false;
 	}
 
 	// Données
