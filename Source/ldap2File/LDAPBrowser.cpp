@@ -162,6 +162,10 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 			if (cols_.extendSchema(attribute)){
 				logs_->add(logs::TRACE_TYPE::DBG, "Schéma - la colonne '%s' correspond à l'attribut '%s'", attribute.name_.c_str(), attribute.ldapAttr_.c_str());
 
+#ifdef _DEBUG
+				string cName(attribute.name_);
+#endif // _DEBUG
+
 				// Des rôles ?
 				for (vector<string>::iterator i = rNames.begin(); i != rNames.end(); i++) {
 					// Création du rôle pour l'attribut
@@ -364,7 +368,7 @@ RET_TYPE LDAPBrowser::browse()
 	while (cmdFile->nextColumn(column, true)){
 		// Ajout à ma liste
 		if (!cols_.append(column)){
-			logs_->add(logs::TRACE_TYPE::ERR, "La colonne '%s' n'a pas été ajoutée à l'entête du fichier - %s", column.name_.c_str(), cols_.getLastError().c_str());
+			logs_->add(logs::TRACE_TYPE::ERR, "La colonne '%s' n'a pas été ajoutée à l'entête du fichier - %s" , column.name_.c_str(), cols_.getLastError().c_str());
 		}
 		else{
 			logs_->add(logs::TRACE_TYPE::DBG, "Ajout de la colonne '%s' pour l'attribut '%s'", column.name_.c_str(), column.ldapAttr_.c_str());
@@ -1079,7 +1083,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 	// Managers
 	keyValTuple* role = roles_[ROLE_MANAGER];
-	string managersAttr((role && 0 != role->value().size())?role->key():"");
+	string managersAttr((role && 0 != role->value().size())?role->value():"");
 
 	// Le remplaçant
 	//size_t colRemplacement = cols_.getColumnByType(STR_ATTR_ALLIER_REMPLACEMENT);
@@ -1610,7 +1614,7 @@ bool LDAPBrowser::_getLDAPContainers()
 	keyValTuple* role(roles_[ROLE_SHORTNAME]);
 	if (role && role->value().size()) {
 		myAttributes += role->value().c_str();
-		shortNameAttr = role->key();
+		shortNameAttr = role->value();
 	}
 
 	// Le manager de chaque container est-il demandé ?
@@ -1618,7 +1622,7 @@ bool LDAPBrowser::_getLDAPContainers()
 	role = roles_[ROLE_STRUCT_MANAGER];
 	if (role && role->value().size()) {
 		myAttributes += role->value().c_str();
-		managersAttr = role->key();
+		managersAttr = role->value();
 	}
 
 	// Génération de la requête
@@ -2067,7 +2071,7 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
 			pos >= 0 &&
             false == container->hasManager()){
 
-            logs_->add(logs::TRACE_TYPE::DBG, "'%s' n'a pas de manager", container->realName());
+            logs_->add(logs::TRACE_TYPE::TRC, "'%s' n'a pas de manager", container->realName());
 
             // 2. Trouver les agents situés dans ce container (s'ils existent)
             agentIndex = 0;
@@ -2079,13 +2083,13 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
                     pAgent->setOwnData(current->ownData()->lightCopy());
 
                     // 3. Insérer le nouvel agent comme "manager" des agents du container (ie. on fait sauter le remplacement)
-                    pAgent->attachBranch(current->parent());   // Je récupère son prédecesseur
+                    pAgent->attachBranchTo(current->parent());   // Je récupère son prédecesseur
 
 					// L'agent courant n'a plus de manager ...
 					current->detachBranch();
 
 					// Mise à jour des liens de l'agent courant
-                    current->attachBranch(pAgent);
+                    current->attachBranchTo(pAgent);
                 }
 
                 // D'autres agents ?
@@ -2093,7 +2097,7 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
                 while (nullptr != (current = agents_->findAgentIn(containerdDN, agentIndex))){
                     // Changement de container parent
 					current->detachBranch();
-					current->attachBranch(pAgent);
+					current->attachBranchTo(pAgent);
 					agentIndex++;
 
                     logs_->add(logs::TRACE_TYPE::DBG, "\t+ '%s'", current->DN().c_str());

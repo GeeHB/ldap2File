@@ -286,9 +286,9 @@ public:
 	//
 
 	// Mise en place d'une branche
-	void attachBranch(agentInfos* branch);
+	void attachBranchTo(agentInfos* branch);
 	void setParent(agentInfos* branch)
-	{ attachBranch(branch); }
+	{ attachBranchTo(branch); }
 	agentInfos* parent(){
 		return links_.parent_;
 	}

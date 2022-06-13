@@ -144,7 +144,7 @@ LPAGENTINFOS agentTree::add(unsigned int uid, string& agentDN, string& prenom, s
 	if (manager.size()){
 		if (nullptr != (pManager = _getAgentFromLDAP(manager))){
 			if (pManager){
-				agent->attachBranch(pManager/*, true*/);
+				agent->attachBranchTo(pManager/*, true*/);
 			}
 		}
 		else{
@@ -600,7 +600,7 @@ string agentInfos::containerDN()
 //
 //		Les "fils" sont classés par ordre alphabétique du nom
 //
-void agentInfos::attachBranch(agentInfos* pAgent)
+void agentInfos::attachBranchTo(agentInfos* pAgent)
 {
 	if (nullptr == pAgent){
 		// Pas de parent ...
@@ -905,13 +905,15 @@ void agentInfos::detachBranch()
 	// Pointeur sur mon père
 	agentInfos* father(parent());
 
-	// Je n'ai plus de père ...
-	links_.parent_ = nullptr;
+	if (father) {
+		// Je n'ai plus de père ...
+		links_.parent_ = nullptr;
 
-	// Mon père a une branche en moins
-	father->removeBranch(this);
+		// Mon père a une branche en moins
+		father->removeBranch(this);
+	}
 
-	// Je n'ai plus de frère
+	// Je n'ai plus de frère (puisque je suis une branche libre)
 	links_.nextSibling_ = nullptr;
 }
 
