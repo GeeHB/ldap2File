@@ -356,8 +356,10 @@ orgChartFile* JScriptFile::addOrgChartFile(bool flatMode, bool fullMode, bool& n
 	time_t now = time(0);
 	tm *ltm = localtime(&now);
 	file_ << "/*\t\t" << fileName(false) << "\t*/" << eol_;
-	string value = "Généré le ";
-	file_ << "/*\t\t" << value << std::setfill('0') << std::setw(2) << ltm->tm_mday << "/" << std::setfill('0') << std::setw(2) << ltm->tm_mon + 1 << "/" << std::setfill('0') << std::setw(4) << ltm->tm_year + 1900 << "\t*/" << eol_;
+	file_ << "/*\t\tGénéré le " << std::setfill('0') << std::setw(2) << ltm->tm_mday << "/" << std::setfill('0') << std::setw(2) << ltm->tm_mon + 1 << "/" << std::setfill('0') << std::setw(4) << ltm->tm_year + 1900 << "\t*/" << eol_;
+	file_ << "/*\t\t à " << std::setfill('0') << std::setw(2) << ltm->tm_hour << " h ";
+	file_ << std::setfill('0') << std::setw(2) << ltm->tm_min << " min ";
+	file_ << std::setfill('0') << std::setw(2) << ltm->tm_sec << " sec. \t*/" << eol_;
 	file_ << "/*\t\t" << APP_COPYRIGHT << "\t*/" << eol_;
 
 	// Liste des agents
@@ -411,7 +413,8 @@ void JScriptFile::closeOrgChartFile()
 
 		// Les remplacements
 		//
-		file_ << eol_ << "var " << JS_VAR_REPLACEMENTS << " = [";
+		file_ << eol_;
+		file_ << "var " << JS_VAR_REPLACEMENTS << " = [";
 
 		LPAGENTLINK replace(NULL);
 		first = true;
@@ -581,7 +584,7 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 	//
 	file_ << '}';
 
-	// L'agent est-il le "p�re" dans un groupe ?
+	// L'agent est-il le "père" dans un groupe ?
 #ifdef _GENERATE_COLORED_GROUPS_
 	if (other){
 		if (JF_DEF_GROUP_OPACITY != other->groupOpacity){

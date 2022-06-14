@@ -127,6 +127,8 @@ namespace sFileSystem {
 			fs::copy(from, to);
 			return true;
 #else
+            fs::remove(to);
+
             int source, dest;
             if ((source = open(from.c_str(), O_RDONLY, 0)) < 0 ||
                 ( dest = open(to.c_str(), O_WRONLY | O_CREAT /*| O_TRUNC*/, 0644)) < 0){
@@ -360,7 +362,8 @@ namespace sFileSystem {
 #else
 
 #ifdef __USE_STD_FILESYSTEM__
-			return ((false == fs::is_directory(path))?fs::create_directory(path):true);
+			//return ((false == fs::is_directory(path))?fs::create_directory(path):true);
+			return fs::create_directory(path);
 #else
             return _create_directory(path, 0777);
 #endif // __USE_STD_FILESYSTEM__

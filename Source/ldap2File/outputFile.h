@@ -377,7 +377,7 @@ private:
 	//
 protected:
 	folders*		folders_;			// Dossiers de l'application
-	logs*		logs_;				// Fichier de logs
+	logs*		    logs_;				// Fichier de logs
 
 	confFile*		configurationFile_;
 

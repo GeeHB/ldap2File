@@ -275,9 +275,7 @@ private:
 	charUtils		encoder_;		// Gestion de l'encodage des caractères
 	JSData*			line_;			// Données correspondant à une "ligne"
 
-	//ofstream		file_;
 	bool			newFile_;
-	// bool			keepLine_;		// La ligne doit-être générée ?
 	bool			addEmptyAttributes_;
 	bool			fullMode_;
 

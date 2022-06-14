@@ -8,7 +8,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-base:d:\ldapTools "D:\ldapTools\CD03\js-org</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-base:d:\ldapTools "D:\ldapTools\CD03\js</LocalDebuggerCommandArguments>
     <LocalDebuggerCommand>D:\dev\cpp\ldap2File\Bin\x86\Release\ldap2File.exe</LocalDebuggerCommand>
     <LocalDebuggerWorkingDirectory>D:\dev\cpp\ldap2File\Bin\x86\Release</LocalDebuggerWorkingDirectory>
   </PropertyGroup>

@@ -49,7 +49,7 @@ namespace jhbLDAPTools {
 		// Type(s) de dossiers
 		enum class FOLDER_TYPE { FOLDER_APP = 0, FOLDER_LOGS, FOLDER_TEMP, FOLDER_TEMPLATES, FOLDER_OUTPUTS, FOLDER_ZIP};
 
-		// Un dossiers (ou sous dossier)
+		// Un dossier (ou sous-dossier)
 		//
 		class folder
 		{
@@ -57,8 +57,8 @@ namespace jhbLDAPTools {
 			// Construction
 			folder(folders::FOLDER_TYPE type, string& path, bool subFolder) {
 				type_ = type;
-				path_ = path;
 				subFolder_ = subFolder;
+				setPath(path);
 			}
 
 			// Destruction
@@ -70,27 +70,36 @@ namespace jhbLDAPTools {
 			folders::FOLDER_TYPE type()
 			{ return type_; }
 
-
+			// Chemin complet
 			bool setPath(const string& path);
 			const char* path()
 			{ return path_.c_str();}
 
+			// Est-ce un sous-dossier ?
 			bool isSubFolder()
 			{ return subFolder_; }
 			void setSubFolder(bool isSub)
 			{ subFolder_ = isSub; }
 
+			// Existence du dossier
+			bool exists()
+			{ return exists_; }
+			void setExists(bool bExists = true)
+			{ exists_ = bExists; }
+
 		// Méthodes privées
+		//
 		protected:
 			// Création (si nécessaire) du dossier
 			bool _create();
 
+		// Données membres
+        //
 		protected:
-			// Données membres
-			//
 			folders::FOLDER_TYPE	type_;		// Type de dossier
 			string					path_;		// Chemin complet
 			bool					subFolder_;	// Un sous-dossier ou un dossier "indépendant" ?
+			bool                    exists_;    // Si false => n'existe pas et ne peut être crée
 		};
 
 		// Construction et destruction
@@ -99,9 +108,8 @@ namespace jhbLDAPTools {
 		virtual ~folders();
 
 		// Nombre d'elements
-		size_t size(){
-			return folders_.size();
-		}
+		size_t size()
+		{ return folders_.size(); }
 
 		// Ajout d'un dossier
 		bool add(FOLDER_TYPE type, const char* path) {

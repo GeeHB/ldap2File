@@ -41,25 +41,30 @@ BUGS{
 }
 
 22.6.4
-    * 7 juin 2022
+    * 14 juin 2022
 	+ Corrections mineures
-        - Affichages de la console
+        	- Affichages de la console
 		- Logs plus précis
-    + XML - Version 2.4
-	+ Organigramme des services et/ou hiérarchique
-        + Défini dans les templates ou fichiers de conf. par <Fichier><Organigramme Type={"", "Organisationnel"}>
+    	+ XML - Version 2.4
+		+ Organigramme des services et/ou hiérarchique
+        	+ Défini dans les templates ou fichiers de conf. par <Fichier><Organigramme Type={"", "Organisationnel"}>
 			! Il faut que le format de sortie le supporte (uniquement js. pour cette version)
 		+ Ajout de la classe roles pour les gestions des rôles réservés
 			+ 4 rôles possibles : manager, manager de structure, niveau de structure et Nom court de la structure
 			+ Définition au niveau du schéma. Par ex. : <Role>encadrant</Role>
 		- Suppression de la section <Organisation>
+	+ Quid des dossiers de l'application s'ils sont inexistants ?
+		- Détection au démarrage
+		- Arrêt ...
+	- Correction du bug (de regression ?) lors de la génération des fichiers js en release
+	    + Sous Linux, complié avec la définition __USE_STD_FILESYSTEM__
 
 22.6.3
     * 7 juin 2022 - version intermédiaire
 	+ Corrections mineures
 		- Remplacement des appels de stringstream par charUtils::
     + Génération de l'organigramme des services
-		+ Atributs organisationnel : Responsable de la structure : <ResponsableStruct>
+		+ Basé sur les attributs organisationnels : Responsable de la structure : <ResponsableStruct>
 		+ Ajout des postes vaccants pour les managers absents
 
 

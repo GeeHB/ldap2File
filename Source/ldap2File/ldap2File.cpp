@@ -113,6 +113,7 @@ int main(int argc, const char* argv[]) {
 	// Vérification de la ligne de commandes
 	//
 	int retCode(0);
+	bool hasLogs(true);
 	folders myFolders;		// Liste des dossiers utilisés par l'application
 	logs myLogs;
 	confFile configurationFile(&myFolders, &myLogs);
@@ -201,32 +202,69 @@ int main(int argc, const char* argv[]) {
 		cout << "\t - modèles : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path() << endl;
 		cout << "\t - temporaires : " << myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path() << endl;
 
-		// Initialisation du fichier de logs
-		//
-		myLogs.init(lInfos.mode_.c_str(), logFolder->path(), lInfos.fileName_.c_str());
-		myLogs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
+		// Les dossiers doivent exister, à défaut, on arrête
+		bool stop(false);
+		folders::folder* pfolder(nullptr);
 
-		myLogs.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
-		string copyRight("---- %s - version %s pour %s");
-#ifdef _DEBUG
-		copyRight += " -- DEBUG";
-#endif // _DEBUG
-		copyRight += " - %s";
-		myLogs.add(logs::TRACE_TYPE::LOG, copyRight.c_str(), APP_SHORT_NAME, APP_RELEASE, CURRENT_OS, APP_DESC);
-		myLogs.add(logs::TRACE_TYPE::LOG, "---- Copyright %s", APP_COPYRIGHT);
-		myLogs.add(logs::TRACE_TYPE::LOG, "Lancement de l'application");
-
-		if (LOG_DURATION_INFINITE != lInfos.duration_) {
-			myLogs.add(logs::TRACE_TYPE::NORMAL, "Conservation des logs %d jours", lInfos.duration_);
+		if (nullptr != (pfolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS))
+		    && !pfolder->exists()){
+		    // Pas de dossier de logs => pas de logs pour afficher le message d'erreur ...
+		    cout << "Dossier des logs manquant" << endl;
+		    retCode = 1;
+		    hasLogs = false;
 		}
 
-		myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", fullAppName.c_str());
-		myLogs.add(logs::TRACE_TYPE::LOG, "Fichier de configuration : %s", file.c_str());
-		myLogs.add(logs::TRACE_TYPE::LOG, "Dossiers de l'application : ");
-		myLogs.add(logs::TRACE_TYPE::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
-		myLogs.add(logs::TRACE_TYPE::LOG, "\t- fichiers : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path());
-		myLogs.add(logs::TRACE_TYPE::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
-		myLogs.add(logs::TRACE_TYPE::LOG, "\t- temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
+        if (nullptr != (pfolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_APP))
+        && !pfolder->exists()){
+            stop = true;
+            cout << "Dossier manquant : racine" << endl;
+        }
+
+        if (nullptr != (pfolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES))
+            && !pfolder->exists()){
+            stop = true;
+            cout << "Dossier manquant : modèles" << endl;
+        }
+
+        if (nullptr != (pfolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP))
+            && !pfolder->exists()){
+            stop = true;
+            cout << "Dossier manquant : temporaires" << endl;
+        }
+
+		if (0 == retCode){
+            // Initialisation du fichier de logs
+            //
+            myLogs.init(lInfos.mode_.c_str(), logFolder->path(), lInfos.fileName_.c_str());
+            myLogs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
+
+            myLogs.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
+            string copyRight("---- %s - version %s pour %s");
+#ifdef _DEBUG
+    		copyRight += " -- DEBUG";
+#endif // _DEBUG
+            copyRight += " - %s";
+            myLogs.add(logs::TRACE_TYPE::LOG, copyRight.c_str(), APP_SHORT_NAME, APP_RELEASE, CURRENT_OS, APP_DESC);
+            myLogs.add(logs::TRACE_TYPE::LOG, "---- Copyright %s", APP_COPYRIGHT);
+            myLogs.add(logs::TRACE_TYPE::LOG, "Lancement de l'application");
+
+            if (LOG_DURATION_INFINITE != lInfos.duration_) {
+                myLogs.add(logs::TRACE_TYPE::NORMAL, "Conservation des logs %d jours", lInfos.duration_);
+            }
+
+            myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", fullAppName.c_str());
+            myLogs.add(logs::TRACE_TYPE::LOG, "Fichier de configuration : %s", file.c_str());
+            myLogs.add(logs::TRACE_TYPE::LOG, "Dossiers de l'application : ");
+            myLogs.add(logs::TRACE_TYPE::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
+            myLogs.add(logs::TRACE_TYPE::LOG, "\t- fichiers : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path());
+            myLogs.add(logs::TRACE_TYPE::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
+            myLogs.add(logs::TRACE_TYPE::LOG, "\t- temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
+
+            if (stop){
+                myLogs.add(logs::TRACE_TYPE::ERR, "Dossier(s) manquants. Arrêt des traitements");
+                retCode = 1;
+            }
+        }
 	}
 	catch (LDAPException& e) {
 		cout << "Erreur : " << e.what() << endl;
@@ -252,7 +290,14 @@ int main(int argc, const char* argv[]) {
 		}
 	};
 
-	_finalLogs myTrace(myLogs);
+	if (hasLogs){
+	    _finalLogs myTrace(myLogs);
+    }
+
+	// Sortie sur erreur ...
+	if (retCode){
+	    return retCode;
+	}
 
 	list<string> files;
 	size_t filesGenerated(0);

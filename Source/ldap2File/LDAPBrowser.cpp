@@ -1050,7 +1050,7 @@ RET_TYPE LDAPBrowser::_createFile()
 	// Plus besoin du fichier temporaire
 	if (file_) {
 		logs_->add(logs::TRACE_TYPE::DBG, "Suppression du fichier temporaire '%s'", file_->fileName());
-		delete file_;
+		//delete file_;
 		file_ = NULL;
 	}
 

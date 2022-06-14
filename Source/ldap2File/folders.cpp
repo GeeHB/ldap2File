@@ -55,7 +55,7 @@ namespace jhbLDAPTools {
 		path_ = path;
 
 		// On s'assure que le dossier physique existe
-		return _create();
+		return (exists_ = _create());
 	}
 
 	// Création du dossier (s'il n'existe pas)
@@ -63,7 +63,7 @@ namespace jhbLDAPTools {
 	{
 		if (!sFileSystem::exists(path_)) {
 			// Création du dossier
-			return sFileSystem::create_directory(path_);
+			return (exists_ = sFileSystem::create_directory(path_));
 		}
 
 		// Ok (le dossier existe déja)
