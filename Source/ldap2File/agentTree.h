@@ -22,7 +22,7 @@
 //--
 //--	24/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ public:
 	// Ajouts
 	bool add(LPAGENTINFOS agent);
 	LPAGENTINFOS add(unsigned int uid, string& agentDN, string& prenom, string& nom, string& mail, unsigned int status, string& manager, string& matricule, bool deducted = false);
-	LPAGENTINFOS add(unsigned int uid, const char* agentDN, const char* prenom, const char* nom = _T(""), const char* mail = _T(""), unsigned int status = ALLIER_STATUS_EMPTY, const char* manager = NULL, const char* matricule = NULL, bool deducted = false){
+	LPAGENTINFOS add(unsigned int uid, const char* agentDN, const char* prenom, const char* nom = _T(""), const char* mail = _T(""), unsigned int status = ALLIER_STATUS_EMPTY, const char* manager = nullptr, const char* matricule = nullptr, bool deducted = false){
 		string bd(agentDN), bp(prenom), bn(nom), bm(manager?manager:""), bmail(mail), bmat(IS_EMPTY(matricule)?"":matricule);
 		return add(uid, bd, bp, bn, bmail, status, bm, bmat, deducted);
 	}
@@ -95,7 +95,7 @@ public:
 	// Recherches
 	//
 	LPAGENTINFOS findAgentByDN(const char* dn)
-	{ return (IS_EMPTY(dn)?NULL: _getAgentFromLDAP(dn)); }
+	{ return (IS_EMPTY(dn)?nullptr: _getAgentFromLDAP(dn)); }
 	LPAGENTINFOS findAgentByDN(const string& dn)
 	{ return findAgentByDN(dn.c_str()); }
 
@@ -104,12 +104,12 @@ public:
 
 	// Mise en forme
 	string getFullAscendingString(string& agent)
-	{ return _getAscendantsString(agent.c_str(), true, NULL); }
+	{ return _getAscendantsString(agent.c_str(), true, nullptr); }
 	string getFullAscendingString(const char* agent)
-	{ return _getAscendantsString(agent, true, NULL); }
-	string getManager(string& agent, string* managerID = NULL)
+	{ return _getAscendantsString(agent, true, nullptr); }
+	string getManager(string& agent, string* managerID = nullptr)
 	{ return _getAscendantsString(agent, false, managerID); }
-	string getManager(const char* agent, string* managerID = NULL)
+	string getManager(const char* agent, string* managerID = nullptr)
 	{ return _getAscendantsString(agent, false, managerID);}
 
 	// Agents sur plusieurs postes
@@ -366,7 +366,7 @@ private:
 		_LINKS()
 		{ init(); }
 		void init()
-		{ parent_ = firstChild_ = nextSibling_ = NULL; }
+		{ parent_ = firstChild_ = nextSibling_ = nullptr; }
 
 		LPAGENTINFOS	parent_;		// L'ascendant direct
 		LPAGENTINFOS	firstChild_;	// Le fils aine

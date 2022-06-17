@@ -22,7 +22,7 @@
 //--
 //--	15/01/2018 - JHB - Version 18.1.2 - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -269,13 +269,29 @@ bool commandFile::outputFileInfos(aliases& aliases, OPFI& fileInfos)
 	fileInfos.init();
 
 	// Les informations sur le fichier pauvent être héritées !
+	/*
 	if (!includedFile_ || !includedFile_->_fileInfos(aliases, fileInfos)){
 		if (!_fileInfos(aliases, fileInfos)){
 			return false;
 		}
+	}*/
+
+	bool templateOK(false);
+	if (includedFile_){
+	    // Si il y a un modèle, je regarde ce qu'il peut me fournir ...
+	    templateOK = includedFile_->_fileInfos(aliases, fileInfos);
 	}
 
-	// Par contre les serveurs destinations sont eux issus du fichier
+    // ... puis on regarde ce que propose le fichier
+    if (!_fileInfos(aliases, fileInfos) && !templateOK){
+        if (logs_){
+            logs_->add(logs::TRACE_TYPE::ERR, "Ni le fichier de commande ni le fichier inclus ne fournissent d'information sur le fichier de sortie");
+        }
+
+        return false;
+    }
+
+	// Les serveurs destinations sont issus du fichier
 	// inclus (lorsque ce dernier existe et qu'il les contient ...)
 	if (includedFile_ && includedFile_->_destinationsInfos(aliases, fileInfos)){
 		return true;
@@ -321,7 +337,7 @@ bool commandFile::_fileInfos(aliases& aliases, OPFI& fileInfos)
 	}
 #endif // #ifdef _WIN32
 
-	// Le template à utiliser
+	// Le 'template' à utiliser
 	fileInfos.templateFile_ = node.attribute(XML_FORMAT_TEMPLATE_ATTR).value();
 #ifdef _WIN32
 	encoder_.convert_fromUTF8(fileInfos.templateFile_);

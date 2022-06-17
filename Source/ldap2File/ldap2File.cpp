@@ -38,7 +38,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -191,7 +191,7 @@ int main(int argc, const char* argv[]) {
 
 		// Le dossier des logs doit exister (on a auparavant tenté de le créer s'il n'existait pas)
 		folders::folder* logFolder = myFolders.find(folders::FOLDER_TYPE::FOLDER_LOGS);
-		if (NULL == logFolder) {
+		if (nullptr == logFolder) {
 			throw LDAPException("Le dossier des logs n'a pu être ouvert ou crée", RET_TYPE::RET_ACCESS_ERROR);
 		}
 
@@ -519,7 +519,7 @@ int main(int argc, const char* argv[]) {
 		char message[200];
 		sprintf_s(message, 199, "%d fichier(s) genere(s)", filesGenerated);
 
-		MessageBox(NULL, message, APP_SHORT_NAME, MB_ICONINFORMATION);
+		MessageBox(nullptr, message, APP_SHORT_NAME, MB_ICONINFORMATION);
 	}
 #else
 	cout << filesGenerated << " fichier" << (filesGenerated > 1 ? "s " : " ") << "crée" << (filesGenerated > 1 ? "s" : " ") << endl;
@@ -588,7 +588,7 @@ bool _getFolderContent(const string& srcPath, list<string>& content, logs* pLogs
 	string fullName;
 	d = opendir(source.c_str());
 	if (d) {
-		while ((dir = readdir(d)) != NULL) {
+		while ((dir = readdir(d)) != nullptr) {
 			if (dir->d_type == DT_REG) {
 				fullName = source;
 				fullName += "/";
@@ -678,7 +678,7 @@ bool _updateConfigurationFile(string path)
 {
 	// Fichier de configuration
 	string confFile = sFileSystem::merge(path, XML_CONF_FILE);
-	XMLParser xmlConf(confFile.c_str(), XML_ROOT_LDAPTOOLS_NODE, NULL, NULL, true);
+	XMLParser xmlConf(confFile.c_str(), XML_ROOT_LDAPTOOLS_NODE, nullptr, nullptr, true);
 
 	try {
 		// Chargement du fichier

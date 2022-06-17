@@ -210,9 +210,9 @@ namespace sFileSystem {
 #ifdef UNICODE
 		WCHAR wPath[MAX_PATH + 1];
 		TO_UNICODE(path.c_str(), wPath, (int)path.length() + 1);
-		hFile = CreateFileW(wPath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		hFile = CreateFileW(wPath, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #else
-		hFile = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		hFile = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 #endif // UNICODE
 
 		if (INVALID_HANDLE_VALUE == hFile) {
@@ -315,11 +315,11 @@ namespace sFileSystem {
 	//
 	bool _create_directory(const std::string& path, mode_t mode)
     {
-        char *pp(NULL), *sp(NULL);
+        char *pp(nullptr), *sp(nullptr);
         int status(0);
         char *copyPath(strdup(path.c_str()));
 
-        if (NULL == copyPath){
+        if (nullptr == copyPath){
             // Erreur de copie
             return false;
         }
@@ -354,10 +354,10 @@ namespace sFileSystem {
 #ifdef UNICODE
 			WCHAR wPath[MAX_PATH + 1];
 			TO_UNICODE(path.c_str(), wPath, (int)path.length() + 1);
-			return (0 != CreateDirectoryW(wPath, NULL));
+			return (0 != CreateDirectoryW(wPath, nullptr));
 #else
 
-			return (0 != CreateDirectoryA(path.c_str(), NULL));
+			return (0 != CreateDirectoryA(path.c_str(), nullptr));
 #endif // UNICODE
 #else
 
@@ -396,16 +396,16 @@ namespace sFileSystem {
             std::string dir = current_path();
 #endif // _DEBUG
 
-            FTS *ftsp(NULL);
+            FTS *ftsp(nullptr);
             FTSENT *curr;
-            char *files[] = { (char *) path.c_str(), NULL };
+            char *files[] = { (char *) path.c_str(), nullptr };
 
             // FTS_NOCHDIR  - Avoid changing cwd, which could cause unexpected behavior
             //                in multithreaded programs
             // FTS_PHYSICAL - Don't follow symlinks. Prevents deletion of files outside
             //                of the specified directory
             // FTS_XDEV     - Don't cross filesystem boundaries
-            ftsp = fts_open(files, FTS_NOCHDIR | FTS_PHYSICAL | FTS_XDEV, NULL);
+            ftsp = fts_open(files, FTS_NOCHDIR | FTS_PHYSICAL | FTS_XDEV, nullptr);
             if (!ftsp) {
                 return false;
             }
@@ -472,7 +472,7 @@ namespace sFileSystem {
 			return fs::current_path();
 #else
             char dir[MAX_PATH+1];
-            if (NULL == getcwd(dir, MAX_PATH)){
+            if (nullptr == getcwd(dir, MAX_PATH)){
                 return "";
             }
 

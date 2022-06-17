@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ void XMLFile::XMLCELL::_init(const char* value, bool firstTime)
 		}
 	}
 
-	_next = NULL;
+	_next = nullptr;
 }
 
 
@@ -105,7 +105,7 @@ XMLFile::~XMLFile()
 bool XMLFile::_init(){
 	// Preparation de la matrice en mémoire
 	values_ = columns_->size();
-	if (NULL == (line_ = new XMLFile::XMLCELL[values_])){
+	if (nullptr == (line_ = new XMLFile::XMLCELL[values_])){
 		throw LDAPException("Impossible d'allouer de la mémoire pour la modélisation d'une ligne", RET_TYPE::RET_ALLOCATION_ERROR);
 	}
 
@@ -163,7 +163,7 @@ bool XMLFile::addAt(size_t colIndex, string& value)
 #ifdef _WIN32
 	encoder_.convert_toUTF8(line_[colIndex]._value, false);
 #endif // _WIN32
-	line_[colIndex]._next = NULL;		// Une seule valeur (pour l'instant)
+	line_[colIndex]._next = nullptr;		// Une seule valeur (pour l'instant)
 
 	// Fait
 	return true;
@@ -202,7 +202,7 @@ bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 	}
 
 	// Pointeur sur la cellule contenant la première valeur
-	LPXMLCELL current(&line_[colIndex]), next(NULL);
+	LPXMLCELL current(&line_[colIndex]), next(nullptr);
 
 	// Ajout des autres valeurs
 	string validValue("");
@@ -215,7 +215,7 @@ bool XMLFile::addAt(size_t colIndex, deque<string>& values)
 #endif // _WIN32
 
 		// Création de la nouvelle cellule
-		if (NULL != (next = new XMLCELL(validValue))){
+		if (nullptr != (next = new XMLCELL(validValue))){
 			// chainage
 			current->_next = next;
 

@@ -20,7 +20,7 @@
 //--
 //--	23/03/2021 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ public:
 		}
 
 		// Non trouvé (mauvais index)
-		return NULL;
+		return nullptr;
 	}
 
 // Méthodes privées

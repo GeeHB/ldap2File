@@ -32,7 +32,7 @@
 //--	08/02/2021 - JHB - Version 21.2.2
 //--						+ Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -157,7 +157,7 @@ bool vCardFile::saveLine(bool header, LPAGENTINFOS agent)
 	_attribute2VCARD(VCARD_BEGIN, VCARD_VCARD);
 
 	// D'abord les attributs présents pour tous ...
-	LDAPATTRIBUTE* pAttr(NULL);
+	LDAPATTRIBUTE* pAttr(nullptr);
 	for (size_t index = 0; index < add2All_.size(); index++) {
 		pAttr = add2All_[index];
 		if (pAttr) {
@@ -272,7 +272,7 @@ bool vCardFile::saveLine(bool header, LPAGENTINFOS agent)
 //
 bool vCardFile::addAt(size_t colIndex, string& value)
 {
-	if (NULL == currentAttribute_ || !value.length()) {
+	if (nullptr == currentAttribute_ || !value.length()) {
 		return false;
 	}
 
@@ -286,7 +286,7 @@ bool vCardFile::addAt(size_t colIndex, string& value)
 
 	// Recherche de l'attribut
 	LDAPATTRIBUTE* pAttr(attributesToSave_.findAttribute(name));
-	if (NULL != pAttr) {
+	if (nullptr != pAttr) {
 		// Une valeur en +
 		pAttr->add(value);
 	}
@@ -300,7 +300,7 @@ bool vCardFile::addAt(size_t colIndex, string& value)
 
 bool vCardFile::addAt(size_t colIndex, deque<string>& values)
 {
-	if (NULL == currentAttribute_ || !values.size()) {
+	if (nullptr == currentAttribute_ || !values.size()) {
 		return false;
 	}
 
@@ -309,7 +309,7 @@ bool vCardFile::addAt(size_t colIndex, deque<string>& values)
 	// Recherche de l'attribut
 	LDAPATTRIBUTE* pAttr(attributesToSave_.findAttribute(name));
 
-	if (NULL == pAttr) {
+	if (nullptr == pAttr) {
 		// Une valeur en +
 		pAttr = attributesToSave_.add(name, true);
 	}
@@ -337,13 +337,13 @@ bool vCardFile::addAt(size_t colIndex, deque<string>& values)
 //
 bool vCardFile::removeAt(size_t colIndex)
 {
-	if (NULL == currentAttribute_) {
+	if (nullptr == currentAttribute_) {
 		return false;
 	}
 
 	// Recherche de l'attribut
 	LDAPATTRIBUTE* pAttr(attributesToSave_.findAttribute(currentAttribute_->colName_));
-	if (NULL != pAttr) {
+	if (nullptr != pAttr) {
 		// Suppression des valeurs actuelles
 		pAttr->clean();
 	}
@@ -356,13 +356,13 @@ bool vCardFile::removeAt(size_t colIndex)
 //
 bool vCardFile::replaceAt(size_t colIndex, string& singleValue)
 {
-	if (NULL == currentAttribute_) {
+	if (nullptr == currentAttribute_) {
 		return false;
 	}
 
 	// Recherche de l'attribut
 	LDAPATTRIBUTE*  pAttr(attributesToSave_.findAttribute(currentAttribute_->colName_));
-	if (NULL != pAttr) {
+	if (nullptr != pAttr) {
 		// Suppression des valeurs actuelles
 		pAttr->clean();
 
@@ -410,7 +410,7 @@ bool vCardFile::close()
 //
 void vCardFile::_attribute2VCARD(LDAPATTRIBUTE* attribute, const char* szName)
 {
-	if (NULL == attribute || 0 == attribute->name_.size()) {
+	if (nullptr == attribute || 0 == attribute->name_.size()) {
 		return;
 	}
 
@@ -455,9 +455,9 @@ bool vCardFile::tagLDAPATTRIBUTE::exists(string& attrValue)
 //
 vCardFile::vCardUserDatas::~vCardUserDatas()
 {
-	LDAPATTRIBUTE* pAttribute(NULL);
+	LDAPATTRIBUTE* pAttribute(nullptr);
 	for (deque<LDAPATTRIBUTE*>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
-		if (NULL != (pAttribute = (*it))) {
+		if (nullptr != (pAttribute = (*it))) {
 			delete pAttribute;
 		}
 	}
@@ -470,9 +470,9 @@ vCardFile::vCardUserDatas::~vCardUserDatas()
 //
 void vCardFile::vCardUserDatas::clean()
 {
-	LDAPATTRIBUTE* pAttribute(NULL);
+	LDAPATTRIBUTE* pAttribute(nullptr);
 	for (deque<LDAPATTRIBUTE*>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
-		if (NULL != (pAttribute = (*it))) {
+		if (nullptr != (pAttribute = (*it))) {
 			pAttribute->clean();
 		}
 	}
@@ -483,9 +483,9 @@ void vCardFile::vCardUserDatas::clean()
 vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::findAttribute(string& attrName)
 {
 	if (attrName.length()) {
-		LDAPATTRIBUTE* pAttribute(NULL);
+		LDAPATTRIBUTE* pAttribute(nullptr);
 		for (deque<LDAPATTRIBUTE*>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
-			if (NULL != (pAttribute = (*it)) && (*it)->name_ == attrName) {
+			if (nullptr != (pAttribute = (*it)) && (*it)->name_ == attrName) {
 				// Trouvé !
 				return (*it);
 			}
@@ -493,15 +493,15 @@ vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::findAttribute(string& attrN
 	}
 
 	// Pas trouvé
-	return NULL;
+	return nullptr;
 }
 
 // Recherche d'un attribut en fonction du tuple (nom, valeur)
 //
 vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::findAttribute(string& name, string& value)
 {
-	LDAPATTRIBUTE* pAttribute(NULL);
-	if (name.length() && NULL != (pAttribute = findAttribute(name))) {
+	LDAPATTRIBUTE* pAttribute(nullptr);
+	if (name.length() && nullptr != (pAttribute = findAttribute(name))) {
 		// L'attribut existe => a t'il déja cette valeur ?
 		if (pAttribute->exists(value)) {
 			return pAttribute;
@@ -509,22 +509,22 @@ vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::findAttribute(string& name,
 	}
 
 	// Pas trouvé
-	return NULL;
+	return nullptr;
 }
 
 // Ajout d'un attribut complet
 //
 vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::add(vCardFile::LDAPATTRIBUTE* attr)
 {
-	if (NULL == attr || 0 == attr->name_.size()) {
+	if (nullptr == attr || 0 == attr->name_.size()) {
 		// Rien à ajouter
-		return NULL;
+		return nullptr;
 	}
 
 	LDAPATTRIBUTE* pCurrent = findAttribute(attr->name_);
-	if (NULL == pCurrent) {
+	if (nullptr == pCurrent) {
 		// L'attribut n'existe pas => on insère une copie
-		if (NULL != (pCurrent = new LDAPATTRIBUTE(*attr))) {
+		if (nullptr != (pCurrent = new LDAPATTRIBUTE(*attr))) {
 			// Crée => on ajoute la copie
 			attributes_.push_back(pCurrent);
 		}
@@ -549,7 +549,7 @@ vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::add(vCardFile::LDAPATTRIBUT
 vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::newAttribute(string& attrName, string& attrValue, bool force)
 {
 	if (!attrName.length()){
-		return NULL;
+		return nullptr;
 	}
 
 	LDAPATTRIBUTE* pAttr = findAttribute(attrName);
@@ -571,14 +571,14 @@ vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::newAttribute(string& attrNa
 vCardFile::LDAPATTRIBUTE* vCardFile::vCardUserDatas::operator[](size_t index) {
 	if (index >= attributes_.size()) {
 		// Mauvais index
-		return NULL;
+		return nullptr;
 	}
 
 	deque<vCardFile::LDAPATTRIBUTE*>::iterator itBegin = attributes_.begin();
 	itBegin += index;
 	if (itBegin == attributes_.end()) {
 		// Fin atteinte ou dépassée (???)
-		return NULL;
+		return nullptr;
 	}
 
 	// Valeur recherchée ...

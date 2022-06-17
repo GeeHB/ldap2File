@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -44,14 +44,14 @@ outputFile::outputFile(const LPOPFI fileInfos, columnList* columns, confFile* co
 
 	// Le fichier de configuration existe ainsi que les pointeurs associés !!!
 	//
-	if (NULL == configurationFile) {
+	if (nullptr == configurationFile) {
 		throw LDAPException("outputFile::outputFile - Pas de fichier de configuration", RET_TYPE::RET_INVALID_FILE);
 	}
 
 	folders_ = configurationFile->getFolders();
 	logs_ = configurationFile->getLogs();
 
-	if (NULL == folders_ || NULL == logs_) {
+	if (nullptr == folders_ || nullptr == logs_) {
 		throw LDAPException("outputFile::outputFile - Erreur dans les paramètres", RET_TYPE::RET_INVALID_PARAMETERS);
 	}
 
@@ -241,7 +241,7 @@ string outputFile::tokenize(commandFile* cmdFile, const char* source, const char
 	}
 
 	// Quelque chose à faire ?
-	if (NULL == strstr(source, "%")) {
+	if (nullptr == strstr(source, "%")) {
 		return source;
 	}
 
@@ -285,7 +285,7 @@ string outputFile::tokenize(commandFile* cmdFile, const char* source, const char
 		done = true;
 	}
 #else
-	if (NULL != localtime_r(&rawTime, &tInfo)) {
+	if (nullptr != localtime_r(&rawTime, &tInfo)) {
 		done = true;
 	}
 #endif // _WIN32

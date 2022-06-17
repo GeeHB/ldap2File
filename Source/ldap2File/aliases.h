@@ -25,7 +25,7 @@
 //--
 //--	14/05/2021 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ public:
 	aliases::alias* find(std::string& name);
 	aliases::alias* find(const char* name) {
 		if (IS_EMPTY(name)) {
-			return NULL;
+			return nullptr;
 		}
 		std::string sName(name);
 		return find(sName);

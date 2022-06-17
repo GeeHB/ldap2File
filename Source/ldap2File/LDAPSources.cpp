@@ -22,7 +22,7 @@
 //--
 //--	23/03/2021 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -59,13 +59,13 @@ LDAPSources::~LDAPSources()
 //
 bool LDAPSources::add(LDAPServer* server)
 {
-	if (NULL == server) {
+	if (nullptr == server) {
 		// Erreur
 		return false;
 	}
 
 	LDAPServer* pServer = _findServer(server->name());
-	if (NULL == pServer) {
+	if (nullptr == pServer) {
 		// Le serveur n'a pas déja été ajouté il il n'exista pas deserveur homonyme dans la liste
 		// Ajout à la liste
 		sources_.push_back(server);
@@ -81,7 +81,7 @@ bool LDAPSources::setDefaultSourceName(string& srcName)
 {
 	if (srcName.length()) {
 
-		if (NULL != _findServer(srcName)) {
+		if (nullptr != _findServer(srcName)) {
 			defaultSourceName_ = srcName;
 			return true;
 		}
@@ -98,13 +98,13 @@ bool LDAPSources::setDefaultSourceName(string& srcName)
 // et à défaut retourne la source par défaut, si elle existe
 LDAPServer* LDAPSources::findEnvironmentByName(string& envName)
 {
-	//LDAPServer* server(NULL);
+	//LDAPServer* server(nullptr);
 	if (envName.size()) {
 		return _findServer(envName);
 	}
 
 	// Environnement par défaut
-	return (defaultSourceName_.length()?_findServer(defaultSourceName_):NULL);
+	return (defaultSourceName_.length()?_findServer(defaultSourceName_):nullptr);
 }
 
 // Recherche d'un serveur dans la liste par son nom (nom de l'environnement)
@@ -126,7 +126,7 @@ LDAPServer* LDAPSources::_findServer(string& serverName)
 	}
 
 	// Non trouvé
-	return NULL;
+	return nullptr;
 }
 
 // EOF

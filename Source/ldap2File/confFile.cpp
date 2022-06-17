@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ bool confFile::openCommandFile(const char* cmdFile, RET_TYPE& code)
 	// Fermeture de l'ancien fichier
 	if (commandFile_){
 		delete commandFile_;
-		commandFile_ = NULL;
+		commandFile_ = nullptr;
 	}
 
 	// Ouverture du fichier
@@ -148,7 +148,7 @@ bool confFile::logInfos(LOGINFOS& dst)
 //
 bool confFile::nextLDAPServer(LDAPServer** pDest)
 {
-	if (NULL == pDest||					// Le pointeur doit être valide
+	if (nullptr == pDest||					// Le pointeur doit être valide
 		IS_EMPTY(paramsRoot_.name())) {	// A t'on vérifié qu'il était bien formé ?
 		return false;
 	}
@@ -171,7 +171,7 @@ bool confFile::nextLDAPServer(LDAPServer** pDest)
 
 	// Allocation de l'objet
 	LDAPServer* dst = new LDAPServer();
-	if (NULL == dst) {
+	if (nullptr == dst) {
 		return false;
 	}
 
@@ -319,9 +319,9 @@ bool confFile::appAliases(aliases& aliases)
 //
 bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestination, bool* add)
 {
-	if (NULL == pdestination ||			// Le pointeur doit être valide
+	if (nullptr == pdestination ||			// Le pointeur doit être valide
 		IS_EMPTY(paramsRoot_.name()) ||
-		NULL == add){	// A t'on vérifié qu'il était bien formé ?
+		nullptr == add){	// A t'on vérifié qu'il était bien formé ?
 		return false;
 	}
 
@@ -359,7 +359,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 	}
 
 	string fType(""), folder(""), name(""), value(""), aliasName("");
-	aliases::alias* palias(NULL);
+	aliases::alias* palias(nullptr);
 	name = destinationServer_.node()->attribute(XML_DESTINATION_NAME_ATTR).value();
 	folder = destinationServer_.node()->first_child().value();
 	sFileSystem::check_path(folder);	// Conversion du nom des sous-dossiers
@@ -376,7 +376,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 		return true;
 	}
 
-	fileDestination* pDestination(NULL);		// Pointeur générique sur le serveur destination
+	fileDestination* pDestination(nullptr);		// Pointeur générique sur le serveur destination
 
 	// Dossier(s) destination
 	//
@@ -384,7 +384,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 	// Un transfert par FTP ?
 	if (TYPE_DEST_FTP == fType){
 		FTPDestination* ftp = new FTPDestination(name, folder);
-		if (NULL != ftp){
+		if (nullptr != ftp){
 			ftp->server_ = destinationServer_.node()->attribute(XML_DESTINATION_FTP_SERVER_ATTR).value();
 			ftp->user_ = destinationServer_.node()->attribute(XML_DESTINATION_FTP_USER_ATTR).value();
 			ftp->pwd_ = destinationServer_.node()->attribute(XML_DESTINATION_FTP_PWD_ATTR).value();
@@ -406,9 +406,9 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 			// L'alias doit exister
 			aliasName = destinationServer_.node()->attribute(XML_DESTINATION_SCP_ALIAS_ATTR).value();
 			if (aliasName.size()) {
-				if (NULL != (palias = aliases.find(aliasName))) {
+				if (nullptr != (palias = aliases.find(aliasName))) {
 					SCPDestination* scp = new SCPDestination(name, folder, palias);
-					if (NULL != scp) {
+					if (nullptr != scp) {
 						scp->server_ = destinationServer_.node()->attribute(XML_DESTINATION_SCP_SERVER_ATTR).value();
 						scp->user_ = destinationServer_.node()->attribute(XML_DESTINATION_SCP_USER_ATTR).value();
 						scp->pwd_ = destinationServer_.node()->attribute(XML_DESTINATION_SCP_PWD_ATTR).value();
@@ -434,7 +434,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 			if (TYPE_DEST_EMAIL == fType) {
 				mailDestination* mail = new mailDestination(name, folder);
 
-				if (NULL != mail) {
+				if (nullptr != mail) {
 					mail->server_ = destinationServer_.node()->attribute(XML_DESTINATION_SMTP_SERVER_ATTR).value();
 					mail->object_ = destinationServer_.node()->attribute(XML_DESTINATION_SMTP_OBJECT_ATTR).value();
 					if (IS_EMPTY(mail->smtpObject())) {
@@ -470,11 +470,11 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 					// Le bon OS ou tous les OS ?
 					if (0 == destOS.size() || expectedOS_ == destOS) {
 
-						folders::folder* pFolder(NULL);
+						folders::folder* pFolder(nullptr);
 
 						// Pas de chemin => dossier par défaut ...
 						if (0 == folder.size()) {
-							if (NULL != (pFolder = folders_->find(folders::FOLDER_TYPE::FOLDER_OUTPUTS))) {
+							if (nullptr != (pFolder = folders_->find(folders::FOLDER_TYPE::FOLDER_OUTPUTS))) {
 								folder = pFolder->path();
 							}
 							else {
@@ -510,7 +510,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 								exists = sFileSystem::create_directory(folder);
 							}
 
-							if (exists && NULL != (pDestination = new fileDestination(name, folder))) {
+							if (exists && nullptr != (pDestination = new fileDestination(name, folder))) {
 								pDestination->setType(defType_);
 							}
 							else {
@@ -531,7 +531,7 @@ bool confFile::nextDestinationServer(aliases& aliases, fileDestination** pdestin
 	} // ftp
 
 	// Maj de l'environnement
-	if (NULL != pDestination) {
+	if (nullptr != pDestination) {
 		pDestination->setEnvironment(env);
 	}
 
@@ -765,7 +765,7 @@ bool confFile::_load()
 bool confFile::_nextNode(XMLParser::XMLNode* xmlNode, const char* parentNode, const char* envName, std::string* envValue)
 {
 	// Vérification des paramètres
-	if (NULL == xmlNode) {
+	if (nullptr == xmlNode) {
 		return false;
 	}
 
@@ -813,7 +813,7 @@ pugi::xml_node confFile::_findFirstNode(XMLParser::XMLNode* xmlNode, const char*
 	std::string env("");
 	pugi::xml_node noEnvNode;
 	bool foundEmpty(false), foundEnv(false);
-	//pugi::xml_node* validNode(NULL);
+	//pugi::xml_node* validNode(nullptr);
 
 	// Parcours de la branche à la recherche du premier serveur pouvont convenir
 	//

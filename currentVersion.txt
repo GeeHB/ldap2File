@@ -37,7 +37,7 @@ BUGS{
 }
 
 22.6.4
-    * 14 juin 2022
+    * 17 juin 2022
 	+ Corrections de bugs
         - Affichages de la console
 		- Logs plus précis
@@ -56,7 +56,7 @@ BUGS{
 		- Détection au démarrage
 		- Arrêt ...
     + Génération du nom du fichier de sortie - Ajout des tokens %LOW_CONTAINER-SHORT-NAME% & %LOW_CONTAINER-FULL-NAME% (sorties en minuscules)
-	+ .template : ajout de la définition du format des fichiers de sortie <Format Tyep="...">...</Fichier>
+	+ .template : ajout de la définition du format des fichiers de sortie <Format Type="...">...</Fichier>
 
 22.6.3
     * 7 juin 2022 - version intermédiaire

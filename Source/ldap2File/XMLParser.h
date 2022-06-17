@@ -22,7 +22,7 @@
 //--
 //--	28/11/2016 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ public:
 	public:
 		// Constructions
 		XMLNode(){
-			root_ = NULL;
+			root_ = nullptr;
 			index_ = 0;
 			name_ = "";
 			parentMode_ = true;

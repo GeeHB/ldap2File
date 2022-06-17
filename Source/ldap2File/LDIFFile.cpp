@@ -32,7 +32,7 @@
 //--	05/04/2020 - JHB - Version 20.4.6
 //--						+ Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -260,13 +260,13 @@ bool LDIFFile::initialize()
 //
 bool LDIFFile::saveLine(bool header, LPAGENTINFOS agent)
 {
-	LDAPATTRIBUTE* pAttr(NULL);
+	LDAPATTRIBUTE* pAttr(nullptr);
 
 	// Enregistrement de la "ligne" en cours
 	//
 
 	// Le dn
-	if (NULL == (pAttr = attributesToSave_.findAttribute(STR_ATTR_UID))
+	if (nullptr == (pAttr = attributesToSave_.findAttribute(STR_ATTR_UID))
 		|| !pAttr->size()) {
 		if (logs_) {
 			logs_->add(logs::TRACE_TYPE::ERR, "L'attribut obligatoire \"uid\" est absent pour %s %s", agent->prenom().c_str(), agent->nom().c_str());
@@ -284,7 +284,7 @@ bool LDIFFile::saveLine(bool header, LPAGENTINFOS agent)
 	// D'abord les attributs obligatoires
 	for (deque<string>::iterator i = mandatories_.begin(); i != mandatories_.end(); i++) {
 		if ((*i).size()) {
-			if (NULL == (pAttr = attributesToSave_.findAttribute((*i)))) {
+			if (nullptr == (pAttr = attributesToSave_.findAttribute((*i)))) {
 				if (logs_) {
 					logs_->add(logs::TRACE_TYPE::ERR, "L'attribut obligatoire \"%s\" est absent pour %s %s", (*i).c_str(), agent->prenom().c_str(), agent->nom().c_str());
 				}
@@ -315,7 +315,7 @@ bool LDIFFile::saveLine(bool header, LPAGENTINFOS agent)
 //
 bool LDIFFile::addAt(size_t colIndex, string& value)
 {
-	if (NULL == currentAttribute_ || !value.length()) {
+	if (nullptr == currentAttribute_ || !value.length()) {
 		return false;
 	}
 
@@ -323,14 +323,14 @@ bool LDIFFile::addAt(size_t colIndex, string& value)
 	string name = currentAttribute_->colName_;
 
 	// Pouvons-nous ajouter cet attribut avec cette valeur ?
-	if (NULL != exclusions_.findAttribute(name, value)) {
+	if (nullptr != exclusions_.findAttribute(name, value)) {
 		// Dans la liste des exclusions
 		return false;
 	}
 
 	// Recherche de l'attribut
 	LDAPATTRIBUTE* pAttr(attributesToSave_.findAttribute(name));
-	if (NULL != pAttr) {
+	if (nullptr != pAttr) {
 		// Une valeur en +
 		pAttr->add(value);
 	}
@@ -344,7 +344,7 @@ bool LDIFFile::addAt(size_t colIndex, string& value)
 
 bool LDIFFile::addAt(size_t colIndex, deque<string>& values)
 {
-	if (NULL == currentAttribute_ || !values.size()) {
+	if (nullptr == currentAttribute_ || !values.size()) {
 		return false;
 	}
 
@@ -353,7 +353,7 @@ bool LDIFFile::addAt(size_t colIndex, deque<string>& values)
 	// Recherche de l'attribut
 	LDAPATTRIBUTE* pAttr(attributesToSave_.findAttribute(name));
 
-	if (NULL == pAttr) {
+	if (nullptr == pAttr) {
 		// Une valeur en +
 		pAttr = attributesToSave_.add(name, true);
 	}
@@ -361,7 +361,7 @@ bool LDIFFile::addAt(size_t colIndex, deque<string>& values)
 	// L'attribut existe, on va ajouter les valeurs (que l'on peut ajouter), les unes après les autres
 	for (deque<string>::iterator it = values.begin(); it != values.end(); it++) {
 		// Pouvons-nous ajouter cette valeur à l'attribut ?
-		if ((*it).length() && NULL == exclusions_.findAttribute(name, (*it))) {
+		if ((*it).length() && nullptr == exclusions_.findAttribute(name, (*it))) {
 			// Pas dans la liste des exclusions !!!
 			pAttr->add((*it));
 		}
@@ -375,13 +375,13 @@ bool LDIFFile::addAt(size_t colIndex, deque<string>& values)
 //
 bool LDIFFile::removeAt(size_t colIndex)
 {
-	if (NULL == currentAttribute_) {
+	if (nullptr == currentAttribute_) {
 		return false;
 	}
 
 	// Recherche de l'attribut
 	LDAPATTRIBUTE* pAttr(attributesToSave_.findAttribute(currentAttribute_->colName_));
-	if (NULL != pAttr) {
+	if (nullptr != pAttr) {
 		// Suppression des valeurs actuelles
 		pAttr->clean();
 	}
@@ -393,13 +393,13 @@ bool LDIFFile::removeAt(size_t colIndex)
 // Remplacement d'une valeur
 bool LDIFFile::replaceAt(size_t colIndex, string& singleValue)
 {
-	if (NULL == currentAttribute_) {
+	if (nullptr == currentAttribute_) {
 		return false;
 	}
 
 	// Recherche de l'attribut
 	LDAPATTRIBUTE*  pAttr(attributesToSave_.findAttribute(currentAttribute_->colName_));
-	if (NULL != pAttr) {
+	if (nullptr != pAttr) {
 		// Suppression des valeurs actuelles
 		pAttr->clean();
 
@@ -459,7 +459,7 @@ bool LDIFFile::_isMandatory(string& name)
 //
 void LDIFFile::_attribute2LDIF(LDAPATTRIBUTE* attribute)
 {
-	if (NULL == attribute || 0 == attribute->name_.size()) {
+	if (nullptr == attribute || 0 == attribute->name_.size()) {
 		return;
 	}
 
@@ -560,9 +560,9 @@ bool LDIFFile::tagLDAPATTRIBUTE::exists(string& attrValue)
 //
 LDIFFile::LDIFUserDatas::~LDIFUserDatas()
 {
-	LDAPATTRIBUTE* pAttribute(NULL);
+	LDAPATTRIBUTE* pAttribute(nullptr);
 	for (deque<LDAPATTRIBUTE*>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
-		if (NULL != (pAttribute = (*it))) {
+		if (nullptr != (pAttribute = (*it))) {
 			delete pAttribute;
 		}
 	}
@@ -576,7 +576,7 @@ LDIFFile::LDIFUserDatas::~LDIFUserDatas()
 void LDIFFile::LDIFUserDatas::transferIn(LDIFFile::LDIFUserDatas& other)
 {
 	// Transfert de tous les attributs
-	LDAPATTRIBUTE* pCurrent(NULL);
+	LDAPATTRIBUTE* pCurrent(nullptr);
 	for (size_t index = 0; index < size(); index++) {
 		pCurrent = (*this)[index];
 		other.add(pCurrent);
@@ -587,9 +587,9 @@ void LDIFFile::LDIFUserDatas::transferIn(LDIFFile::LDIFUserDatas& other)
 //
 void LDIFFile::LDIFUserDatas::clean()
 {
-	LDAPATTRIBUTE* pAttribute(NULL);
+	LDAPATTRIBUTE* pAttribute(nullptr);
 	for (deque<LDAPATTRIBUTE*>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
-		if (NULL != (pAttribute = (*it))) {
+		if (nullptr != (pAttribute = (*it))) {
 			pAttribute->clean();
 		}
 	}
@@ -600,9 +600,9 @@ void LDIFFile::LDIFUserDatas::clean()
 LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::findAttribute(string& attrName)
 {
 	if (attrName.length()) {
-		LDAPATTRIBUTE* pAttribute(NULL);
+		LDAPATTRIBUTE* pAttribute(nullptr);
 		for (deque<LDAPATTRIBUTE*>::iterator it = attributes_.begin(); it != attributes_.end(); it++) {
-			if (NULL != (pAttribute = (*it)) && (*it)->name_ == attrName) {
+			if (nullptr != (pAttribute = (*it)) && (*it)->name_ == attrName) {
 				// Trouvé !
 				return (*it);
 			}
@@ -610,15 +610,15 @@ LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::findAttribute(string& attrName
 	}
 
 	// Pas trouvé
-	return NULL;
+	return nullptr;
 }
 
 // Recherche d'un attribut en fonction du tuple (nom, valeur)
 //
 LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::findAttribute(string& name, string& value)
 {
-	LDAPATTRIBUTE* pAttribute(NULL);
-	if (name.length() && NULL != (pAttribute = findAttribute(name))) {
+	LDAPATTRIBUTE* pAttribute(nullptr);
+	if (name.length() && nullptr != (pAttribute = findAttribute(name))) {
 		// L'attribut existe => a t'il déja cette valeur ?
 		if (pAttribute->exists(value)) {
 			return pAttribute;
@@ -626,22 +626,22 @@ LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::findAttribute(string& name, st
 	}
 
 	// Pas trouvé
-	return NULL;
+	return nullptr;
 }
 
 // Ajout d'un attribut complet
 //
 LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::add(LDIFFile::LDAPATTRIBUTE* attr)
 {
-	if (NULL == attr || 0 == attr->name_.size()) {
+	if (nullptr == attr || 0 == attr->name_.size()) {
 		// Rien à ajouter
-		return NULL;
+		return nullptr;
 	}
 
 	LDAPATTRIBUTE* pCurrent = findAttribute(attr->name_);
-	if (NULL == pCurrent) {
+	if (nullptr == pCurrent) {
 		// L'attribut n'existe pas => on insère une copie
-		if (NULL != (pCurrent = new LDAPATTRIBUTE(*attr))) {
+		if (nullptr != (pCurrent = new LDAPATTRIBUTE(*attr))) {
 			// Crée => on ajoute la copie
 			attributes_.push_back(pCurrent);
 		}
@@ -666,12 +666,12 @@ LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::add(LDIFFile::LDAPATTRIBUTE* a
 LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::newAttribute(string& attrName, string& attrValue, bool force)
 {
 	if (!attrName.length()){
-		return NULL;
+		return nullptr;
 	}
 
 	// Valeur vide autorisée ?
 	if (!attrValue.length() &&!force && !allowEmpty()){
-		return NULL;
+		return nullptr;
 	}
 
 	LDAPATTRIBUTE* pAttr = findAttribute(attrName);
@@ -693,14 +693,14 @@ LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::newAttribute(string& attrName,
 LDIFFile::LDAPATTRIBUTE* LDIFFile::LDIFUserDatas::operator[](size_t index) {
 	if (index >= attributes_.size()) {
 		// Mauvais index
-		return NULL;
+		return nullptr;
 	}
 
 	deque<LDIFFile::LDAPATTRIBUTE*>::iterator itBegin = attributes_.begin();
 	itBegin += index;
 	if (itBegin == attributes_.end()) {
 		// Fin atteinte ou dépassée (???)
-		return NULL;
+		return nullptr;
 	}
 
 	// Valeur recherchée ...

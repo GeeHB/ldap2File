@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -189,7 +189,7 @@ public:
 	// Colonnes "obligatoires"
 
 	typedef struct tagOWNCOL{
-	    tagOWNCOL(const char* colType, const char* name = NULL){
+	    tagOWNCOL(const char* colType, const char* name = nullptr){
 	        type_ = colType;
 	        name_ = IS_EMPTY(name)?colType:name;
 	    }
@@ -255,11 +255,11 @@ public:
 	virtual orgChartFile* addOrgChartFile(bool flatMode, bool fullMode, bool& newFile){
 		// par defaut, pas de gestion d'organigramme
 		newFile = false;
-		return NULL;
+		return nullptr;
 	}
 
 	// Tokenisation d'une chaine
-	static string tokenize(commandFile* cmdFile, const char* source, const char* fullName, const char* shortName, const char* def = NULL);
+	static string tokenize(commandFile* cmdFile, const char* source, const char* fullName, const char* shortName, const char* def = nullptr);
 
 	// Création des entetes et des onglets
 	virtual void setSheetName(string& sheetName)
@@ -272,7 +272,7 @@ public:
 	{ string bidon(sheetName); return addSheet(bidon, withHeader, firstSheet); }
 
 	// Nom(s) de l'attribut
-	void setAttributeNames(LPATTRNAMES pAttribute = NULL)
+	void setAttributeNames(LPATTRNAMES pAttribute = nullptr)
 	{ currentAttribute_ = pAttribute; }
 
 	// Nouvelle colonne vide
@@ -333,7 +333,7 @@ public:
 	}
 
 	// Enregistrement de la "ligne" / nouvelle ligne
-	virtual bool saveLine(bool header = false, LPAGENTINFOS agent = NULL) = 0;
+	virtual bool saveLine(bool header = false, LPAGENTINFOS agent = nullptr) = 0;
 
 	// Effacement de la ligne
 	virtual void clearLine()
@@ -353,7 +353,7 @@ protected:
 	// Outils pour l'organigramme
 
 	// Nouvelle ligne
-	bool _saveLine(bool header = false, LPAGENTINFOS agent = NULL){
+	bool _saveLine(bool header = false, LPAGENTINFOS agent = nullptr){
 		_incLines();
 		clearLine_ = false;
 		return true;

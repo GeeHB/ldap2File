@@ -22,7 +22,7 @@
 //--
 //--	16/05/2022 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -142,7 +142,7 @@ bool structures::_add(STRUCTELEMENT& element)
 		if (logs_) {
 			logs_->add(logs::TRACE_TYPE::DBG, "Ajout de l'élément de structure {%s,%d}", element.type_.c_str(), element.level_);
 		}
-		
+
 		// C'est un nouvel élément
 		uniques_++;
 	}

@@ -21,7 +21,7 @@
 //--
 //--	22/01/2016 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -456,7 +456,7 @@ public:
 	// Initialisation des données membres
 	virtual void init() {
 		type_ = DEST_TYPE::DEST_SCP;
-		alias_ = NULL;
+		alias_ = nullptr;
 		port_ = 22;		// port par défaut de SFTP
 	}
 
@@ -780,13 +780,13 @@ public:
 			if (buffer_){
 				size_t index(0);
 				for (index = 0; index < attributes_.size(); index++){
-					if (NULL != (buffer_[index] = (char*)malloc(1 + attributes_[index].size()))){
+					if (nullptr != (buffer_[index] = (char*)malloc(1 + attributes_[index].size()))){
 						strcpy(buffer_[index], attributes_[index].c_str());
 					}
 				}
 
-				// Le dernier est toujours NULL
-				buffer_[index] = NULL;
+				// Le dernier est toujours nullptr
+				buffer_[index] = nullptr;
 
 				// Le buffer est propre
 				clean_ = true;
@@ -794,7 +794,7 @@ public:
 		}
 
 		// On retourne le buffer
-		return (buffer_ ? (const char**)buffer_:NULL);
+		return (buffer_ ? (const char**)buffer_:nullptr);
 	}
 
 private:
@@ -811,7 +811,7 @@ private:
 
 			// Libération du tableau
 			free(buffer_);
-			buffer_ = NULL;
+			buffer_ = nullptr;
 		}
 
 		clean_ = true;	// Dans tous les cas mon buffer est vierge

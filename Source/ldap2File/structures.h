@@ -22,7 +22,7 @@
 //--
 //--	16/05/2022 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ public:
 	LPSTRUCTELEMENT elementByType(std::string& type)
 	{ return _findElementByType(type); }
 	LPSTRUCTELEMENT elementByType(const char* type){
-		if (IS_EMPTY(type)) return NULL;
+		if (IS_EMPTY(type)) return nullptr;
 		std::string sType(type);
 		return _findElementByType(sType);
 	}

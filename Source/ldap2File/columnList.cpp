@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ bool columnList::_append(const char* colName, const char* colType, double colWid
 
 	lastError_ = "";
 
-	LPCOLINFOS attribute(NULL);
+	LPCOLINFOS attribute(nullptr);
 
 	// Les colonnes "personnelles" sont ajoutees sans verification
 	//
@@ -113,7 +113,7 @@ bool columnList::_append(const char* colName, const char* colType, double colWid
 
 	// Creation de l'objet
 	LPCOLINFOS column = new COLINFOS(colName, attribute->ldapAttr_.c_str(), (colWidth==COL_DEF_WITDH? attribute->width_:colWidth), dType== DATA_TYPE_UNDEFINED?attribute->dataType_:dType, attribute->heritable_);
-	if (NULL != column){
+	if (nullptr != column){
 		// Visible ?
 		column->show_ = (visible?attribute->visible():false);
 
@@ -151,7 +151,7 @@ bool columnList::append(const COLINFOS& column)
 		return false;
 	}
 
-	LPCOLINFOS attribute(NULL);
+	LPCOLINFOS attribute(nullptr);
 	lastError_ = "";
 
 	// Les colonnes "personnelles" sont ajoutees sans verification
@@ -184,7 +184,7 @@ bool columnList::append(const COLINFOS& column)
 
 	// Création de l'objet
 	LPCOLINFOS col = new COLINFOS(column);
-	if (NULL != col){
+	if (nullptr != col){
 		// Noms de l'attribut
 		if (!col->names_){
 			col->names_ = new ATTRNAMES();
@@ -364,7 +364,7 @@ columnList::LPCOLINFOS columnList::_getColumnByIndex(bool fromSchema, size_t ind
 
 	// L'index est-il valide ?
 	if (index >= list->size()){
-		return NULL;
+		return nullptr;
 	}
 
 	// Acces a la valeur
@@ -398,7 +398,7 @@ bool columnList::extendSchema(const COLINFOS& attribute)
 
 	// Création de l'objet
 	LPCOLINFOS col = new COLINFOS(attribute);
-	if (NULL != col){
+	if (nullptr != col){
 		// Ajout a la liste
 		attributes_.push_back(col);
 		return true;
@@ -420,7 +420,7 @@ bool columnList::extendSchema(const char* colName, const char* colAttr, bool mul
 
 	// Création de l'objet
 	LPCOLINFOS col = new COLINFOS;
-	if (NULL != col){
+	if (nullptr != col){
 		// Ajout a la liste
 		col->name_ = colName;
 		col->ldapAttr_ = (colAttr?colAttr:colName);
@@ -463,7 +463,7 @@ bool columnList::reservedColName(const char* colName)
 columnList::LPCOLINFOS columnList::_type2Attribute(const char* columnType)
 {
 	if (IS_EMPTY(columnType)){
-		return NULL;
+		return nullptr;
 	}
 
 	for (deque<LPCOLINFOS>::iterator it = attributes_.begin(); it != attributes_.end(); it++){
@@ -473,7 +473,7 @@ columnList::LPCOLINFOS columnList::_type2Attribute(const char* columnType)
 	}
 
 	// Non trouve
-	return NULL;
+	return nullptr;
 }
 
 // EOF

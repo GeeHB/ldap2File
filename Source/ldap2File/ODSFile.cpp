@@ -22,7 +22,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -117,17 +117,17 @@ bool ODSFile::zipFile::open(const char* fileName)
 	// auquel cas, file_ n'est plus un pointeur mais un booléen qui indique si le fichier est une archive zip valide ou non
 
 	string sFile(fileName);
-	//if (NULL == (file_ = ZipFile::Open(sFile))) {
-	ZipArchive::Ptr zFile(NULL);
+	//if (nullptr == (file_ = ZipFile::Open(sFile))) {
+	ZipArchive::Ptr zFile(nullptr);
 	try {
 		zFile = ZipFile::Open(sFile);
 	}
 	catch (...) {
 		// Une erreur ...
-		zFile = NULL;
+		zFile = nullptr;
 	}
 
-	if (NULL == zFile){
+	if (nullptr == zFile){
 		file_ = false;
 		return false;
 	}
@@ -341,7 +341,7 @@ ODSFile::ODSFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 	tempFolder_ = "";
 
 #ifdef __USE_CMD_LINE_ZIP__
-	// zipAlias_ = unzipAlias_ = NULL;
+	// zipAlias_ = unzipAlias_ = nullptr;
 #endif // __USE_CMD_LINE_ZIP__
 
 }
@@ -417,8 +417,8 @@ bool ODSFile::saveLine(bool header, LPAGENTINFOS agent)
 
 	// Ajout de toutes les valeurs visibles
 	//
-	columnList::LPCOLINFOS col(NULL);
-	LPXMLCELL pCell(NULL);
+	columnList::LPCOLINFOS col(nullptr);
+	LPXMLCELL pCell(nullptr);
 	string fullLink(""), sValue("");
 	size_t colMax = columns_->size();
 	IMGSERVER photoServer;
@@ -542,7 +542,7 @@ void ODSFile::_addHeader()
 	// Creation des colonnes
 	//
 	int visibleIndex(0);
-	columnList::LPCOLINFOS col(NULL);
+	columnList::LPCOLINFOS col(nullptr);
 	for (size_t colIndex(0); colIndex < columns_->size(); colIndex++){
 		col = columns_->at(colIndex);
 
@@ -711,7 +711,7 @@ bool ODSFile::_openContentFile()
 
 	// Ajout de styles des colonnes
 	//
-	columnList::LPCOLINFOS col(NULL);
+	columnList::LPCOLINFOS col(nullptr);
 	char value[20];
 	pugi::xml_node style;
 	for (size_t colIndex(0); colIndex < columns_->size(); colIndex++){
@@ -856,7 +856,7 @@ bool ODSFile::_createSheet(const char* name, bool withHeader, bool sizeColumns)
 	//
 	if (sizeColumns)
 	{
-		columnList::LPCOLINFOS col(NULL);
+		columnList::LPCOLINFOS col(nullptr);
 		char value[20];
 		pugi::xml_node node;
 		for (size_t colIndex(0); colIndex < columns_->size(); colIndex++){

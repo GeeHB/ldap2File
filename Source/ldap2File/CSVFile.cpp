@@ -54,7 +54,7 @@ CSVFile::CSVFile(const LPOPFI fileInfos, columnList* columns, confFile* paramete
 	sepValues_ = STR_VALUE_SEP;
 
 	// La ligne est vide
-	line_ = NULL;
+	line_ = nullptr;
 	values_ = 0;
 	colIndex_ = 0;
 }
@@ -74,7 +74,7 @@ bool CSVFile::initialize()
 {
 	// Préparation de la matrice en mémoire
 	values_ = columns_->size();
-	if (NULL == (line_ = new VALUE[values_])) {
+	if (nullptr == (line_ = new VALUE[values_])) {
 		throw LDAPException("CSVFile - Impossible d'allouer de la mémoire pour la modélisation d'une ligne", RET_TYPE::RET_ALLOCATION_ERROR);
 	}
 
@@ -185,8 +185,8 @@ orgChartFile* CSVFile::addOrgChartFile(bool flatMode, bool fullMode, bool& newFi
 	// Les fichiers plats sont gérés
 	if (flatMode){
 		newFile = true;
-		CSVFile* handler(NULL);
-		if (NULL != (handler = new CSVFile(fileInfos_, NULL, configurationFile_))){
+		CSVFile* handler(nullptr);
+		if (nullptr != (handler = new CSVFile(fileInfos_, nullptr, configurationFile_))){
 			handler->setFileType(FILE_TYPE::FILE_TXT);
 		}
 		return handler;
@@ -217,7 +217,7 @@ void CSVFile::_addHeader()
 	// Création des colonnes
 	//
 	int visibleIndex(0);
-	columnList::LPCOLINFOS col(NULL);
+	columnList::LPCOLINFOS col(nullptr);
 	for (size_t colIndex(0); colIndex < columns_->size(); colIndex++){
 		col = columns_->at(colIndex);
 

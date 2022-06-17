@@ -22,7 +22,7 @@
 //--
 //--	19/06/2016 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ public:
 
 	// Initialisation
 	void init(LDAP_ACCESS_MODE ldapMode){
-		connection_ = NULL;
+		connection_ = nullptr;
 
 		// En mode DEBUG l'application utilise des valeurs par défaut
 		//
@@ -117,7 +117,7 @@ public:
 	//
 
 	// Connexion ...
-	ULONG connect(struct l_timeval* timeout = NULL){
+	ULONG connect(struct l_timeval* timeout = nullptr){
 #ifdef _WIN32
 		return (connection_ ? ldap_connect(connection_, timeout): LDAP_PARAM_ERROR);
 #else
@@ -126,7 +126,7 @@ public:
 	}
 
 	bool connected()
-	{ return (NULL != connection_); }
+	{ return (nullptr != connection_); }
 
 	ULONG simpleBindS()
 	{ return (connection_ ? ldap_simple_bind_s(connection_, (char*)user_.c_str(), (char*)pwd_.c_str()): LDAP_PARAM_ERROR); }
@@ -135,7 +135,7 @@ public:
 	void disConnect(){
 		if (connection_){
 			ldap_unbind(connection_);
-			connection_ = NULL;
+			connection_ = nullptr;
 		}
 	}
 
@@ -174,7 +174,7 @@ public:
 		return getDn(entry);
 	}
     char* getDn(LDAPMessage *entry)
-	{ return (connection_ ? ldap_get_dn(connection_, entry) : NULL); }
+	{ return (connection_ ? ldap_get_dn(connection_, entry) : nullptr); }
 
 	// Lecture / modification des options
 	ULONG setOption(int option, const void *invalue)
@@ -215,15 +215,15 @@ public:
 			: LDAP_PARAM_ERROR);
 	}
 	LDAPMessage* firstEntry(LDAPMessage *res)
-	{ return (connection_ ? ldap_first_entry(connection_, res) : NULL); }
+	{ return (connection_ ? ldap_first_entry(connection_, res) : nullptr); }
 	LDAPMessage *nextEntry(LDAPMessage *entry)
-	{ return (connection_ ? ldap_next_entry(connection_, entry) : NULL); }
+	{ return (connection_ ? ldap_next_entry(connection_, entry) : nullptr); }
     char* firstAttribute(LDAPMessage *entry, BerElement **ptr)
-	{ return (connection_ ? ldap_first_attribute(connection_, entry, ptr) : NULL); }
+	{ return (connection_ ? ldap_first_attribute(connection_, entry, ptr) : nullptr); }
     char* nextAttribute(LDAPMessage *entry, BerElement *ptr)
-	{ return (connection_ ? ldap_next_attribute(connection_, entry, ptr) : NULL); }
+	{ return (connection_ ? ldap_next_attribute(connection_, entry, ptr) : nullptr); }
     char** getValues(LDAPMessage *entry, const char* attr)
-	{ return (connection_ ? ldap_get_values(connection_, entry, (char*)attr) : NULL); }
+	{ return (connection_ ? ldap_get_values(connection_, entry, (char*)attr) : nullptr); }
 	ULONG countValues(char** vals)
 	{ return (vals ? ldap_count_values(vals) : 0); }
 

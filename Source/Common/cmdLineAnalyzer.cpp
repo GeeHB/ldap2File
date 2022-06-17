@@ -70,11 +70,11 @@ LPCLP cmdLine::findParameter(const char* szName)
 	if (!IS_EMPTY(szName))
 	{
 		deque<parameter*>::iterator it = _find(szName);
-		return ((it == _params.end()?NULL:(*it)));
+		return ((it == _params.end()?nullptr:(*it)));
 	}
 
 	// pas trouvé ...
-	return NULL;
+	return nullptr;
 }
 
 deque<cmdLine::parameter*>::iterator cmdLine::_find(const char* szName)
@@ -142,7 +142,7 @@ void cmdLineAnalyzer::_analyse(const char* cmdLine)
 		inserted = false;
 
 		// Recherche du caractère de début du nom
-		if (NULL == (szStart = strchr(szStart, _nameSep))){
+		if (nullptr == (szStart = strchr(szStart, _nameSep))){
 			// plus de paramètres ...
 			return;
 		}
@@ -177,7 +177,7 @@ void cmdLineAnalyzer::_analyse(const char* cmdLine)
 		}
 
 		// fin de la ligne
-		if (NULL != szEnd){
+		if (nullptr != szEnd){
 			szEnd[0] = EOS;
 		}
 
@@ -201,7 +201,7 @@ void cmdLineAnalyzer::_analyse(const char* cmdLine)
 			szStart = szEnd;		// et on repart de ce caractère (pour le retrouver à la prochaine occurence)
 		}
 		else{
-			szStart = (szEnd ? szEnd + 1 : NULL);
+			szStart = (szEnd ? szEnd + 1 : nullptr);
 		}
 	}
 }
@@ -231,7 +231,7 @@ const char* cmdLineBuilder::getCommandLine()
 	if (!_binName.size() && !_params.size())
 	{
 		// Pas de paramètres
-		return NULL;
+		return nullptr;
 	}
 
 	// On commence par le nom
@@ -262,7 +262,7 @@ const char* cmdLineBuilder::getCommandLine()
 			_cmdLine+=_valSep;
 
 			// Sa valeur
-			if (NULL != strstr((*it)->getValue(), " "))
+			if (nullptr != strstr((*it)->getValue(), " "))
 			{
 				// Un espace dans la valeur
 				_cmdLine+=CHAR_DQUOTE;
@@ -296,13 +296,13 @@ const char* cmdLineBuilder::getCommandLine()
 //
 bool cmdLineBuilder::add(parameter* param)
 {
-	if (NULL == param)
+	if (nullptr == param)
 	{
 		return false;
 	}
 
 	// Le paramètre doit-être unique
-	if (NULL != find(param->getName()))
+	if (nullptr != find(param->getName()))
 	{
 		return false;
 	}

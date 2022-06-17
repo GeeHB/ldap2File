@@ -20,7 +20,7 @@
 //--	MODIFICATIONS:
 //--	-------------
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ JScriptFile::JScriptFile(const LPOPFI fileInfos, columnList* columns, confFile* 
 	eol_ = CHAR_LF;		// pour UNIX
 
 	// La ligne est vide
-	line_ = NULL;
+	line_ = nullptr;
 	newFile_ = true;
 	//keepLine_ = true;
 
@@ -149,9 +149,9 @@ void JScriptFile::_newLine()
 
 	// Valeur par défaut des attributs
 	if (addEmptyAttributes_){
-		columnList::LPCOLINFOS col(NULL);
+		columnList::LPCOLINFOS col(nullptr);
 		for (size_t index = 0; index < columns_->size(); index++){
-			if (NULL != (col = columns_->at(index)) && col->visible()){
+			if (nullptr != (col = columns_->at(index)) && col->visible()){
 				// Je crée des valeurs "vides"
 				if (STR_ATTR_USER_ID_NUMBER != col->ldapAttr_ &&
 					STR_ATTR_ALLIER_GROUP_OPACITY != col->ldapAttr_ &&
@@ -168,7 +168,7 @@ void JScriptFile::_newLine()
 //
 bool JScriptFile::saveLine(bool header, LPAGENTINFOS agent)
 {
-	if (NULL == agent){
+	if (nullptr == agent){
 		return false;
 	}
 
@@ -254,9 +254,9 @@ bool JScriptFile::addAt(size_t colIndex, string& value)
 		}
 
 		// L'indice de la colonne peut m'aider
-		columnList::LPCOLINFOS col(NULL);
-		if (colIndex < columns_->size() && NULL != (col = columns_->at(colIndex, false))){
-			setAttributeNames(col ? col->names_ : NULL);
+		columnList::LPCOLINFOS col(nullptr);
+		if (colIndex < columns_->size() && nullptr != (col = columns_->at(colIndex, false))){
+			setAttributeNames(col ? col->names_ : nullptr);
 
 			// Je peux ajouter
 			return _add(value, false == col->numeric());
@@ -348,7 +348,7 @@ orgChartFile* JScriptFile::addOrgChartFile(bool flatMode, bool fullMode, bool& n
 			logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'ouvrir le fichier d'organigramme '%s'", fileName_.c_str());
 		}
 
-		return NULL;
+		return nullptr;
 	}
 
 	// Ajout de l'entête du fichier
@@ -391,7 +391,7 @@ void JScriptFile::closeOrgChartFile()
 		file_ << eol_ << "var " << JS_VAR_GROUPS << " = [";
 
 		// Ai-je des groupes ?
-		LPEGRP group(NULL);
+		LPEGRP group(nullptr);
 		for (deque<LPEGRP>::iterator it = groups_.begin(); it != groups_.end(); it++)
 		{
 			if ((group = *it))
@@ -416,7 +416,7 @@ void JScriptFile::closeOrgChartFile()
 		file_ << eol_;
 		file_ << "var " << JS_VAR_REPLACEMENTS << " = [";
 
-		LPAGENTLINK replace(NULL);
+		LPAGENTLINK replace(nullptr);
 		first = true;
 		for (deque<LPAGENTLINK>::iterator it = replacements_.begin(); it != replacements_.end(); it++)
 		{
@@ -440,7 +440,7 @@ void JScriptFile::closeOrgChartFile()
 		//
 		file_ << eol_ << "var " << JS_VAR_LINKS << " = [";
 
-		LPAGENTLINK jobLink(NULL);
+		LPAGENTLINK jobLink(nullptr);
 		first = true;
 		for (deque<LPAGENTLINK>::iterator it = jobs_.begin(); it != jobs_.end(); it++)
 		{
@@ -488,7 +488,7 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 	// ID du noeud parent
 	//
 	LPAGENTINFOS replace;
-	if (NULL != (replace = agent->replace())){
+	if (nullptr != (replace = agent->replace())){
 		// Je remplace qqu'un qui devient visuellement mon manager ...
 		_add(line, JS_LABEL_PARENT_UID, replace->id());
 
@@ -538,9 +538,9 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 		otherDatas->newAttribute(JS_LABEL_BK_COLOR, otherDatas->bkColor_.c_str());
 
 		// Tous les attributs dans l'ordre demandé ...
-		JSATTRIBUTE* pAttribute(NULL);
+		JSATTRIBUTE* pAttribute(nullptr);
 		for (deque<JSATTRIBUTE*>::iterator it = otherDatas->otherAttributes_.begin(); it != otherDatas->otherAttributes_.end(); it++){
-			if (NULL != (pAttribute = (*it))){
+			if (nullptr != (pAttribute = (*it))){
 #ifdef _DEBUG
                 string name(pAttribute->name_);
                 //bool quoted(pAttribute->quoted_);
@@ -558,7 +558,7 @@ void JScriptFile::add2Chart(LPAGENTINFOS agent)
 
     // Petites vérifications ...
 	//
-	if (NULL == agent || !file_.is_open())
+	if (nullptr == agent || !file_.is_open())
 	{
 		return;
 	}
@@ -701,9 +701,9 @@ void JScriptFile::JSData::newAttribute(string& attrName, string& attrValue, bool
 
 	if (attrName.size()){
 		// Ai je déja cet attribut en mémoire ?
-		JSATTRIBUTE* pAttribute(NULL);
-		for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); NULL == pAttribute && it != otherAttributes_.end(); it++){
-			if (NULL != (*it) && (*it)->name_ == attrName){
+		JSATTRIBUTE* pAttribute(nullptr);
+		for (deque<JSATTRIBUTE*>::iterator it = otherAttributes_.begin(); nullptr == pAttribute && it != otherAttributes_.end(); it++){
+			if (nullptr != (*it) && (*it)->name_ == attrName){
 				pAttribute = (*it);
 			}
 		}

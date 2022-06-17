@@ -22,7 +22,7 @@
 //--
 //--	17/05/2021 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -103,12 +103,12 @@ public:
 		// Le nom ne peut pas être vide ...
 		if (token.size()) {
 			LPSINGLEITEM prev = _findByName(token);
-			if (NULL != prev) {
+			if (nullptr != prev) {
 				// Mise à jour de la valeur
 				prev->value_ = newValue;
 			}
 			else {
-				if (NULL != (prev = new SINGLEITEM(token.c_str(), newValue.c_str()))) {
+				if (nullptr != (prev = new SINGLEITEM(token.c_str(), newValue.c_str()))) {
 					// Nouvel élément
 					items_.push_back(prev);
 				}
@@ -160,7 +160,7 @@ protected:
 		}
 
 		// Non trouvé
-		return NULL;
+		return nullptr;
 	}
 
 	// Données membres

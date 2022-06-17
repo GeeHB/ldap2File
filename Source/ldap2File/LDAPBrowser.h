@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ public:
 
 	// Construction et destruction
 	//
-	LDAPBrowser(logs* pLogs = NULL, confFile* configurationFile = NULL);
+	LDAPBrowser(logs* pLogs = nullptr, confFile* configurationFile = nullptr);
 	virtual ~LDAPBrowser();
 
 
@@ -81,7 +81,7 @@ protected:
 #ifdef __LDAP_USE_ALLIER_TITLES__
 	bool _getTitles();
 #endif // __LDAP_USE_ALLIER_TITLES__
-	size_t _simpleLDAPRequest(PCHAR* attributes, commandFile::criterium& sCriterium, const char* searchDN, bool treeSearch, PLDAPControl* serverControls = NULL, PLDAPControl sortControl = NULL);
+	size_t _simpleLDAPRequest(PCHAR* attributes, commandFile::criterium& sCriterium, const char* searchDN, bool treeSearch, PLDAPControl* serverControls = nullptr, PLDAPControl sortControl = nullptr);
 	bool _getUserGroups(std::string& userDN, size_t colID, const char* gID);
 
 	// Organigramme hiérarchique (ou organisationnel)

@@ -25,7 +25,7 @@
 //--
 //--	14/05/2021 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3./CD03/js/Allier-JS.xml
+//--	17/06/2022 - JHB - Version 22.6.4./CD03/js/Allier-JS.xml
 //--
 //---------------------------------------------------------------------------
 
@@ -45,10 +45,10 @@ bool aliases::add(std::string& name, std::string& app, std::string& command)
 		return false;
 	}
 
-	alias* pAlias(NULL);
-	if (NULL == (pAlias = find(name))) {
+	alias* pAlias(nullptr);
+	if (nullptr == (pAlias = find(name))) {
 		pAlias = new alias(name, app, command);
-		if (NULL == pAlias) {
+		if (nullptr == pAlias) {
 			return false;
 		}
 
@@ -80,7 +80,7 @@ aliases::alias* aliases::find(std::string& name)
 	}
 
 	// Non trouvé
-	return NULL;
+	return nullptr;
 }
 
 // Accès
@@ -94,7 +94,7 @@ aliases::alias* aliases::operator[](size_t index)
 	}
 
 	// Non trouvé
-	return NULL;
+	return nullptr;
 }
 
 // Nettoyage de la liste des alias

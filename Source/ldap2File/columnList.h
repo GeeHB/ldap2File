@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ public:
 			dataType_ = dType;
 			show_ = true;
 			heritable_ = multipleValues;
-			names_ = NULL;
+			names_ = nullptr;
 			defaultValue_ = "";
 		}
 
@@ -104,7 +104,7 @@ public:
 			show_ = true;
 			heritable_ = false;
 			reserved_ = false;
-			names_ = NULL;
+			names_ = nullptr;
 			defaultValue_ = "";
 		}
 
@@ -172,7 +172,7 @@ public:
 
 	// Gestion du schema
 	//
-	bool extendSchema(const char* colName, const char* colAttr = NULL, bool multivalued = false);
+	bool extendSchema(const char* colName, const char* colAttr = nullptr, bool multivalued = false);
 	bool extendSchema(const COLINFOS& column);
 	bool extendSchema(string& colName)
 	{ return extendSchema(colName.c_str()); }
@@ -216,15 +216,15 @@ public:
 	{ return _getColumnByName(searchSchema, colName); }
 	size_t getColumnByName(string& colName, bool searchSchema = false)
 	{ return _getColumnByName(searchSchema, colName.c_str()); }
-	size_t getColumnByType(const char* colType, bool* pHeritable = NULL);
-	size_t getColumnByType(string& colType, bool* pHeritable = NULL)
+	size_t getColumnByType(const char* colType, bool* pHeritable = nullptr);
+	size_t getColumnByType(string& colType, bool* pHeritable = nullptr)
 	{ return getColumnByType(colType.c_str(), pHeritable); }
 	size_t getColumnByAttribute(string& colAttr)
-	{ return getColumnByAttribute(colAttr.c_str(), NULL);}
-	size_t getColumnByAttribute(const char* attrVal, bool* pHeritable = NULL)
+	{ return getColumnByAttribute(colAttr.c_str(), nullptr);}
+	size_t getColumnByAttribute(const char* attrVal, bool* pHeritable = nullptr)
 	{ return _getColumnByAttribute(false, attrVal, pHeritable);}
 	size_t getSchemaColumnByAttribute(const char* attrVal)
-	{ return _getColumnByAttribute(true, attrVal, NULL); }
+	{ return _getColumnByAttribute(true, attrVal, nullptr); }
 	size_t getShemaAttributeByName(const char* attrName)
 	{ return _getColumnByName(true, attrName); }
 	size_t getShemaAttributeByName(string& attrName)
@@ -253,7 +253,7 @@ protected:
 	void _emptyList(deque<LPCOLINFOS>* list);
 
 	size_t _getColumnByName(bool searchSchema, const char* colName);
-	size_t _getColumnByAttribute(bool searchSchema, const char* attrVal, bool* pHeritable = NULL);
+	size_t _getColumnByAttribute(bool searchSchema, const char* attrVal, bool* pHeritable = nullptr);
 	LPCOLINFOS _getColumnByIndex(bool fromSchema, size_t index);
 
 	LPCOLINFOS _type2Attribute(string& columnType)

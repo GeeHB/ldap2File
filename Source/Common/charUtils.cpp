@@ -436,8 +436,8 @@ std::string charUtils::file2Base64(const std::string& fileName)
 	std::string fContent("");
 
 	// Ouverture du fichier
-	FILE* file(NULL);
-	if (NULL != (file = fopen(fileName.c_str(), "rb"))){
+	FILE* file(nullptr);
+	if (nullptr != (file = fopen(fileName.c_str(), "rb"))){
 		size_t tailleMax(0), len(0);
 
 		// Taille du fichier
@@ -489,7 +489,7 @@ std::string charUtils::toMIMEUTF8(const std::string& source, const MIME_ENCODE m
 		bool quoted(false);
 		const char* chaine = in.c_str();
 		while (!quoted && *chaine){
-			quoted = (!isalnum((unsigned char)*chaine) && NULL == strchr(RFC5322_ATOM, *chaine));
+			quoted = (!isalnum((unsigned char)*chaine) && nullptr == strchr(RFC5322_ATOM, *chaine));
 			chaine++;
 		}
 
@@ -743,14 +743,14 @@ char* charUtils::strlwr(char* source)
 //
 std::string charUtils::clean(const std::string& source, const char* toremove)
 {
-	if (NULL == toremove || 0 == strlen(toremove)){
+	if (nullptr == toremove || 0 == strlen(toremove)){
 		return source;
 	}
 
 	std::string out("");
 	char* current = (char*)source.c_str();
 	while (*current){
-		if (NULL == strchr(toremove, *current)){
+		if (nullptr == strchr(toremove, *current)){
 			out += *current;
 		}
 
@@ -889,7 +889,7 @@ std::string charUtils::_UTF8toISO8859_1(const std::string& str)
 	}
 
 	unsigned int codepoint(0);
-	const char* in = str.c_str(), *prev(NULL);
+	const char* in = str.c_str(), *prev(nullptr);
 	while (*in != 0){
 		unsigned char ch = static_cast<unsigned char>(*in);
 		if (ch <= 0x7f)
@@ -947,10 +947,10 @@ std::string charUtils::_win32_UTF8Convert(const std::string& str, UINT from, UIN
 
 	// Dans un premier temps on convertit en WCHAR
 	//
-	wchar_t* wBuffer(NULL);
+	wchar_t* wBuffer(nullptr);
 	size_t size(1 + str.length());
 	int wBuffLen((int)(sizeof(wchar_t) * size));
-	if (NULL != (wBuffer = (wchar_t*)malloc(wBuffLen))) {
+	if (nullptr != (wBuffer = (wchar_t*)malloc(wBuffLen))) {
 		if (0 == MultiByteToWideChar(from, 0, (LPCCH)str.c_str(), -1, wBuffer, wBuffLen)) {
 			// Erreur lors de la conversion
 			return "";
@@ -967,12 +967,12 @@ std::string charUtils::_win32_UTF8Convert(const std::string& str, UINT from, UIN
 
 	// Le buffer destination aura la même taille que celle de la source (WCHAR)
 	// c'est trop, c'est certain, mais qui peut le plus peut le moins !
-	char* destBuffer(NULL);
+	char* destBuffer(nullptr);
 	bool valid(false);
 	std::string out("");
 
-	if (NULL != (destBuffer = (char*)malloc(sizeof(char) * wBuffLen)) &&
-		0 != WideCharToMultiByte(to, 0, wBuffer, -1, destBuffer, wBuffLen, NULL, NULL)) {
+	if (nullptr != (destBuffer = (char*)malloc(sizeof(char) * wBuffLen)) &&
+		0 != WideCharToMultiByte(to, 0, wBuffer, -1, destBuffer, wBuffLen, nullptr, nullptr)) {
 		valid = true;
 	}
 

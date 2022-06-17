@@ -22,7 +22,7 @@
 //--
 //--	18/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -71,19 +71,19 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	// Initialisation des données membres
 	encoder_.sourceFormat(charUtils::SOURCE_FORMAT::UTF8);
 	configurationFile_ = configurationFile;
-	agents_ = NULL;
-	file_ = NULL;
-	orgFile_ = NULL;
+	agents_ = nullptr;
+	file_ = nullptr;
+	orgFile_ = nullptr;
 	logs_ = pLogs;
-	cmdLineFile_ = NULL;
-	ldapServer_ = NULL;
+	cmdLineFile_ = nullptr;
+	ldapServer_ = nullptr;
 
 #ifdef __LDAP_USE_ALLIER_TITLES__
-	titles_ = NULL;
+	titles_ = nullptr;
 #endif // __LDAP_USE_ALLIER_TITLES__
 
 	// Serveur(s) LDAP
-	LDAPServer* myServer(NULL);
+	LDAPServer* myServer(nullptr);
 	while (configurationFile_->nextLDAPServer(&myServer)) {
 		ldapSources_+=myServer;
 	}
@@ -115,7 +115,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	//
 	configurationFile_->appAliases(aliases_);
 	logs_->add(logs::TRACE_TYPE::LOG, "%d alias défini(s)", aliases_.size());
-	aliases::alias* palias(NULL);
+	aliases::alias* palias(nullptr);
 	for (size_t index = 0; index < aliases_.size(); index++) {
 		palias = aliases_[index];
 		if (palias) {
@@ -125,7 +125,7 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 
 	// Serveurs destination
 	//
-	fileDestination* destination(NULL);
+	fileDestination* destination(nullptr);
 	bool add(false);
 	while (configurationFile_->nextDestinationServer(aliases_, &destination, &add)) {
 		if (add && destination) {
@@ -134,9 +134,9 @@ LDAPBrowser::LDAPBrowser(logs* pLogs, confFile* configurationFile)
 	}
 
 	logs_->add(logs::TRACE_TYPE::LOG, "%d destination(s) spécifiée(s)", servers_.size());
-	fileDestination* pDest(NULL);
+	fileDestination* pDest(nullptr);
 	for (size_t index = 0; index < servers_.size(); index++) {
-		if (NULL != (pDest = servers_[index])) {
+		if (nullptr != (pDest = servers_[index])) {
 			logs_->add(logs::TRACE_TYPE::NORMAL, "\t- %s", pDest->name());
 		}
 	}
@@ -259,13 +259,13 @@ LDAPBrowser::~LDAPBrowser()
 	//
 	if (containers_) {
 		delete 	containers_;
-		containers_ = NULL;
+		containers_ = nullptr;
 	}
 
 #ifdef __LDAP_USE_ALLIER_TITLES__
 	if (titles_) {
 		delete titles_;
-		titles_ = NULL;
+		titles_ = nullptr;
 	}
 #endif // __LDAP_USE_ALLIER_TITLES__
 }
@@ -274,8 +274,8 @@ LDAPBrowser::~LDAPBrowser()
 //
 RET_TYPE LDAPBrowser::browse()
 {
-	commandFile* cmdFile(NULL);
-	if (NULL == (cmdFile = configurationFile_->cmdFile())) {
+	commandFile* cmdFile(nullptr);
+	if (nullptr == (cmdFile = configurationFile_->cmdFile())) {
 		// ???
 		logs_->add(logs::TRACE_TYPE::ERR, "Pas de fichier de commande");
 		return RET_TYPE::RET_INVALID_PARAMETERS;
@@ -313,7 +313,7 @@ RET_TYPE LDAPBrowser::browse()
 
 	// Cet environnement existe t'il (ou un autre) ?
 	LDAPServer* newServer(envName.length()?ldapSources_.findEnvironmentByName(envName): ldapSources_[0]);
-	if (NULL == newServer) {
+	if (nullptr == newServer) {
 		logs_->add(logs::TRACE_TYPE::ERR, "L'environnement '%s' n'existe pas ou il n'y a pas d'environnement par défaut", envName.c_str());
 		return RET_TYPE::RET_INVALID_PARAMETERS;
 	}
@@ -409,7 +409,7 @@ RET_TYPE LDAPBrowser::browse()
         // Arborescence et/ou managers
         size_t colManager(cols_.getColumnByType(role->key().c_str()));
         if (cols_.npos != colManager){
-            if (NULL == (agents_ = new agentTree(&encoder_, logs_, ldapServer_, ldapServer_->usersDN()))){
+            if (nullptr == (agents_ = new agentTree(&encoder_, logs_, ldapServer_, ldapServer_->usersDN()))){
                 logs_->add(logs::TRACE_TYPE::ERR, "Pas d'onglet 'arborescence' - Impossible d'allouer de la mémoire");
             }
             else{
@@ -443,18 +443,18 @@ void LDAPBrowser::_dispose(bool freeLDAP)
 	// Arborescence
 	if (agents_){
 		delete agents_;
-		agents_ = NULL;
+		agents_ = nullptr;
 	}
 
 	// Fermeture des "fichiers"
 	if (orgFile_ && ((void*)orgFile_ != (void*)file_)){
 		delete orgFile_;
 	}
-	orgFile_ = NULL;
+	orgFile_ = nullptr;
 
 	if (file_){
 		delete file_;
-		file_ = NULL;
+		file_ = nullptr;
 	}
 
 	// Effacement des colonnes
@@ -470,7 +470,7 @@ bool LDAPBrowser::_initLDAP()
 {
 	// Initialisation de la connexion LDAP
 	//
-	if (NULL == ldapServer_->open()){
+	if (nullptr == ldapServer_->open()){
 		logs_->add(logs::TRACE_TYPE::ERR, "Impossible de trouver le serveur LDAP");
 		return false;
 	}
@@ -518,8 +518,8 @@ bool LDAPBrowser::_initLDAP()
 //
 RET_TYPE LDAPBrowser::_createFile()
 {
-	commandFile* cmdFile(NULL);
-	if (NULL == (cmdFile = configurationFile_->cmdFile())){
+	commandFile* cmdFile(nullptr);
+	if (nullptr == (cmdFile = configurationFile_->cmdFile())){
 		// ???
 		logs_->add(logs::TRACE_TYPE::ERR, "Pas de fichier de commande");
 		return RET_TYPE::RET_INVALID_PARAMETERS;
@@ -536,14 +536,14 @@ RET_TYPE LDAPBrowser::_createFile()
 	// On vérifie avant de générer le fichier qu'il y aura bien au moins une destination
 	//
 	int destCount(0);
-	fileDestination* destination(NULL);
+	fileDestination* destination(nullptr);
 	for (deque<fileDestination*>::iterator it = opfi.dests_.begin(); it != opfi.dests_.end(); it++){
 		destination = (*it);
 
 		// Est-ce une destination "nommée" (ie elle doit correspondre à une entrée dans
 		// la liste des serveurs ) ?
 		if (destination && strlen(destination->name())){
-			if (NULL == servers_.getDestinationByName(destination->name())){
+			if (nullptr == servers_.getDestinationByName(destination->name())){
 				logs_->add(logs::TRACE_TYPE::ERR, "La destination '%s' n'existe pas dans le fichier de configuration. La destination sera ignorée", destination->name());
 			}
 			else{
@@ -588,7 +588,7 @@ RET_TYPE LDAPBrowser::_createFile()
 			if (file_) {
                 // Recherche des alias sur zip/unzip
 				aliases::alias *aZip(aliases_.find(ALIAS_NAME_ZIP)), *aUnzip(aliases_.find(ALIAS_NAME_UNZIP));
-				if (NULL == aZip || NULL == aUnzip) {
+				if (nullptr == aZip || nullptr == aUnzip) {
 					logs_->add(logs::TRACE_TYPE::ERR, "Les alias '%s' et '%s' doivent être définis dans le fichier de configuration.", ALIAS_NAME_ZIP, ALIAS_NAME_UNZIP);
 					return RET_TYPE::RET_INVALID_PARAMETERS;
 				}
@@ -647,7 +647,7 @@ RET_TYPE LDAPBrowser::_createFile()
 		}
 	}
 
-	if (NULL == file_) {
+	if (nullptr == file_) {
 		logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer le générateur de fichier");
 		return RET_TYPE::RET_BLOCKING_ERROR;
 	}
@@ -773,7 +773,7 @@ RET_TYPE LDAPBrowser::_createFile()
 		opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), pContainer->realName(), pContainer->shortName());
 	}
 	else{
-        opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), NULL, NULL);
+        opfi.name_ = outputFile::tokenize(cmdFile, opfi.name_.c_str(), nullptr, nullptr);
 	}
 
 	// -> mise à jour du nom du fichier
@@ -792,7 +792,7 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	// ... à commencer par les attributs à retourner
 	PCHAR* pAttributes = (PCHAR*)malloc((1+cols_.size())*sizeof(PCHAR));
-	if (NULL == pAttributes){
+	if (nullptr == pAttributes){
 		logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour la liste des attributs");
 		return RET_TYPE::RET_BLOCKING_ERROR;
 	}
@@ -807,8 +807,8 @@ RET_TYPE LDAPBrowser::_createFile()
 		}
 	}
 
-	// la dernière col. est marquée à NULL
-	pAttributes[index] = NULL;
+	// la dernière col. est marquée à nullptr
+	pAttributes[index] = nullptr;
 
 	/*
 	// Le nom du fichier doit-il être déduit de l'annuaire ?
@@ -830,8 +830,8 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	// Classement des résultâts
 	//
-	LDAPControl* srvControls[3] = { NULL, NULL, NULL };		// Tous mes "contrôles"
-	LDAPControl* sortControl(NULL), * pageControl(NULL);
+	LDAPControl* srvControls[3] = { nullptr, nullptr, nullptr};		// Tous mes "contrôles"
+	LDAPControl* sortControl(nullptr), * pageControl(nullptr);
 	if (search.sorted()){
 		logs_->add(logs::TRACE_TYPE::LOG, "Tri alphabétique des résultâts");
 
@@ -863,7 +863,7 @@ RET_TYPE LDAPBrowser::_createFile()
 
 		sortKey[0] = &sortName;
 		sortKey[2] = &sortFirstName;
-		sortKey[1] = NULL;
+		sortKey[1] = nullptr;
 
 		// Création du "contrôle" car le tri sera effectué par le serveur
 		if (LDAP_SUCCESS != ldapServer_->createSortControl(sortKey, 0, &sortControl)){
@@ -876,7 +876,7 @@ RET_TYPE LDAPBrowser::_createFile()
 	}
 
 	// Pagination
-	ldapServer_->createPageControl(100, NULL, 0, &pageControl);
+	ldapServer_->createPageControl(100, nullptr, 0, &pageControl);
 
 	// Gestion de la (ou des) requête(s)
 	//
@@ -929,7 +929,7 @@ RET_TYPE LDAPBrowser::_createFile()
 		file_->setSheetName(tabName);
 
 		// Juste une requête avec l'onglet renommé à la demande
-		agentsCount = _simpleLDAPRequest(pAttributes, search, baseContainer.size() ? baseContainer.c_str() : ldapServer_->usersDN(), true, /*search.sorted ? srvControls : NULL*/srvControls, sortControl);
+		agentsCount = _simpleLDAPRequest(pAttributes, search, baseContainer.size() ? baseContainer.c_str() : ldapServer_->usersDN(), true, /*search.sorted ? srvControls : nullptr*/srvControls, sortControl);
 		logs_->add(logs::TRACE_TYPE::NORMAL, "Ajout de l'onglet '%s' avec %d agent(s)", tabName.c_str(), agentsCount);
 	}
 
@@ -959,7 +959,7 @@ RET_TYPE LDAPBrowser::_createFile()
 		//done = RET_TYPE::RET_UNABLE_TO_SAVE;
 	}
 	else{
-		
+
 		if (0 != sFileSystem::file_size(file_->fileName())) {
 			logs_->add(logs::TRACE_TYPE::LOG, "Fichier temporaire enregistré avec succès");
 
@@ -968,8 +968,8 @@ RET_TYPE LDAPBrowser::_createFile()
 
 			// On s'occupe maintenant des différentes destinations
 			//
-			fileDestination* dest(NULL), * destination(NULL);
-			//mailDestination* pMail(NULL);
+			fileDestination* dest(nullptr), * destination(nullptr);
+			//mailDestination* pMail(nullptr);
 			string fullName("");
 			for (deque<fileDestination*>::iterator it = opfi.dests_.begin(); it != opfi.dests_.end(); it++) {
 				destination = (*it);
@@ -977,7 +977,7 @@ RET_TYPE LDAPBrowser::_createFile()
 				// Est-ce une destination "nommée" (ie elle doit correspondre à une entrée dans
 				// la liste des serveurs)
 				if (destination && strlen(destination->name())) {
-					if (NULL == (dest = servers_.getDestinationByName(destination->name()))) {
+					if (nullptr == (dest = servers_.getDestinationByName(destination->name()))) {
 						// A priori ce cas a été détecté ...
 						logs_->add(logs::TRACE_TYPE::ERR, "La destination '%s' n'est pas définie", destination->name());
 					}
@@ -990,12 +990,11 @@ RET_TYPE LDAPBrowser::_createFile()
 					dest = destination;
 				}
 
-				if (NULL != dest) {
+				if (nullptr != dest) {
 					switch (dest->type()) {
-						// Une copie de fichier
-						//case DEST_TYPE::DEST_FS_WINDOWS:{
-					case DEST_TYPE::DEST_FS: {
-						string name = sFileSystem::split(file_->fileName());
+                    // Une copie de fichier
+                    case DEST_TYPE::DEST_FS: {
+                        string name(sFileSystem::split(file_->fileName()));
 						fullName = sFileSystem::merge(dest->folder(), name);
 						//fullName = sFileSystem::merge(dest->folder(), opfi.name_);
 
@@ -1004,12 +1003,12 @@ RET_TYPE LDAPBrowser::_createFile()
 							logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer le fichier '%s'", fullName.c_str());
 						}
 						else {
-							logs_->add(logs::TRACE_TYPE::LOG, "Le fichier destination a été crée avec succès : '%s'", fullName.c_str());
+							logs_->add(logs::TRACE_TYPE::LOG, "Le fichier a été copié avec succès vers '%s'", fullName.c_str());
 						}
 						break;
 					}
 
-										   // Envoi par mail
+                    // Envoi par mail
 					case DEST_TYPE::DEST_EMAIL: {
 						if (!_SMTPTransfer((mailDestination*)dest)) {
 							atLeastOneError = true;
@@ -1017,7 +1016,7 @@ RET_TYPE LDAPBrowser::_createFile()
 						break;
 					}
 
-											  // Transfert par FTP
+                    // Transfert par FTP
 					case DEST_TYPE::DEST_FTP: {
 						if (!_FTPTransfer((FTPDestination*)dest)) {
 							atLeastOneError = true;
@@ -1025,7 +1024,7 @@ RET_TYPE LDAPBrowser::_createFile()
 						break;
 					}
 
-											// Transfert par SCP
+                    // Transfert par SCP
 					case DEST_TYPE::DEST_SCP: {
 						if (!_SCPTransfer((SCPDestination*)dest)) {
 							atLeastOneError = true;
@@ -1060,10 +1059,10 @@ RET_TYPE LDAPBrowser::_createFile()
 	// Plus besoin du fichier temporaire
 	if (file_) {
 		logs_->add(logs::TRACE_TYPE::DBG, "Suppression du fichier temporaire '%s'", file_->fileName());
-		
+
 		// Suppression
 		delete file_;
-		file_ = NULL;
+		file_ = nullptr;
 	}
 
 	// Ok
@@ -1093,15 +1092,15 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 	// Le remplaçant
 	//size_t colRemplacement = cols_.getColumnByType(STR_ATTR_ALLIER_REMPLACEMENT);
-	LPAGENTINFOS replacement(NULL);
+	LPAGENTINFOS replacement(nullptr);
 
 #ifdef __LDAP_USE_ALLIER_TITLES__
 	// L'intitulé du poste
 	size_t colPoste = cols_.getColumnByType(COL_ID_POSTE);
 	if (colPoste != cols_.npos) {
 		// on demandes intitulés => on s'assure que la liste est chargée
-		if (NULL == titles_) {
-			if (NULL == (titles_ = new jhbLDAPTools::titles(logs_))) {
+		if (nullptr == titles_) {
+			if (nullptr == (titles_ = new jhbLDAPTools::titles(logs_))) {
 				logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer la liste des postes => pas d'intitulés");
 				colPoste = cols_.npos;
 			}
@@ -1120,17 +1119,17 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 	string strManagers("");
 	size_t realColIndex(SIZE_MAX);
-	PCHAR pDN(NULL);
+	PCHAR pDN(nullptr);
 	string manager, dn, nom, prenom, email/*, equipe, service, direction, dga*/, primaryGroup(""), matricule;
 	unsigned int uid(NO_AGENT_UID);
-	LPAGENTINFOS agent(NULL);
-	columnList::COLINFOS* pci(NULL);
-	LDAPMessage* pEntry(NULL);
-	BerElement* pBer(NULL);
-	PCHAR pAttribute(NULL);
-	PCHAR* pValue(NULL);
+	LPAGENTINFOS agent(nullptr);
+	columnList::COLINFOS* pci(nullptr);
+	LDAPMessage* pEntry(nullptr);
+	BerElement* pBer(nullptr);
+	PCHAR pAttribute(nullptr);
+	PCHAR* pValue(nullptr);
 	string u8Value;
-	LDAPMessage* searchResult(NULL);
+	LDAPMessage* searchResult(nullptr);
 	ULONG retCode(LDAP_SUCCESS);
 	unsigned int allierStatus(ALLIER_STATUS_EMPTY);
 	deque<string> otherDNs;
@@ -1144,7 +1143,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 	searchExpr* psearchExpr(sCriterium.searchExpression());
 
 	logs_->add(logs::TRACE_TYPE::DBG, "La requète LDAP sera scindée");
-	searchExpr* fullReg(NULL);
+	searchExpr* fullReg(nullptr);
 
 	{
 #ifdef _DEBUG
@@ -1176,7 +1175,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		// Génération du filtre
 		if (fullReg){
 			// Ajout de la nouvelle lettre
-			if (NULL != (psearchExpr = new searchExpr(SEARCH_EXPR_LDAP, SEARCH_EXPR_OPERATOR_OR))){
+			if (nullptr != (psearchExpr = new searchExpr(SEARCH_EXPR_LDAP, SEARCH_EXPR_OPERATOR_OR))){
 				// Majuscules
 				string value("");
 				value += (char)('A' + currentLetter);
@@ -1222,10 +1221,10 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		string nodeDN = searchDN ? searchDN : ldapServer_->baseDN();
 #ifdef __LDAP_OWN_SCOPE_BASE__
 		/// Seules les recherches en mode LDAP_SCOPE_SUBTREE fonctionnent ...
-		retCode = ldapServer_->searchExtS((char*)(nodeDN.c_str()), LDAP_SCOPE_SUBTREE, (char*)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
+		retCode = ldapServer_->searchExtS((char*)(nodeDN.c_str()), LDAP_SCOPE_SUBTREE, (char*)currentFilter.c_str(), attributes, 0, serverControls, nullptr, nullptr, 0, &searchResult);
 #else
 		// ... et lorsque le scope LDAP_SCOPE_BASE fonctionne
-		retCode = ldapServer_->searchExtS((char*)(searchDN ? searchDN : ldapServer_->baseDN()), treeSearch ? LDAP_SCOPE_SUBTREE : LDAP_SCOPE_BASE, (char*)currentFilter.c_str(), attributes, 0, serverControls, NULL, NULL, 0, &searchResult);
+		retCode = ldapServer_->searchExtS((char*)(searchDN ? searchDN : ldapServer_->baseDN()), treeSearch ? LDAP_SCOPE_SUBTREE : LDAP_SCOPE_BASE, (char*)currentFilter.c_str(), attributes, 0, serverControls, nullptr, nullptr, 0, &searchResult);
 #endif // __LDAP_OWN_SCOPE_BASE__
 		agentsFound = ldapServer_->countEntries(searchResult);
 
@@ -1247,18 +1246,18 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 			//
 			if (sortControl){
 				ULONG errorCode(LDAP_SUCCESS);
-				LDAPControl** returnedControls(NULL);
+				LDAPControl** returnedControls(nullptr);
 
 				// Parse du résultât
-				ULONG retCode(ldapServer_->parseResult(searchResult, &errorCode, NULL, NULL, NULL, &returnedControls, 0));
+				ULONG retCode(ldapServer_->parseResult(searchResult, &errorCode, nullptr, nullptr, nullptr, &returnedControls, 0));
 				if ((LDAP_SUCCESS != retCode) || (LDAP_SUCCESS != errorCode)){
 					ULONG code = (LDAP_SUCCESS != retCode) ? retCode : errorCode;
 					logs_->add(logs::TRACE_TYPE::ERR, "Erreur LDAP %d '%s' lors du parse de la réponse", code, ldapServer_->err2string(code).c_str());
 				}
 				else{
 					// Parse du contrôle de tri
-					if (returnedControls != NULL){
-						char* attrInError(NULL);
+					if (returnedControls != nullptr){
+						char* attrInError(nullptr);
 						retCode = ldapServer_->parseSortControl(*returnedControls, &errorCode, &attrInError);
 
 						if ((LDAP_SUCCESS != retCode) || (LDAP_SUCCESS != errorCode)){
@@ -1290,14 +1289,14 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 				prenom = nom = email = dn = manager = matricule = primaryGroup = "";
 				uid = agents_?agents_->size():0;	// Par défaut l'ID de l'agent (si pas précisé) est l'indice dans le tableau ...
 				allierStatus = ALLIER_STATUS_EMPTY;
-				replacement = NULL;
+				replacement = nullptr;
 				otherDNs.clear();
 
 				// Première valeur ?
 				pEntry = (!index ? ldapServer_->firstEntry(searchResult) : ldapServer_->nextEntry(pEntry));
 
 				// Récupération du DN de l'agent
-				if (NULL != (pDN = ldapServer_->getDn(pEntry))){
+				if (nullptr != (pDN = ldapServer_->getDn(pEntry))){
 					dn = pDN;
 					ldapServer_->memFree(pDN);
 				}
@@ -1324,13 +1323,13 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 						pAttribute = ldapServer_->firstAttribute(pEntry, &pBer);
 						while (pAttribute) {
 							// Index de la colonne - LDAP ne retourne pas tous les attributs et surtout pas dans l'ordre demandé...
-							realColIndex = cols_.getColumnByAttribute(pAttribute, NULL);
+							realColIndex = cols_.getColumnByAttribute(pAttribute, nullptr);
 							pci = cols_.at(realColIndex);
 
 							// Valeur de l'attribut
 							pValue = ldapServer_->getValues(pEntry, pAttribute);
 
-							// Valeur non vide (NULL ou identifiée comme vide dans le fichier de conf)
+							// Valeur non vide (nullptr ou identifiée comme vide dans le fichier de conf)
 							if (pValue && !IS_EMPTY(*pValue) &&
 								!ldapServer_->isEmptyVal(*pValue)) {
 #ifdef UTF8_ENCODE_INPUTS
@@ -1339,7 +1338,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 								u8Value = *pValue;
 #endif // #ifdef UTF8_ENCODE_INPUTS
 
-								file_->setAttributeNames(pci ? pci->names_ : NULL);
+								file_->setAttributeNames(pci ? pci->names_ : nullptr);
 
 								// Valeurs recherchées dans tous les cas
 								//
@@ -1433,7 +1432,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 										// Toutes les valeurs
 										//
 										deque<string> values;
-										for (size_t i = 0; pValue[i] != NULL; i++) {
+										for (size_t i = 0; pValue[i] != nullptr; i++) {
 #ifdef UTF8_ENCODE_INPUTS
 											values.push_back(encoder_.toUTF8(pValue[i]));
 #else
@@ -1453,7 +1452,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 								ldapServer_->valueFree(pValue);
 							} // pValue ?
 
-							file_->setAttributeNames(NULL);
+							file_->setAttributeNames(nullptr);
 
 							// Prochain attribut
 							pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
@@ -1474,7 +1473,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 								if (containers_->getAttributeName(index, name)) {
 									// Recherche de la valeur
 									if (containers_->getAttributeValue(dn, name, value)){
-										realColIndex = cols_.getColumnByAttribute((PCHAR)name.c_str(), NULL);	// ID de la colonne
+										realColIndex = cols_.getColumnByAttribute((PCHAR)name.c_str(), nullptr);	// ID de la colonne
 
 										// Ajout dans le fichier
 										file_->addAt(realColIndex, value);
@@ -1485,7 +1484,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 
 						// Ajout de l'agent dans la structure arborescente
 						if (agents_) {
-							if (NULL != (agent = agents_->add(uid, dn, prenom, nom, email, allierStatus, manager, matricule))) {
+							if (nullptr != (agent = agents_->add(uid, dn, prenom, nom, email, allierStatus, manager, matricule))) {
 
 								agentsAdded++;		// Un de plus
 
@@ -1544,7 +1543,7 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 			fullReg->remove(SEARCH_EXPR_LDAP);
 
 			if (psearchExpr){
-				psearchExpr = NULL;
+				psearchExpr = nullptr;
 			}
 
 			todo = (fullReg?(currentLetter < 26):false);
@@ -1556,12 +1555,12 @@ size_t LDAPBrowser::_simpleLDAPRequest(PCHAR* attributes, commandFile::criterium
 		//
 		if (pBer){
 			ber_free(pBer, 0);
-			pBer = NULL;
+			pBer = nullptr;
 		}
 
 		if (searchResult && agentsFound){
 			//ldap_msgfree(searchResult);
-			searchResult = NULL;
+			searchResult = nullptr;
 		}
 #ifdef __LDAP_CUT_REQUESTS__
 	} // while (todo)
@@ -1638,7 +1637,7 @@ bool LDAPBrowser::_getLDAPContainers()
 
 	// Execution de la requete
 	//
-	LDAPMessage* searchResult(NULL);
+	LDAPMessage* searchResult(nullptr);
 	ULONG retCode(ldapServer_->searchS((char*)ldapServer_->baseDN(), LDAP_SCOPE_SUBTREE, (char*)(const char*)expression, (char**)(const char**)myAttributes, 0, &searchResult));
 
 	// Je n'ai plus besoin de la liste ...
@@ -1652,11 +1651,11 @@ bool LDAPBrowser::_getLDAPContainers()
 		return false;
 	}
 
-	LDAPMessage* pEntry(NULL);
-	BerElement* pBer(NULL);
-	PCHAR pAttribute(NULL);
-	PCHAR* pValue(NULL);
-	PCHAR pDN(NULL);
+	LDAPMessage* pEntry(nullptr);
+	BerElement* pBer(nullptr);
+	PCHAR pAttribute(nullptr);
+	PCHAR* pValue(nullptr);
+	PCHAR pDN(nullptr);
 	std::string u8Value, manager;
 
 	ULONG svcCount(ldapServer_->countEntries(searchResult));
@@ -1679,7 +1678,7 @@ bool LDAPBrowser::_getLDAPContainers()
 		pAttribute = ldapServer_->firstAttribute(pEntry, &pBer);
 
 		// Le DN doit êtrevalide
-		if (NULL != (pDN = ldapServer_->getDn(pEntry))){
+		if (nullptr != (pDN = ldapServer_->getDn(pEntry))){
 			// Nouveau container
 			if (nullptr == (pContainer = new containers::LDAPContainer(pDN))) {
 				logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer un objet LDAPContainer pour `%s`", pDN);
@@ -1689,7 +1688,7 @@ bool LDAPBrowser::_getLDAPContainers()
 				//
 				while (pAttribute) {
 					// Valeur de l'attribut
-					if (NULL != (pValue = ldapServer_->getValues(pEntry, pAttribute))) {
+					if (nullptr != (pValue = ldapServer_->getValues(pEntry, pAttribute))) {
 #ifdef UTF8_ENCODE_INPUTS
 						u8Value = encoder_.toUTF8(*pValue);
 #else
@@ -1714,7 +1713,7 @@ bool LDAPBrowser::_getLDAPContainers()
                                 }
                             }
 						}
-					}   // if (NULL ...
+					}   // if (nullptr ...
 
 					// Prochain attribut
 					pAttribute = ldapServer_->nextAttribute(pEntry, pBer);
@@ -1761,7 +1760,7 @@ bool LDAPBrowser::_getTitles()
 		return false;
 	}
 
-	LDAPMessage* searchResult(NULL);
+	LDAPMessage* searchResult(nullptr);
 	ULONG retCode(0);
 	string currentFilter("");
 
@@ -1773,10 +1772,10 @@ bool LDAPBrowser::_getTitles()
 
 	bool todo(true);
 	int searchID(0);
-	LDAPMessage* pEntry(NULL);
-	BerElement* pBer(NULL);
-	PCHAR pAttribute(NULL);
-	PCHAR* pValue(NULL);
+	LDAPMessage* pEntry(nullptr);
+	BerElement* pBer(nullptr);
+	PCHAR pAttribute(nullptr);
+	PCHAR* pValue(nullptr);
 
 	string id(""), label(""), description("");
 	int responsable(0);
@@ -1841,7 +1840,7 @@ bool LDAPBrowser::_getTitles()
 			//
 			while (pAttribute) {
 				// Valeur de l'attribut
-				if (NULL != (pValue = ldapServer_->getValues(pEntry, pAttribute))) {
+				if (nullptr != (pValue = ldapServer_->getValues(pEntry, pAttribute))) {
 #ifdef UTF8_ENCODE_INPUTS
 					u8Value = encoder_.toUTF8(*pValue);
 #else
@@ -1938,7 +1937,7 @@ bool LDAPBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 
 	// Execution de la requete
 	//
-	LDAPMessage* searchResult(NULL);
+	LDAPMessage* searchResult(nullptr);
 	ULONG retCode(ldapServer_->searchS((char*)ldapServer_->baseDN(), LDAP_SCOPE_SUBTREE, (char*)(const char*)expression, (char**)(const char**)myAttributes, 0, &searchResult));
 
 	// Je n'ai plus besoin de la liste ...
@@ -1952,10 +1951,10 @@ bool LDAPBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 		return false;
 	}
 
-	LDAPMessage* pEntry(NULL);
-	BerElement* pBer(NULL);
-	PCHAR pAttribute(NULL);
-	PCHAR* pValue(NULL);
+	LDAPMessage* pEntry(nullptr);
+	BerElement* pBer(nullptr);
+	PCHAR pAttribute(nullptr);
+	PCHAR* pValue(nullptr);
 	std::string u8Value;
 
 	ULONG grpCount(ldapServer_->countEntries(searchResult));
@@ -1974,7 +1973,7 @@ bool LDAPBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 		while (pAttribute){
 			if (!charUtils::stricmp(pAttribute, STR_ATTR_CN)){
 				// Valeur de l'attribut
-				if (NULL != (pValue = ldapServer_->getValues(pEntry, pAttribute))){
+				if (nullptr != (pValue = ldapServer_->getValues(pEntry, pAttribute))){
 					ldapServer_->valueFree(pValue);
 #ifdef UTF8_ENCODE_INPUTS
 					values.push_back(encoder_.toUTF8(pValue[0]));
@@ -1986,7 +1985,7 @@ bool LDAPBrowser::_getUserGroups(string& userDN, size_t colID, const char* gID)
 			else{
 				if (!encoder_.stricmp(pAttribute, STR_ATTR_GROUP_ID_NUMBER)){
 					// Valeur de l'attribut
-					if (NULL != (pValue = ldapServer_->getValues(pEntry, pAttribute)) &&
+					if (nullptr != (pValue = ldapServer_->getValues(pEntry, pAttribute)) &&
 						0 == strcmp(*pValue, gID)){
 						ldapServer_->valueFree(pValue);
 						primaryGroup = index;	// Mon groupe primaire
@@ -2148,8 +2147,8 @@ void LDAPBrowser::_generateOrgChart(std::string& baseContainer)
 
 	// Je veux générer l'organigramme
 	bool newFile(true);
-	orgFile_ = NULL;
-	if (NULL == (orgFile_ = file_->addOrgChartFile(orgChart_.flat_, orgChart_.full_, newFile))){
+	orgFile_ = nullptr;
+	if (nullptr == (orgFile_ = file_->addOrgChartFile(orgChart_.flat_, orgChart_.full_, newFile))){
 		if (!newFile && !orgFile_){
 			logs_->add(logs::TRACE_TYPE::LOG, "Pas de génération d'organigramme");
 		}
@@ -2187,7 +2186,7 @@ void LDAPBrowser::_generateOrgChart(std::string& baseContainer)
 	orgFile_->closeOrgChartFile();
 
 	if (!newFile){
-		orgFile_ = NULL;	// Plus besoin de garder le pointeur ...
+		orgFile_ = nullptr;	// Plus besoin de garder le pointeur ...
 	}
 }
 
@@ -2196,7 +2195,7 @@ void LDAPBrowser::_generateOrgChart(std::string& baseContainer)
 //
 void LDAPBrowser::_generateFlatOrgChart(orgChartFile* orgFile)
 {
-	if (NULL == agents_){
+	if (nullptr == agents_){
 		return;
 	}
 
@@ -2206,11 +2205,11 @@ void LDAPBrowser::_generateFlatOrgChart(orgChartFile* orgFile)
 	orgChartFile::treeCursor ascendants;		// Liste récursive des prédécesseurs
 
 	// Les racines sont les agents qui n'ont pas d'encadrant ou de manager
-	LPAGENTINFOS agent(NULL);
-	while (NULL != (agent =agents_->managerOf(agent, orgChart_.full_))){
+	LPAGENTINFOS agent(nullptr);
+	while (nullptr != (agent =agents_->managerOf(agent, orgChart_.full_))){
 		// Ajout de la racine
 		if (NO_AGENT_DN != (agent->DN())		// Pas la peine d'afficher les erreurs si il n'y en a pas
-			|| (NO_AGENT_DN == agent->DN()  && NULL != agent->firstChild())){
+			|| (NO_AGENT_DN == agent->DN()  && nullptr != agent->firstChild())){
 			logs_->add(logs::TRACE_TYPE::DBG, "Ajout de la racine '%s'", agent->display(orgChart_.nodeFormat_).c_str());
 			_addOrgRoot(orgFile, ascendants, agent);
 
@@ -2297,7 +2296,7 @@ const bool LDAPBrowser::_SMTPTransfer(mailDestination* mailDest)
 //
 const bool LDAPBrowser::_FTPTransfer(FTPDestination* ftpDest)
 {
-	if (NULL == ftpDest){
+	if (nullptr == ftpDest){
 		return false;
 	}
 
@@ -2339,8 +2338,8 @@ const bool LDAPBrowser::_FTPTransfer(FTPDestination* ftpDest)
 //
 const bool LDAPBrowser::_SCPTransfer(SCPDestination* scpDest)
 {
-	aliases::alias* alias(NULL);
-	if (NULL == scpDest || NULL == (alias = scpDest->alias())) {
+	aliases::alias* alias(nullptr);
+	if (nullptr == scpDest || nullptr == (alias = scpDest->alias())) {
 		return false;	// Erreur
 	}
 
@@ -2438,10 +2437,10 @@ void LDAPBrowser::_handlePostGenActions(OPFI& opfi)
 
 	string output(""), message("");
 	bool launched(false);
-	fileActions::fileAction* action(NULL);
+	fileActions::fileAction* action(nullptr);
 
 	for (size_t index = 0; index < opfi.actions_.size(); index++) {
-		if (NULL != (action = opfi.actions_[index])) {
+		if (nullptr != (action = opfi.actions_[index])) {
 			if (fileActions::ACTION_TYPE::ACTION_POST_GEN == action->type()) {
 				// L'application doit exister
 				if (false == action->exists()) {
@@ -2497,7 +2496,7 @@ void LDAPBrowser::_handlePostGenActions(OPFI& opfi)
 			else {
 				logs_->add(logs::TRACE_TYPE::ERR, "Action postgen pour '%s' - Format invalide pour la commande", action->name());
 			}
-		} // action!= NULL
+		} // action!= nullptr
 	} // for
 }
 
@@ -2522,13 +2521,13 @@ return false;
 	PROCESS_INFORMATION pi;
 
 	// Devrait fonctionner ...
-	//valid = (TRUE == CreateProcessA((LPCSTR)app.c_str(), (LPSTR)parameters.c_str(), NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &pi));
+	//valid = (TRUE == CreateProcessA((LPCSTR)app.c_str(), (LPSTR)parameters.c_str(), nullptr, nullptr, FALSE, NORMAL_PRIORITY_CLASS, nullptr, nullptr, &startupInfo, &pi));
 
 	// On concatène le nom de l'application et ses paramètres
 	string fullCmd(app);
 	fullCmd += " ";
 	fullCmd += parameters;
-	valid = (TRUE == CreateProcessA(NULL, (LPSTR)fullCmd.c_str(), NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL, &startupInfo, &pi));
+	valid = (TRUE == CreateProcessA(nullptr, (LPSTR)fullCmd.c_str(), nullptr, nullptr, FALSE, NORMAL_PRIORITY_CLASS, nullptr, nullptr, &startupInfo, &pi));
 
 	if (true == valid) {
 		// On attend sa mort (du moins 5 s)...
@@ -2558,7 +2557,7 @@ return false;
 		retMessage += charUtils::itoa(lastError);
 
 		char errStr[256];
-		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, lastError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), errStr, 255, NULL);
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, lastError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), errStr, 255, nullptr);
 		retMessage += " - : ";
 		retMessage += errStr;
 	}

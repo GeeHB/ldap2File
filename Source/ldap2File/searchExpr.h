@@ -24,7 +24,7 @@
 //--
 //--	05/02/2016 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -76,7 +76,7 @@ public:
 			value_ = val;
 			//compOperator_ = SEARCH_ATTR_COMP_EQUAL;		// Par défaut égalité
 			compOperator_ = op;
-			otherExpr_ = NULL;
+			otherExpr_ = nullptr;
 		}
 
 		tagExprAttr(searchExpr* val){
@@ -89,7 +89,7 @@ public:
 			attribute_ = source.attribute_;
 			value_ = source.value_;
 			compOperator_ = source.compOperator_;
-			otherExpr_ = (source.otherExpr_?new searchExpr(source.otherExpr_):NULL);
+			otherExpr_ = (source.otherExpr_?new searchExpr(source.otherExpr_):nullptr);
 		}
 
 		// Destruction
@@ -114,7 +114,7 @@ public:
 	searchExpr(columnList* cols, const char* description, const char* op);
 	searchExpr(const char* description, const char* op);
 	searchExpr(const char* op)
-	:searchExpr(NULL, op)
+	:searchExpr(nullptr, op)
 	{}
 	searchExpr(searchExpr* source);	// Par recopie
 	searchExpr(searchExpr& source);
@@ -154,7 +154,7 @@ public:
 	}
 	/*
 	bool add(const char* name, const char* op, const char* value) {
-		return (NULL != add(name, op, value));
+		return (nullptr != add(name, op, value));
 	}
 	*/
 	bool add(const char* name)
@@ -193,7 +193,7 @@ public:
 	size_t size()
 	{ return expressions_.size(); }
 	EXPRGATTR* operator[](size_t index)
-	{ return ((index>=expressions_.size())?NULL:(*(expressions_.begin()+index)));}
+	{ return ((index>=expressions_.size())?nullptr:(*(expressions_.begin()+index)));}
 
 	// Formatage au format LDAP
 	operator const char*()

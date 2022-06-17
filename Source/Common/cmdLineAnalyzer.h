@@ -113,7 +113,7 @@ public:
             _init(sName.c_str(), szVal);
         }
 		parameter(const parameter* src)			// ... par recopie
-        { if(NULL==src) return; _init(src->_szName, src->_szValue);}
+        { if(nullptr==src) return; _init(src->_szName, src->_szValue);}
 
 		// Destruction
 		~parameter(){
@@ -129,7 +129,7 @@ public:
 		int getNumValue()
         {return (IS_EMPTY(_szValue)?0:atoi(_szValue));}
 		const char* setValue(char* szNew){
-            if (_szValue) { free((void*)_szValue); _szValue = NULL; }
+            if (_szValue) { free((void*)_szValue); _szValue = nullptr; }
             if (!IS_EMPTY(szNew)) _szValue = strdup(szNew);
             _bModified = true;	// La valeur a �t� modifi�e
             return _szValue;
@@ -144,7 +144,7 @@ public:
 		// initialisation
 		void _init(const char* szName, const char* szVal){
             _bModified = false;
-            if (!szName || !szVal) { _szName = NULL; _szValue = NULL; }
+            if (!szName || !szVal) { _szName = nullptr; _szValue = nullptr; }
             else {_szName = (const char*)strdup((const char*)szName); _szValue = (const char*)strdup((const char*)szVal);}
         }
 
@@ -173,7 +173,7 @@ public:
 
 	// Un paramètre
 	cmdLine::parameter* getParameter(int index)
-    { return (index>=getParamCount()?NULL:_params[index]); }
+    { return (index>=getParamCount()?nullptr:_params[index]); }
 
 	// Recherche d'un paramètre par son nom
 	cmdLine::parameter* findParameter(const char* szName);
@@ -223,10 +223,10 @@ public:
 	//  Constructeurs
 	//
 	cmdLineAnalyzer(char nameChar = DEF_CHAR_PARAM,  char valChar = DEF_CHAR_VALUE, char valSep = CHAR_SPACE)
-    {_init(nameChar, valChar, valSep); _cmdLine = NULL;}
+    {_init(nameChar, valChar, valSep); _cmdLine = nullptr;}
 	cmdLineAnalyzer(const char* szCmdLine, char nameChar = DEF_CHAR_PARAM, char valChar = DEF_CHAR_VALUE, char valSep = CHAR_SPACE){
         _init(nameChar, valChar, valSep);
-        _cmdLine = NULL;
+        _cmdLine = nullptr;
         if (szCmdLine) _analyse(szCmdLine);
     }
 	cmdLineAnalyzer(cmdLineAnalyzer& src);
@@ -244,7 +244,7 @@ public:
 	virtual bool analyse(const char* cmd)
 	{ return analyze(cmd); }
 	virtual bool analyze(const char* cmd)
-	{ if (NULL==cmd) return false; _analyse(cmd); return (getParamCount()>0); }
+	{ if (nullptr==cmd) return false; _analyse(cmd); return (getParamCount()>0); }
 
 	virtual bool analyse(const char* cmd, char nameChar, char valChar, char valSep = CHAR_SPACE)
 	{ return analyze(cmd, nameChar, valChar, valSep); }

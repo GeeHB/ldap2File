@@ -25,7 +25,7 @@
 //--
 //--	14/05/2021 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ bool fileActions::add(std::string name, ACTION_TYPE type, std::string& applicati
 	// Création de l'action
 	//
 	fileActions::fileAction* nAction = new fileActions::fileAction(name, type, application, command, output);
-	if (NULL == nAction) {
+	if (nullptr == nAction) {
 		// Erreur mémoire
 		return false;
 	}
@@ -87,7 +87,7 @@ fileActions::fileAction* fileActions::operator[](size_t index)
 	}
 
 	// Non trouvé
-	return NULL;
+	return nullptr;
 }
 
 // EOF

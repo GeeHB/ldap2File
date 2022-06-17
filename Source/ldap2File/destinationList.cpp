@@ -22,7 +22,7 @@
 //--
 //--	10/01/2018 - JHB - Création - Version 18.1.1
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -45,8 +45,8 @@ void destinationList::dispose()
 //
 bool destinationList::append(fileDestination* destination)
 {
-	if (NULL == destination ||
-		NULL != getDestinationByName(destination->name())){	// Unique par son nom !!!
+	if (nullptr == destination ||
+		nullptr != getDestinationByName(destination->name())){	// Unique par son nom !!!
 		// Je libère le pointeur (si il existe ...)
 		if (destination){
 			delete destination;
@@ -75,7 +75,7 @@ fileDestination* destinationList::getDestinationByName(const char* name)
 	}
 
 	// non trouvée
-	return NULL;
+	return nullptr;
 }
 
 // ... par son index
@@ -84,7 +84,7 @@ fileDestination* destinationList::operator[] (size_t index)
 {
 	// Index invalide
 	if (index >= size()) {
-		return NULL;
+		return nullptr;
 	}
 
 	// On pointe surle premier élément

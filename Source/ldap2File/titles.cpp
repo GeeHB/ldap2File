@@ -22,7 +22,7 @@
 //--
 //--	09/07/2020 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -69,8 +69,8 @@ namespace jhbLDAPTools {
 		}
 
 		// Le titre doit être unique (par son ID mais aussi sa valeur !!!)
-		LPAGENTTITLE pTitle(NULL);
-		if (NULL != (pTitle = find(id)) && pTitle->label() != label) {
+		LPAGENTTITLE pTitle(nullptr);
+		if (nullptr != (pTitle = find(id)) && pTitle->label() != label) {
 			if (logs_) {
 				logs_->add(logs::TRACE_TYPE::DBG, "Erreur - Impossible d'ajouter le titre '%s'. Il est déja utilisé avec l'ID '%s' pour '%s'", label.c_str(), id.c_str(), pTitle->label());
 				//logs_->add(logs::TRACE_TYPE::DBG, "Erreur - Le titre id:%s est déja défini pour '%s'", id.c_str(), pTitle->label());
@@ -81,7 +81,7 @@ namespace jhbLDAPTools {
 
 		// Création du nouveau titre
 		pTitle = new title(id, label, responsable, description);
-		if (NULL == pTitle) {
+		if (nullptr == pTitle) {
 			if (logs_) {
 				logs_->add(logs::TRACE_TYPE::ERR, "Erreur d'allocation mémoire. Le titre '%s' n'a pu être ajouté", id.c_str());
 			}
@@ -112,7 +112,7 @@ namespace jhbLDAPTools {
 		}
 
 		// Non trouvé
-		return NULL;
+		return nullptr;
 	}
 
 }; // jhbLDAPTools

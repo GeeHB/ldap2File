@@ -22,7 +22,7 @@
 //--
 //--	05/02/2016 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ searchExpr::searchExpr(columnList* cols, const char* description, const char* op
 searchExpr::searchExpr(const char* description, const char* op)
 {
 	// Initialisation des données membres
-	schema_ = NULL;
+	schema_ = nullptr;
 	string newOp = string2Operator(op);
 	op_ = (newOp.size() ? newOp : op);
 	name_ = IS_EMPTY(description) ? "" : description;
@@ -186,12 +186,12 @@ string searchExpr::string2CompOperator(string& sValue)
 //
 bool searchExpr::add(searchExpr* pExprSrc, bool copy)
 {
-	if (NULL == pExprSrc || !pExprSrc->size()){
+	if (nullptr == pExprSrc || !pExprSrc->size()){
 		return false;
 	}
 
 	bool ret(false);
-	searchExpr* pExpr(NULL);
+	searchExpr* pExpr(nullptr);
 
 	// Doit-on copier ?
 	if (copy){
@@ -203,7 +203,7 @@ bool searchExpr::add(searchExpr* pExprSrc, bool copy)
 
 	// Si l'opérateur est identique, on "additionne" les deux expressions
 	if (op_ == pExpr->operation()){
-		EXPRGATTR* other(NULL);
+		EXPRGATTR* other(nullptr);
 		for (size_t index(0); index < pExpr->size(); index++){
 			//expressions_.push_back((*pExpr)[index]);
 
@@ -225,7 +225,7 @@ bool searchExpr::add(searchExpr* pExprSrc, bool copy)
 	else{
 		// Sinon on ajoute l'expression purement et simplement
 		EXPRGATTR* attr = new EXPRGATTR(pExpr);
-		if (NULL != attr){
+		if (nullptr != attr){
 			expressions_.push_back(attr);
 			ret = true;
 		}
@@ -243,9 +243,9 @@ bool searchExpr::add(searchExpr* pExprSrc, bool copy)
 /*
 bool searchExpr::add(string& name, string& value)
 {
-	EXPRGATTR* attr(NULL);
+	EXPRGATTR* attr(nullptr);
 	if (name.size() && value.size() &&
-		NULL != (attr = new EXPRGATTR(_colName2AttrName(name), value)))
+		nullptr != (attr = new EXPRGATTR(_colName2AttrName(name), value)))
 	{
 		expressions_.push_back(attr);
 
@@ -260,9 +260,9 @@ bool searchExpr::add(string& name, string& value)
 
 searchExpr::EXPRGATTR* searchExpr::add(string& name, string& op, string& value)
 {
-	EXPRGATTR* attr(NULL);
+	EXPRGATTR* attr(nullptr);
 	if (name.size() && value.size() &&
-		NULL != (attr = new EXPRGATTR(_colName2AttrName(name), op, value))){
+		nullptr != (attr = new EXPRGATTR(_colName2AttrName(name), op, value))){
 		expressions_.push_back(attr);
 
 		// fait
@@ -270,7 +270,7 @@ searchExpr::EXPRGATTR* searchExpr::add(string& name, string& op, string& value)
 	}
 
 	// Rien a été fait
-	return NULL;
+	return nullptr;
 }
 
 // Recherche d'un attribut
@@ -278,11 +278,11 @@ searchExpr::EXPRGATTR* searchExpr::add(string& name, string& op, string& value)
 searchExpr* searchExpr::find(const char* name)
 {
 	if (!IS_EMPTY(name)){
-		EXPRGATTR* val(NULL);
-		searchExpr* other(NULL);
+		EXPRGATTR* val(nullptr);
+		searchExpr* other(nullptr);
 		for (deque<EXPRGATTR*>::iterator i = expressions_.begin(); i != expressions_.end(); i++){
-			if (NULL != (val =(*i))){
-				if (val->otherExpr_ && NULL != (other = val->otherExpr_->find(name))){
+			if (nullptr != (val =(*i))){
+				if (val->otherExpr_ && nullptr != (other = val->otherExpr_->find(name))){
 					// Dans une sous-expression
 					return other;
 				}
@@ -297,7 +297,7 @@ searchExpr* searchExpr::find(const char* name)
 	}
 
 	// Non trouvé
-	return NULL;
+	return nullptr;
 }
 
 // Recherche d'une expression à partir de son nom (sa description)
@@ -312,9 +312,9 @@ searchExpr* searchExpr::findByName(const char* name)
 
 		// Une de mes sous-expressions ?
 		//
-		EXPRGATTR* attr(NULL);
+		EXPRGATTR* attr(nullptr);
 		for (deque<EXPRGATTR*>::iterator it = expressions_.begin(); it != expressions_.end(); it++){
-			if (NULL != (attr = (*it)) &&
+			if (nullptr != (attr = (*it)) &&
 				attr->otherExpr_ &&
 				attr->otherExpr_->name() == name){
 				// Trouvée
@@ -324,7 +324,7 @@ searchExpr* searchExpr::findByName(const char* name)
 	}
 
 	// Non trouvée
-	return NULL;
+	return nullptr;
 }
 
 // Retrait d'une sous-expression
@@ -332,9 +332,9 @@ searchExpr* searchExpr::findByName(const char* name)
 bool searchExpr::remove(const char* name, bool freeMemory)
 {
 	if (!IS_EMPTY(name)){
-		EXPRGATTR* attr(NULL);
+		EXPRGATTR* attr(nullptr);
 		for (deque<EXPRGATTR*>::iterator it = expressions_.begin(); it != expressions_.end(); it++){
-			if (NULL != (attr = (*it)) &&
+			if (nullptr != (attr = (*it)) &&
 				attr->otherExpr_ &&
 				attr->otherExpr_->name() == name){
 				// Trouvé
@@ -354,9 +354,9 @@ bool searchExpr::remove(const char* name, bool freeMemory)
 bool searchExpr::remove(const searchExpr* toRemove, bool freeMemory)
 {
 	if (toRemove){
-		EXPRGATTR* attr(NULL);
+		EXPRGATTR* attr(nullptr);
 		for (deque<EXPRGATTR*>::iterator it = expressions_.begin(); it != expressions_.end(); it++){
-			if (NULL != (attr = (*it)) &&
+			if (nullptr != (attr = (*it)) &&
 				attr->otherExpr_  == toRemove){
 				// Trouvé
 				expressions_.erase(it);	// Suppression dans la liste
@@ -385,9 +385,9 @@ const char* searchExpr::_expression(bool addOperator)
 		//bool addParenthesis(true);
 
 		// Attributs / Valeurs
-		EXPRGATTR* nuple(NULL);
+		EXPRGATTR* nuple(nullptr);
 		for (deque<EXPRGATTR*>::iterator i = expressions_.begin(); i != expressions_.end(); i++){
-			if (NULL != (nuple = (*i))){
+			if (nullptr != (nuple = (*i))){
 				if (nuple->attribute_.size() &&
 					nuple->value_.size()){
 					output_ += O_PARENTHESIS;
@@ -435,12 +435,12 @@ string searchExpr::_addParenthesis(string& op, string& output)
 //
 string searchExpr::_colName2AttrName(string& colName)
 {
-	if (NULL != schema_){
+	if (nullptr != schema_){
 		// Recherche dans le schema
 		size_t index = schema_->getColumnByName(colName, true);
 		if (schema_->npos != index){
 			columnList::LPCOLINFOS col = schema_->at(index, true);
-			if (NULL != col){
+			if (nullptr != col){
 				return col->ldapAttr_;
 			}
 		}

@@ -22,7 +22,7 @@
 //--
 //--	21/07/2020 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ namespace jhbLDAPTools {
 		if (sub) {
 			// C'est un sous-dossier => recherche du container (l'application)
 			folders::folder* pApp(find(folders::FOLDER_TYPE::FOLDER_APP));
-			if (NULL == pApp) {
+			if (nullptr == pApp) {
 				// On ne peut rien faire !!!
 				return false;
 			}
@@ -122,7 +122,7 @@ namespace jhbLDAPTools {
 
 		// Y a t'il déja un dossier de ce type ?
 		folders::folder* previous(find(type));
-		if (NULL != previous) {
+		if (nullptr != previous) {
 			// C'est une mise à jour ...
 			previous->setSubFolder(sub);
 			if (previous->setPath(realPath)) {
@@ -151,7 +151,7 @@ namespace jhbLDAPTools {
 		else {
 			// Création
 			folders::folder* pFolder = new folders::folder(type, realPath, sub);
-			if (NULL == pFolder) {
+			if (nullptr == pFolder) {
 				return false;
 			}
 
@@ -175,7 +175,7 @@ namespace jhbLDAPTools {
 		}
 
 		// Non trouvé
-		return NULL;
+		return nullptr;
 	}
 
 	// ... par son index
@@ -184,7 +184,7 @@ namespace jhbLDAPTools {
 	{
 		// Index invalide
 		if (index >= folders_.size()) {
-			return NULL;
+			return nullptr;
 		}
 
 		// On pointe surle premier élément

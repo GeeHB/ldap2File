@@ -118,13 +118,13 @@ typedef unsigned char UCHAR;
 #endif // #ifndef IS_EMPTY
 
 #ifndef CLOSE_HANDLE
-#define CLOSE_HANDLE(handle)	if (handle && INVALID_HANDLE_VALUE != handle) { try { CloseHandle(handle); } catch(...) {}	handle = NULL; }
+#define CLOSE_HANDLE(handle)	if (handle && INVALID_HANDLE_VALUE != handle) { try { CloseHandle(handle); } catch(...) {}	handle = nullptr; }
 #endif // #ifndef CLOSE_HANDLE
 
 #ifdef __WINDOWS_API__
 
 #ifndef EQUAL_STRING
-#define EQUAL_STRING(sz1,sz2,caseSens)	((NULL == sz1 && NULL == sz2) || (sz1!=NULL && sz2!=NULL && 0 == (caseSens?_tcscmp(sz1,sz2):_tcsicmp(sz1,sz2))))
+#define EQUAL_STRING(sz1,sz2,caseSens)	((nullptr == sz1 && nullptr == sz2) || (sz1!=nullptr && sz2!=nullptr && 0 == (caseSens?_tcscmp(sz1,sz2):_tcsicmp(sz1,sz2))))
 #endif // #ifndef EQUAL_STRING
 
 #ifndef EQUAL_STRING_NO_CASE
@@ -136,7 +136,7 @@ typedef unsigned char UCHAR;
 #endif // #ifndef TO_UNICODE
 
 #ifndef FROM_UNICODE
-#define FROM_UNICODE(wString, szString, len) (0 != WideCharToMultiByte(CP_ACP, 0, wString,-1, szString, len, NULL, NULL))
+#define FROM_UNICODE(wString, szString, len) (0 != WideCharToMultiByte(CP_ACP, 0, wString,-1, szString, len, nullptr, nullptr))
 #endif // FROM_UNICODE
 
 #endif // #ifdef __WINDOWS_API__

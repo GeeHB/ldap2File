@@ -24,7 +24,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	07/06/2022 - JHB - Version 22.6.3
+//--	17/06/2022 - JHB - Version 22.6.4
 //--
 //---------------------------------------------------------------------------
 
@@ -117,7 +117,7 @@ protected:
 
 	// Initialisation(s)
 	bool _init();
-	
+
 	void _emptyLine();
 
 	// Gestion du fichier XML
