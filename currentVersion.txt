@@ -5,10 +5,6 @@ TODO{
 	    - Linux : n'utiliser que les versions static et jamais "encoder_"
 	- Essayer sFileSystem sous Win32, sans utiliser les API Windows (serait plus facilement portable)
 
-	- Validation des incohérences :
-		- Agent sans nom ...
-		- Agent étant son propre manager
-
 	# Regionalisation et UTF8
 	    + Toutes les constantes chaines dans un fichier ./intl-fr.h
 	    + A terme (...) une classe strHandler
@@ -42,13 +38,16 @@ BUGS{
 
 22.6.4
     * 14 juin 2022
-	+ Corrections mineures
-        	- Affichages de la console
+	+ Corrections de bugs
+        - Affichages de la console
 		- Logs plus précis
-    	+ XML - Version 2.4
-		+ Organigramme des services et/ou hiérarchique
-        	+ Défini dans les templates ou fichiers de conf. par <Fichier><Organigramme Type={"", "Organisationnel"}>
-			! Il faut que le format de sortie le supporte (uniquement js. pour cette version)
+		- Correction du bug (de regression ?) lors de la génération des fichiers js en release
+			+ Sous Linux, compiler avec la définition __USE_STD_FILESYSTEM__ (bug dans la méthode sFileSystem::copy_file)
+		- Cas de fichiers js lorsqu l'organigramme n'est pas généré car non demandé/oublié (ce n'est pas une erreur => logs plus précis)
+    + XML - Version 2.4
+	+ Organigramme des services et/ou hiérarchique
+        + Défini dans les templates ou fichiers de conf. par <Fichier><Organigramme Type={"", "Organisationnel"}>
+		! Il faut que le format de sortie le supporte (uniquement .js pour cette version)
 		+ Ajout de la classe roles pour les gestions des rôles réservés
 			+ 4 rôles possibles : manager, manager de structure, niveau de structure et Nom court de la structure
 			+ Définition au niveau du schéma. Par ex. : <Role>encadrant</Role>
@@ -56,8 +55,8 @@ BUGS{
 	+ Quid des dossiers de l'application s'ils sont inexistants ?
 		- Détection au démarrage
 		- Arrêt ...
-	- Correction du bug (de regression ?) lors de la génération des fichiers js en release
-	    + Sous Linux, complié avec la définition __USE_STD_FILESYSTEM__
+    + Génération du nom du fichier de sortie - Ajout des tokens %LOW_CONTAINER-SHORT-NAME% & %LOW_CONTAINER-FULL-NAME% (sorties en minuscules)
+	+ .template : ajout de la définition du format des fichiers de sortie <Format Tyep="...">...</Fichier>
 
 22.6.3
     * 7 juin 2022 - version intermédiaire

@@ -36,7 +36,7 @@ commandFile::commandFile(const char* cmdFile, folders* pFolders, logs* log, bool
 {
 	// Intialisation des données membres
 	environment_ = "";
-	includedFile_ = NULL;
+	includedFile_ = nullptr;
 	isIncluded_ = isIncluded;
 
 	columnHandler_ = DATA_HANDLER::NONE;
@@ -131,7 +131,7 @@ bool commandFile::_load()
 			}
 
 			// Création du gestionnaire fichier
-			if (NULL == (includedFile_ = new commandFile(sCmdFile.c_str(), folders_, logs_, true))){
+			if (nullptr == (includedFile_ = new commandFile(sCmdFile.c_str(), folders_, logs_, true))){
 				if (logs_){
 					logs_->add(logs::TRACE_TYPE::ERR, "Impossible d'allouer de la mémoire pour le fichier à inclure");
 				}
@@ -145,7 +145,7 @@ bool commandFile::_load()
 
 					// Suppression ...
 					delete includedFile_;
-					includedFile_ = NULL;
+					includedFile_ = nullptr;
 
 					// Le fichier de commandes ne sera pas utilisé
 					valid_ = false;
@@ -268,8 +268,8 @@ bool commandFile::outputFileInfos(aliases& aliases, OPFI& fileInfos)
 	// Initialisation de la structure de données
 	fileInfos.init();
 
-	// Les informations sur le fichier ne sont pas héritées
-	if (!isIncluded()){
+	// Les informations sur le fichier pauvent être héritées !
+	if (!includedFile_ || !includedFile_->_fileInfos(aliases, fileInfos)){
 		if (!_fileInfos(aliases, fileInfos)){
 			return false;
 		}
@@ -344,7 +344,7 @@ bool commandFile::_fileInfos(aliases& aliases, OPFI& fileInfos)
 	//
 	snode = node.child(XML_FORMAT_ACTION_NODE);
 	string app(""), desc(""), type(""), value(""), output("");
-	aliases::alias* palias(NULL);
+	aliases::alias* palias(nullptr);
 	while (!IS_EMPTY(snode.name())) {
 
 		// Description / nom
@@ -352,7 +352,7 @@ bool commandFile::_fileInfos(aliases& aliases, OPFI& fileInfos)
 
 		// Application => c'est le nom de l'alias
 		app = snode.attribute(XML_ACTION_ALIAS_ATTR).value();
-		if (NULL != (palias = aliases.find(app))) {
+		if (nullptr != (palias = aliases.find(app))) {
 			// L'alias existe => on utilise la commande associée
 			app = palias->application();
 		}
@@ -393,10 +393,10 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 	//
 	pugi::xml_node snode = node.child(XML_DESTINATION_NODE);
 	string fType(""), folder(""), name(""), value(""), aliasName("");
-	aliases::alias* palias(NULL);
-	fileDestination* pDestination(NULL);
+	aliases::alias* palias(nullptr);
+	fileDestination* pDestination(nullptr);
 	while (!IS_EMPTY(snode.name())){
-		pDestination = NULL;
+		pDestination = nullptr;
 		folder = snode.first_child().value();
 		sFileSystem::check_path(folder);			// Conversion du nom des sous-dossiers
 		fType = snode.attribute(XML_DESTINATION_TYPE_ATTR).value();
@@ -422,7 +422,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 				if (TYPE_DEST_FTP == fType){
 					FTPDestination* ftp = new FTPDestination(folder);
 
-					if (NULL != ftp){
+					if (nullptr != ftp){
 						ftp->server_ = snode.attribute(XML_DESTINATION_FTP_SERVER_ATTR).value();
 						ftp->user_ = snode.attribute(XML_DESTINATION_FTP_USER_ATTR).value();
 						ftp->pwd_ = snode.attribute(XML_DESTINATION_FTP_PWD_ATTR).value();
@@ -439,10 +439,10 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 						// L'alias doit exister
 						aliasName = snode.attribute(XML_DESTINATION_SCP_ALIAS_ATTR).value();
 						if (aliasName.size()) {
-							if (NULL != (palias = aliases.find(aliasName))) {
+							if (nullptr != (palias = aliases.find(aliasName))) {
 								SCPDestination* scp = new SCPDestination(folder, palias);
 
-								if (NULL != scp) {
+								if (nullptr != scp) {
 									scp->server_ = snode.attribute(XML_DESTINATION_SCP_SERVER_ATTR).value();
 									scp->user_ = snode.attribute(XML_DESTINATION_SCP_USER_ATTR).value();
 									scp->pwd_ = snode.attribute(XML_DESTINATION_SCP_PWD_ATTR).value();
@@ -460,7 +460,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 						if (TYPE_DEST_EMAIL == fType) {
 							mailDestination* mail = new mailDestination(folder);
 
-							if (NULL != mail) {
+							if (nullptr != mail) {
 								mail->server_ = snode.attribute(XML_DESTINATION_SMTP_SERVER_ATTR).value();
 								mail->object_ = snode.attribute(XML_DESTINATION_SMTP_OBJECT_ATTR).value();
 								if (IS_EMPTY(mail->smtpObject())) {
@@ -510,7 +510,7 @@ bool commandFile::_destinationsInfos(aliases& aliases, OPFI& fileInfos)
 											exists = sFileSystem::create_directory(folder);
 										}
 
-										if (exists && NULL != (pDestination = new fileDestination(name, folder))) {
+										if (exists && nullptr != (pDestination = new fileDestination(name, folder))) {
 											pDestination->setType(defType_);
 										}
 									}
@@ -624,9 +624,9 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 
 	// Les expressions régulières
 	//
-	searchExpr* reg(NULL), *baseReg(NULL);
+	searchExpr* reg(nullptr), *baseReg(nullptr);
 	string description(""), op(""), nom(""), val(""), compOp("");
-	searchExpr::EXPRGATTR* newExpr(NULL);
+	searchExpr::EXPRGATTR* newExpr(nullptr);
 
 	// Lecture de toutes les expressions
 	child = node.child(XML_SEARCH_EXPR_NODE);
@@ -643,7 +643,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 		encoder_.convert_fromUTF8(op);
 #endif // #ifdef _WIN32
 
-		if (NULL != (reg = new searchExpr(cols, description, op))){
+		if (nullptr != (reg = new searchExpr(cols, description, op))){
 			// Lecture de ses "attributs" ...
 			pugi::xml_node sChild = child.child(XML_SEARCH_EXPR_ATTRIBUTE_NODE);
 			while (!IS_EMPTY(sChild.name())){
@@ -657,7 +657,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 #endif // #ifdef _WIN32
 				if (val.size() && nom.size()){
 					// Ajout de l'attribut
-					if (NULL != (newExpr = reg->add(nom.c_str(), SEARCH_ATTR_COMP_EQUAL, val.c_str()))){
+					if (nullptr != (newExpr = reg->add(nom.c_str(), SEARCH_ATTR_COMP_EQUAL, val.c_str()))){
 						// A t'il un opérateur de comparaison ?
 						compOp = sChild.attribute(XML_SEARCH_EXPR_ATTR_OPERATOR_ATTR).value();
 						if (compOp.size()){
@@ -679,7 +679,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 #endif // #ifdef _WIN32
 				if (val.size()){
 					// L'expression existe t'elle ?
-					searchExpr* found(NULL);
+					searchExpr* found(nullptr);
 					deque<searchExpr*>::iterator it = regList.begin();
 					while (!found && it != regList.end()){
 						if ((*it) && (*it)->name() == val){
@@ -728,7 +728,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 
 	// Il faut qu'il y ait un type d'objet dans la recherche
 	if (!baseReg || (baseReg && !baseReg->find(STR_ATTR_OBJECT_CLASS))){
-		if (NULL != (reg = new searchExpr(cols, SEARCH_EXPR_MINIMAL, XML_LOG_OPERATOR_AND))){
+		if (nullptr != (reg = new searchExpr(cols, SEARCH_EXPR_MINIMAL, XML_LOG_OPERATOR_AND))){
 			reg->add(STR_ATTR_OBJECT_CLASS, SEARCH_ATTR_COMP_EQUAL, LDAP_TYPE_PERSON);
 
 			if (baseReg){
@@ -749,7 +749,7 @@ bool commandFile::searchCriteria(columnList* cols, commandFile::criterium& searc
 	}
 
 	// Il faut qu'il y ait une expression régulière ...
-	if (NULL == baseReg){
+	if (nullptr == baseReg){
 		throw LDAPException("Erreur mémoire lors de la création des critères LDAP", RET_TYPE::RET_INVALID_PARAMETERS);
 	}
 

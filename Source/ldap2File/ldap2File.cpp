@@ -280,19 +280,19 @@ int main(int argc, const char* argv[]) {
 	// Le logs existent, on peut maintenant
 	// faire un peu de c++ ...
 	struct _finalLogs {
-		logs logs_;
-		_finalLogs(const logs& other) {
+		logs* logs_;
+		_finalLogs(logs* other) {
 			logs_ = other;
 		}
 		virtual ~_finalLogs() {
-			logs_.add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
-			logs_.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
+			if (logs_){
+			    logs_->add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
+			    logs_->add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
+            }
 		}
 	};
 
-	if (hasLogs){
-	    _finalLogs myTrace(myLogs);
-    }
+	_finalLogs myTrace(hasLogs?&myLogs:nullptr);
 
 	// Sortie sur erreur ...
 	if (retCode){

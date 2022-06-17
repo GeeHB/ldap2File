@@ -233,11 +233,13 @@ using namespace jhbTools;
 #define TOKEN_SERVER_NAME			"%SERVER-NAME%"
 
 // Nom des fichiers et des onglets
-#define TOKEN_CONTAINER_FULLNAME	"%CONTAINER-FULL-NAME%"
-#define TOKEN_CONTAINER_SHORTNAME	"%CONTAINER-SHORT-NAME%"
-#define TOKEN_DATE_DAY2				"%dd%"
-#define TOKEN_DATE_MONTH2			"%mm%"
-#define TOKEN_DATE_YEAR4			"%yyyy%"
+#define TOKEN_CONTAINER_FULLNAME	    "%CONTAINER-FULL-NAME%"
+#define TOKEN_CONTAINER_FULLNAME_LOW    "%LOW_CONTAINER-FULL-NAME%"
+#define TOKEN_CONTAINER_SHORTNAME	    "%CONTAINER-SHORT-NAME%"
+#define TOKEN_CONTAINER_SHORTNAME_LOW   "%LOW_CONTAINER-SHORT-NAME%"
+#define TOKEN_DATE_DAY2				    "%dd%"
+#define TOKEN_DATE_MONTH2			    "%mm%"
+#define TOKEN_DATE_YEAR4			    "%yyyy%"
 
 // Organigramme => affiche des noeuds
 #define TOKEN_NODE_NAME				"%nom%"

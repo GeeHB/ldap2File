@@ -652,8 +652,6 @@ RET_TYPE LDAPBrowser::_createFile()
 		return RET_TYPE::RET_BLOCKING_ERROR;
 	}
 
-	logs_->add(logs::TRACE_TYPE::LOG, "Demande de création d'un fichier au format '%s' : '%s'", file_->fileExtension(), file_->fileName());
-
 	// Lecture des paramètres spécifiques au format du fichier destination
 	if (false == file_->getOwnParameters()) {
 		logs_->add(logs::TRACE_TYPE::ERR, "Erreur dans les paramètres étendus du fichier XML");
@@ -780,6 +778,8 @@ RET_TYPE LDAPBrowser::_createFile()
 
 	// -> mise à jour du nom du fichier
 	file_->setFileName(opfi.name_, true);
+
+	logs_->add(logs::TRACE_TYPE::LOG, "Demande de création d'un fichier au format '%s' : '%s'", file_->fileExtension(), file_->fileName());
 
 	// Création du fichier
 	if (!file_->create()) {
@@ -945,6 +945,9 @@ RET_TYPE LDAPBrowser::_createFile()
 	if (orgChart_.generate_){
 		_generateOrgChart(baseContainer);
 	}
+	else {
+		logs_->add(logs::TRACE_TYPE::LOG, "Pas de génération d'organigramme demandée");
+	}
 
 	bool atLeastOneError(false);		// Au moins une erreur (non bloquante)
 
@@ -956,83 +959,90 @@ RET_TYPE LDAPBrowser::_createFile()
 		//done = RET_TYPE::RET_UNABLE_TO_SAVE;
 	}
 	else{
-		logs_->add(logs::TRACE_TYPE::DBG, "Fichier temporaire enregistré avec succès");
+		
+		if (0 != sFileSystem::file_size(file_->fileName())) {
+			logs_->add(logs::TRACE_TYPE::LOG, "Fichier temporaire enregistré avec succès");
 
-		// Y a t'il des traitements "postgen" ?
-		_handlePostGenActions(opfi);
+			// Y a t'il des traitements "postgen" ?
+			_handlePostGenActions(opfi);
 
-		// On s'occupe maintenant des différentes destinations
-		//
-		fileDestination* dest(NULL), *destination(NULL);
-		//mailDestination* pMail(NULL);
-		string fullName("");
-		for (deque<fileDestination*>::iterator it = opfi.dests_.begin(); it != opfi.dests_.end(); it++){
-			destination = (*it);
+			// On s'occupe maintenant des différentes destinations
+			//
+			fileDestination* dest(NULL), * destination(NULL);
+			//mailDestination* pMail(NULL);
+			string fullName("");
+			for (deque<fileDestination*>::iterator it = opfi.dests_.begin(); it != opfi.dests_.end(); it++) {
+				destination = (*it);
 
-			// Est-ce une destination "nommée" (ie elle doit correspondre à une entrée dans
-			// la liste des serveurs)
-			if (destination && strlen(destination->name())){
-				if (NULL == (dest = servers_.getDestinationByName(destination->name()))){
-					// A priori ce cas a été détecté ...
-					logs_->add(logs::TRACE_TYPE::ERR, "La destination '%s' n'est pas définie", destination->name());
+				// Est-ce une destination "nommée" (ie elle doit correspondre à une entrée dans
+				// la liste des serveurs)
+				if (destination && strlen(destination->name())) {
+					if (NULL == (dest = servers_.getDestinationByName(destination->name()))) {
+						// A priori ce cas a été détecté ...
+						logs_->add(logs::TRACE_TYPE::ERR, "La destination '%s' n'est pas définie", destination->name());
+					}
+					else {
+						logs_->add(logs::TRACE_TYPE::NORMAL, "Utilisation de la destination '%s'", destination->name());
+					}
 				}
-				else{
-					logs_->add(logs::TRACE_TYPE::NORMAL, "Utilisation de la destination '%s'", destination->name());
+				else {
+					// Sinon on utilise les informations contenues dans le fichier
+					dest = destination;
+				}
+
+				if (NULL != dest) {
+					switch (dest->type()) {
+						// Une copie de fichier
+						//case DEST_TYPE::DEST_FS_WINDOWS:{
+					case DEST_TYPE::DEST_FS: {
+						string name = sFileSystem::split(file_->fileName());
+						fullName = sFileSystem::merge(dest->folder(), name);
+						//fullName = sFileSystem::merge(dest->folder(), opfi.name_);
+
+						if (!sFileSystem::copy_file(file_->fileName(), fullName.c_str())) {
+							atLeastOneError = true;
+							logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer le fichier '%s'", fullName.c_str());
+						}
+						else {
+							logs_->add(logs::TRACE_TYPE::LOG, "Le fichier destination a été crée avec succès : '%s'", fullName.c_str());
+						}
+						break;
+					}
+
+										   // Envoi par mail
+					case DEST_TYPE::DEST_EMAIL: {
+						if (!_SMTPTransfer((mailDestination*)dest)) {
+							atLeastOneError = true;
+						}
+						break;
+					}
+
+											  // Transfert par FTP
+					case DEST_TYPE::DEST_FTP: {
+						if (!_FTPTransfer((FTPDestination*)dest)) {
+							atLeastOneError = true;
+						}
+						break;
+					}
+
+											// Transfert par SCP
+					case DEST_TYPE::DEST_SCP: {
+						if (!_SCPTransfer((SCPDestination*)dest)) {
+							atLeastOneError = true;
+						}
+						break;
+					}
+
+					default:
+						// ????
+						break;
+					}
 				}
 			}
-			else{
-				// Sinon on utilise les informations contenues dans le fichier
-				dest = destination;
-			}
-
-			if (NULL != dest){
-				switch (dest->type()){
-				// Une copie de fichier
-				//case DEST_TYPE::DEST_FS_WINDOWS:{
-				case DEST_TYPE::DEST_FS: {
-					string name = sFileSystem::split(file_->fileName());
-					fullName = sFileSystem::merge(dest->folder(), name);
-					//fullName = sFileSystem::merge(dest->folder(), opfi.name_);
-
-					if (!sFileSystem::copy_file(file_->fileName(), fullName.c_str())){
-						atLeastOneError = true;
-						logs_->add(logs::TRACE_TYPE::ERR, "Impossible de créer le fichier '%s'", fullName.c_str());
-					}
-					else{
-						logs_->add(logs::TRACE_TYPE::LOG, "Le fichier destination a été crée avec succès : '%s'", fullName.c_str());
-					}
-					break;
-				}
-
-				// Envoi par mail
-				case DEST_TYPE::DEST_EMAIL:{
-					if (!_SMTPTransfer((mailDestination*)dest)) {
-						atLeastOneError = true;
-					}
-					break;
-				}
-
-				// Transfert par FTP
-				case DEST_TYPE::DEST_FTP:{
-					if (!_FTPTransfer((FTPDestination*)dest)){
-						atLeastOneError = true;
-					}
-					break;
-				}
-
-				// Transfert par SCP
-				case DEST_TYPE::DEST_SCP: {
-					if (!_SCPTransfer((SCPDestination*)dest)) {
-						atLeastOneError = true;
-					}
-					break;
-				}
-
-				default:
-					// ????
-					break;
-				}
-			}
+		}
+		else {
+			logs_->add(logs::TRACE_TYPE::LOG, "Pas de fichier temporaire enregistré (ou taille nulle)");
+			atLeastOneError = true;
 		}
 	}
 
@@ -1050,7 +1060,9 @@ RET_TYPE LDAPBrowser::_createFile()
 	// Plus besoin du fichier temporaire
 	if (file_) {
 		logs_->add(logs::TRACE_TYPE::DBG, "Suppression du fichier temporaire '%s'", file_->fileName());
-		//delete file_;
+		
+		// Suppression
+		delete file_;
 		file_ = NULL;
 	}
 
@@ -2105,7 +2117,12 @@ void LDAPBrowser::_managersForEmptyContainers(std::string& baseContainer)
 				// Remplacement de la valeur des attributs
 				if (pAgent->ownData()) {
 					pAgent->ownData()->empty("prenom");
-					pAgent->ownData()->replace("description", "Responsable");
+
+					string description("Responsable de '");
+					description += container->realName();
+					description += "'";
+					pAgent->ownData()->replace("description", description.c_str());
+
 					pAgent->ownData()->replace("nom", STR_VACANT_JOB);
 					pAgent->ownData()->empty("status");
 					pAgent->ownData()->replace("itemTitleColor", JS_DEF_STATUS_NO_COLOR, true);

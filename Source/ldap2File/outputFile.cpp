@@ -254,11 +254,13 @@ string outputFile::tokenize(commandFile* cmdFile, const char* source, const char
 	// Nom court
 	if (!IS_EMPTY(shortName)) {
 		st.addToken(TOKEN_CONTAINER_SHORTNAME, shortName);
+		st.addToken(TOKEN_CONTAINER_SHORTNAME_LOW, charUtils::strlwr(shortName).c_str());
 	}
 
 	// Nom complet
 	if (!IS_EMPTY(fullName)) {
 		st.addToken(TOKEN_CONTAINER_FULLNAME, fullName);
+		st.addToken(TOKEN_CONTAINER_FULLNAME_LOW, charUtils::strlwr(fullName).c_str());
 	}
 
 	// Nom du fichier XML source

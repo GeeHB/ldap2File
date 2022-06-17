@@ -102,7 +102,6 @@ public:
 
 		// Comparaisons
 		//
-
 		bool operator<(const commandFile::date& right) {
 			return ((date_.tm_year < right.date_.tm_year)
 				|| ((date_.tm_year == right.date_.tm_year)
@@ -149,14 +148,14 @@ public:
 		struct tm	date_;		// Au "bon" format
 	};
 
-	// Critère de recherche et expression régulière
+	// Critère de recherche
 	//
 	class criterium
 	{
 	public:
 		// Construction
 		criterium()
-		:container_{ "" }, tabType_{ "" }, tabName_{ "DEF_TAB_NAME" }, sorted_{ false }, searchExpr_{ NULL }
+		:container_{ "" }, tabType_{ "" }, tabName_{ "DEF_TAB_NAME" }, sorted_{ false }, searchExpr_{ nullptr }
 		{}
 
 		// Destruction
@@ -176,7 +175,7 @@ public:
 		void dispose(){
 			if (searchExpr_){
 				// delete searchExpr_;		// Devrait fonctionner !!!!
-				searchExpr_ = NULL;
+				searchExpr_ = nullptr;
 			}
 		}
 
