@@ -38,7 +38,7 @@
 //--
 //--	17/12/2015 - JHB - Création
 //--
-//--	17/06/2022 - JHB - Version 22.6.4
+//--	21/09/2022 - JHB - Version 22.6.5
 //--
 //---------------------------------------------------------------------------
 
@@ -255,10 +255,10 @@ int main(int argc, const char* argv[]) {
             myLogs.add(logs::TRACE_TYPE::LOG, "Binaire : %s", fullAppName.c_str());
             myLogs.add(logs::TRACE_TYPE::LOG, "Fichier de configuration : %s", file.c_str());
             myLogs.add(logs::TRACE_TYPE::LOG, "Dossiers de l'application : ");
-            myLogs.add(logs::TRACE_TYPE::LOG, "\t- app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
-            myLogs.add(logs::TRACE_TYPE::LOG, "\t- fichiers : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path());
-            myLogs.add(logs::TRACE_TYPE::LOG, "\t- templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
-            myLogs.add(logs::TRACE_TYPE::LOG, "\t- temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
+            myLogs.add(logs::TRACE_TYPE::LOG, "  - app : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_APP)->path());
+            myLogs.add(logs::TRACE_TYPE::LOG, "  - fichiers : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_OUTPUTS)->path());
+            myLogs.add(logs::TRACE_TYPE::LOG, "  - templates : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMPLATES)->path());
+            myLogs.add(logs::TRACE_TYPE::LOG, "  - temporaires : %s", myFolders.find(folders::FOLDER_TYPE::FOLDER_TEMP)->path());
 
             if (stop){
                 myLogs.add(logs::TRACE_TYPE::ERR, "Dossier(s) manquants. Arrêt des traitements");

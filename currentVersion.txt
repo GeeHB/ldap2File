@@ -36,14 +36,14 @@ BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
 
-22.6.4
-    * 17 juin 2022
+22.6.5
+    * 21 sept. 2022
 	+ Corrections de bugs
         - Affichages de la console
 		- Logs plus précis
 		- Correction du bug (de regression ?) lors de la génération des fichiers js en release
 			+ Sous Linux, compiler avec la définition __USE_STD_FILESYSTEM__ (bug dans la méthode sFileSystem::copy_file)
-		- Cas de fichiers js lorsqu l'organigramme n'est pas généré car non demandé/oublié (ce n'est pas une erreur => logs plus précis)
+		- Cas de fichiers js lorsque l'organigramme n'est pas généré car non demandé/oublié (ce n'est pas une erreur => logs plus précis)
     + XML - Version 2.4
 	+ Organigramme des services et/ou hiérarchique
         + Défini dans les templates ou fichiers de conf. par <Fichier><Organigramme Type={"", "Organisationnel"}>

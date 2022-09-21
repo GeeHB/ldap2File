@@ -2,7 +2,7 @@
 //--
 //--	FICHIER	: LDAPAttributes.h
 //--
-//--	AUTEUR	: Jérôme Henry-Barnaudière - JHB
+//--	AUTEUR	: JÃ©rÃ´me Henry-BarnaudiÃ¨re - JHB
 //--
 //--	PROJET	: ldap2File
 //--
@@ -10,16 +10,16 @@
 //--
 //--	DESCRIPTION :
 //--
-//--	Attributs LDAP spécifiques au schéma de l'Allier
+//--	Attributs LDAP spÃ©cifiques au schÃ©ma de l'Allier
 //--
 //---------------------------------------------------------------------------
 //--
 //--	MODIFICATIONS :
 //--	-------------
 //--
-//--	12/03/2020 - JHB - Version 20.3.2 - Création
+//--	12/03/2020 - JHB - Version 20.3.2 - CrÃ©ation
 //--
-//--	18/05/2021 - JHB - Version 21.5.6
+//--	21/09/2022 - JHB - Version 22.6.5
 //--
 //---------------------------------------------------------------------------
 
@@ -100,20 +100,20 @@
 #define ALLIER_STATUS_EMPTY					0x00000000
 
 #define ALLIER_STATUS_MANAGER				0x00000001			// L'agent est un manager
-#define ALLIER_STATUS_NA					0x00000002			// Agent non-affecté
+#define ALLIER_STATUS_NA					0x00000002			// Agent non-affectÃ©
 #define ALLIER_STATUS_SPLIT_ACCOUNT			0x00000004			// L'agent a plusieurs comptes (et celui-ci n'est pas le principal)
 #define ALLIER_STATUS_ORG_ADMIN_ACCOUNT		0x00000008			// Compte d'administration pour l'organigramme ...
-#define ALLIER_STATUS_NOT_A_MANAGER			0x00000010			// Ce n'est pas un "vrai" manager (il faut remonter à son N+1)
+#define ALLIER_STATUS_NOT_A_MANAGER			0x00000010			// Ce n'est pas un "vrai" manager (il faut remonter Ã  son N+1)
 #define ALLIER_STATUS_NOT_AN_AGENT			0x00000020			// Pas un agent => ne figure pas dans l'organigramme
 #define ALLIER_STATUS_STAGIAIRE				0x00000040			// Stagiaire
 #define ALLIER_STATUS_VACANT				0x00000080			// Poste vacant
 
-// Quotité du poste
+// QuotitÃ© du poste
 //
 #define STR_ATTR_ALLIER_QUOTITE				"allierQutotite"
 #define W_ATTR_ALLIER_QUOTITE				L"allierQuotite"
 
-// Répartition de la quotité globale sur le poste courant
+// RÃ©partition de la quotitÃ© globale sur le poste courant
 //
 #define STR_ATTR_ALLIER_REPARTITION			"allierRepartition"
 #define W_ATTR_ALLIER_REPARTITION			L"allierRepartition"
@@ -144,7 +144,7 @@
 #define STR_ATTR_ALLIER_SHORT_NAME			"allierShortName"
 #define W_ATTR_ALLIER_SHORT_NAME			L"allierShortName"
 
-// Nom du fichier de données pour la génération de l'organigramme
+// Nom du fichier de donnÃ©es pour la gÃ©nÃ©ration de l'organigramme
 //
 #define STR_ATTR_ALLIER_ORGCHART_FILENAME	"allierOrgChartFile"
 #define W_ATTR_ALLIER_ORGCHART_FILENAME		L"allierOrgChartFile"
