@@ -36,8 +36,8 @@ BUGS{
 	- Le caractère "è" mal encodé en UTF8 (bug linux ?) => erreur dans la génération des fichiers ODS et XSLX (c'est un peu la même chose en fait...)
 }
 
-22.6.5
-    * 21 sept. 2022
+22.6.5-2
+    * 13 oct. 2022
 	+ Corrections de bugs
         - Affichages de la console
 		- Logs plus précis

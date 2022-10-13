@@ -22,7 +22,7 @@
 //--		-base:{folder} : {folder} est la racine de l'application
 //--		-s - Mode silencieux
 //--		-c - Effacement des fichiers après traitement
-//--		-f:{min} - Annalyse régulière (si pas de suppression) toutes les {min} minutes
+//--		-f:{min} - Annalyse régulière (si pas de suppression) toutes les {min}
 //--		-d:{directory} - Annalyse de tous les fichiers contenus dans {directory}
 //--
 //--		+ Analyse répétitive d'un dossier : -d:C:\ldapTools\web -f:15 -s
@@ -238,7 +238,7 @@ int main(int argc, const char* argv[]) {
             myLogs.init(lInfos.mode_.c_str(), logFolder->path(), lInfos.fileName_.c_str());
             myLogs.setFileAge(lInfos.duration_);	// JHB -> retrouver le corps de la méthode !!!
 
-            myLogs.add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
+            myLogs.add(logs::TRACE_TYPE::LOG, "--------------------------------------------------------");
             string copyRight("---- %s - version %s pour %s");
 #ifdef _DEBUG
     		copyRight += " -- DEBUG";
@@ -287,7 +287,7 @@ int main(int argc, const char* argv[]) {
 		virtual ~_finalLogs() {
 			if (logs_){
 			    logs_->add(logs::TRACE_TYPE::LOG, "Fermeture de l'application");
-			    logs_->add(logs::TRACE_TYPE::LOG, "----------------------------------------------------------------------------------------------------------------------------");
+			    logs_->add(logs::TRACE_TYPE::LOG, "--------------------------------------------------------");
             }
 		}
 	};
